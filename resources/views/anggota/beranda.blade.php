@@ -10,13 +10,14 @@
 
 
   <nav class="nav-top">
-    <div class="nav-left">
-      
-    </div>
+    <div class="nav-left"> </div>
     <div class="nav-right">
-      <img src="{{ asset('icons/bell.svg') }}" alt="Notifikasi" class="icon-24">
+      <button id="btnNotif" class="btn-icon" type="button" aria-label="Buka notifikasi">
+        <img src="{{ asset('icons/bell-notification.png') }}" alt="" class="icon-50">
+        <span id="notifBadge" class="badge">3</span>
+      </button>
       <div class="divider-16"></div>
-      <img src="{{ asset('images/logo.png') }}" alt="Koperasi TSM" class="logo-coop">
+        <img src="{{ asset('images/logo.png') }}" alt="Koperasi TSM" class="logo-coop">
     </div>
   </nav>
 
@@ -25,15 +26,15 @@
     <aside class="sidebar">
       <div class="profile-card">
         <div class="profile-left">
-          <img src="{{ asset('images/profilAnggota.jpg') }}" alt="Profil" class="avatar-56">
+          <img src="{{ asset('images/profilAnggota.jpg') }}" alt="Profil" class="avatar-90">
         </div>
         <div class="profile-right">
           <div class="profile-name">angga</div>
           <div class="profile-role">Anggota</div>
         </div>
-        <button type="button" class="chip-blue">
-          <span class="chev">‹</span>
-        </button>
+        <a href="#" class="btn-profil push-right" aria-label="Buka Profil">
+          <img src="{{ asset('icons/arrow-profil.png') }}" alt="">
+        </a>
       </div>
 
       <ul class="menu-list">

@@ -12,3 +12,17 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+  const btn = document.getElementById('btnNotif');
+  if (!btn) return;
+
+  const badge = document.getElementById('notifBadge');
+  const url = btn.dataset.targetUrl; 
+
+  btn.addEventListener('click', () => {
+    if (badge) badge.hidden = true;
+    if (url) window.location.href = url;
+  });
+});
+
