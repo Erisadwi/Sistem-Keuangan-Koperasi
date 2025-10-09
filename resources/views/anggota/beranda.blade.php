@@ -70,51 +70,60 @@
       <div class="page-title">
         <span class="title">Beranda</span>
         <span class="sep">Menu Utama</span>
-        <span class="notif-pill">
-          <img src="{{ asset('icons/bell.svg') }}" alt="Notif" class="icon-18">
-        </span>
       </div>
 
-      <h2 class="greeting">Selamat Siang Angga <span class="wave">👋</span></h2>
+      <h2 class="greeting">
+        {{-- {{ $salam }} {{ $namaDepan }} --}}
+        Selamat Siang Angga <span class="wave">👋</span>
+      </h2>
 
-
+      
       <section class="cards">
         <div class="card pastel-orange">
           <div class="card-icon">
-            <img src="{{ asset('icons/saving.svg') }}" alt="Simpanan" class="icon-28">
+            <img src="{{ asset('icons/icon-simpanan.png') }}" alt="Simpanan" class="icon-28">
           </div>
           <div class="card-text">
-            <div class="card-amount">Rp2.500.000</div>
+            <div class="card-amount">
+              {{-- Rp{{ number_format($simpanan, 0, ',', '.') }}  --}}
+              Rp2.500.000
+            </div>
             <div class="card-label">Simpananmu</div>
           </div>
         </div>
 
         <div class="card pastel-yellow">
           <div class="card-icon">
-            <img src="{{ asset('icons/loan.svg') }}" alt="Pinjaman" class="icon-28">
+            <img src="{{ asset('icons/icon-pinjaman.png') }}" alt="Pinjaman" class="icon-28">
           </div>
           <div class="card-text">
-            <div class="card-amount">Rp1.500.000</div>
+            <div class="card-amount">
+              {{-- Rp{{ number_format($pinjaman, 0, ',', '.') }}  --}}
+              Rp1.500.000</div>
             <div class="card-label">Pinjamanmu</div>
           </div>
         </div>
 
         <div class="card pastel-pink">
           <div class="card-icon">
-            <img src="{{ asset('icons/tx.svg') }}" alt="Transaksi" class="icon-28">
+            <img src="{{ asset('icons/icon-transaksi.png') }}" alt="Transaksi" class="icon-28">
           </div>
           <div class="card-text">
-            <div class="card-amount">3</div>
+            <div class="card-amount">
+              {{-- {{ $totalTransaksi }} --}}
+              3</div>
             <div class="card-label">Transaksimu</div>
           </div>
         </div>
 
         <a href="#" class="card pastel-green linklike">
           <div class="card-icon">
-            <img src="{{ asset('icons/bill.svg') }}" alt="Tagihan" class="icon-28">
+            <img src="{{ asset('icons/icon-tagihan.png') }}" alt="Tagihan" class="icon-28">
           </div>
           <div class="card-text">
-            <div class="card-amount">1</div>
+            <div class="card-amount">
+              {{-- {{ $totalTagihan }} --}}
+              1</div>
             <div class="card-label">Tagihanmu</div>
           </div>
         </a>
@@ -125,12 +134,14 @@
         <div class="stat-left">
           <div class="mini-card">
             <div class="mini-card-header">
-              <span class="mini-icon">↗</span>
-              <button type="button" class="refresh-vert" title="Refresh">Refresh</button>
+              <img src="{{ asset('icons/statistic.png') }}" alt="" class="icon-100">
+              <button id="refreshPage" type="button" class="refresh-vert bold" title="Refresh">Refresh</button>
             </div>
             <div class="mini-amount">
               <div class="rp">Rp</div>
-              <div class="money">4.000.000,00</div>
+              <div class="money">
+                {{-- {{ number_format($totalDana, 2, ',', '.') }} --}}
+                4.000.000,00</div>
             </div>
             <div class="mini-caption">Total Dana</div>
           </div>

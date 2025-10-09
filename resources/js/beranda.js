@@ -26,3 +26,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 });
 
+document.getElementById('refreshPage')?.addEventListener('click', () => {
+  
+  const btn = document.getElementById('refreshPage');
+  btn.disabled = true; btn.textContent = 'Memuat…';
+  location.reload(); // reload full page
+});
