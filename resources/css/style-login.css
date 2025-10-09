@@ -1,0 +1,107 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body, html {
+  height: 100%;
+  font-family: "Inter", sans-serif;
+}
+
+.login-page {
+  background: #ffffff;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
+.login-card {
+  background: #c4dae5;
+  border-radius: 20px;
+  width: 500px;
+  padding: 40px 30px;
+  box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+}
+
+
+.logo-title {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo-card {
+  background: #0066b0;
+  border-radius: 10px;
+  width: 275px;
+  height: 78px;
+  margin-bottom: 10px;
+}
+
+.logo-label {
+  width: 140px;
+  height: auto;
+  object-fit: contain;
+}
+
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  width: 100%;
+}
+
+.login-form label {
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.6);
+}
+
+.input-username,
+.input-password {
+  width: 100%;
+  height: 50px;
+  border-radius: 15px;
+  border: 1px solid #ccc;
+  padding: 0 15px;
+  font-size: 16px;
+}
+
+.password-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.icon-eye {
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+
+.button-login {
+  background: #0066b0;
+  color: #f5f5f5;
+  border: none;
+  border-radius: 15px;
+  height: 50px;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.button-login:hover {
+  background: #004b80;
+}
