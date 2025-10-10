@@ -21,47 +21,38 @@
     </div>
   </nav>
 
-  <div class="layout">
+  {{-- @php
+  $user = Auth::guard('anggota')->user();
+  @endphp --}}
 
+  <div class="layout">
     <aside class="sidebar">
       <div class="profile-card">
         <div class="profile-left">
-          <img src="{{ asset('images/profilAnggota.jpg') }}" alt="Profil" class="avatar-90">
+          <img src="{{ asset('images/profilAnggota.jpg') }}{{-- {{ $user && $user->foto ? asset('storage/' . $user->foto) : asset('images/profilAnggota.jpg') }} --}}"
+          alt="Foto {{-- {{ $user->nama_lengkap ?? 'Pengguna' }} --}}" class="avatar-90">
         </div>
         <div class="profile-right">
-          <div class="profile-name">angga</div>
+          <div class="profile-name">angga{{-- {{ $user->nama_lengkap ?? 'Nama Tidak Ditemukan' }} --}}</div>
           <div class="profile-role">Anggota</div>
         </div>
-        <a href="#" class="btn-profil push-right" aria-label="Buka Profil">
+        <a href="#{{-- {{ route('anggota.profil') }} --}}" class="btn-profil push-right" aria-label="Buka Profil">
           <img src="{{ asset('icons/arrow-profil.png') }}" alt="">
         </a>
       </div>
 
       <ul class="menu-list">
-        <li class="menu-section">
-      <button class="menu-head" data-toggle="collapse" data-target="#dd-laporan" aria-expanded="true">
-        <span>Laporan</span>
-        <svg class="chev-svg" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5l4.5 4 4.5-4" /></svg>
-      </button>
-      <div id="dd-laporan" class="submenu open">
-        <a href="#" class="submenu-row">Simpanan</a>
-        <a href="#" class="submenu-row">Pinjaman</a>
-        <a href="#" class="submenu-row">Pembayaran</a>
-        <a href="#" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
-      </div>
-    </li>
+        <x-menu.section title="Laporan" :open="true">
+          <a href="#" class="submenu-row">Simpanan</a>
+          <a href="#" class="submenu-row">Pinjaman</a>
+          <a href="#" class="submenu-row">Pembayaran</a>
+          <a href="#" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
+        </x-menu.section>
 
-
-    <li class="menu-section">
-      <button class="menu-head" data-toggle="collapse" data-target="#dd-pengajuan" aria-expanded="true">
-        <span>Pengajuan Pinjaman</span>
-        <svg class="chev-svg" viewBox="0 0 20 20" fill="currentColor"><path d="M5.5 7.5l4.5 4 4.5-4" /></svg>
-      </button>
-      <div id="dd-pengajuan" class="submenu open">
-        <a href="#" class="submenu-row">Data Pengajuan</a>
-        <a href="#" class="submenu-row">Tambah Pengajuan Baru</a>
-      </div>
-    </li>
+        <x-menu.section title="Pengajuan Pinjaman" :open="true">
+          <a href="#" class="submenu-row">Data Pengajuan</a>
+          <a href="#" class="submenu-row">Tambah Pengajuan Baru</a>
+        </x-menu.section>
       </ul>
     </aside>
 
@@ -79,7 +70,7 @@
 
       
       <section class="cards">
-        <div class="card pastel-orange">
+        <a href="# {{-- {{ route('nama_route_tujuan') }} --}}" class="card pastel-orange">
           <div class="card-icon">
             <img src="{{ asset('icons/icon-simpanan.png') }}" alt="Simpanan" class="icon-28">
           </div>
@@ -90,9 +81,9 @@
             </div>
             <div class="card-label">Simpananmu</div>
           </div>
-        </div>
+        </a>
 
-        <div class="card pastel-yellow">
+        <a href="# {{-- {{ route('nama_route_tujuan') }} --}}" class="card pastel-yellow">
           <div class="card-icon">
             <img src="{{ asset('icons/icon-pinjaman.png') }}" alt="Pinjaman" class="icon-28">
           </div>
@@ -102,9 +93,9 @@
               Rp1.500.000</div>
             <div class="card-label">Pinjamanmu</div>
           </div>
-        </div>
+        </a>
 
-        <div class="card pastel-pink">
+        <a href="# {{-- {{ route('nama_route_tujuan') }} --}}" class="card pastel-pink">
           <div class="card-icon">
             <img src="{{ asset('icons/icon-transaksi.png') }}" alt="Transaksi" class="icon-28">
           </div>
@@ -114,7 +105,7 @@
               3</div>
             <div class="card-label">Transaksimu</div>
           </div>
-        </div>
+        </a>
 
         <a href="#" class="card pastel-green linklike">
           <div class="card-icon">
@@ -135,7 +126,9 @@
           <div class="mini-card">
             <div class="mini-card-header">
               <img src="{{ asset('icons/statistic.png') }}" alt="" class="icon-100">
-              <button id="refreshPage" type="button" class="refresh-vert bold" title="Refresh">Refresh</button>
+              <button id="refreshPage" class="refresh-vert img-btn" type="button">
+                <img src="{{ asset('icons/refresh.png') }}" alt="">
+              </button>
             </div>
             <div class="mini-amount">
               <div class="rp">Rp</div>
