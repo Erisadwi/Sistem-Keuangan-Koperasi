@@ -1,0 +1,8 @@
+.nav-top{
+  height:50px;background:#0066B0;color:#fff;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 18px;box-shadow:0 2px 8px rgba(0,0,0,.08)
+}
+.nav-right{display:flex;align-items:center}
+.logo-coop{height:45px;margin-right: 25px;}
+.divider-16{width:16px}

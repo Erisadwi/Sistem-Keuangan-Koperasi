@@ -13,7 +13,7 @@
     <div class="nav-left"> </div>
     <div class="nav-right">
       <button id="btnNotif" class="btn-icon" type="button" aria-label="Buka notifikasi">
-        <img src="{{ asset('icons/bell-notification.png') }}" alt="" class="icon-50">
+        <img src="{{ asset('icons/bell-notification.png') }}" alt="" class="icon-45">
         <span id="notifBadge" class="badge">3</span>
       </button>
       <div class="divider-16"></div>
@@ -30,7 +30,7 @@
       <div class="profile-card">
         <div class="profile-left">
           <img src="{{ asset('images/profilAnggota.jpg') }}{{-- {{ $user && $user->foto ? asset('storage/' . $user->foto) : asset('images/profilAnggota.jpg') }} --}}"
-          alt="Foto {{-- {{ $user->nama_lengkap ?? 'Pengguna' }} --}}" class="avatar-90">
+          alt="Foto {{-- {{ $user->nama_lengkap ?? 'Pengguna' }} --}}" class="avatar-70">
         </div>
         <div class="profile-right">
           <div class="profile-name">angga{{-- {{ $user->nama_lengkap ?? 'Nama Tidak Ditemukan' }} --}}</div>
@@ -42,14 +42,14 @@
       </div>
 
       <ul class="menu-list">
-        <x-menu.section title="Laporan" :open="true">
+        <x-menu.section title="Laporan" :open="false">
           <a href="#" class="submenu-row">Simpanan</a>
           <a href="#" class="submenu-row">Pinjaman</a>
           <a href="#" class="submenu-row">Pembayaran</a>
           <a href="#" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
         </x-menu.section>
 
-        <x-menu.section title="Pengajuan Pinjaman" :open="true">
+        <x-menu.section title="Pengajuan Pinjaman" :open="false">
           <a href="#" class="submenu-row">Data Pengajuan</a>
           <a href="#" class="submenu-row">Tambah Pengajuan Baru</a>
         </x-menu.section>
@@ -125,7 +125,7 @@
         <div class="stat-left">
           <div class="mini-card">
             <div class="mini-card-header">
-              <img src="{{ asset('icons/statistic.png') }}" alt="" class="icon-100">
+              <img src="{{ asset('icons/statistic.png') }}" alt="" class="icon-70">
               <button id="refreshPage" class="refresh-vert img-btn" type="button">
                 <img src="{{ asset('icons/refresh.png') }}" alt="">
               </button>

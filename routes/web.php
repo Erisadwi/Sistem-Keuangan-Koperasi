@@ -13,3 +13,7 @@ Route::get('/', function () {
 Route::get('/anggota/beranda', function () {
     return view('anggota.beranda');
 })->name('anggota.beranda');
+
+Route::get('/anggota/profil/editProfil', function () {
+    return view('anggota.profil.editProfil');
+})->name('anggota.profil.editProfil');
