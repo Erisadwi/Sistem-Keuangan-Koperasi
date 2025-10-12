@@ -13,6 +13,8 @@
 
 @section('content')
 
+{{-- contoh di mana saja --}}
+<x-menu.date-filter/>
 
 
 <div class="shu-table-wrap">
