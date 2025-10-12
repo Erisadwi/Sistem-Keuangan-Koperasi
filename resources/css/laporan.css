@@ -1,0 +1,95 @@
+/* ====== SHU Table ====== */
+:root{
+  --outer-border: #838383;      /* bingkai biru muda */
+  --head-dark:   #4a4a4a;       /* header sangat gelap */
+  --head-mid:    #9a9a9a;       /* sub-header abu */
+  --line:        #7f7f7f;       /* garis utama (divider tengah) */
+  --grid:        #bdbdbd;       /* garis kisi-kisi sel */
+  --bg:          #ffffff;
+}
+
+.shu-table-wrap{
+  border: 1.5px solid var(--outer-border);
+  border-radius: 0px;
+  background: var(--bg);
+  width: 860px;
+  margin-left: 30px;
+  margin-top: 140px;
+}
+
+/* gunakan collapse supaya grid persis */
+.shu-table{
+  width: 860px;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 14px;
+  color: #222;
+}
+
+/* --- Header utama --- */
+.shu-table .head-title th{
+  background: var(--head-dark);
+  color: #fff;
+  text-align: center;
+  font-weight: 700;
+  padding: 14px 12px;
+  border-bottom: 1px solid var(--grid);
+}
+
+/* --- Sub header (2 grup) --- */
+.shu-table .head-group th{
+  background: var(--head-mid);
+  color: #fff;
+  text-align: left;
+  font-weight: 600;
+  padding: 12px;
+  border-bottom: 1px solid var(--grid);
+}
+
+/* garis vertikal tebal pemisah antar-grup */
+.shu-table .head-group .group-left{
+  border-right: 1.5px solid var(--line);
+}
+
+/* --- Body --- */
+.shu-table td{
+  padding: 12px;
+  border-bottom: 1px solid var(--grid);
+  border-right: 1px solid var(--grid);
+  background: #fff;
+}
+
+.shu-table tbody td:last-child { 
+  border-right: 2px solid var(--grid);
+}
+
+/* garis vertikal tengah harus tebal (antara kolom 2 dan 3) */
+.shu-table tbody tr td:nth-child(2){
+  border-right: 1.5px solid var(--line);
+}
+
+/* label kiri rata kiri, angka rata kanan */
+.shu-table td.label{ 
+  font-weight: 500; 
+}
+.shu-table td.value{ 
+  text-align: right; 
+  font-variant-numeric: tabular-nums; 
+}
+
+/* styling angka negatif seperti contoh */
+.shu-table td.value.negative{ 
+  color: #333;              /* tetap gelap seperti gambar */
+}
+
+/* hapus border bawah di baris terakhir */
+.shu-table tbody tr:last-child td{
+  border-bottom: 0;
+}
+
+/* Responsif kecil */
+@media (max-width: 640px){
+  .shu-table{ font-size: 13px; }
+  .shu-table td, .shu-table th{ padding: 10px; }
+}
