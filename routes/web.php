@@ -17,3 +17,14 @@ Route::get('/anggota/beranda', function () {
 Route::get('/anggota/laporan-simpanan', function () {
     return view('anggota.laporan-simpanan');
 })->name('anggota.laporan-simpanan');
+Route::get('/anggota/profil/editProfil', function () {
+    return view('anggota.profil.editProfil');
+})->name('anggota.profil.editProfil');
+
+Route::get('/anggota/lap-SHU', function () {
+    return view('anggota.lap-SHU');
+})->name('anggota.lap-SHU');
+
+Route::get('/anggota/dataPengajuan', function () {
+    return view('anggota.dataPengajuan');
+})->name('anggota.dataPengajuan');

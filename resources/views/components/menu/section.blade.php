@@ -1,8 +1,12 @@
 @props([
   'title',
   'open' => true,
-  'id' => Str::slug($title) // pastikan pakai Str di helper atau ubah manual
+  'id' => Str::slug($title) 
 ])
+
+@once
+    @vite(['resources/css/components/section.css', 'resources/js/laporan.js'])
+@endonce
 
 <li class="menu-section">
   <button class="menu-head" data-toggle="collapse" data-target="#dd-{{ $id }}" aria-expanded="{{ $open ? 'true':'false' }}">
