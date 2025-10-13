@@ -33,3 +33,11 @@ Route::get('/anggota/data-pengajuan', function () {
 Route::get('/anggota/test', function () {
     return view('anggota.test');
 })->name('anggota.test');
+
+Route::get('/anggota/laporan-pinjaman', function () {
+    return view('anggota.laporan-pinjaman');
+})->name('anggota.laporan-pinjaman');
+
+Route::get('/anggota/laporan-pembayaran', function () {
+    return view('anggota.laporan-pembayaran');
+})->name('anggota.laporan-pembayaran');

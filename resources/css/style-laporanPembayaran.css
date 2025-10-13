@@ -1,0 +1,95 @@
+/* ====== Laporan pembayaran Table ====== */
+:root {
+  --primary: #6ba1be;         /* Warna biru muda */
+  --primary-dark: #558ca3;    /* Warna biru sedikit lebih gelap */
+  --header-bg: #4a4a4a;       /* Warna kepala tabel */
+  --header-text: #ffffff;
+  --border: #c0c0c0;
+  --background: #e0edf3;      /* Warna latar konten utama */
+  --text: #222;
+}
+
+/* ====== Hanya atur isi tabel dalam card biru bawaan layout ====== */
+.laporan-pembayaran-wrap {
+  border: 1.5px solid var(--outer-border);
+  border-radius: 0;
+  background: var(--bg);
+  width: 860px;          
+  margin-left: 25px;     
+  margin-top: 30px;       
+  padding: 0;             
+  box-shadow: none;       
+  overflow-x: visible; 
+}
+
+/* ====== Tabel utama ====== */
+.laporan-pembayaran-table {
+  width: 100%;
+  min-width: 700px; /* biar bisa scroll horizontal */
+  border-collapse: separate;
+  background: white;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 14px;
+}
+
+.laporan-pembayaran-table thead {
+  background: var(--header-bg);
+  color: var(--header-text);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.laporan-pembayaran-table th,
+.laporan-pembayaran-table td {
+  text-align: center;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+}
+
+.laporan-pembayaran-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.laporan-pembayaran-table tbody tr:hover {
+  background-color: #eef7ff;
+}
+
+/* ====== Pagination (bawaan komponen) ====== */
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+  margin-top: 15px;
+  font-size: 14px;
+}
+
+.pagination select,
+.pagination button {
+  padding: 4px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: white;
+  cursor: pointer;
+}
+
+.pagination button {
+  background: var(--primary);
+  color: white;
+  border: none;
+}
+
+.pagination button:hover {
+  background: var(--primary-dark);
+}
+
+
+
+
+/* Biar tabel tidak nabrak */
+.laporan-pembayaran-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 600px; /* agar scroll horizontal muncul kalau sempit */
+}

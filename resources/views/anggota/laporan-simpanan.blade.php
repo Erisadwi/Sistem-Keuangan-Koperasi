@@ -14,24 +14,32 @@
 <x-menu.date-filter/>
 
 <div class="laporan-simpanan-wrap">
-    <table class="laporan-simpanan-table">
-      <thead>
-        <tr class="head-group">
-          <th>Tanggal</th>
-          <th>Jenis</th>
-          <th>Jumlah</th>
-          <th>Keterangan</th>
-        
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>10-09-2025</td>
-          <td>Setoran</td>
-          <td>100.000</td>
-        </tr>
-      </tbody>
-    </table>
+  <table class="laporan-simpanan-table">
+    <thead>
+      <tr class="head-group">
+        <th>Tanggal</th>
+        <th>Jenis</th>
+        <th>Jumlah</th>
+        <th>Keterangan</th>
+      </tr>
+    </thead>
+    <tbody>
+     @if(isset($data) && count($data) > 0)
+      @foreach ($data as $row)
+      <tr>
+        <td>{{ \Carbon\Carbon::parse($row->tanggal)->format('d-m-Y') }}</td>
+        <td>{{ $row->jenis }}</td>
+        <td>{{ number_format($row->jumlah, 0, ',', '.') }}</td>
+        <td>{{ $row->keterangan ?? '-' }}</td>
+      </tr>
+      @endforeach
+    @else
+    <tr>
+      <td colspan="11" class="empty-cell">Belum ada data simpanan.</td>
+    </tr>
+    @endif
+    </tbody>
+  </table>
 </div>
 
 {{-- Komponen pagination --}}
