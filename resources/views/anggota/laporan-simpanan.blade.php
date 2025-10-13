@@ -1,18 +1,10 @@
-@extends('layouts.app')
-
-@push('styles')
-  @vite('resources/css/style-laporanSimpanan.css')
-@endpush
-
-@section('title', 'Laporan Simpanan')
-@section('title-1', 'Laporan')
-@section('sub-title', 'Laporan Simpanan')
-
 @section('content')
-  {{-- Filter --}}
-  <x-menu.date-filter/>
 
-  {{-- Tabel Laporan Simpanan --}}
+<div class="laporan-page">
+  {{-- Komponen filter tanggal & tombol hapus --}}
+  <x-menu.date-filter />
+
+  {{-- Tabel data laporan simpanan --}}
   <div class="laporan-simpanan-wrap">
     <table class="laporan-simpanan-table">
       <thead>
@@ -33,4 +25,9 @@
       </tbody>
     </table>
   </div>
+
+  {{-- Komponen pagination --}}
+  <x-menu.pagination />
+</div>
+
 @endsection
