@@ -34,9 +34,9 @@ Route::get('/anggota/test', function () {
     return view('anggota.test');
 })->name('anggota.test');
 
-Route::get('/admin/laporan/lap-data-kas', function () {
-    return view('admin.laporan.lap-data-kas');
-})->name('admin.laporan.lap-data-kas');
+Route::get('/admin/laporan/laporan-saldo-kas', function () {
+    return view('admin.laporan.laporan-saldo-kas');
+})->name('admin.laporan.laporan-saldo-kas');
 
 Route::get('/anggota/laporan-pinjaman', function () {
     return view('anggota.laporan-pinjaman');
@@ -45,4 +45,8 @@ Route::get('/anggota/laporan-pinjaman', function () {
 Route::get('/anggota/laporan-pembayaran', function () {
     return view('anggota.laporan-pembayaran');
 })->name('anggota.laporan-pembayaran');
+
+Route::get('/admin/laporan/laporan-SHU', function () {
+    return view('admin.laporan.laporan-SHU');
+})->name('admin.laporan.laporan-SHU');
 

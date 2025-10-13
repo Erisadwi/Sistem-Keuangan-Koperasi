@@ -86,10 +86,9 @@
 </form>
 
 <style>
-.df-inline {
-  .df-inline{display:inline-block;position:relative}
+  .df-inline {display:inline-block;position:relative}
   .df-row{display:flex;gap:8px;align-items:center; margin-top:65px;margin-left:22px;}
-    .df-btn{appearance:none;border:1px solid #d1d5db;background:#ffffff;
+  .df-btn{appearance:none;border:1px solid #d1d5db;background:#ffffff;
     padding:5px 6px;border-radius:8px;cursor:pointer;font-size:12px;line-height:1.2;
     text-decoration:none;color:#111827;display:inline-flex;align-items:center;gap:6px;
     box-shadow:0 2px 4px rgba(107, 105, 105, 0.647)
@@ -101,7 +100,7 @@
   .df-btn.df-danger .df-ic svg{display:block}
 
   .df-pop{position:absolute;z-index:40;top:100%;left:0;margin-top:6px;min-width:220px;max-width:min(92vw,320px);
-    background:#fff;border:1px solid #e5e7eb;border-radius:8px;box-shadow:0 12px 28px rgba(0,0,0,.08);padding:8px}
+    background:#fff;border:1px solid #e5e7eb;border-radius:8px;box-shadow:0 12px 28px rgba(0,0,0,.08);padding:8px;}
   .df-pop-section+.df-pop-section{border-top:1px solid #f1f5f9;margin-top:6px;padding-top:8px}
   .df-pop-title{font-size:12px;color:#6b7280;margin:2px 0 8px}
 

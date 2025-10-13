@@ -2,8 +2,8 @@
   --outer-border: #838383;      
   --head-dark:   #4a4a4a;       
   --head-mid:    #9a9a9a;       
-  --line:        #7f7f7f;       
-  --grid:        #bdbdbd;      
+  --line:        #fffafa;       
+  --grid:        #fffcfc;      
   --bg:          #ffffff;
 }
 
@@ -33,24 +33,24 @@
   color: #fff;
   text-align: center;
   font-weight: 600;
-  padding: 12px;
+  padding: 10px;
   border-bottom: 1px solid var(--grid);
   white-space: nowrap;
 }
 
 .pengajuan-table td{
-  padding: 12px;
-  border-bottom: 1px solid var(--grid);
-  border-right: 1px solid var(--grid);
+  padding: 10px;
+  border-bottom: 1px solid var(--grid)!important;
+  border-right: 1px solid var(--grid)!important;
   background: #fff;
 }
 
 .pengajuan-table tbody td:last-child{
-  border-right: 2px solid var(--grid);
+  border-right: 2px solid var(--grid)!important;
 }
 
 .pengajuan-table tbody tr td:nth-child(1){
-  border-right: 1.5px solid var(--line);
+  border-right: 1.5px solid var(--line) !important;
 }
 
 .pengajuan-table tbody tr{ background: #fff; }
@@ -59,7 +59,7 @@
 
 .pengajuan-table .empty-cell{
   text-align: center;
-  padding: 18px 12px;
+  padding: 12px 15px;
   color: #6b7280;
   font-style: italic;
 }

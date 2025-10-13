@@ -1,17 +1,16 @@
-@extends('layouts.laporan')
+@extends('layouts.laporan-admin')
 
 
-@section('title', 'Laporan Saldo Kas')  
-@section('title-1', 'Saldo Kas')  
-@section('title-content', 'Laporan Saldo Kas')  
-@section('period', 'Periode Oktober 2025')  
-@section('sub-title', 'Laporan Saldo Kas')  
+@section('title', 'Laporan Sisa Hasil Usaha')  
+@section('title-1', 'Sisa Hasil Usaha')  
+@section('title-content', 'Laporan Pembagian SHU')  
+@section('period', 'Periode 1 Januari 2025 - 31 Desember 2025')  
+@section('sub-title', 'Laporan SHU')  
 
 @section('content')
 
-<x-menu.month-filter/>
+<x-menu.date-filter/>
 <x-menu.unduh/>
-
 
 <table>
         <thead>
@@ -84,15 +83,12 @@
         .header {
             font-weight: bold;
         }
-        /* Adjusting width of the "No." column */
         th:first-child, td:first-child {
-            width: 50px; /* Makes the first column smaller */
+            width: 50px; 
         }
-        /* Aligning the saldo value to the right */
         .saldo {
             text-align: center;
         }
-        /* Merging text with the correct alignment */
         .merged-cell {
             text-align: center;
         }
