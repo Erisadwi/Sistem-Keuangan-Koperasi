@@ -52,7 +52,7 @@
     </div>
 
     <main class="main">
-       <div class="title-1">@yield('title-1', 'Default Title')</div>
+          <div class="title-1">@yield('title-1', 'Default Title')</div>       
         <div class="container">
             <div class="content-container">
                 <div class="content-container2"></div>
