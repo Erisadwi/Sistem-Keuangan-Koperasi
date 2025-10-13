@@ -9,9 +9,8 @@
     --button-hover-color: #0056b3; /* Warna saat tombol di-hover */
 
     /* Font Sizes */
-    --font-size: 14px; /* Ukuran font dasar untuk teks umum */
-    --font-size-large: 18px; /* Ukuran font untuk teks besar seperti judul */
-    --font-size-header: 16px; /* Ukuran font untuk header atau subjudul */
+    --font-size: 12px; /* Ukuran font dasar untuk teks umum */
+
 
     /* Spacing and Borders */
     --border-radius: 5px; /* Jari-jari border untuk tombol dan elemen berbentuk kotak */
@@ -20,7 +19,7 @@
     --gap-spacing: 20px; /* Jarak antar elemen dalam flexbox */
 
     /* Shadows */
-    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow untuk card dan elemen lainnya */
+    --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.477); /* Shadow untuk card dan elemen lainnya */
 
     /* Transition */
     --transition-speed: 0.3s; /* Kecepatan transisi untuk efek hover dan perubahan */
@@ -30,18 +29,19 @@
 .pagination-container {
     position: fixed;
     bottom: 20px; /* Jarak dari bawah halaman */
-    right: 20px; /* Jarak dari sisi kanan halaman */
+    right: 15px; /* Jarak dari sisi kanan halaman */
     display: flex;
-    gap: 10px; /* Jarak antar komponen */
+    gap: 6px; /* Jarak antar komponen */
     justify-content: flex-start;
     align-items: center;
+     padding: 0; 
 }
 
 /* Styling umum untuk tombol pagination */
 .pagination-btn {
     background-color: #fff;  /* Warna latar belakang tombol */
     color: var(--primary-color);  /* Warna teks tombol */
-    padding: 6px 12px;
+    padding: 4px 8px;
     border: 1px solid var(--primary-color);  /* Border putih */
     cursor: pointer;
     font-size: var(--font-size);
@@ -49,6 +49,7 @@
     display: inline-block;
     text-align: center;
     box-sizing: content-box;
+
 }
 
 /* Hover untuk tombol pagination */
@@ -68,14 +69,14 @@
 /* Styling untuk page numbers */
 .page-numbers {
     display: flex;
-    gap: 5px;
+    gap: 4px;
 }
 
 .page-btn {
     background-color: #fff;
     color: var(--primary-color);
     border: 1px solid var(--primary-color);
-    padding: 8px 15px;
+    padding: 4px 8px;
     font-size: var(--font-size);
     cursor: pointer;
     border-radius: var(--border-radius);
@@ -83,6 +84,7 @@
     display: inline-block;
     box-sizing: content-box; /* Pastikan padding dan border dihitung dalam ukuran */
     overflow: hidden; /* Menghindari meluasnya elemen keluar batas */
+    margin: 0;  
 }
 
 /* Hover untuk tombol halaman */
@@ -96,12 +98,13 @@
     align-items: center;
     font-size: var(--font-size);
     color: var(--primary-color);
-    padding: 8px 12px;
+    padding: 4px 8px;
+    
 }
 
 /* Styling untuk dropdown items per page */
 .items-per-page {
-    padding: 0px;
+    padding: 4px;
     border: 1px solid var(--primary-color);
     border-radius: var(--border-radius);
     font-size: var(--font-size);
@@ -110,8 +113,9 @@
     transition: border-color var(--transition-speed);
     box-sizing: border-box; /* Pastikan padding dan border dihitung dalam ukuran */
     width: 100%;  /* Mengatur lebar menjadi 100% dari kontainer parent */
-    max-width: 70px; /* Maksimal lebar dropdown agar tidak terlalu lebar */
-    min-width: 50px; /* Minimal lebar dropdown */
+    max-width: 40px; /* Maksimal lebar dropdown agar tidak terlalu lebar */
+    min-width: 40px; /* Minimal lebar dropdown */
+
 }
 
 .items-per-page:focus {
@@ -123,17 +127,18 @@
 .pagination-version1,
 .pagination-version2 {
     background-color: #fff;
-    padding: 15px;
+    padding: 6px;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     font-size: var(--font-size);
     display: flex;
     align-items: center;
     justify-content: center;
-    min-width: 100px;
+    min-width: 80px;
     text-align: center;
     box-sizing: border-box; /* Memastikan padding dan border dihitung dalam ukuran */
     overflow: hidden; /* Menghindari meluasnya elemen keluar batas */
+    margin-top: 30px !important;
 }
 
 /* Untuk dropdown */
@@ -141,7 +146,7 @@
     background-color: white;
     border: 1px solid #007bff;
     color: #007bff;
-    padding: 10px;
+    padding: 6px;
     font-size: var(--font-size);
     border-radius: 5px;
     cursor: pointer;
@@ -166,7 +171,7 @@
 }
 
 .pagination-version2 .next-btn {
-    margin-left: 10px;
+    margin-left: 6px;
 }
 
 /* Responsive untuk ukuran layar lebih kecil */

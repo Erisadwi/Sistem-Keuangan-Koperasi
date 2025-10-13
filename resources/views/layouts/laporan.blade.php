@@ -56,6 +56,11 @@
         <div class="container">
             <div class="content-container">
                 <div class="content-container2"></div>
+                <div class="title-content">
+                    @yield('title-content', 'Default title') 
+                    <br />
+                    @yield('period', 'Default period')
+                </div>
             </div>
             <div class="title-container">
                 <div class="title-container2"></div>

@@ -1,15 +1,13 @@
-@extends('layouts.laporan')
+@extends('layouts.app')
 
 @push('styles')
-  @vite('resources/css/laporan-SHU.css')
+  @vite('resources/css/components/tabel.css')
 @endpush
 
 
-@section('title', 'Laporan Sisa Hasil Usaha')  
-@section('title-1', 'Laporan')  
-@section('title-content', 'Laporan SHU Anggota')  
-@section('period', 'Periode 1 Jan 2025 - 31 Des 2025')  
-@section('sub-title', 'Laporan Sisa Hasil Usaha (SHU)')  
+@section('title', 'Data Pengajuan')  
+@section('title-1', 'Data Pengajuan')  
+@section('sub-title', 'Data Pengajuan')  
 
 @section('content')
 
@@ -60,5 +58,6 @@
     </tbody>
   </table>
 </div>
+<x-menu.pagination/>
 
 @endsection
