@@ -11,24 +11,22 @@
 
 /* ====== Hanya atur isi tabel dalam card biru bawaan layout ====== */
 .laporan-simpanan-wrap {
-  background: transparent; /* jangan bikin card baru */
-  box-shadow: none;
+  border: 1.5px solid var(--outer-border);
   border-radius: 0;
-  width: 100%;
-  padding: 0;
-  margin-top: 10px;
-
-  /* supaya tabel bisa discroll di dalam card biru */
-  overflow-x: auto;
-  overflow-y: auto;
-  max-height: 400px;
+  background: var(--bg);
+  width: 860px;          
+  margin-left: 25px;     
+  margin-top: 30px;       
+  padding: 0;             
+  box-shadow: none;       
+  overflow-x: visible; 
 }
 
 /* ====== Tabel utama ====== */
 .laporan-simpanan-table {
   width: 100%;
   min-width: 700px; /* biar bisa scroll horizontal */
-  border-collapse: collapse;
+  border-collapse: separate;
   background: white;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: 14px;
@@ -86,14 +84,8 @@
   background: var(--primary-dark);
 }
 
-/* Pastikan card biru jadi pembungkus tabel */
-.content-container2 {
-  background: var(--background);
-  border-radius: 10px;
-  padding: 25px 30px 40px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  overflow: auto; /* biar bisa scroll */
-}
+
+
 
 /* Biar tabel tidak nabrak */
 .laporan-simpanan-table {

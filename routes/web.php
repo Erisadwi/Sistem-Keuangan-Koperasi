@@ -29,3 +29,7 @@ Route::get('/anggota/lap-SHU', function () {
 Route::get('/anggota/data-pengajuan', function () {
     return view('anggota.data-pengajuan');
 })->name('anggota.data-pengajuan');
+
+Route::get('/anggota/test', function () {
+    return view('anggota.test');
+})->name('anggota.test');
