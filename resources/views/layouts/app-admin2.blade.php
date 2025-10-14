@@ -9,6 +9,7 @@
     @yield('styles')
     @stack('scripts')
     @yield(section:'scripts')
+
 </head>
 <body class="bg-gray-50 font-sans">
     <header>
