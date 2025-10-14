@@ -27,7 +27,7 @@
   overflow-y: auto;
   max-height: 400px;
   width: 100%;
-  padding: 0 16px 10px 16px; /* ← Tambah padding kiri dan kanan */
+  padding: 50px 16px 10px 16px; /* ← Tambah padding kiri dan kanan */
   box-sizing: border-box;
 }
 

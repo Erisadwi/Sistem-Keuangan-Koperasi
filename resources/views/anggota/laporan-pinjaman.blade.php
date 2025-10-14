@@ -10,8 +10,6 @@
 
 @section('content')
 
-<x-menu.date-filter/>
-
 <div class="laporan-pinjaman-wrap">
   <div class="table-scroll-wrapper">
     <table class="laporan-pinjaman-table">

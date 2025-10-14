@@ -11,8 +11,6 @@
 
 @section('content')
 
-<x-menu.date-filter/>
-
 <div class="laporan-simpanan-wrap">
   <div class="table-scroll-wrapper">
   <table class="laporan-simpanan-table">

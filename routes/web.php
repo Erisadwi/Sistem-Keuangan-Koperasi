@@ -61,3 +61,11 @@ Route::get('/admin/master_data/data-barang', function () {
 Route::get('/admin/setting/identitas-koperasi', function () {
     return view('admin.setting.identitas-koperasi');
 })->name('admin.setting.identitas-koperasi');
+
+Route::get('/admin/laporan/laporan-jatuh-tempo', function () {
+    return view('admin.laporan.laporan-jatuh-tempo');
+})->name('admin.laporan.laporan-jatuh-tempo');
+
+Route::get('/admin/laporan/laporan-buku-besar', function () {
+    return view('admin.laporan.laporan-buku-besar');
+})->name('admin.laporan.laporan-buku-besar');
