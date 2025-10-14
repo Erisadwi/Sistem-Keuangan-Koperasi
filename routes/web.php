@@ -53,3 +53,7 @@ Route::get('/admin/laporan/laporan-SHU', function () {
 Route::get('/admin/master_data/jenis-simpanan', function () {
     return view('admin.master_data.jenis-simpanan');
 })->name('admin.master_data.jenis-simpanan');
+
+Route::get('/admin/master_data/data-barang', function () {
+    return view('admin.master_data.data-barang');
+})->name('admin.master_data.data-barang');

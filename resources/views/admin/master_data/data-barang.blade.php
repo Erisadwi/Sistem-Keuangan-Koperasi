@@ -4,40 +4,39 @@
   @vite('resources/css/admin/jenis-simpanan.css')
 @endpush
 
-@section('title', 'Jenis Simpanan')  
+@section('title', 'Data Barang')  
 @section('title-1', 'Master Data')  
-@section('sub-title', 'Jenis Simpanan')  
+@section('sub-title', 'Data Barang')  
 
 @section('content')
 
 <x-menu.tambah-unduh 
-    addUrl="# {{-- {{ route('jenis-simpanan.create') }} --}}" 
-    downloadFile="jenis_simpanan.pdf" />
+    addUrl="# {{-- {{ route('data-barang.create') }} --}}" 
+    downloadFile="data_barang.pdf" />
 
-<div class="simpanan-table-wrap">
-  <table class="simpanan-table">
+<div class="barang-inventaris-table-wrap">
+  <table class="barang-inventaris-table">
     <thead>
       <tr class="head-group">
-        <th>Jenis Simpanan</th>
+        <th>Nama Barang</th>
+        <th>Type</th>
+        <th>Type</th>
         <th>Jumlah</th>
-        <th>Tampil</th>
+        <th>Keterangan</th>
         <th>Aksi</th> 
       </tr>
     </thead>
 
     <tbody>
-      @forelse(($jenis_simpanan ?? collect()) as $idx => $row)
+      @forelse(($barang_inventaris ?? collect()) as $idx => $row)
         <tr>
-          <td>{{ $row->jenis_simpanan ?? '' }}</td>
-          <td>
-            @php $nominal = $row->jumlah_simpanan ?? null; @endphp
-            {{ $nominal !== null ? number_format($nominal, 0, ',', '.') : '' }}
-          </td>
-          <td>{{ $row->tampil_simpanan ?? '' }}</td>
-
+          <td>{{ $row->nama_barang ?? '' }}</td>
+          <td>{{ $row->type_barang ?? '' }}</td>
+          <td>{{ $row->jumlah_barang ?? '' }}</td>
+          <td>{{ $row->keterangan_barang ?? '' }}</td>
           <td class="actions">
-            <a href="{{ route('simpanan.edit', ['id' => $row->id]) }}" class="edit">✏️ Edit</a>
-            <form action="{{ route('simpanan.destroy', ['id' => $row->id]) }}" method="POST" style="display: inline;">
+            <a href="{{ route('barang-inventaris.edit', ['id' => $row->id]) }}" class="edit">✏️ Edit</a>
+            <form action="{{ route('barang-inventaris.destroy', ['id' => $row->id]) }}" method="POST" style="display: inline;">
               @csrf
               @method('DELETE')
               <button type="submit" class="delete">❌ Hapus</button>
@@ -46,7 +45,7 @@
 
       @empty
         <tr>
-          <td colspan="4" class="empty-cell">Belum ada data jenis simpanan</td>
+          <td colspan="6" class="empty-cell">Belum ada data barang inventaris</td>
         </tr>
       @endforelse
     </tbody>
@@ -65,7 +64,7 @@
     --bg: #ffffff;
   }
 
-  .simpanan-table-wrap {
+  .barang-inventaris-table-wrap {
     border: 1.5px solid var(--outer-border);
     border-radius: 0;
     background: var(--bg);
@@ -77,7 +76,7 @@
     overflow-x: visible;
   }
 
-  .simpanan-table {
+  .barang-inventaris-table {
     width: 870px;
     border-collapse: collapse;
     table-layout: fixed;
@@ -86,7 +85,7 @@
     color: #222;
   }
 
-  .simpanan-table thead .head-group th {
+  .barang-inventaris-table thead .head-group th {
     background: var(--head-dark);
     color: #fff;
     text-align: center;
@@ -96,34 +95,34 @@
     white-space: nowrap;
   }
 
-  .simpanan-table td {
+  .barang-inventaris-table td {
     padding: 10px;
     border-bottom: 1px solid var(--grid)!important;
     border-right: 1px solid var(--grid)!important;
     background: #fff;
   }
 
-  .simpanan-table tbody td:last-child {
+  .barang-inventaris-table tbody td:last-child {
     border-right: 2px solid var(--grid)!important;
   }
 
-  .simpanan-table tbody tr td:nth-child(1) {
+  .barang-inventaris-table tbody tr td:nth-child(1) {
     border-right: 1.5px solid var(--line) !important;
   }
 
-  .simpanan-table tbody tr {
+  .barang-inventaris-table tbody tr {
     background: #fff;
   }
 
-  .simpanan-table tbody tr:nth-child(even) {
+  .barang-inventaris-table tbody tr:nth-child(even) {
     background: #fff;
   }
 
-  .simpanan-table tbody tr:hover {
+  .barang-inventaris-table tbody tr:hover {
     background: #fff;
   }
 
-  .simpanan-table .empty-cell {
+  .barang-inventaris-table .empty-cell {
     text-align: center;
     padding: 8px 10px;
     color: #6b7280;
@@ -167,21 +166,21 @@
   }
 
   @media (max-width: 640px) {
-    .simpanan-table {
+    .barang-inventaris-table {
       font-size: 13px;
     }
 
-    .simpanan-table td,
-    .simpanan-table th {
+    .barang-inventaris-table td,
+    .barang-inventaris-table th {
       padding: 10px;
     }
   }
 
   @media (max-width: 768px) {
-    .simpanan-table thead .head-group th:nth-child(3),
-    .simpanan-table tbody td:nth-child(3),
-    .simpanan-table thead .head-group th:nth-child(4),
-    .simpanan-table tbody td:nth-child(4) {
+    .barang-inventaris-table thead .head-group th:nth-child(3),
+    .barang-inventaris-table tbody td:nth-child(3),
+    .barang-inventaris-table thead .head-group th:nth-child(4),
+    .barang-inventaris-table tbody td:nth-child(4) {
       display: none;
     }
   }
