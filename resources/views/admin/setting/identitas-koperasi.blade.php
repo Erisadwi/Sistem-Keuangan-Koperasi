@@ -88,10 +88,10 @@ input[type="number"]:focus {
 button {
     width: auto;
     padding: 10px 30px; 
-    background-color: #6D97C7;
+    background-color: #6E9EB6;
     color: white;
     border: none;
-    border-radius: 5px;
+    border-radius: 7px;
     font-size: 16px; 
     font-weight: bold; 
     cursor: pointer;

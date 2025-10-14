@@ -73,3 +73,7 @@ Route::get('/admin/laporan/laporan-buku-besar', function () {
 Route::get('/admin/laporan/laporan-neraca-saldo', function () {
     return view('admin.laporan.laporan-neraca-saldo');
 })->name('admin.laporan.laporan-neraca-saldo');
+
+Route::get('/admin/setting/suku-bunga', function () {
+    return view('admin.setting.suku-bunga');
+})->name('admin.setting.suku-bunga');
