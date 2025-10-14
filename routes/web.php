@@ -69,3 +69,7 @@ Route::get('/admin/laporan/laporan-jatuh-tempo', function () {
 Route::get('/admin/laporan/laporan-buku-besar', function () {
     return view('admin.laporan.laporan-buku-besar');
 })->name('admin.laporan.laporan-buku-besar');
+
+Route::get('/admin/laporan/laporan-neraca-saldo', function () {
+    return view('admin.laporan.laporan-neraca-saldo');
+})->name('admin.laporan.laporan-neraca-saldo');
