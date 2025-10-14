@@ -10,6 +10,10 @@
 
 @section('content')
 
+<x-menu.tambah-unduh 
+    addUrl="# {{-- {{ route('jenis-simpanan.create') }} --}}" 
+    downloadFile="jenis_simpanan.pdf" />
+
 <div class="simpanan-table-wrap">
   <table class="simpanan-table">
     <thead>
@@ -67,7 +71,7 @@
     background: var(--bg);
     width: 870px;
     margin-left: 25px;
-    margin-top: 75px;
+    margin-top: 35px;
     padding: 0;
     box-shadow: none;
     overflow-x: visible;
