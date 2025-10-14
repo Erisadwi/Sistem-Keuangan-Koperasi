@@ -1,20 +1,19 @@
-/* ====== Laporan pinjaman Table ====== */
 :root {
-  --primary: #6ba1be;         /* Warna biru muda */
-  --primary-dark: #558ca3;    /* Warna biru sedikit lebih gelap */
-  --header-bg: #4a4a4a;       /* Warna kepala tabel */
+  --primary: #6ba1be;         
+  --primary-dark: #558ca3;    
+  --header-bg: #4a4a4a;      
   --header-text: #ffffff;
   --border: #c0c0c0;
-  --background: #e0edf3;      /* Warna latar konten utama */
+  --background: #e0edf3;      
   --text: #222;
 }
 
-/* ====== Hanya atur isi tabel dalam card biru bawaan layout ====== */
+/* Wrapper luar */
 .laporan-pinjaman-wrap {
   border: 1.5px solid var(--outer-border);
   border-radius: 0;
   background: var(--bg);
-  width: 860px;          
+  width: 870px;          
   margin-left: 25px;     
   margin-top: 30px;       
   padding: 0;             
@@ -22,14 +21,25 @@
   overflow-x: visible; 
 }
 
-/* ====== Tabel utama ====== */
+/* Wrapper scroll */
+.table-scroll-wrapper {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 400px;
+  width: 100%;
+  padding: 0 16px 10px 16px; /* ← Tambah padding kiri dan kanan */
+  box-sizing: border-box;
+}
+
+/* Tabel utama */
 .laporan-pinjaman-table {
   width: 100%;
-  min-width: 700px; /* biar bisa scroll horizontal */
-  border-collapse: separate;
+  min-width: 1000px; /* Paksa scroll horizontal jika terlalu lebar */
+  border-collapse: collapse;
   background: white;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: 14px;
+  table-layout: auto
 }
 
 .laporan-pinjaman-table thead {
@@ -45,6 +55,8 @@
   text-align: center;
   padding: 10px 14px;
   border: 1px solid var(--border);
+  white-space: nowrap;
+  vertical-align: middle;
 }
 
 .laporan-pinjaman-table tbody tr:nth-child(even) {
@@ -55,7 +67,14 @@
   background-color: #eef7ff;
 }
 
-/* ====== Pagination (bawaan komponen) ====== */
+.laporan-pinjaman-table .empty-cell {
+  text-align: center;
+  padding: 18px 12px;
+  color: #6b7280;
+  font-style: italic;
+}
+
+/* Pagination style */
 .pagination {
   display: flex;
   justify-content: flex-end;
@@ -82,14 +101,4 @@
 
 .pagination button:hover {
   background: var(--primary-dark);
-}
-
-
-
-
-/* Biar tabel tidak nabrak */
-.laporan-pinjaman-table {
-  width: 100%;
-  border-collapse: collapse;
-  min-width: 600px; /* agar scroll horizontal muncul kalau sempit */
 }

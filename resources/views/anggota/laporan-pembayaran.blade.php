@@ -13,7 +13,7 @@
 <x-menu.date-filter/>
 
 <div class="laporan-pembayaran-wrap">
-  <div class="table-responsive">
+  <div class="table-scroll-wrapper">
     <table class="laporan-pembayaran-table">
       <thead>
         <tr class="head-group">
@@ -38,12 +38,12 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6" class="text-center">Belum ada data pembayaran.</td>
+                    <td colspan="7" class="empty-cell">Belum ada data pembayaran.</td>
                 </tr>
             @endforelse
         @else
             <tr>
-                <td colspan="6" class="text-center">Belum ada data pembayaran.</td>
+                <td colspan="7" class="empty-cell">Belum ada data pembayaran.</td>
             </tr>
         @endisset
     </tbody>

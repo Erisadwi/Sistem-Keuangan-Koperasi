@@ -13,7 +13,7 @@
 <x-menu.date-filter/>
 
 <div class="laporan-pinjaman-wrap">
-  <div class="table-responsive">
+  <div class="table-scroll-wrapper">
     <table class="laporan-pinjaman-table">
       <thead>
         <tr class="head-group">
@@ -44,10 +44,7 @@
               <td>{{ \Carbon\Carbon::parse($row->tempo)->format('d-m-Y') }}</td>
               <td>{{ $row->lunas ? 'Ya' : 'Belum' }}</td>
               <td>{{ $row->keterangan ?? '-' }}</td>
-              <td>
-                {{-- Tombol aksi bisa ditambahkan di sini --}}
-                <a href="#" class="btn btn-sm btn-primary">Detail</a>
-              </td>
+              <td>...</td>
             </tr>
           @empty
             <tr>

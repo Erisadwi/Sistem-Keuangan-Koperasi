@@ -14,6 +14,7 @@
 <x-menu.date-filter/>
 
 <div class="laporan-simpanan-wrap">
+  <div class="table-scroll-wrapper">
   <table class="laporan-simpanan-table">
     <thead>
       <tr class="head-group">
@@ -35,11 +36,12 @@
       @endforeach
     @else
     <tr>
-      <td colspan="11" class="empty-cell">Belum ada data simpanan.</td>
+      <td colspan="7" class="empty-cell">Belum ada data simpanan.</td>
     </tr>
     @endif
     </tbody>
   </table>
+  </div>
 </div>
 
 {{-- Komponen pagination --}}
