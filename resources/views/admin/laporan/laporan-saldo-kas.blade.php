@@ -1,4 +1,4 @@
-@extends('layouts.laporan')
+@extends('layouts.laporan-admin')
 
 
 @section('title', 'Laporan Saldo Kas')  

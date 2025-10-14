@@ -1,17 +1,10 @@
 @extends('layouts.app')
 
-@push('styles')
-  @vite('resources/css/components/tabel.css')
-@endpush
-
-
 @section('title', 'Data Pengajuan')  
 @section('title-1', 'Data Pengajuan')  
 @section('sub-title', 'Data Pengajuan')  
 
 @section('content')
-
-<x-menu.date-filter/>
 
 <div class="pengajuan-table-wrap">
   <table class="pengajuan-table">
@@ -69,5 +62,101 @@
 </div>
 
 <x-menu.pagination/>
+
+<style>
+  :root{
+  --outer-border: #838383;      
+  --head-dark:   #4a4a4a;       
+  --head-mid:    #9a9a9a;       
+  --line:        #fffafa;       
+  --grid:        #fffcfc;      
+  --bg:          #ffffff;
+}
+
+.pengajuan-table-wrap{
+  border: 1.5px solid var(--outer-border);
+  border-radius: 0;
+  background: var(--bg);
+  width: 860px;          
+  margin-left: 25px;     
+  margin-top: 75px;       
+  padding: 0;             
+  box-shadow: none;       
+  overflow-x: visible; 
+}
+
+.pengajuan-table{
+  width: 870px;         
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 13px;
+  color: #222;
+}
+
+.pengajuan-table thead .head-group th{
+  background: var(--head-dark);
+  color: #fff;
+  text-align: center;
+  font-weight: 600;
+  padding: 10px;
+  border-bottom: 1px solid var(--grid);
+  white-space: nowrap;
+}
+
+.pengajuan-table td{
+  padding: 10px;
+  border-bottom: 1px solid var(--grid)!important;
+  border-right: 1px solid var(--grid)!important;
+  background: #fff;
+}
+
+.pengajuan-table tbody td:last-child{
+  border-right: 2px solid var(--grid)!important;
+}
+
+.pengajuan-table tbody tr td:nth-child(1){
+  border-right: 1.5px solid var(--line) !important;
+}
+
+.pengajuan-table tbody tr{ background: #fff; }
+.pengajuan-table tbody tr:nth-child(even){ background: #fff; }
+.pengajuan-table tbody tr:hover{ background: #fff; }
+
+.pengajuan-table .empty-cell{
+  text-align: center;
+  padding: 8px 10px;
+  color: #6b7280;
+  font-style: italic;
+}
+
+
+.badge{
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-size: .75rem;
+  font-weight: 600;
+  border: 1px solid var(--grid);
+  color: #222;
+  background: #f6f6f6;
+}
+.badge.disetujui{ background: #efefef; }
+.badge.ditolak  { background: #f3f3f3; }
+.badge.menunggu { background: #f9f9f9; }
+
+@media (max-width: 640px){
+  .pengajuan-table{ font-size: 13px; }
+  .pengajuan-table td, .pengajuan-table th{ padding: 10px; }
+}
+@media (max-width: 768px){
+  .pengajuan-table thead .head-group th:nth-child(3),  
+  .pengajuan-table tbody td:nth-child(3),
+  .pengajuan-table thead .head-group th:nth-child(5),  
+  .pengajuan-table tbody td:nth-child(5){
+    display: none;
+  }
+}
+</style>
 
 @endsection

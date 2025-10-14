@@ -124,6 +124,7 @@
   @media (max-width:480px){
     .df-fields{grid-template-columns:1fr 1fr}
     .df-fields label{display:none}
+  }
 </style>
 
 

@@ -93,8 +93,7 @@
   <div class="container">
     <div class="content-container">
       <div class="content-container2">
-        {{-- Konten halaman dimasukkan di sini --}}
-        @yield('content')
+
       </div>
     </div>
     <div class="title-container">
@@ -105,6 +104,10 @@
     </div>
   </div>
 </main>
+
+    <div class="container">
+        @yield('content')
+    </div>
 
 </body>
 </html>

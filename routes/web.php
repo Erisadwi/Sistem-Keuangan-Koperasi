@@ -50,3 +50,6 @@ Route::get('/admin/laporan/laporan-SHU', function () {
     return view('admin.laporan.laporan-SHU');
 })->name('admin.laporan.laporan-SHU');
 
+Route::get('/admin/master_data/jenis-simpanan', function () {
+    return view('admin.master_data.jenis-simpanan');
+})->name('admin.master_data.jenis-simpanan');
