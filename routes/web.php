@@ -77,3 +77,7 @@ Route::get('/admin/laporan/laporan-neraca-saldo', function () {
 Route::get('/admin/setting/suku-bunga', function () {
     return view('admin.setting.suku-bunga');
 })->name('admin.setting.suku-bunga');
+
+Route::get('/admin/transaksi_non_kas/tambah-transaksi', function () {
+    return view('admin.transaksi_non_kas.tambah-transaksi');
+})->name('admin.transaksi_non_kas.tambah-transaksi');
