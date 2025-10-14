@@ -99,7 +99,7 @@
         border-collapse: collapse;
         font-size: 13px;
         margin-left:25px;
-        margin-top:60px;
+        margin-top:70px;
         background-color: #fff;
     }
     td, th {

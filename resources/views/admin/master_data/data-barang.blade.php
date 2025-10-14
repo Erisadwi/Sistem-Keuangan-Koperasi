@@ -1,8 +1,4 @@
-@extends('layouts.app-admin')
-
-@push('styles')
-  @vite('resources/css/admin/jenis-simpanan.css')
-@endpush
+@extends('layouts.app-admin2')
 
 @section('title', 'Data Barang')  
 @section('title-1', 'Master Data')  

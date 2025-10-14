@@ -57,3 +57,7 @@ Route::get('/admin/master_data/jenis-simpanan', function () {
 Route::get('/admin/master_data/data-barang', function () {
     return view('admin.master_data.data-barang');
 })->name('admin.master_data.data-barang');
+
+Route::get('/admin/setting/identitas-koperasi', function () {
+    return view('admin.setting.identitas-koperasi');
+})->name('admin.setting.identitas-koperasi');
