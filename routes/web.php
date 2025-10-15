@@ -93,3 +93,11 @@ Route::get('/admin/master_data/tambah-data-barang', function () {
 Route::get('/admin/master_data/edit-data-barang', function () {
     return view('admin.master_data.edit-data-barang');
 })->name('admin.master_data.edit-data-barang');
+
+Route::get('/admin/master_data/tambah-jenis-simpanan', function () {
+    return view('admin.master_data.tambah-jenis-simpanan');
+})->name('admin.master_data.tambah-jenis-simpanan');
+
+Route::get('/admin/master_data/edit-jenis-simpanan', function () {
+    return view('admin.master_data.edit-jenis-simpanan');
+})->name('admin.master_data.edit-jenis-simpanan');
