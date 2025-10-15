@@ -85,3 +85,7 @@ Route::get('/admin/transaksi_non_kas/tambah-transaksi', function () {
 Route::get('/admin/transaksi_kas/tambah-pemasukan', function () {
     return view('admin.transaksi_kas.tambah-pemasukan');
 })->name('admin.transaksi_kas.tambah-pemasukan');
+
+Route::get('/admin/master_data/tambah-data-barang', function () {
+    return view('admin.master_data.tambah-data-barang');
+})->name('admin.master_data.tambah-data-barang');
