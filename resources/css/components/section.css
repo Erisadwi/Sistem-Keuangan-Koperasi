@@ -46,4 +46,20 @@
 .submenu-row:hover{ background:#f5f8fb; }
 .submenu-row.active{background:#cfe1ec;font-weight:700;}
 
+.menu-head.no-sub.active {
+    background: #7ea7c0; 
+    color: #fff;
+}
+
 .menu-section:last-child .submenu-row:last-child{ border-bottom:0; }
+
+.menu-head.no-sub {
+    text-decoration: none;   
+    color: inherit;         
+    display: inline-block;   
+    cursor: pointer;        
+}
+
+.menu-head.no-sub:hover {
+    text-decoration: none;  
+}

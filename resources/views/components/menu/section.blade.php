@@ -2,7 +2,7 @@
   'title',
   'open' => true,
   'id' => Str::slug($title),
-  'hasSub' => true, // menandai apakah menu punya sub-menu
+  'hasSub' => true, 
 ])
 
 @once
@@ -21,7 +21,6 @@
       {{ $slot }}
     </div>
   @else
-    <!-- Menu tanpa sub-menu, bisa dijadikan link -->
     <a href="#" class="menu-head no-sub">{{ $title }}</a>
   @endif
 </li>

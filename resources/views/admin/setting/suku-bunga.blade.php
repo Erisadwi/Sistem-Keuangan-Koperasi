@@ -184,7 +184,7 @@ button {
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
-    box-shadow: 0 4px 8px rgba(82, 76, 76, 0.15);
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.519);
     transition: background-color 0.3s;
     margin-top: 40px;
     margin-left: 740px; 

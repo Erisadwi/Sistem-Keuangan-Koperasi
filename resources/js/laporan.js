@@ -11,4 +11,10 @@ document.addEventListener('DOMContentLoaded', () => {
       panel.style.maxHeight = isOpen ? panel.scrollHeight + 'px' : '0px';
     });
   });
+
+    document.querySelectorAll('.menu-head.no-sub').forEach(link => {
+        link.addEventListener('click', () => {
+            link.classList.toggle('active');
+        });
+    });
 });
