@@ -8,7 +8,7 @@
 @section('content')
 
 <div class="form-container">
-    <form action="# {{-- {{ route('tambah.transaksi-nonkas', $transaksi->id) }} --}}" method="POST">
+    <form action="# {{-- {{ route('tambah-transaksi-nonkas.store', $transaksi->id) }} --}}" method="POST">
         @csrf
 
         <label for="tanggal_transaksi">Tanggal Transaksi</label>

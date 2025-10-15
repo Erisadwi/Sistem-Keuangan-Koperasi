@@ -89,3 +89,7 @@ Route::get('/admin/transaksi_kas/tambah-pemasukan', function () {
 Route::get('/admin/master_data/tambah-data-barang', function () {
     return view('admin.master_data.tambah-data-barang');
 })->name('admin.master_data.tambah-data-barang');
+
+Route::get('/admin/master_data/edit-data-barang', function () {
+    return view('admin.master_data.edit-data-barang');
+})->name('admin.master_data.edit-data-barang');

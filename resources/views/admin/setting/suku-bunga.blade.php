@@ -15,10 +15,10 @@
             <div class="form-row-left">
                 <label for="tipePinjamanBunga">Tipe Pinjaman Bunga</label>
                 <select id="tipePinjamanBunga" name="tipePinjamanBunga">
-                <option value="Persen Bunga Dikali Total Pinjaman">
+                <option value="Persen Bunga Dikali Angsuran Bulan">
                         Persen Bunga Dikali Angsuran Bulan
                 </option>
-                <option value="Jumlah Bunga Tetap">
+                <option value="Persen Bunga Dikali Total Pinjaman">
                         Persen Bunga Dikali Total Pinjaman
                 </option>
                 </select>

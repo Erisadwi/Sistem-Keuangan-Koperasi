@@ -3,13 +3,14 @@
 @section('title', 'Data Barang Inventaris')  
 @section('back-title', 'Master Data >')
 @section('title-1', 'Data Barang')  
-@section('sub-title', 'Tambah Data Barang')  
+@section('sub-title', 'Edit Data Barang')  
 
 @section('content')
 
 <div class="form-container">
-    <form action="# {{-- {{ route('tambah-data-barang.store', $barang_inventaris->id) }} --}}" method="POST">
+    <form action="# {{-- {{ route('tambah-data-barang.update', $barang_inventaris->id) }} --}}" method="POST">
         @csrf
+        @method('PUT')
 
         <label for="nama_barang">Nama Barang*</label>
         <input type="text" id="nama_barang" name="nama_barang" value="{{-- {{ $barang_inventaris->nama_barang }} --}}">
