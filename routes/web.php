@@ -81,3 +81,7 @@ Route::get('/admin/setting/suku-bunga', function () {
 Route::get('/admin/transaksi_non_kas/tambah-transaksi', function () {
     return view('admin.transaksi_non_kas.tambah-transaksi');
 })->name('admin.transaksi_non_kas.tambah-transaksi');
+
+Route::get('/admin/transaksi_kas/tambah-pemasukan', function () {
+    return view('admin.transaksi_kas.tambah-pemasukan');
+})->name('admin.transaksi_kas.tambah-pemasukan');
