@@ -15,7 +15,7 @@
   background: var(--bg);
   width: 870px;          
   margin-left: 25px;     
-  margin-top: 70px;       
+  margin-top: 65px;       
   padding: 0;             
   box-shadow: none;       
   overflow-x: visible; 
@@ -88,10 +88,13 @@
 }
 
 .laporan-buku-besar-table .empty-cell {
+  width: 200px;          
   text-align: center;
-  padding: 18px 12px;
+  padding: 10px;
   color: #6b7280;
   font-style: italic;
+  background: #ffffff;
+  border-radius: 6px;
 }
 
 /* Pagination style */

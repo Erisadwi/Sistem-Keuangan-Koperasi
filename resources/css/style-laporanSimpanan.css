@@ -30,6 +30,17 @@
   padding: 50px 16px 10px 16px; /* ← Tambah padding kiri dan kanan */
   box-sizing: border-box;
 }
+.table-scroll-wrapper::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.table-scroll-wrapper::-webkit-scrollbar-thumb {
+  background: var(--primary);
+  border-radius: 4px;
+}
+.table-scroll-wrapper::-webkit-scrollbar-track {
+  background: #f0f0f0;
+}
 
 /* Tabel utama */
 .laporan-simpanan-table {
@@ -68,10 +79,13 @@
 }
 
 .laporan-simpanan-table .empty-cell {
+  width: 200px;          
   text-align: center;
-  padding: 18px 12px;
+  padding: 10px;
   color: #6b7280;
   font-style: italic;
+  background: #ffffff;
+  border-radius: 6px;
 }
 
 /* Pagination style */
