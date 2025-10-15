@@ -121,3 +121,7 @@ Route::get('/admin/master_data/tambah-data-saldo-awal-kas', function () {
 Route::get('/admin/master_data/edit-data-saldo-awal-kas', function () {
     return view('admin.master_data.edit-data-saldo-awal-kas');
 })->name('admin.master_data.edit-data-saldo-awal-kas');
+
+Route::get('/admin/master_data/jenis-akun-transaksi', function () {
+    return view('admin.master_data.jenis-akun-transaksi');
+})->name('admin.master_data.jenis-akun-transaksi');
