@@ -75,7 +75,7 @@ Route::get('/admin/laporan/laporan-neraca-saldo', function () {
 })->name('admin.laporan.laporan-neraca-saldo');
 
 Route::get('/admin/setting/suku-bunga', function () {
-    return view('admin.setting.suku-bunga');
+    return view('admin.setting.suku-bunga'); 
 })->name('admin.setting.suku-bunga');
 
 Route::get('/admin/transaksi_non_kas/tambah-transaksi', function () {
@@ -93,3 +93,7 @@ Route::get('/admin/master_data/tambah-data-barang', function () {
 Route::get('/admin/master_data/edit-data-barang', function () {
     return view('admin.master_data.edit-data-barang');
 })->name('admin.master_data.edit-data-barang');
+
+Route::get('/admin/master_data/saldo-awal-kas', function () {
+    return view('admin.master_data.saldo-awal-kas');
+})->name('admin.master_data.saldo-awal-kas');
