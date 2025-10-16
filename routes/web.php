@@ -169,3 +169,7 @@ Route::get('/admin/transaksi_non_kas/transaksi', function () {
 Route::get('/admin/pinjaman/tambah-bayar-angsuran', function () {
     return view('admin.pinjaman.tambah-bayar-angsuran');
 })->name('admin.pinjaman.tambah-bayar-angsuran');
+
+Route::get('/admin/pinjaman/edit-bayar-angsuran', function () {
+    return view('admin.pinjaman.edit-bayar-angsuran');
+})->name('admin.pinjaman.edit-bayar-angsuran');
