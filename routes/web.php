@@ -162,3 +162,6 @@ Route::get('/anggota/profil/profilAnggota', function () {
     return view('anggota.profil.profilAnggota');
 })->name('anggota.profil.profilAnggota');
 
+Route::get('/admin/transaksi_non_kas/transaksi', function () {
+    return view('admin.transaksi_non_kas.transaksi');
+})->name('admin.transaksi_non_kas.transaksi');
