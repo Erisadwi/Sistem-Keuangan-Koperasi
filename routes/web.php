@@ -129,3 +129,36 @@ Route::get('/admin/pinjaman/data-pengajuan', function () {
 Route::get('/admin/transaksi_kas/pemasukan', function () {
     return view('admin.transaksi_kas.pemasukan');
 })->name('admin.transaksi_kas.pemasukan');
+
+Route::get('/admin/master_data/jenis-akun-transaksi', function () {
+    return view('admin.master_data.jenis-akun-transaksi');
+})->name('admin.master_data.jenis-akun-transaksi');
+
+Route::get('/admin/master_data/tambah-data-jenis-akun-transaksi', function () {
+    return view('admin.master_data.tambah-data-jenis-akun-transaksi');
+})->name('admin.master_data.tambah-data-jenis-akun-transaksi');
+
+Route::get('/admin/master_data/edit-data-jenis-akun-transaksi', function () {
+    return view('admin.master_data.edit-data-jenis-akun-transaksi');
+})->name('admin.master_data.edit-data-jenis-akun-transaksi');
+
+Route::get('/admin/master_data/data-anggota', function () {
+    return view('admin.master_data.data-anggota');
+})->name('admin.master_data.data-anggota');
+
+Route::get('/admin/master_data/tambah-data-anggota', function () {
+    return view('admin.master_data.tambah-data-anggota');
+})->name('admin.master_data.tambah-data-anggota');
+
+Route::get('/admin/master_data/edit-data-anggota', function () {
+    return view('admin.master_data.edit-data-anggota');
+})->name('admin.master_data.edit-data-anggota');
+
+Route::get('/anggota/notifikasi', function () {
+    return view('anggota.notifikasi');
+})->name('anggota.notifikasi');
+
+Route::get('/anggota/profil/profilAnggota', function () {
+    return view('anggota.profil.profilAnggota');
+})->name('anggota.profil.profilAnggota');
+
