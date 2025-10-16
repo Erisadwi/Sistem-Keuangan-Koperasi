@@ -7,7 +7,7 @@
 @section('content')
 
 {{-- Komponen tombol tambah & unduh --}}
-<x-menu.tambah-unduh 
+<x-menu.tambah-unduh-cari
     addUrl="#" {{-- nanti bisa diganti route('anggota.create') --}}
     downloadFile="data-anggota.pdf" 
 />

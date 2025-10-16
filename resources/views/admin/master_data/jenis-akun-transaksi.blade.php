@@ -7,7 +7,7 @@
 @section('content')
 
 {{-- Komponen tombol tambah & unduh --}}
-<x-menu.tambah-unduh 
+<x-menu.tambah-unduh-cari
     addUrl="#" {{-- nanti bisa diganti route('jenis-akun-transaksi.create') --}}
     downloadFile="jenis-akun-transaksi.pdf" 
 />

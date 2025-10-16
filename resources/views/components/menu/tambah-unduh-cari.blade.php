@@ -1,4 +1,5 @@
 <div class="btn-group-container">
+  <!-- Tombol Tambah -->
   <a href="{{ $tambah ?? '#' }}" class="df-btn df-tambah">
     <span class="df-ic" aria-hidden="true">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
@@ -8,35 +9,35 @@
     Tambah
   </a>
 
-  <a href="{{ $edit ?? '#' }}" class="df-btn df-edit">
+  <!-- Tombol Unduh -->
+  <a href="{{ $unduh ?? '#' }}" class="df-btn df-unduh">
     <span class="df-ic" aria-hidden="true">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-        <path d="M15.232 5.232l3.536 3.536M4 20h4l10.293-10.293a1 1 0 000-1.414l-2.586-2.586a1 1 0 00-1.414 0L4 16v4z" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M12 16v-8m0 8l4-4m-4 4l-4-4" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
+        <path d="M4 20h16" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
       </svg>
     </span>
-    Edit
+    Unduh
   </a>
 
-  <form action="{{ $hapus ?? '#' }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus data ini?')" style="display:inline;">
-    @csrf
-    @method('DELETE')
-    <button type="submit" class="df-btn df-hapus">
-      <span class="df-ic" aria-hidden="true">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-          <path d="M6 7h12M10 11v6m4-6v6M5 7l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </span>
-      Hapus
-    </button>
-  </form>
+  <!-- Tombol Cari -->
+  <a href="{{ $cari ?? '#' }}" class="df-btn df-cari">
+    <span class="df-ic" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <circle cx="11" cy="11" r="7" stroke="#0ea5e9" stroke-width="2"/>
+        <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </span>
+    Cari
+  </a>
 </div>
 
 <style>
 .btn-group-container {
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* rata kiri */
-  gap: 10px; 
+  justify-content: flex-start;
+  gap: 10px;
   margin-top: 65px;
   margin-left: 22px;
 }
@@ -56,6 +57,7 @@
   align-items: center;
   gap: 6px;
   box-shadow: 0 2px 4px rgba(107, 105, 105, 0.647);
+  transition: 0.2s;
 }
 
 .df-btn:hover {
@@ -65,17 +67,20 @@
 
 .df-btn .df-ic svg {
   display: block;
-  width: 14px;
-  height: 14px;
   vertical-align: middle;
 }
 
-.df-tambah svg path,
-.df-edit svg path {
-  stroke: #0ea5e9;
+
+.df-cari {
+  padding: 5px 20px;
+  min-width: 75px;
 }
 
-.df-hapus svg path {
-  stroke: #ef4444; 
+.df-tambah svg path,
+.df-unduh svg path,
+.df-cari svg path,
+.df-cari svg circle,
+.df-cari svg line {
+  stroke: #0ea5e9;
 }
 </style>
