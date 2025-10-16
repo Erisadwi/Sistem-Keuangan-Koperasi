@@ -56,7 +56,6 @@
       </ul>
     </aside>
 
-
     <main class="main">
       <div class="page-title">
         <span class="title">Beranda</span>
