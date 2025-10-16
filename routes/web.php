@@ -121,3 +121,11 @@ Route::get('/admin/master_data/tambah-data-saldo-awal-kas', function () {
 Route::get('/admin/master_data/edit-data-saldo-awal-kas', function () {
     return view('admin.master_data.edit-data-saldo-awal-kas');
 })->name('admin.master_data.edit-data-saldo-awal-kas');
+
+Route::get('/admin/pinjaman/data-pengajuan', function () {
+    return view('admin.pinjaman.data-pengajuan');
+})->name('admin.pinjaman.data-pengajuan');
+
+Route::get('/admin/transaksi_kas/pemasukan', function () {
+    return view('admin.transaksi_kas.pemasukan');
+})->name('admin.transaksi_kas.pemasukan');
