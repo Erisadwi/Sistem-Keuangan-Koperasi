@@ -165,3 +165,7 @@ Route::get('/anggota/profil/profilAnggota', function () {
 Route::get('/admin/transaksi_non_kas/transaksi', function () {
     return view('admin.transaksi_non_kas.transaksi');
 })->name('admin.transaksi_non_kas.transaksi');
+
+Route::get('/admin/pinjaman/tambah-bayar-angsuran', function () {
+    return view('admin.pinjaman.tambah-bayar-angsuran');
+})->name('admin.pinjaman.tambah-bayar-angsuran');
