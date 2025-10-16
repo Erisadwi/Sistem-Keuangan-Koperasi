@@ -133,3 +133,15 @@ Route::get('/admin/master_data/tambah-data-jenis-akun-transaksi', function () {
 Route::get('/admin/master_data/edit-data-jenis-akun-transaksi', function () {
     return view('admin.master_data.edit-data-jenis-akun-transaksi');
 })->name('admin.master_data.edit-data-jenis-akun-transaksi');
+
+Route::get('/admin/master_data/data-anggota', function () {
+    return view('admin.master_data.data-anggota');
+})->name('admin.master_data.data-anggota');
+
+Route::get('/admin/master_data/tambah-data-anggota', function () {
+    return view('admin.master_data.tambah-data-anggota');
+})->name('admin.master_data.tambah-data-anggota');
+
+Route::get('/admin/master_data/edit-data-anggota', function () {
+    return view('admin.master_data.edit-data-anggota');
+})->name('admin.master_data.edit-data-anggota');

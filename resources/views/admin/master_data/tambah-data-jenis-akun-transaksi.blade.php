@@ -1,4 +1,4 @@
-@extends('layouts.app-admin-add')
+@extends('layouts.app-admin-add3')
 
 @section('title', 'Jenis Akun Transaksi')
 @section('back-title', 'Master Data >')
