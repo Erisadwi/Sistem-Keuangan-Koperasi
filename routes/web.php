@@ -14,7 +14,6 @@ Route::get('/anggota/beranda', function () {
     return view('anggota.beranda');
 })->name('anggota.beranda');
 
-HEAD
 Route::get('/anggota/laporan-simpanan', function () {
     return view('anggota.laporan-simpanan');
 })->name('anggota.laporan-simpanan');
@@ -134,8 +133,11 @@ Route::get('/admin/master_data/tambah-data-jenis-akun-transaksi', function () {
 Route::get('/admin/master_data/edit-data-jenis-akun-transaksi', function () {
     return view('admin.master_data.edit-data-jenis-akun-transaksi');
 })->name('admin.master_data.edit-data-jenis-akun-transaksi');
-=======
+
 Route::get('/anggota/notifikasi', function () {
     return view('anggota.notifikasi');
 })->name('anggota.notifikasi');
-0b9983c (revisi halaman notif anggota)
+
+Route::get('/anggota/profil/profilAnggota', function () {
+    return view('anggota.profil.profilAnggota');
+})->name('anggota.profil.profilAnggota');

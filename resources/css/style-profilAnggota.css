@@ -1,0 +1,157 @@
+:root {
+  --blue-800:#0066B0;
+  --sidebar-border:#e5e7eb;
+  --blue-brand:#0066b0;
+  --select-blue:rgba(196,218,229,0.5);
+  --panel-header-blue:#7fa6b7;
+  --bg:#ffffff;
+  --muted:rgba(0,0,0,0.55);
+  --card-shadow:0 4px 8px rgba(0,0,0,0.08);
+  --radius:10px;
+}
+
+*{box-sizing:border-box}
+body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial}
+img{display:block;max-width:100%}
+
+/* 🟦 HEADER */
+.nav-top{
+  height:75px;background:var(--blue-800);
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 18px;color:#fff;
+  box-shadow:0 2px 8px rgba(0,0,0,.08);
+}
+.logo-coop{height:60px;margin-right:10px;}
+
+/* 🟩 LAYOUT */
+.layout{
+  display:flex;
+  gap:24px;
+  padding:24px;
+}
+
+/* 🧭 SIDEBAR */
+.sidebar{
+  width:280px;
+  background:var(--bg);
+  border:1px solid var(--sidebar-border);
+  border-radius:var(--radius);
+  box-shadow:var(--card-shadow);
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  height:fit-content;
+}
+
+/* Profile di sidebar */
+.profile-card{
+  display:flex;align-items:center;gap:12px;margin-bottom:16px;
+}
+.avatar-90{width:60px;height:60px;border-radius:50%;object-fit:cover;}
+.profile-name{font-weight:600;font-size:16px;}
+.profile-role{font-size:14px;color:var(--muted);}
+
+/* Menu */
+.menu-section{margin-bottom:8px;}
+.menu-item{
+  width:100%;
+  text-align:left;
+  padding:10px 12px;
+  border:none;
+  background:transparent;
+  font-size:15px;
+  font-weight:600;
+  color:#000;
+  cursor:pointer;
+  display:flex;justify-content:space-between;align-items:center;
+  border-radius:6px;
+}
+.menu-item:hover{background:var(--select-blue);}
+.chev{transition:transform .2s;}
+.chev.rotate{transform:rotate(90deg);}
+.submenu{
+  list-style:none;
+  margin:0;padding-left:16px;
+  max-height:0;overflow:hidden;
+  transition:max-height .3s ease;
+}
+.submenu.active{max-height:500px;}
+.submenu li a{
+  display:block;
+  padding:6px 0;
+  color:var(--muted);
+  text-decoration:none;
+}
+.submenu li a:hover{color:var(--blue-800);}
+
+/* 🧾 KONTEN UTAMA */
+.content{flex:1;}
+.page-title{
+  font-size:22px;
+  font-weight:700;
+  margin-bottom:20px;
+}
+.subtitle{font-weight:400;color:var(--muted);}
+
+/* Wrapper dua kolom */
+.profile-wrapper{
+  display:grid;
+  grid-template-columns:1fr 1.2fr;
+  gap:24px;
+}
+
+/* Card profil tengah */
+.card-profile{
+  background:#d9e7ef;
+  border-radius:var(--radius);
+  box-shadow:var(--card-shadow);
+  padding:24px;
+  text-align:center;
+}
+.profile-photo{
+  width:120px;height:120px;
+  border-radius:50%;
+  object-fit:cover;
+  margin:0 auto 12px;
+}
+.profile-nama{font-size:18px;font-weight:700;margin:4px 0;}
+.profile-status{font-size:15px;margin-bottom:24px;}
+.profile-status.aktif{color:#2e8b57;font-weight:600;}
+
+.action-group{
+  display:flex;flex-direction:column;gap:10px;
+}
+.btn{
+  border:none;border-radius:8px;
+  padding:10px;font-size:15px;font-weight:600;
+  cursor:pointer;transition:.2s all;
+}
+.btn-danger{background:#ef4444;color:#fff;}
+.btn-danger:hover{background:#dc2626;}
+.btn-light{background:#fff;border:1px solid #ccc;}
+.btn-light:hover{background:#f3f4f6;}
+
+/* Form kanan */
+.card-form{
+  background:#d9e7ef;
+  border-radius:var(--radius);
+  box-shadow:var(--card-shadow);
+  padding:24px;
+}
+.form-group{
+  display:flex;flex-direction:column;margin-bottom:16px;
+}
+label{font-weight:600;margin-bottom:6px;}
+input,textarea{
+  border:1px solid #ccc;
+  border-radius:8px;
+  padding:8px 10px;
+  font-size:15px;
+  resize:none;
+}
+.btn-primary{
+  background:var(--blue-brand);
+  color:#fff;
+  width:100%;
+}
+.btn-primary:hover{background:#00528b;}
