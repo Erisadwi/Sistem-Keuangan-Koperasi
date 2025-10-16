@@ -46,7 +46,7 @@
   appearance: none;
   border: 1px solid #d1d5db;
   background: #ffffff;
-  padding: 5px 12px;
+  padding: 6px 12px;
   border-radius: 8px;
   cursor: pointer;
   font-size: 12px;
@@ -55,9 +55,11 @@
   color: #111827;
   display: inline-flex;
   align-items: center;
+  justify-content: center; /* isi tombol dirata tengah */
   gap: 6px;
   box-shadow: 0 2px 4px rgba(107, 105, 105, 0.647);
   transition: 0.2s;
+  width: 85px; /* ✅ lebar tombol seragam */
 }
 
 .df-btn:hover {
@@ -70,10 +72,10 @@
   vertical-align: middle;
 }
 
-
+/* Tombol Cari tetap bisa disesuaikan sedikit */
 .df-cari {
-  padding: 5px 20px;
-  min-width: 75px;
+  justify-content: flex-start; /* isi agak ke kiri */
+  padding-left: 10px;
 }
 
 .df-tambah svg path,
