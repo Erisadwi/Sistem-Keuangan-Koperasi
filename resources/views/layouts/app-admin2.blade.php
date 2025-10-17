@@ -17,7 +17,7 @@
     </header>
 
       {{-- @php
-        $user = Auth::guard('anggota')->user();
+        $user = Auth::guard('user')->user();
         @endphp --}}
 
     <div class="layout">
