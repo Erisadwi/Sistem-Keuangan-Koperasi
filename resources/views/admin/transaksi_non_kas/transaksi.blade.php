@@ -6,7 +6,7 @@
 
 @section('content')
 <x-menu.tambah-edit-hapus/>
-<x-menu.toolbar-right :downloadFile="'data-pengajuan.pdf'"/>
+<x-menu.toolbar-right/>
 
 <div class="pemasukan-table-wrap">
   <table class="pemasukan-table">

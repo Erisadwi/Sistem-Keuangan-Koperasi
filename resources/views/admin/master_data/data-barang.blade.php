@@ -1,4 +1,4 @@
-@extends('layouts.app-admin2')
+@extends('layouts.app-admin3')
 
 @section('title', 'Data Barang')  
 @section('title-1', 'Master Data')  
