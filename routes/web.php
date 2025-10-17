@@ -173,3 +173,7 @@ Route::get('/admin/pinjaman/tambah-bayar-angsuran', function () {
 Route::get('/admin/pinjaman/edit-bayar-angsuran', function () {
     return view('admin.pinjaman.edit-bayar-angsuran');
 })->name('admin.pinjaman.edit-bayar-angsuran');
+
+Route::get('/admin/laporan/laporan-laba-rugi', function () {
+    return view('admin.laporan.laporan-laba-rugi');
+})->name('admin.laporan.laporan-laba-rugi');

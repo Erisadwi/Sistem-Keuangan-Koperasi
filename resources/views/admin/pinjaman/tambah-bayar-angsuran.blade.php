@@ -8,7 +8,7 @@
 @section('content')
 
 <div class="form-container">
-    <form id="formBayarAngsuran" action="#" method="POST" enctype="multipart/form-data">
+    <form id="formBayarAngsuran" action="# {{-- {{ route('tambah-bayar-angsuran.storage', $angsuran->id_angsuran) }} --}}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <label for="tanggal_bayar">Tanggal Transaksi*</label>
