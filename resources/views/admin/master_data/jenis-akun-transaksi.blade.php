@@ -1,4 +1,4 @@
-@extends('layouts.app-admin')
+@extends('layouts.app-admin2')
 
 @section('title', 'Jenis Akun Transaksi')
 @section('title-1', 'Master Data')
@@ -56,7 +56,7 @@
           </tr>
         @empty
           <tr>
-            <td colspan="13" class="text-center text-muted py-3">
+            <td colspan="13" class="empty-cell">
               Belum ada data jenis akun transaksi.
             </td>
           </tr>
@@ -155,6 +155,13 @@
   color: #6b7280;
   font-style: italic;
 }
+
+.jenis-akun-transaksi-table .empty-cell {
+    text-align: center;
+    padding: 8px 10px;
+    color: #6b7280;
+    font-style: italic;
+  }
 
 /* Tombol Edit */
 .actions {

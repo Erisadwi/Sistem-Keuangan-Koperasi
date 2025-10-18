@@ -1,4 +1,4 @@
-@extends('layouts.app-admin')
+@extends('layouts.app-admin2')
 
 @section('title', 'Data Anggota')
 @section('title-1', 'Master Data')
@@ -60,7 +60,7 @@
           </tr>
         @empty
           <tr>
-            <td colspan="12" class="text-center text-muted py-3">
+            <td colspan="12" class="empty-cell">
               Belum ada data anggota.
             </td>
           </tr>
@@ -153,6 +153,13 @@
 .data-anggota-table tbody tr:hover {
   background-color: #eef7ff;
 }
+
+.data-anggota-table .empty-cell {
+    text-align: center;
+    padding: 8px 10px;
+    color: #6b7280;
+    font-style: italic;
+  }
 
 /* Tombol Aksi */
 .actions {

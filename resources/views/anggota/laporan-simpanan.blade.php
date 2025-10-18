@@ -34,7 +34,7 @@
       @endforeach
     @else
     <tr>
-      <td colspan="7" class="empty-cell">Belum ada data simpanan.</td>
+      <td colspan="4" class="empty-cell">Belum ada data simpanan.</td>
     </tr>
     @endif
     </tbody>

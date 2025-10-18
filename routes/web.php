@@ -162,3 +162,14 @@ Route::get('/anggota/profil/profilAnggota', function () {
     return view('anggota.profil.profilAnggota');
 })->name('anggota.profil.profilAnggota');
 
+Route::get('/admin/transaksi_kas/pengeluaran', function () {
+    return view('admin.transaksi_kas.pengeluaran');
+})->name('admin.transaksi_kas.pengeluaran');
+
+Route::get('/admin/transaksi_kas/tambah-pengeluaran', function () {
+    return view('admin.transaksi_kas.tambah-pengeluaran');
+})->name('admin.transaksi_kas.tambah-pengeluaran');
+
+Route::get('/admin/transaksi_kas/edit-pengeluaran', function () {
+    return view('admin.transaksi_kas.edit-pengeluaran');
+})->name('admin.transaksi_kas.edit-pengeluaran');
