@@ -12,55 +12,27 @@
 
 @section('content')
 
-<x-menu.date-filter-filter/>
+<x-menu.date-filter/>
 <x-menu.unduh/>
 
 <div class="laporan-laba-rugi-wrap">
   <div class="table-scroll-wrapper">
     
-    {{-- Estimasi Data Pinjaman --}}
     <h4 class="judul-section">Estimasi Data Pinjaman</h4>
-    @include('partials.buku-besar-table', ['data' => $kasBesar ?? null, 'label' => 'kas besar'])
+    @include('partials.laba-rugi-table', ['data' => $estimasiDataPinjaman ?? null, 'label' => 'estimasi data pinjaman'])
 
-    {{-- 2. Bank Mandiri --}}
-    <h4 class="judul-section">2. Bank Mandiri</h4>
-    @include('partials.buku-besar-table', ['data' => $bankMandiri ?? null, 'label' => 'bank mandiri'])
+    <h4 class="judul-section">Pinjaman</h4>
+    @include('partials.pinjaman-table', ['data' => $pinjaman ?? null, 'label' => 'pinjaman'])
 
-    {{-- 3. Kas Kecil --}}
-    <h4 class="judul-section">3. Kas Kecil</h4>
-    @include('partials.buku-besar-table', ['data' => $kasKecil ?? null, 'label' => 'kas kecil'])
+    <h4 class="judul-section">Pendapatan</h4>
+    @include('partials.pendapatan-table', ['data' => $pendapatan ?? null, 'label' => 'pendapatan'])
 
-    {{-- 4. Kas Niaga --}}
-    <h4 class="judul-section">4. Kas Niaga</h4>
-    @include('partials.buku-besar-table', ['data' => $kasNiaga ?? null, 'label' => 'kas niaga'])
-
-    {{-- 5. Bank BNI --}}
-    <h4 class="judul-section">5. Bank BNI</h4>
-    @include('partials.buku-besar-table', ['data' => $bankBni ?? null, 'label' => 'bank bni'])
-
-    {{-- 6. Barang Dalam Perjalanan --}}
-    <h4 class="judul-section">6. Barang Dalam Perjalanan</h4>
-    @include('partials.buku-besar-table', ['data' => $barangDalamPerjalanan ?? null, 'label' => 'barang dalam perjalanan'])
-
-    {{-- 7. Pinjaman Perusahaan --}}
-    <h4 class="judul-section">7. Pinjaman Perusahaan</h4>
-    @include('partials.buku-besar-table', ['data' => $pinjamanPerusahaan ?? null, 'label' => 'pinjaman perusahaan'])
-
-    {{-- 8. Persediaan Barang --}}
-    <h4 class="judul-section">8. Persediaan Barang</h4>
-    @include('partials.buku-besar-table', ['data' => $persediaanBarang ?? null, 'label' => 'persediaan barang'])
-
-    {{-- 9. Pinjaman Karyawan --}}
-    <h4 class="judul-section">9. Pinjaman Karyawan</h4>
-    @include('partials.buku-besar-table', ['data' => $pinjamanKaryawan ?? null, 'label' => 'pinjaman karyawan'])
+    <h4 class="judul-section">Biaya - Biaya</h4>
+    @include('partials.pendapatan-table', ['data' => $biaya ?? null, 'label' => 'biaya - biaya'])
 
   </div>
 </div>
 
-
-
-{{-- Komponen pagination --}}
-<x-menu.pagination />
 
 @endsection
 
@@ -101,7 +73,7 @@
 .table-scroll-wrapper {
   overflow-x: auto;
   overflow-y: auto;
-  max-height: 400px;
+  max-height: 700px;
   width: 100%;
   padding: 8px 16px 10px 16px; /* ↓ kecilkan padding atas biar tabel lebih dekat dengan judul */
   box-sizing: border-box;
@@ -119,7 +91,7 @@
 }
 
 /* Tabel utama */
-.laporan-laba-rugi-table {
+.laba-rugi-table {
   width: 100%;
   min-width: 1000px; /* Paksa scroll horizontal jika terlalu lebar */
   border-collapse: collapse;
@@ -129,7 +101,7 @@
   table-layout: auto
 }
 
-.laporan-laba-rugi-table thead {
+.laba-rugi-table thead {
   background: var(--header-bg);
   color: var(--header-text);
   position: sticky;
@@ -137,8 +109,8 @@
   z-index: 1;
 }
 
-.laporan-laba-rugi-table th,
-.laporan-laba-rugi-table td {
+.laba-rugi-table th,
+.laba-rugi-table td {
   text-align: center;
   padding: 10px 14px;
   border: 1px solid var(--border);
@@ -146,15 +118,15 @@
   vertical-align: middle;
 }
 
-.laporan-laba-rugi-table tbody tr:nth-child(even) {
+.laba-rugi-table tbody tr:nth-child(even) {
   background-color: #f9f9f9;
 }
 
-.laporan-laba-rugi-table tbody tr:hover {
+.laba-rugi-table tbody tr:hover {
   background-color: #eef7ff;
 }
 
-.laporan-laba-rugi-table .empty-cell {
+.laba-rugi-table .empty-cell {
   width: 200px;          
   text-align: center;
   padding: 10px;

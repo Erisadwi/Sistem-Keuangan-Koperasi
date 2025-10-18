@@ -16,7 +16,7 @@
     </header>
 
       {{-- @php
-        $user = Auth::guard('anggota')->user();
+        $user = Auth::guard('user')->user();
         @endphp --}}
 
     <div class="layout">
@@ -93,6 +93,7 @@
   <div class="container">
     <div class="content-container">
       <div class="content-container2">
+        <x-menu.pagination3/>
       </div>
     </div>
     <div class="title-container">

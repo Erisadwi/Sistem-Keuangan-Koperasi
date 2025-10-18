@@ -173,3 +173,59 @@ Route::get('/admin/transaksi_kas/tambah-pengeluaran', function () {
 Route::get('/admin/transaksi_kas/edit-pengeluaran', function () {
     return view('admin.transaksi_kas.edit-pengeluaran');
 })->name('admin.transaksi_kas.edit-pengeluaran');
+
+Route::get('/admin/transaksi_non_kas/transaksi', function () {
+    return view('admin.transaksi_non_kas.transaksi');
+})->name('admin.transaksi_non_kas.transaksi');
+
+Route::get('/admin/pinjaman/tambah-bayar-angsuran', function () {
+    return view('admin.pinjaman.tambah-bayar-angsuran');
+})->name('admin.pinjaman.tambah-bayar-angsuran');
+
+Route::get('/admin/pinjaman/edit-bayar-angsuran', function () {
+    return view('admin.pinjaman.edit-bayar-angsuran');
+})->name('admin.pinjaman.edit-bayar-angsuran');
+
+Route::get('/admin/laporan/laporan-laba-rugi', function () {
+    return view('admin.laporan.laporan-laba-rugi');
+})->name('admin.laporan.laporan-laba-rugi');
+
+Route::get('/admin/profil/beranda-profil', function () {
+    return view('admin.profil.beranda-profil');
+})->name('admin.profil.beranda-profil');
+
+Route::get('/admin/transaksi_kas/tambah-transfer', function () {
+    return view('admin.transaksi_kas.tambah-transfer');
+})->name('admin.transaksi_kas.tambah-transfer');
+
+Route::get('/admin/transaksi_kas/transfer', function () {
+    return view('admin.transaksi_kas.transfer');
+})->name('admin.transaksi_kas.transfer');
+
+Route::get('/admin/transaksi_kas/edit-transfer', function () {
+    return view('admin.transaksi_kas.edit-transfer');
+})->name('admin.transaksi_kas.edit-transfer');
+
+Route::get('/admin/laporan/laporan-neraca', function () {
+    return view('admin.laporan.laporan-neraca');
+})->name('admin.laporan.laporan-neraca');
+
+Route::get('/admin/laporan/laporan-kas-simpanan', function () {
+    return view('admin.laporan.laporan-kas-simpanan');
+})->name('admin.laporan.laporan-kas-simpanan');
+
+Route::get('/admin/laporan/laporan-kas-pinjaman', function () {
+    return view('admin.laporan.laporan-kas-pinjaman');
+})->name('admin.laporan.laporan-kas-pinjaman');
+
+Route::get('/admin/master_data/saldo-awal-non-kas', function () {
+    return view('admin.master_data.saldo-awal-non-kas');
+})->name('admin.master_data.saldo-awal-non-kas');
+
+Route::get('/admin/master_data/tambah-data-saldo-awal-non-kas', function () {
+    return view('admin.master_data.tambah-data-saldo-awal-non-kas');
+})->name('admin.master_data.tambah-data-saldo-awal-non-kas');
+
+Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
+    return view('admin.master_data.edit-data-saldo-awal-non-kas');
+})->name('admin.master_data.edit-data-saldo-awal-non-kas');

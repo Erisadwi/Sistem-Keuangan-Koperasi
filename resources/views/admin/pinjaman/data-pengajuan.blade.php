@@ -6,7 +6,8 @@
 
 @section('content')
 
-
+<x-menu.toolbar-search-ajuan/>
+<x-menu.unduh-right/>
 
 
 
@@ -75,7 +76,7 @@
     background: var(--bg);
     width: 870px;
     margin-left: 25px;
-    margin-top: 70px;
+    margin-top: 20px;
     padding: 0;
     box-shadow: none;
     overflow-x: visible;

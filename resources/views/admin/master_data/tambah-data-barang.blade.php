@@ -8,7 +8,7 @@
 @section('content')
 
 <div class="form-container">
-    <form action="# {{-- {{ route('tambah-data-barang.store', $barang_inventaris->id) }} --}}" method="POST">
+    <form id="formDataBarang" action="# {{-- {{ route('tambah-data-barang.store', $barang_inventaris->id) }} --}}" method="POST">
         @csrf
 
         <label for="nama_barang">Nama Barang*</label>
@@ -104,5 +104,31 @@ input[type="text"]:focus {
 }
 </style>
 
+<script>
+document.getElementById('formDataBarang').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const wajib = ['nama_barang','jumlah_barang'];
+
+    for (let id of wajib) {
+        if (!document.getElementById(id).value.trim()) {
+            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            return;
+        }
+    }
+
+    if (confirm('Apakah data sudah benar dan ingin disimpan?')) {
+        alert('✅ Data barang berhasil disimpan!');
+        this.reset();
+    }
+});
+
+document.getElementById('btnBatal').addEventListener('click', function() {
+    if (confirm('Apakah Anda yakin ingin membatalkan pengisian data?')) {
+        alert('❌ Pengisian data dibatalkan.');
+        window.history.back();
+    }
+});
+</script>
 
 @endsection
