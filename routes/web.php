@@ -162,7 +162,6 @@ Route::get('/anggota/profil/profilAnggota', function () {
     return view('anggota.profil.profilAnggota');
 })->name('anggota.profil.profilAnggota');
 
-<<<<<<< HEAD
 Route::get('/admin/transaksi_non_kas/transaksi', function () {
     return view('admin.transaksi_non_kas.transaksi');
 })->name('admin.transaksi_non_kas.transaksi');
@@ -178,7 +177,7 @@ Route::get('/admin/pinjaman/edit-bayar-angsuran', function () {
 Route::get('/admin/laporan/laporan-laba-rugi', function () {
     return view('admin.laporan.laporan-laba-rugi');
 })->name('admin.laporan.laporan-laba-rugi');
-=======
+
 Route::get('/admin/profil/beranda-profil', function () {
     return view('admin.profil.beranda-profil');
 })->name('admin.profil.beranda-profil');
@@ -198,4 +197,23 @@ Route::get('/admin/transaksi_kas/edit-transfer', function () {
 Route::get('/admin/laporan/laporan-neraca', function () {
     return view('admin.laporan.laporan-neraca');
 })->name('admin.laporan.laporan-neraca');
->>>>>>> 5ee913b (tambah halaman transfer dan neraca)
+
+Route::get('/admin/laporan/laporan-kas-simpanan', function () {
+    return view('admin.laporan.laporan-kas-simpanan');
+})->name('admin.laporan.laporan-kas-simpanan');
+
+Route::get('/admin/laporan/laporan-kas-pinjaman', function () {
+    return view('admin.laporan.laporan-kas-pinjaman');
+})->name('admin.laporan.laporan-kas-pinjaman');
+
+Route::get('/admin/master_data/saldo-awal-non-kas', function () {
+    return view('admin.master_data.saldo-awal-non-kas');
+})->name('admin.master_data.saldo-awal-non-kas');
+
+Route::get('/admin/master_data/tambah-data-saldo-awal-non-kas', function () {
+    return view('admin.master_data.tambah-data-saldo-awal-non-kas');
+})->name('admin.master_data.tambah-data-saldo-awal-non-kas');
+
+Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
+    return view('admin.master_data.edit-data-saldo-awal-non-kas');
+})->name('admin.master_data.edit-data-saldo-awal-non-kas');
