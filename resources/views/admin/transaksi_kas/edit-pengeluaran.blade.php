@@ -9,7 +9,7 @@
 
 <div class="form-container">
     <form id="formEditPengeluaran" 
-          action="#" {{-- ganti nanti dengan route('pengeluaran.update', $transaksi->id ?? '#') --}}
+          action="#" {{-- {{ route('pengeluaran.update', $transaksi->id ?? '#') }} --}}
           method="POST">
         @csrf
         @method('PUT')
@@ -108,7 +108,7 @@
     </form>
 </div>
 
-{{-- CSS disalin utuh dari edit anggota --}}
+{{-- CSS --}}
 <style>
 .form-container {
     background-color: transparent;
@@ -124,7 +124,6 @@
     grid-template-columns: 1fr;
     gap: 15px;
 }
-
 
 .form-group {
     display: flex;
@@ -177,16 +176,37 @@ select {
 </style>
 
 <script>
+// Validasi form & konfirmasi simpan
 document.getElementById('formEditPengeluaran').addEventListener('submit', function(e) {
     e.preventDefault();
+
+    const requiredFields = this.querySelectorAll('[required]');
+    let valid = true;
+
+    requiredFields.forEach(field => {
+        if (!field.value.trim()) {
+            valid = false;
+            field.style.borderColor = 'red';
+        } else {
+            field.style.borderColor = '#565656';
+        }
+    });
+
+    if (!valid) {
+        alert('⚠️ Harap lengkapi semua data wajib sebelum menyimpan!');
+        return;
+    }
+
     if (confirm('Apakah Anda yakin ingin menyimpan perubahan data pengeluaran ini?')) {
         alert('✅ Data pengeluaran berhasil diperbarui!');
-        this.submit();
+        // this.submit(); // Uncomment kalau backend sudah siap
     }
 });
 
+// Tombol batal
 document.getElementById('btnBatal').addEventListener('click', function() {
-    if (confirm('Apakah Anda yakin ingin membatalkan perubahan?')) {
+    if (confirm('Apakah Anda yakin ingin membatalkan perubahan data?')) {
+        alert('❌ Perubahan data dibatalkan.');
         window.history.back();
     }
 });

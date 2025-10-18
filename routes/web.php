@@ -229,3 +229,15 @@ Route::get('/admin/master_data/tambah-data-saldo-awal-non-kas', function () {
 Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
     return view('admin.master_data.edit-data-saldo-awal-non-kas');
 })->name('admin.master_data.edit-data-saldo-awal-non-kas');
+
+Route::get('/admin/simpanan/setoran-tunai', function () {
+    return view('admin.simpanan.setoran-tunai');
+})->name('admin.simpanan.setoran-tunai');
+
+Route::get('/admin/simpanan/tambah-setoran-tunai', function () {
+    return view('admin.simpanan.tambah-setoran-tunai');
+})->name('admin.simpanan.tambah-setoran-tunai');
+
+Route::get('/admin/simpanan/edit-setoran-tunai', function () {
+    return view('admin.simpanan.edit-setoran-tunai');
+})->name('admin.simpanan.edit-setoran-tunai');
