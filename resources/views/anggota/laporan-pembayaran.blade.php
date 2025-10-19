@@ -36,12 +36,12 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="7" class="empty-cell">Belum ada data pembayaran.</td>
+                    <td colspan="6" class="empty-cell">Belum ada data pembayaran.</td>
                 </tr>
             @endforelse
         @else
             <tr>
-                <td colspan="7" class="empty-cell">Belum ada data pembayaran.</td>
+                <td colspan="6" class="empty-cell">Belum ada data pembayaran.</td>
             </tr>
         @endisset
     </tbody>

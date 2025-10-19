@@ -162,6 +162,18 @@ Route::get('/anggota/profil/profilAnggota', function () {
     return view('anggota.profil.profilAnggota');
 })->name('anggota.profil.profilAnggota');
 
+Route::get('/admin/transaksi_kas/pengeluaran', function () {
+    return view('admin.transaksi_kas.pengeluaran');
+})->name('admin.transaksi_kas.pengeluaran');
+
+Route::get('/admin/transaksi_kas/tambah-pengeluaran', function () {
+    return view('admin.transaksi_kas.tambah-pengeluaran');
+})->name('admin.transaksi_kas.tambah-pengeluaran');
+
+Route::get('/admin/transaksi_kas/edit-pengeluaran', function () {
+    return view('admin.transaksi_kas.edit-pengeluaran');
+})->name('admin.transaksi_kas.edit-pengeluaran');
+
 Route::get('/admin/transaksi_non_kas/transaksi', function () {
     return view('admin.transaksi_non_kas.transaksi');
 })->name('admin.transaksi_non_kas.transaksi');
@@ -218,6 +230,7 @@ Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
     return view('admin.master_data.edit-data-saldo-awal-non-kas');
 })->name('admin.master_data.edit-data-saldo-awal-non-kas');
 
+<<<<<<< HEAD
 Route::get('/admin/master_data/lama-angsuran', function () {
     return view('admin.master_data.lama-angsuran');
 })->name('admin.master_data.lama-angsuran');
@@ -241,3 +254,24 @@ Route::get('/admin/master_data/tambah-data-pengguna', function () {
 Route::get('/admin/master_data/edit-data-pengguna', function () {
     return view('admin.master_data.edit-data-pengguna');
 })->name('admin.master_data.edit-data-pengguna');
+=======
+Route::get('/admin/simpanan/setoran-tunai', function () {
+    return view('admin.simpanan.setoran-tunai');
+})->name('admin.simpanan.setoran-tunai');
+
+Route::get('/admin/simpanan/tambah-setoran-tunai', function () {
+    return view('admin.simpanan.tambah-setoran-tunai');
+})->name('admin.simpanan.tambah-setoran-tunai');
+
+Route::get('/admin/simpanan/edit-setoran-tunai', function () {
+    return view('admin.simpanan.edit-setoran-tunai');
+})->name('admin.simpanan.edit-setoran-tunai');
+
+Route::get('/admin/pinjaman/angsuran', function () {
+    return view('admin.pinjaman.angsuran');
+})->name('admin.pinjaman.angsuran');
+
+Route::get('/admin/pinjaman/pinjaman-lunas', function () {
+    return view('admin.pinjaman.pinjaman-lunas');
+})->name('admin.pinjaman.pinjaman-lunas');
+>>>>>>> bd3975f55db87a536d199540a5d16c9177021f45
