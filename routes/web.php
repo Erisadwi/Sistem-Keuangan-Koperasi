@@ -230,7 +230,6 @@ Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
     return view('admin.master_data.edit-data-saldo-awal-non-kas');
 })->name('admin.master_data.edit-data-saldo-awal-non-kas');
 
-<<<<<<< HEAD
 Route::get('/admin/master_data/lama-angsuran', function () {
     return view('admin.master_data.lama-angsuran');
 })->name('admin.master_data.lama-angsuran');
@@ -254,7 +253,7 @@ Route::get('/admin/master_data/tambah-data-pengguna', function () {
 Route::get('/admin/master_data/edit-data-pengguna', function () {
     return view('admin.master_data.edit-data-pengguna');
 })->name('admin.master_data.edit-data-pengguna');
-=======
+
 Route::get('/admin/simpanan/setoran-tunai', function () {
     return view('admin.simpanan.setoran-tunai');
 })->name('admin.simpanan.setoran-tunai');
@@ -274,4 +273,15 @@ Route::get('/admin/pinjaman/angsuran', function () {
 Route::get('/admin/pinjaman/pinjaman-lunas', function () {
     return view('admin.pinjaman.pinjaman-lunas');
 })->name('admin.pinjaman.pinjaman-lunas');
->>>>>>> bd3975f55db87a536d199540a5d16c9177021f45
+
+Route::get('/admin/simpanan/penarikan-tunai', function () {
+    return view('admin.simpanan.penarikan-tunai');
+})->name('admin.simpanan.penarikan-tunai');
+
+Route::get('/admin/simpanan/tambah-penarikan-tunai', function () {
+    return view('admin.simpanan.tambah-penarikan-tunai');
+})->name('admin.simpanan.tambah-penarikan-tunai');
+
+Route::get('/admin/simpanan/edit-penarikan-tunai', function () {
+    return view('admin.simpanan.edit-penarikan-tunai');
+})->name('admin.simpanan.edit-penarikan-tunai');

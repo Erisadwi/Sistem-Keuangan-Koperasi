@@ -1,6 +1,6 @@
 @extends('layouts.app-admin')
 
-@section('title', 'Saldo Awal NonKas')
+@section('title', 'Saldo Awal Non Kas')
 @section('title-1', 'Master Data')
 @section('sub-title', 'Saldo Awal Non Kas')
 

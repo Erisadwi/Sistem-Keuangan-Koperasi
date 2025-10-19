@@ -78,7 +78,6 @@
   --text: #222;
 }
 
-/* Wrapper utama tabel agar mirip Kas Pinjaman */
 .laporan-data-pengguna-wrap {
   border: 1.5px solid var(--border);
   border-radius: 0;
