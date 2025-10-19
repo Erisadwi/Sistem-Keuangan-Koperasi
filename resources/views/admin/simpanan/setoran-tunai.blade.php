@@ -6,11 +6,11 @@
 
 @section('content')
 
-{{-- Komponen tombol tambah & unduh --}}
-<x-menu.tambah-edit-hapus
+{{-- Komponen --}}
+<x-menu.toolbar-simpanan
     addUrl="#" {{-- nanti bisa diganti route('simpanan.create') --}}
 />
-<x-menu.toolbar-right/>
+
 
 {{-- Wrapper konten tabel --}}
 <div class="content-inner">

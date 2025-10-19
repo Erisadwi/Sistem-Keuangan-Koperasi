@@ -241,3 +241,11 @@ Route::get('/admin/simpanan/tambah-setoran-tunai', function () {
 Route::get('/admin/simpanan/edit-setoran-tunai', function () {
     return view('admin.simpanan.edit-setoran-tunai');
 })->name('admin.simpanan.edit-setoran-tunai');
+
+Route::get('/admin/pinjaman/angsuran', function () {
+    return view('admin.pinjaman.angsuran');
+})->name('admin.pinjaman.angsuran');
+
+Route::get('/admin/pinjaman/pinjaman-lunas', function () {
+    return view('admin.pinjaman.pinjaman-lunas');
+})->name('admin.pinjaman.pinjaman-lunas');
