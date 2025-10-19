@@ -285,3 +285,16 @@ Route::get('/admin/simpanan/tambah-penarikan-tunai', function () {
 Route::get('/admin/simpanan/edit-penarikan-tunai', function () {
     return view('admin.simpanan.edit-penarikan-tunai');
 })->name('admin.simpanan.edit-penarikan-tunai');
+
+Route::get('/admin/pinjaman/data-pinjaman', function () {
+    return view('admin.pinjaman.data-pinjaman');
+})->name('admin.pinjaman.data-pinjaman');
+
+Route::get('/admin/pinjaman/tambah-data-pinjaman', function () {
+    return view('admin.pinjaman.tambah-data-pinjaman');
+})->name('admin.pinjaman.tambah-data-pinjaman');
+
+Route::get('/admin/pinjaman/edit-data-pinjaman', function () {
+    return view('admin.pinjaman.edit-data-pinjaman');
+})->name('admin.pinjaman.edit-data-pinjaman');
+
