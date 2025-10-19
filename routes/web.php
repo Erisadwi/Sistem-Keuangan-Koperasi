@@ -289,3 +289,7 @@ Route::get('/admin/simpanan/tambah-penarikan-tunai', function () {
 Route::get('/admin/simpanan/edit-penarikan-tunai', function () {
     return view('admin.simpanan.edit-penarikan-tunai');
 })->name('admin.simpanan.edit-penarikan-tunai');
+
+Route::get('/admin/beranda', function () {
+    return view('admin.beranda');
+})->name('admin.beranda');
