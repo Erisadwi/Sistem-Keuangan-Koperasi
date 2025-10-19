@@ -217,3 +217,27 @@ Route::get('/admin/master_data/tambah-data-saldo-awal-non-kas', function () {
 Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
     return view('admin.master_data.edit-data-saldo-awal-non-kas');
 })->name('admin.master_data.edit-data-saldo-awal-non-kas');
+
+Route::get('/admin/master_data/lama-angsuran', function () {
+    return view('admin.master_data.lama-angsuran');
+})->name('admin.master_data.lama-angsuran');
+
+Route::get('/admin/master_data/tambah-data-lama-angsuran', function () {
+    return view('admin.master_data.tambah-data-lama-angsuran');
+})->name('admin.master_data.tambah-data-lama-angsuran');
+
+Route::get('/admin/master_data/edit-data-lama-angsuran', function () {
+    return view('admin.master_data.edit-data-lama-angsuran');
+})->name('admin.master_data.edit-data-lama-angsuran');
+
+Route::get('/admin/master_data/data-pengguna', function () {
+    return view('admin.master_data.data-pengguna');
+})->name('admin.master_data.data-pengguna');
+
+Route::get('/admin/master_data/tambah-data-pengguna', function () {
+    return view('admin.master_data.tambah-data-pengguna');
+})->name('admin.master_data.tambah-data-pengguna');
+
+Route::get('/admin/master_data/edit-data-pengguna', function () {
+    return view('admin.master_data.edit-data-pengguna');
+})->name('admin.master_data.edit-data-pengguna');
