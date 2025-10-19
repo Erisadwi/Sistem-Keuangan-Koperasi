@@ -141,5 +141,31 @@ select:focus {
 }
 </style>
 
+<script>
+document.getElementById('form-container').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const wajib = ['jumlah_transaksi'];
+
+    for (let id of wajib) {
+        if (!document.getElementById(id).value.trim()) {
+            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            return;
+        }
+    }
+
+    if (confirm('Apakah data sudah benar dan ingin disimpan?')) {
+        alert('✅ Data barang berhasil disimpan!');
+        this.reset();
+    }
+});
+
+document.getElementById('btnBatal').addEventListener('click', function() {
+    if (confirm('Apakah Anda yakin ingin membatalkan pengisian data?')) {
+        alert('❌ Pengisian data dibatalkan.');
+        window.history.back();
+    }
+});
+</script>
 
 @endsection

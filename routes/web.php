@@ -230,6 +230,30 @@ Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
     return view('admin.master_data.edit-data-saldo-awal-non-kas');
 })->name('admin.master_data.edit-data-saldo-awal-non-kas');
 
+Route::get('/admin/master_data/lama-angsuran', function () {
+    return view('admin.master_data.lama-angsuran');
+})->name('admin.master_data.lama-angsuran');
+
+Route::get('/admin/master_data/tambah-data-lama-angsuran', function () {
+    return view('admin.master_data.tambah-data-lama-angsuran');
+})->name('admin.master_data.tambah-data-lama-angsuran');
+
+Route::get('/admin/master_data/edit-data-lama-angsuran', function () {
+    return view('admin.master_data.edit-data-lama-angsuran');
+})->name('admin.master_data.edit-data-lama-angsuran');
+
+Route::get('/admin/master_data/data-pengguna', function () {
+    return view('admin.master_data.data-pengguna');
+})->name('admin.master_data.data-pengguna');
+
+Route::get('/admin/master_data/tambah-data-pengguna', function () {
+    return view('admin.master_data.tambah-data-pengguna');
+})->name('admin.master_data.tambah-data-pengguna');
+
+Route::get('/admin/master_data/edit-data-pengguna', function () {
+    return view('admin.master_data.edit-data-pengguna');
+})->name('admin.master_data.edit-data-pengguna');
+
 Route::get('/admin/simpanan/setoran-tunai', function () {
     return view('admin.simpanan.setoran-tunai');
 })->name('admin.simpanan.setoran-tunai');
@@ -254,6 +278,14 @@ Route::get('/admin/pinjaman/detail-pelunasan', function () {
     return view('admin.pinjaman.detail-pelunasan');
 })->name('admin.pinjaman.detail-pelunasan');
 
-Route::get('/admin/pinjaman/detail', function () {
-    return view('admin.pinjaman.detail');
-})->name('admin.pinjaman.detail');
+Route::get('/admin/simpanan/penarikan-tunai', function () {
+    return view('admin.simpanan.penarikan-tunai');
+})->name('admin.simpanan.penarikan-tunai');
+
+Route::get('/admin/simpanan/tambah-penarikan-tunai', function () {
+    return view('admin.simpanan.tambah-penarikan-tunai');
+})->name('admin.simpanan.tambah-penarikan-tunai');
+
+Route::get('/admin/simpanan/edit-penarikan-tunai', function () {
+    return view('admin.simpanan.edit-penarikan-tunai');
+})->name('admin.simpanan.edit-penarikan-tunai');
