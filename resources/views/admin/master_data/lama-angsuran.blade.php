@@ -10,8 +10,8 @@
     addUrl="# {{-- {{ route('lama-angsuran.create') }} --}}" 
     downloadFile="lama_angsuran.pdf" />
 
-<div class="barang-inventaris-table-wrap">
-  <table class="barang-inventaris-table">
+<div class="lama-angsuran-table-wrap">
+  <table class="lama-angsuran-table">
     <thead>
       <tr class="head-group">
         <th>Lama Angsuran (Bulan)</th>
@@ -26,8 +26,8 @@
           <td class="text-center">{{ $row->lama_angsuran ?? '' }}</td>
           <td class="text-center">{{ $row->is_active == 'Y' ? 'Y' : 'T' }}</td>
           <td class="actions">
-            <a href="{{ route('barang-inventaris.edit', ['id' => $row->id]) }}" class="edit">✏️ Edit</a>
-            <form action="{{ route('barang-inventaris.destroy', ['id' => $row->id]) }}" method="POST" style="display: inline;">
+            <a href="{{ route('lama-angsuran.edit', ['id' => $row->id]) }}" class="edit">✏️ Edit</a>
+            <form action="{{ route('lama-angsuran.destroy', ['id' => $row->id]) }}" method="POST" style="display: inline;">
               @csrf
               @method('DELETE')
               <button type="submit" class="delete">❌ Hapus</button>
@@ -51,7 +51,7 @@
     --hover-bg: #f9f9f9;
   }
 
-  .barang-inventaris-table-wrap {
+  .lama-angsuran-table-wrap {
     background: var(--table-bg);
     width: 870px;
     margin-left: 25px;
@@ -59,7 +59,7 @@
     overflow-x: auto;
   }
 
-  .barang-inventaris-table {
+  .lama-angsuran-table {
     width: 100%;
     border-collapse: collapse;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
@@ -67,7 +67,7 @@
     color: #222;
   }
 
-  .barang-inventaris-table th {
+  .lama-angsuran-table th {
     background: var(--head-bg);
     color: #fff;
     text-align: center;
@@ -75,13 +75,13 @@
     padding: 10px;
   }
 
-  .barang-inventaris-table td {
+  .lama-angsuran-table td {
     padding: 8px 10px;
     border-bottom: 1px solid var(--border);
     text-align: center;
   }
 
-  .barang-inventaris-table tbody tr:hover {
+  .lama-angsuran-table tbody tr:hover {
     background: var(--hover-bg);
   }
 
@@ -129,12 +129,12 @@
   }
 
   @media (max-width: 640px) {
-    .barang-inventaris-table {
+    .lama-angsuran-table {
       font-size: 12px;
     }
 
-    .barang-inventaris-table th,
-    .barang-inventaris-table td {
+    .lama-angsuran-table th,
+    .lama-angsuran-table td {
       padding: 8px;
     }
   }
