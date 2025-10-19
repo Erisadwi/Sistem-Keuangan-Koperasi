@@ -249,3 +249,11 @@ Route::get('/admin/pinjaman/angsuran', function () {
 Route::get('/admin/pinjaman/pinjaman-lunas', function () {
     return view('admin.pinjaman.pinjaman-lunas');
 })->name('admin.pinjaman.pinjaman-lunas');
+
+Route::get('/admin/pinjaman/detail-pelunasan', function () {
+    return view('admin.pinjaman.detail-pelunasan');
+})->name('admin.pinjaman.detail-pelunasan');
+
+Route::get('/admin/pinjaman/detail', function () {
+    return view('admin.pinjaman.detail');
+})->name('admin.pinjaman.detail');
