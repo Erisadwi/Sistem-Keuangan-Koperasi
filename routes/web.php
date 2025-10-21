@@ -289,6 +289,13 @@ Route::get('/admin/simpanan/tambah-penarikan-tunai', function () {
 Route::get('/admin/simpanan/edit-penarikan-tunai', function () {
     return view('admin.simpanan.edit-penarikan-tunai');
 })->name('admin.simpanan.edit-penarikan-tunai');
+<<<<<<< HEAD
+=======
+
+Route::get('/admin/beranda', function () {
+    return view('admin.beranda');
+})->name('admin.beranda');
+>>>>>>> 902efc917ae950f544f59d40fb452c62041077e0
 
 Route::get('/admin/pinjaman/data-pinjaman', function () {
     return view('admin.pinjaman.data-pinjaman');
@@ -302,8 +309,14 @@ Route::get('/admin/pinjaman/edit-data-pinjaman', function () {
     return view('admin.pinjaman.edit-data-pinjaman');
 })->name('admin.pinjaman.edit-data-pinjaman');
 
+<<<<<<< HEAD
 Route::get('/admin/profil/edit-profil', function () {
     return view('admin.profil.edit-profil');
 })->name('admin.profil.edit-edit-profil');
 
+=======
+Route::get('/admin/pinjaman/bayar-angsuran', function () {
+    return view('admin.pinjaman.bayar-angsuran');
+})->name('admin.pinjaman.bayar-angsuran');
+>>>>>>> 902efc917ae950f544f59d40fb452c62041077e0
 
