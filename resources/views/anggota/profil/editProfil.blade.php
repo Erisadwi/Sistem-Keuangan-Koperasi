@@ -20,49 +20,51 @@
       <div class="panel-inner">
         <div class="left">
           <div class="avatar-wrap">
-            <img src="{{ asset('images/profilAnggota.jpg') }}" alt="" class="avatar">
-            <button class="btn-camera">
+            <img src="{{ {{-- $anggota->foto ? asset('storage/' . $anggota->foto) : --}} asset('images/profilAnggota.jpg') }}" alt="Foto Profil" class="avatar">
+            <button type="button" id="btnCamera" class="btn-camera">
               <img src="{{ asset('icons/camera.png') }}" alt="" class="btn-icon" />
             </button>
           </div>
           
-          <button type="button" class="btn-upload">
+          <input type="file" name="foto" id="fotoInput" accept="image/*" style="display: none;">
+
+          <button type="button" id="btnUpload" class="btn-upload">
             Ubah Foto
           </button>
         </div>
 
-        <form class="form" method="post" action="#{{-- {{ route('profile.update') }} --}}">
+        <form class="form" method="post" action="#" {{-- {{ route('profile.update', $anggota->id_anggota) }} --}} enctype="multipart/form-data">
           @csrf
           @method('PUT')
 
           <div class="field">
             <label>Username</label>
-            <input type="text" name="username" value="angga">
+            <input type="text" name="username_anggota" value="angga" {{-- {{ $anggota->username_anggota }} --}}>
           </div>
 
           <div class="field">
             <label>Password Lama</label>
-            <input type="password" name="old_password" value="........">
+            <input type="password" name="old_password" placeholder="Masukkan password lama">
           </div>
 
           <div class="field">
             <label>Password Baru</label>
-            <input type="password" name="new_password" value="........">
+            <input type="password" name="new_password" placeholder="Masukkan password baru">
           </div>
 
           <div class="field">
             <label>Nama Lengkap</label>
-            <input type="text" name="full_name" value="angga aldi yunanda">
+            <input type="text" name="nama_anggota" value="angga aldi yunanda" {{-- {{ $anggota->nama_anggota }} --}}>
           </div>
 
           <div class="field">
             <label>Alamat</label>
-            <textarea name="address" rows="3">Perum Griya Sejahtera, Blok J No. 20 jl. Medayu Utara 30A, Medokan Ayu, Rungkut Surabaya</textarea>
+            <textarea name="alamat_anggota" rows="3">Perum Griya Sejahtera, Blok J No. 20 jl. Medayu Utara 30A, Medokan Ayu, Rungkut Surabaya {{-- {{ $anggota->alamat_anggota }} --}}</textarea>
           </div>
 
           <div class="field">
             <label>Jabatan</label>
-            <input type="text" name="position" value="anggota">
+            <input type="text" name="jabatan" value="anggota" {{-- {{ $anggota->jabatan }} --}}>
           </div>
 
           <div class="actions">
@@ -73,6 +75,28 @@
       </div>
     </section>
   </main>
+
+  <script>
+
+  const fotoInput = document.getElementById('fotoInput');
+  const avatar = document.querySelector('.avatar');
+  const btnUpload = document.getElementById('btnUpload');
+  const btnCamera = document.getElementById('btnCamera');
+
+  btnUpload.addEventListener('click', () => fotoInput.click());
+  btnCamera.addEventListener('click', () => fotoInput.click());
+
+  fotoInput.addEventListener('change', event => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        avatar.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+</script>
 
 </body>
 </html>

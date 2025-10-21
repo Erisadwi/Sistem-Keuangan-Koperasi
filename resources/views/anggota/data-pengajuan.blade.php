@@ -47,7 +47,7 @@
               $cls = '';
               if ($status === 'Disetujui') $cls = 'disetujui';
               elseif ($status === 'Ditolak') $cls = 'ditolak';
-              elseif ($status === 'Menunggu') $cls = 'menunggu';
+              elseif ($status === 'Menunggu konfirmasi') $cls = 'menunggu konfirmasi';
             @endphp
             <span class="badge {{ $cls }}">{{ $status }}</span>
           </td>
