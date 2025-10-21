@@ -289,7 +289,6 @@ Route::get('/admin/simpanan/tambah-penarikan-tunai', function () {
 Route::get('/admin/simpanan/edit-penarikan-tunai', function () {
     return view('admin.simpanan.edit-penarikan-tunai');
 })->name('admin.simpanan.edit-penarikan-tunai');
-<<<<<<< HEAD
 
 Route::get('/admin/pinjaman/data-pinjaman', function () {
     return view('admin.pinjaman.data-pinjaman');
@@ -303,5 +302,8 @@ Route::get('/admin/pinjaman/edit-data-pinjaman', function () {
     return view('admin.pinjaman.edit-data-pinjaman');
 })->name('admin.pinjaman.edit-data-pinjaman');
 
-=======
->>>>>>> 36e510f1293caa5252da25b0aba7eb121dbc403b
+Route::get('/admin/profil/edit-profil', function () {
+    return view('admin.profil.edit-profil');
+})->name('admin.profil.edit-edit-profil');
+
+
