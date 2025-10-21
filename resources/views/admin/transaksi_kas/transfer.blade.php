@@ -22,7 +22,7 @@
     </thead>
 
     <tbody>
-      @forelse(($ajuan_pinjaman ?? collect()) as $idx => $row)
+      @forelse(($transaksi ?? collect()) as $idx => $row)
         <tr>
           <td>{{ $row->id_transaksi ?? '' }}</td>
           <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y') ?? '' }}</td>
