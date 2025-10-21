@@ -16,11 +16,14 @@
                 value="{{ isset($transaksi) ? \Carbon\Carbon::parse($transaksi->tanggal_transaksi)->format('Y-m-d\TH:i') : '' }}" required>
 
         <label for="jumlah_transaksi">Jumlah</label>
-        <input type="number" id="jumlah_transaksi" name="jumlah_transaksi" value="" required>
+        <input type="number" id="jumlah_transaksi" name="jumlah_transaksi" 
+                {{-- <input type="number" name="jumlah_transaksi" value="{{ $transaksi->jumlah_transaksi }}" required> --}}
 
-        <label for="keterangan">Keterangan</label>
-        <input type="text" id="keterangan" name="keterangan" value="" required>
 
+        <label for="ket_transaksi">Keterangan</label>
+        <input type="text" id="ket_transaksi" name="ket_transaksi" 
+                {{-- <input type="number" name="ket_transaksi" value="{{ $transaksi->ket_transaksi }}" required> --}}
+        >
         <label for="akun_kredit">Dari Kas</label>
         <select name="akun_kredit" id="akun_kredit" required>
             <option value="" disabled selected>Pilih Kas</option>

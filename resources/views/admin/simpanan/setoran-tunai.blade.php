@@ -1,4 +1,4 @@
-@extends('layouts.app-admin3')
+@extends('layouts.lebar')
 
 @section('title', 'Simpanan Setoran Tunai')
 @section('title-1', 'Simpanan')
@@ -58,8 +58,7 @@
   </div>
 </div>
 
-{{-- Komponen pagination --}}
-<x-menu.pagination />
+
 
 {{-- STYLE --}}
 <style>
@@ -157,35 +156,6 @@
 }
 .btn-nota:hover {
   background-color: #0077aa;
-}
-
-/* Pagination */
-.pagination {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 6px;
-  margin-top: 15px;
-  font-size: 14px;
-}
-
-.pagination select,
-.pagination button {
-  padding: 4px 6px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  background: white;
-  cursor: pointer;
-}
-
-.pagination button {
-  background: var(--primary);
-  color: white;
-  border: none;
-}
-
-.pagination button:hover {
-  background: var(--primary-dark);
 }
 
 @media (max-width: 640px) {
