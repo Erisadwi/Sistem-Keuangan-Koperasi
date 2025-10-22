@@ -10,6 +10,7 @@
 <div class="form-container">
     <form id="formPenarikanTunai" action="#" method="POST" enctype="multipart/form-data">
         @csrf
+        {{-- @method('PUT') --}}
 
         {{-- Bagian Tanggal Transaksi --}}
         <label for="tanggal_transaksi">Tanggal Transaksi</label>

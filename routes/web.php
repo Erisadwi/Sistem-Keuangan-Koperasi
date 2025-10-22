@@ -306,3 +306,15 @@ Route::get('/admin/pinjaman/edit-data-pinjaman', function () {
     return view('admin.pinjaman.edit-data-pinjaman');
 })->name('admin.pinjaman.edit-data-pinjaman');
 
+Route::get('/admin/profil/edit-profil', function () {
+    return view('admin.profil.edit-profil');
+})->name('admin.profil.edit-edit-profil');
+
+Route::get('/admin/pinjaman/bayar-angsuran', function () {
+    return view('admin.pinjaman.bayar-angsuran');
+})->name('admin.pinjaman.bayar-angsuran');
+
+Route::get('/admin/pinjaman/detail-peminjaman', function () {
+    return view('admin.pinjaman.detail-peminjaman');
+})->name('admin.pinjaman.detail-peminjaman');
+

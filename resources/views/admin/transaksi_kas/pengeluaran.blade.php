@@ -55,6 +55,7 @@
 </div>
 
 
+
 {{-- STYLE --}}
 <style>
 :root {
@@ -77,7 +78,7 @@
 .table-scroll-wrapper {
   overflow-x: auto;
   overflow-y: auto;
-  max-height: 400px;
+  max-height: 380px;
   width: 100%;
   background: transparent;
   border-radius: 4px;

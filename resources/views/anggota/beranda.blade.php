@@ -12,10 +12,6 @@
   <nav class="nav-top">
     <div class="nav-left"> </div>
     <div class="nav-right">
-      <button id="btnNotif" class="btn-icon" type="button" aria-label="Buka notifikasi">
-        <img src="{{ asset('icons/bell-notification.png') }}" alt="" class="icon-45">
-        <span id="notifBadge" class="badge">3</span>
-      </button>
       <div class="divider-16"></div>
         <img src="{{ asset('images/logo.png') }}" alt="Koperasi TSM" class="logo-coop">
     </div>

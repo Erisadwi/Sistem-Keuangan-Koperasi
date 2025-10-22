@@ -8,8 +8,9 @@
 @section('content')
 
 <div class="form-container">
-    <form action="# {{-- {{ route('tambah-transfer-kas.store', $transaksi->id) }} --}}" method="POST">
+    <form action="# {{-- {{ route('tambah-transfer-kas.update', $transaksi->id) }} --}}" method="POST">
         @csrf
+        @method('PUT')
 
         <label for="tanggal_transaksi">Tanggal Transaksi</label>
         <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi" 
