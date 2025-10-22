@@ -318,3 +318,7 @@ Route::get('/admin/pinjaman/detail-peminjaman', function () {
     return view('admin.pinjaman.detail-peminjaman');
 })->name('admin.pinjaman.detail-peminjaman');
 
+Route::get('/anggota/tambah-data-pengajuan', function () {
+    return view('anggota.tambah-data-pengajuan');
+})->name('anggota.tambah-data-pengajuan');
+
