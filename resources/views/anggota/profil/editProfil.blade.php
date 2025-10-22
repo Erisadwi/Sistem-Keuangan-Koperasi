@@ -20,7 +20,7 @@
       <div class="panel-inner">
         <div class="left">
           <div class="avatar-wrap">
-            <img src="{{ {{-- $anggota->foto ? asset('storage/' . $anggota->foto) : --}} asset('images/profilAnggota.jpg') }}" alt="Foto Profil" class="avatar">
+            <img src="{{ {{-- $anggota->foto ? asset('storage/' . $anggota->foto) : --}} asset('images/default.jpeg') }}" alt="Foto Profil" class="avatar">
             <button type="button" id="btnCamera" class="btn-camera">
               <img src="{{ asset('icons/camera.png') }}" alt="" class="btn-icon" />
             </button>

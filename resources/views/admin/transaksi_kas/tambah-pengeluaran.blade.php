@@ -120,36 +120,25 @@ select {
 </style>
 
 <script>
-// === VALIDASI DAN NOTIFIKASI SIMPAN ===
 document.getElementById('formPengeluaranKas').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    const requiredFields = this.querySelectorAll('[required]');
-    let valid = true;
+    const wajib = ['tanggal_transaksi','jumlah_transaksi','id_jenisAkunTransaksi_sumber','id_jenisAkunTransaksi_tujuan'];
 
-    requiredFields.forEach(field => {
-        if (!field.value.trim()) {
-            valid = false;
-            field.style.borderColor = 'red';
-        } else {
-            field.style.borderColor = '#565656';
+    for (let id of wajib) {
+        if (!document.getElementById(id).value.trim()) {
+            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            return;
         }
-    });
-
-    if (!valid) {
-        alert('⚠️ Harap lengkapi semua data wajib sebelum menyimpan!');
-        return;
     }
 
-    if (confirm('Apakah Anda yakin ingin menyimpan data pengeluaran ini?')) {
-        alert('✅ Data pengeluaran berhasil disimpan!');
-        // this.submit(); // aktifkan kalau backend sudah siap
+    if (confirm('Apakah data sudah benar dan ingin disimpan?')) {
+        alert('✅ Data Pengeluaran berhasil disimpan!');
+        this.reset();
     }
 });
 
-// === TOMBOL BATAL ===
-document.getElementById('btnBatal').addEventListener('click', function(e) {
-    e.preventDefault();
+document.getElementById('btnBatal').addEventListener('click', function() {
     if (confirm('Apakah Anda yakin ingin membatalkan pengisian data?')) {
         alert('❌ Pengisian data dibatalkan.');
         window.history.back();
