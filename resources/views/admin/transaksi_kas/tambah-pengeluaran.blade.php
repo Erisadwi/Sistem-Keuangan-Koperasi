@@ -16,11 +16,14 @@
                 value="{{ isset($transaksi) ? \Carbon\Carbon::parse($transaksi->tanggal_transaksi)->format('Y-m-d\TH:i') : '' }}" required>
 
         <label for="jumlah_transaksi">Jumlah</label>
-        <input type="number" id="jumlah_transaksi" name="jumlah_transaksi" value="" required>
+        <input type="number" id="jumlah_transaksi" name="jumlah_transaksi" 
+                {{-- <input type="number" name="jumlah_transaksi" value="{{ $transaksi->jumlah_transaksi }}" required> --}}
 
-        <label for="keterangan">Keterangan</label>
-        <input type="text" id="keterangan" name="keterangan" value="" required>
 
+        <label for="ket_transaksi">Keterangan</label>
+        <input type="text" id="ket_transaksi" name="ket_transaksi" 
+                {{-- <input type="number" name="ket_transaksi" value="{{ $transaksi->ket_transaksi }}" required> --}}
+        >
         <label for="akun_kredit">Dari Kas</label>
         <select name="akun_kredit" id="akun_kredit" required>
             <option value="" disabled selected>Pilih Kas</option>
@@ -120,36 +123,25 @@ select {
 </style>
 
 <script>
-// === VALIDASI DAN NOTIFIKASI SIMPAN ===
 document.getElementById('formPengeluaranKas').addEventListener('submit', function(e) {
     e.preventDefault();
 
-    const requiredFields = this.querySelectorAll('[required]');
-    let valid = true;
+    const wajib = ['tanggal_transaksi','jumlah_transaksi','id_jenisAkunTransaksi_sumber','id_jenisAkunTransaksi_tujuan'];
 
-    requiredFields.forEach(field => {
-        if (!field.value.trim()) {
-            valid = false;
-            field.style.borderColor = 'red';
-        } else {
-            field.style.borderColor = '#565656';
+    for (let id of wajib) {
+        if (!document.getElementById(id).value.trim()) {
+            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            return;
         }
-    });
-
-    if (!valid) {
-        alert('⚠️ Harap lengkapi semua data wajib sebelum menyimpan!');
-        return;
     }
 
-    if (confirm('Apakah Anda yakin ingin menyimpan data pengeluaran ini?')) {
-        alert('✅ Data pengeluaran berhasil disimpan!');
-        // this.submit(); // aktifkan kalau backend sudah siap
+    if (confirm('Apakah data sudah benar dan ingin disimpan?')) {
+        alert('✅ Data Pengeluaran berhasil disimpan!');
+        this.reset();
     }
 });
 
-// === TOMBOL BATAL ===
-document.getElementById('btnBatal').addEventListener('click', function(e) {
-    e.preventDefault();
+document.getElementById('btnBatal').addEventListener('click', function() {
     if (confirm('Apakah Anda yakin ingin membatalkan pengisian data?')) {
         alert('❌ Pengisian data dibatalkan.');
         window.history.back();

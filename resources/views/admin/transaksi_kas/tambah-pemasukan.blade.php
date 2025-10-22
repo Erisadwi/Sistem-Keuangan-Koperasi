@@ -8,21 +8,21 @@
 @section('content')
 
 <div class="form-container">
-    <form action="# {{-- {{ route('tambah-pemasukan-kas.store', $transaksi->id) }} --}}" method="POST">
+    <form action="# {{-- {{ route('tambah-pemasukan-kas.store', $transaksi->id) }} --}}" id="form-pemasukan" method="POST">
         @csrf
 
-        <label for="tanggal_transaksi">Tanggal Transaksi</label>
+        <label for="tanggal_transaksi">Tanggal Transaksi*</label>
         <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi" 
                 value="{{ isset($transaksi) ? \Carbon\Carbon::parse($transaksi->tanggal_transaksi)->format('Y-m-d\TH:i') : '' }}">
 
-        <label for="jumlah_transaksi">Jumlah</label>
+        <label for="jumlah_transaksi">Jumlah*</label>
         <input type="number" id="jumlah_transaksi" name="jumlah_transaksi" value=" {{-- {{ isset($transaksi) ? number_format($transaksi->jumlah_transaksi, 0, ',', '.') : '' }} --}}">
 
         <label for="keterangan">Keterangan</label>
         <input type="text" id="keterangan" name="keterangan" value="{{-- {{ $transaksi->keterangan }} --}}">
 
-        <label for="akun_kredit">Dari Akun</label>
-            <select name="akun_kredit" id="akun_kredit">
+        <label for="id_jenisAkunTransaksi_sumber">Dari Akun*</label>
+            <select name="id_jenisAkunTransaksi_sumber" id="id_jenisAkunTransaksi_sumber">
                 <option value="" disabled selected>Pilih Akun</option>
                 <option value="A5">A5-Persediaan Barang</option>
                 <option value="A6">A6-Pinjaman Karyawan</option>
@@ -120,8 +120,8 @@
                 <option value="J01.10">J01.10-Pendapatan Sewa Lahan Koperasi</option>
             </select>
 
-        <label for="akun_debit">Untuk Kas</label>
-            <select name="akun_debit" id="akun_debit">
+        <label for="id_jenisAkunTransaksi_tujuan">Untuk Kas*</label>
+            <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan">
                 <option value="" disabled selected>Pilih Kas</option>
                 <option value="/">Kas Besar</option>
                 <option value="/">Bank Mandiri</option>
@@ -230,5 +230,30 @@ select:focus {
 }
 </style>
 
+<script>
+document.getElementById('form-pemasukan').addEventListener('submit', function(e) {
+    e.preventDefault();
 
+    const wajib = ['tanggal_transaksi','jumlah_transaksi','id_jenisAkunTransaksi_sumber','id_jenisAkunTransaksi_tujuan'];
+
+    for (let id of wajib) {
+        if (!document.getElementById(id).value.trim()) {
+            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            return;
+        }
+    }
+
+    if (confirm('Apakah data sudah benar dan ingin disimpan?')) {
+        alert('✅ Data Pemasukan berhasil disimpan!');
+        this.reset();
+    }
+});
+
+document.getElementById('btnBatal').addEventListener('click', function() {
+    if (confirm('Apakah Anda yakin ingin membatalkan pengisian data?')) {
+        alert('❌ Pengisian data dibatalkan.');
+        window.history.back();
+    }
+});
+</script>
 @endsection

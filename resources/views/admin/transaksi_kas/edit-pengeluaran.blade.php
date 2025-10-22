@@ -30,8 +30,8 @@
 
             <div class="form-group">
                 <label for="keterangan">Keterangan</label>
-                <input type="text" id="keterangan" name="keterangan" 
-                       value="{{ old('keterangan', $transaksi->keterangan ?? '') }}" required>
+                <input type="text" id="ket_transaksi" name="ket_transaksi" 
+                       value="{{ old('keterangan', $transaksi->ket_transaksi ?? '') }}" required>
             </div>
 
             <div class="form-group">

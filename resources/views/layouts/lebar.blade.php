@@ -4,12 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Default Title')</title>  
-    @vite(['resources/css/app2.css'])
+    @vite(['resources/css/lebar.css'])
     @stack('styles')
     @yield('styles')
     @stack('scripts')
     @yield(section:'scripts')
-
 </head>
 <body class="bg-gray-50 font-sans">
     <header>
@@ -29,9 +28,9 @@
         </div>
         <div class="profile-right">
           <div class="profile-name">Iqbal{{-- {{ $user->nama_lengkap ?? 'Nama Tidak Ditemukan' }} --}}</div>
-          <div class="profile-role">Admin Simpanan {{-- {{ $user->role ?? '' }} --}}</div>
+          <div class="profile-role">Admin Simpanan</div>
         </div>
-        <a href="#{{-- {{ route('admin.profil') }} --}}" class="btn-profil push-right" aria-label="Buka Profil">
+        <a href="#{{-- {{ route('anggota.profil') }} --}}" class="btn-profil push-right" aria-label="Buka Profil">
           <img src="{{ asset('icons/arrow-profil.png') }}" alt="">
         </a>
       </div>
@@ -94,6 +93,7 @@
   <div class="container">
     <div class="content-container">
       <div class="content-container2">
+        <x-menu.pagination3/>
       </div>
     </div>
     <div class="title-container">

@@ -1,11 +1,10 @@
-@extends('layouts.app')
+@extends('layouts.app2')
 
 @section('title', 'Data Pengajuan')  
 @section('title-1', 'Data Pengajuan')  
 @section('sub-title', 'Data Pengajuan')  
 
 @section('content')
-
 
 <div class="pengajuan-table-wrap">
   <table class="pengajuan-table">

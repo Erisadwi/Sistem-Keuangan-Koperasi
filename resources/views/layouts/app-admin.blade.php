@@ -28,9 +28,9 @@
         </div>
         <div class="profile-right">
           <div class="profile-name">Iqbal{{-- {{ $user->nama_lengkap ?? 'Nama Tidak Ditemukan' }} --}}</div>
-          <div class="profile-role">Admin Simpanan</div>
+          <div class="profile-role">Admin Simpanan{{-- {{ $user->role ?? '' }} --}}</div>
         </div>
-        <a href="#{{-- {{ route('anggota.profil') }} --}}" class="btn-profil push-right" aria-label="Buka Profil">
+        <a href="#{{-- {{ route('admin.profil') }} --}}" class="btn-profil push-right" aria-label="Buka Profil">
           <img src="{{ asset('icons/arrow-profil.png') }}" alt="">
         </a>
       </div>
