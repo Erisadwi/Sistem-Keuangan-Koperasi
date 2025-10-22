@@ -27,7 +27,7 @@
     <div class="card green">
       <div class="card-header">
         <h4>Simpanan</h4>
-        <span class="icon">🏦</span>
+        <span class="icon">💼</span>
       </div>
       <div class="card-body">
         <div>{{ number_format($simpanan->anggota ?? 1861247000, 0, ',', '.') }} <span>Simpanan Anggota</span></div>
@@ -41,12 +41,12 @@
     <div class="card purple">
       <div class="card-header">
         <h4>Kas Bulan Oktober 2025</h4>
-        <span class="icon">📘</span>
+        <span class="icon">📒</span>
       </div>
       <div class="card-body">
-        <div>{{ number_format($kas->awal ?? 429565371, 0, ',', '.') }} <span>Saldo Awal</span></div>
-        <div>{{ number_format($kas->mutasi ?? 0, 0, ',', '.') }} <span>Mutasi</span></div>
-        <div>{{ number_format($kas->akhir ?? 429565371, 0, ',', '.') }} <span>Saldo Akhir</span></div>
+        <div>{{ number_format($transaksi->awal ?? 429565371, 0, ',', '.') }} <span>Saldo Awal</span></div>
+        <div>{{ number_format($transaksi->mutasi ?? 0, 0, ',', '.') }} <span>Mutasi</span></div>
+        <div>{{ number_format($transaksi->akhir ?? 429565371, 0, ',', '.') }} <span>Saldo Akhir</span></div>
       </div>
       <a href="#" class="card-footer">More info ➜</a>
     </div>
@@ -69,7 +69,7 @@
     <div class="card light-blue">
       <div class="card-header">
         <h4>Data Peminjam</h4>
-        <span class="icon">📅</span>
+        <span class="icon">🧾</span>
       </div>
       <div class="card-body">
         <div>{{ $peminjam_total ?? 6071 }} <span>Peminjam</span></div>
@@ -83,7 +83,7 @@
     <div class="card red">
       <div class="card-header">
         <h4>Data Pengguna</h4>
-        <span class="icon">🧑‍💼</span>
+        <span class="icon">👤</span>
       </div>
       <div class="card-body">
         <div>{{ $user_aktif ?? 9 }} <span>User Aktif</span></div>
@@ -98,8 +98,9 @@
 {{-- ================= CSS ================= --}}
 <style>
 .dashboard-container {
-  margin-top: -45px;
-  margin-left: 40px;
+  margin-top: -60px;
+  margin-left: 10px;
+  margin-right: 20px;
 }
 
 /* HEADER */
@@ -112,10 +113,18 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 25px;
+  max-width: 1000px;
+  margin: 0 auto;
 }
 
 /* CARD */
 .card {
+  height: auto;
+  max-width: 320px;
+  min-width: 280px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   border-radius: 14px;
   color: #fff;
   position: relative;
@@ -136,7 +145,7 @@
   padding: 20px 20px 0 20px;
 }
 .card-header h4 {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: 700;
   line-height: 1;
 }
@@ -144,27 +153,30 @@
   display: inline-block;
   font-family: 'Segoe UI Emoji', 'Noto Color Emoji', 'Apple Color Emoji', sans-serif;
   font-style: normal;
-  font-size: 60px;             /* ✅ lebih besar */
-  color: rgba(255, 255, 255, 0.7);  /* ✅ abu-abu lembut */
+  font-size: 48px;             
+  color: rgba(255, 255, 255, 0.7);
   position: relative;
-  top: 10px;                    /* ✅ sedikit turun biar sejajar dengan teks */
-  align-self: flex-end;        /* bantu perataan vertikal */
+  top: 6px;
+  align-self: flex-end;
 }
-
 
 /* BODY */
 .card-body {
   margin-top: 10px;
   padding: 0 20px 15px 20px;
   line-height: 1.7;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 .card-body div {
   font-weight: bold;
-  font-size: 14px;
+  font-size: 13px;
 }
 .card-body span {
   font-weight: normal;
   margin-left: 6px;
+  font-size: 12px;
 }
 
 /* FOOTER */
@@ -189,9 +201,9 @@
 /* COLORS */
 .orange { background-color: #FEA855; }
 .green { background-color: #8EDAAB; }
-.purple { background-color: #EAC1F3; }
-.blue { background-color: #f3abdb; }
-.light-blue { background-color: #29abe2; }
-.red { background-color: #FD6565; }
+.purple { background-color: #DC9CE9; }
+.blue { background-color: #0067b0cb; }
+.light-blue { background-color: #29aae2d1; }
+.red { background-color: #ea2828be; }
 </style>
 @endsection

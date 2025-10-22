@@ -34,13 +34,13 @@
         @forelse(($transaksi ?? collect()) as $index => $row)
           <tr class="text-center">
             <td>{{ $index + 1 }}</td>
-            <td>{{ $row->kode_transaksi ?? '-' }}</td>
-            <td>{{ $row->tanggal_transaksi ?? '-' }}</td>
-            <td>{{ $row->uraian ?? '-' }}</td>
-            <td>{{ $row->dari_kas ?? '-' }}</td>
-            <td>{{ $row->untuk_akun ?? '-' }}</td>
-            <td>{{ isset($row->jumlah) ? number_format($row->jumlah, 0, ',', '.') : '-' }}</td>
-            <td>{{ $row->user ?? '-' }}</td>
+            <td>{{ $transaksi->kode_transaksi ?? '-' }}</td>
+            <td>{{ $transaksi->tanggal_transaksi ?? '-' }}</td>
+            <td>{{ $transaksi->ket_transaksi ?? '-' }}</td>
+            <td>{{ $transaksi->jenisAkunTransaksi_sumber ?? '-' }}</td>
+            <td>{{ $transaksi->jenisAkunTransaksi_tujuan ?? '-' }}</td>
+            <td>{{ isset($transaksi->jumlah_transaksi) ? number_format($row->jumlah, 0, ',', '.') : '-' }}</td>
+            <td>{{ $transaksi->user ?? '-' }}</td>
           </tr>
         @empty
           <tr>
@@ -70,7 +70,7 @@
 /* Wrapper utama agar sejajar dengan tombol */
 .content-inner {
   padding-left: 25px;
-  padding-right: 25px;
+  padding-right: 60px;
   margin-top: 25px;
 }
 
@@ -144,34 +144,6 @@
     font-style: italic;
   }
 
-/* Pagination */
-.pagination {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 6px;
-  margin-top: 15px;
-  font-size: 14px;
-}
-
-.pagination select,
-.pagination button {
-  padding: 4px 6px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  background: white;
-  cursor: pointer;
-}
-
-.pagination button {
-  background: var(--primary);
-  color: white;
-  border: none;
-}
-
-.pagination button:hover {
-  background: var(--primary-dark);
-}
 
 /* Responsif */
 @media (max-width: 640px) {

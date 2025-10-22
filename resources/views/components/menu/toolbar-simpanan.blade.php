@@ -1,15 +1,26 @@
 <style>
 .toolbar {
   display: flex;
+  justify-content: flex-end; 
   flex-wrap: wrap;
-  align-items: center;
   gap: 6px;
   margin-top: 70px;
   margin-left: 14px;
   margin-bottom: 15px;
+  margin-right: 30px;
   position: relative;
 }
 
+.toolbar-kiri {
+  display: flex;
+  justify-content: flex-start; 
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 70px;
+  margin-left: 30px;
+  margin-bottom: -95px;
+  position: relative;
+}
 /* Tombol utama */
 .filter-button {
   display: flex;
@@ -153,7 +164,7 @@ svg {
 }
 </style>
 
-<div class="toolbar">
+<div class="toolbar-kiri">
 
   {{-- === Tombol Tambah === --}}
   <button class="filter-button">
@@ -178,7 +189,9 @@ svg {
     </svg>
     Hapus
   </button>
+</div>
 
+<div class="toolbar">
   {{-- === Filter Tanggal === --}}
   <div class="date-filter">
     <button id="tanggalButton" class="filter-button">

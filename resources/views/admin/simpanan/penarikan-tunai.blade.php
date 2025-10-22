@@ -1,4 +1,4 @@
-@extends('layouts.app-admin3')
+@extends('layouts.lebar')
 
 @section('title', 'Transaksi Simpanan')
 @section('title-1', 'Simpanan')
