@@ -6,6 +6,7 @@
 
 @section('content')
 
+<div class="content-inner">
 <div class="pengajuan-table-wrap">
   <table class="pengajuan-table">
     <thead>
@@ -62,6 +63,7 @@
 </div>
 
 <x-menu.pagination/>
+</div>
 
 <style>
   :root{
