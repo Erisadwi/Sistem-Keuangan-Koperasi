@@ -20,56 +20,58 @@
       <div class="panel-inner">
         <div class="left">
           <div class="avatar-wrap">
-            <img src="{{ asset('images/profilAdmin.jpg') }}" alt="" class="avatar">
-            <button class="btn-camera">
+            <img src="{{ {{-- $users->foto ? asset('storage/' . $users->foto) : --}} asset('images/default.jpeg') }}" alt="Foto Profil" class="avatar">
+            <button type="button" id="btnCamera" class="btn-camera">
               <img src="{{ asset('icons/camera.png') }}" alt="" class="btn-icon" />
             </button>
           </div>
           
-          <button type="button" class="btn-upload">
+          <input type="file" name="foto" id="fotoInput" accept="image/*" style="display: none;">
+
+          <button type="button" id="btnUpload" class="btn-upload">
             Ubah Foto
           </button>
         </div>
 
-        <form class="form" method="post" action="#{{-- {{ route('profile.update') }} --}}">
+        <form class="form" method="post" action="#" {{-- {{ route('profile.update', $users->id_user) }} --}} enctype="multipart/form-data">
           @csrf
           @method('PUT')
 
           <div class="field">
             <label>Username</label>
-            <input type="text" name="username" value="iqbaal">
+            <input type="text" name="username" value="iqbaal" {{-- {{ $users->username}} --}}>
           </div>
 
           <div class="field">
             <label>Password Lama</label>
-            <input type="password" name="old_password" value="........">
+            <input type="password" name="old_password" placeholder="Masukkan password lama">
           </div>
 
           <div class="field">
             <label>Password Baru</label>
-            <input type="password" name="new_password" value="........">
+            <input type="password" name="new_password" placeholder="Masukkan password baru">
           </div>
 
           <div class="field">
             <label>Nama Lengkap</label>
-            <input type="text" name="full_name" value="iqbaal dhiafakhri ramadhan">
+            <input type="text" name="nama_lengkap" value="iqbaal dhiafakhri ramadhan" {{-- {{ $users->nama_lengkap }} --}}>
           </div>
 
           <div class="field">
             <label>Alamat</label>
-            <textarea name="address" rows="3">Perum Griya Sejahtera, Blok I No. 18 jl. Medayu Utara 31C, Medokan Ayu, Rungkut Surabaya</textarea>
+            <textarea name="alamat_user" rows="3">Perum Griya Sejahtera, Blok I No. 18 jl. Medayu Utara 31C, Medokan Ayu, Rungkut Surabaya {{-- {{ $users->alamat_user }} --}}</textarea>
           </div>
 
           <div class="field">
-  <label>Role</label>
-  <select name="position">
-    <option value="" disabled selected>pilih role</option>
-    <option value="admin simpanan">admin simpanan</option>
-    <option value="admin pinjaman">admin pinjaman</option>
-    <option value="admin accounting">admin accounting</option>
-    <option value="pengurus">pengurus</option>
-  </select>
-</div>
+            <label>Role</label>
+            <select name="id_role">
+                <option value="" disabled selected>pilih role</option>
+                <option value="admin simpanan">admin simpanan</option>
+                <option value="admin pinjaman">admin pinjaman</option>
+                <option value="admin accounting">admin accounting</option>
+                <option value="pengurus">pengurus</option>
+            </select>
+            </div>
 
           <div class="actions">
             <button type="submit" class="btn btn-save">Simpan Perubahan</button>
@@ -80,5 +82,26 @@
     </section>
   </main>
 
+  <script>
+
+  const fotoInput = document.getElementById('fotoInput');
+  const avatar = document.querySelector('.avatar');
+  const btnUpload = document.getElementById('btnUpload');
+  const btnCamera = document.getElementById('btnCamera');
+
+  btnUpload.addEventListener('click', () => fotoInput.click());
+  btnCamera.addEventListener('click', () => fotoInput.click());
+
+  fotoInput.addEventListener('change', event => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = e => {
+        avatar.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+</script>
+
 </body>
-</html>

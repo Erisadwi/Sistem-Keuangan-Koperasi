@@ -1,4 +1,4 @@
-@extends('layouts.app-admin3')
+@extends('layouts.lebar')
 
 @section('title', 'Pembayaran Angsuran')  
 @section('title-1', 'Pinjaman')  
@@ -70,7 +70,7 @@
   border: 1.5px solid var(--border);
   background: var(--body-bg);
   width: 100%;
-  max-width: 1200px;
+  max-width: 1000px;
   margin-left: 25px;
   margin-top: 20px;
   overflow-x: auto;

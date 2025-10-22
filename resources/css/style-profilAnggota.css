@@ -11,8 +11,8 @@
 }
 
 *{box-sizing:border-box}
-body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial}
-img{display:block;max-width:100%}
+body{margin:0;font-family:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans","Liberation Sans",Arial,"Apple Color Emoji","Segoe UI Emoji"}
+img{display:block}
 
 /* 🟦 HEADER */
 .nav-top{
@@ -24,32 +24,68 @@ img{display:block;max-width:100%}
 .logo-coop{height:60px;margin-right:10px;}
 
 /* 🟩 LAYOUT */
-.layout{
-  display:flex;
-  gap:24px;
-  padding:24px;
-}
+.layout{display:flex;gap:0;}
+.sidebar{width: 270px;background:#fff;border-right:1px solid var(--sidebar-border);min-height:calc(100vh - 56px);padding:18px}
 
-/* 🧭 SIDEBAR */
-.sidebar{
-  width:280px;
-  background:var(--bg);
-  border:1px solid var(--sidebar-border);
-  border-radius:var(--radius);
-  box-shadow:var(--card-shadow);
-  padding:16px;
-  display:flex;
-  flex-direction:column;
-  height:fit-content;
-}
-
-/* Profile di sidebar */
 .profile-card{
-  display:flex;align-items:center;gap:12px;margin-bottom:16px;
+  position:relative;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:#fff;
+  border-radius:12px;
+  box-shadow:var(--shadow);
+  padding:12px 0 12px 0;
+  margin-bottom:14px;
+  width: 235px;  
+  height: 70px; 
 }
-.avatar-90{width:60px;height:60px;border-radius:50%;object-fit:cover;}
-.profile-name{font-weight:600;font-size:16px;}
-.profile-role{font-size:14px;color:var(--muted);}
+
+.avatar-70{
+  width: 70px;
+  height: 70px;
+  margin-left:0;
+  border-radius: 12px;
+  box-shadow:var(--shadow);
+  object-fit: cover;
+}
+
+.profile-right{line-height:1.5;}
+.profile-name{
+  text-transform: lowercase;
+  font-weight:600;
+  font-size:16px;
+}
+.profile-role{font-size:14px;color: var(--muted);}
+
+a.btn-profil, btn-profil{
+  appearance: none; 
+  -webkit-appearance: none;
+  width: 30px; 
+  height: 25px; 
+  border: none; 
+  background: transparent; 
+  padding: 0;
+  display: inline-flex; 
+  align-items: center; 
+  justify-content: center; 
+  border-radius: 8px; 
+  cursor: pointer;
+  margin-left: auto; 
+}
+
+a.btn-profil img, btn-profil img { 
+  width: 30px; 
+  height: 25px; 
+  display: block; 
+}
+
+a.btn-profil:hover, btn-profil:hover{ background: rgba(0,0,0,.04);}
+a.btn-profil:active, btn-profil:active{ transform: translateY(0.5px); }
+a.btn-profil:focus-visible, btn-profil:focus-visible{ outline: 2px solid #1d4ed8; outline-offset: 2px; }
+
+.btn-profil:disabled{opacity: .5; cursor: not-allowed; background: transparent; transform: none;}
+.push-right{ margin-left: auto; }
 
 /* Menu */
 .menu-section{margin-bottom:8px;}
@@ -85,11 +121,11 @@ img{display:block;max-width:100%}
 .submenu li a:hover{color:var(--blue-800);}
 
 /* 🧾 KONTEN UTAMA */
-.content{flex:1;}
-.page-title{
-  font-size:22px;
-  font-weight:700;
-  margin-bottom:20px;
+.content {
+  flex: 1;
+  padding: 5px 40px;
+  padding-left: 10px; 
+  background-color: #f9fafb;
 }
 .subtitle{font-weight:400;color:var(--muted);}
 
@@ -97,7 +133,8 @@ img{display:block;max-width:100%}
 .profile-wrapper{
   display:grid;
   grid-template-columns:1fr 1.2fr;
-  gap:24px;
+  gap:20px;
+  padding: 5px 40px;
 }
 
 /* Card profil tengah */
@@ -118,18 +155,42 @@ img{display:block;max-width:100%}
 .profile-status{font-size:15px;margin-bottom:24px;}
 .profile-status.aktif{color:#2e8b57;font-weight:600;}
 
-.action-group{
-  display:flex;flex-direction:column;gap:10px;
+.action-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;              /* jarak antar tombol lebih kecil */
+  padding: 4px 3px;      /* ruang dalam grup lebih kecil */
+  max-width: 250px;      /* batasi lebar box tombol */
+  margin: 0 auto;        /* agar tetap rata tengah */
 }
-.btn{
-  border:none;border-radius:8px;
-  padding:10px;font-size:15px;font-weight:600;
-  cursor:pointer;transition:.2s all;
+
+.btn {
+  border: none;
+  border-radius: 6px;    /* sedikit lebih kecil */
+  padding: 6px 4px;      /* tinggi tombol lebih pendek */
+  font-size: 14px;       /* teks sedikit lebih kecil */
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s all;
 }
-.btn-danger{background:#ef4444;color:#fff;}
-.btn-danger:hover{background:#dc2626;}
-.btn-light{background:#fff;border:1px solid #ccc;}
-.btn-light:hover{background:#f3f4f6;}
+
+.btn-danger {
+  background: #ef4444;
+  color: #fff;
+}
+
+.btn-danger:hover {
+  background: #dc2626;
+}
+
+.btn-light {
+  background: #fff;
+  border: 1px solid #ccc;
+}
+
+.btn-light:hover {
+  background: #f3f4f6;
+}
 
 /* Form kanan */
 .card-form{
@@ -149,9 +210,21 @@ input,textarea{
   font-size:15px;
   resize:none;
 }
-.btn-primary{
-  background:var(--blue-brand);
-  color:#fff;
-  width:100%;
+.btn-primary {
+  background: var(--blue-brand);
+  color: #fff;
+  padding: 8px 80px;
+  font-size: 14px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.2s all;
+  width: auto;          
+  display: block;       
+  margin-left: auto;    
 }
-.btn-primary:hover{background:#00528b;}
+
+.btn-primary:hover {
+  background: #00528b;
+}

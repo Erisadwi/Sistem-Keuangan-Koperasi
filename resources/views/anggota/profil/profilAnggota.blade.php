@@ -18,43 +18,35 @@
 
   {{-- 🔹 KONTEN UTAMA --}}
   <div class="layout">
-    
     {{-- 🔸 SIDEBAR --}}
     <aside class="sidebar">
       <div class="profile-card">
         <div class="profile-left">
           <img src="{{ asset('images/profilAnggota.jpg') }}"
-          alt="Foto Profil" class="avatar-90">
+          alt="Foto Anggota" class="avatar-70">
         </div>
         <div class="profile-right">
           <div class="profile-name">angga</div>
           <div class="profile-role">Anggota</div>
         </div>
+        <a href="#" class="btn-profil push-right" aria-label="Buka Profil">
+          <img src="{{ asset('icons/arrow-profil.png') }}" alt="">
+        </a>
       </div>
 
-      <nav class="menu">
-        <div class="menu-section">
-          <button class="menu-item" onclick="toggleSubmenu(this)">
-            Laporan <span class="chev">›</span>
-          </button>
-          <ul class="submenu">
-            <li><a href="#">Simpanan</a></li>
-            <li><a href="#">Pinjaman</a></li>
-            <li><a href="#">Pembayaran</a></li>
-            <li><a href="#">Sisa Hasil Usaha (SHU)</a></li>
-          </ul>
-        </div>
+      <ul class="menu-list">
+        <x-menu.section title="Laporan" :open="false">
+          <a href="#" class="submenu-row">Simpanan</a>
+          <a href="#" class="submenu-row">Pinjaman</a>
+          <a href="#" class="submenu-row">Pembayaran</a>
+          <a href="#" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
+        </x-menu.section>
 
-        <div class="menu-section">
-          <button class="menu-item" onclick="toggleSubmenu(this)">
-            Pengajuan Pinjaman <span class="chev">›</span>
-          </button>
-          <ul class="submenu">
-            <li><a href="#">Data Pengajuan</a></li>
-            <li><a href="#">Tambah Pengajuan Baru</a></li>
-          </ul>
-        </div>
-      </nav>
+        <x-menu.section title="Pengajuan Pinjaman" :open="false">
+          <a href="#" class="submenu-row">Data Pengajuan</a>
+          <a href="#" class="submenu-row">Tambah Pengajuan Baru</a>
+        </x-menu.section>
+      </ul>
     </aside>
 
     {{-- 🔸 ISI PROFIL --}}
@@ -75,35 +67,36 @@
         </section>
 
         {{-- Form Profil Kanan --}}
-        <section class="card-form">
+        <section class="card-form"> 
           <form>
-            <div class="form-group">
-              <label>Username</label>
-              <input type="text" value="angga">
-            </div>
+         <form class="form" method="post" action="#" {{-- {{ route('profile.update', $anggota->id_anggota) }} --}} enctype="multipart/form-data">
+          @csrf
+          @method('PUT')
 
-            <div class="form-group">
-              <label>Password</label>
-              <input type="password" value="........">
-            </div>
+  <div class="form-group">
+    <label>Username</label>
+    <input type="text" name="username_anggota" value="angga" {{-- {{ $anggota->username_anggota }} --}}>
+  </div>
 
-            <div class="form-group">
-              <label>Nama Lengkap</label>
-              <input type="text" value="angga aldi yunanda">
-            </div>
+  <div class="form-group">
+    <label>Password</label>
+    <input type="password" name="password" placeholder="Masukkan password">
+  </div>
 
-            <div class="form-group">
-              <label>Alamat</label>
-              <textarea rows="3">Perum Griya Sejahtera,
-Blok J No. 20
-jl. Medayu Utara 30A, Medokan Ayu,
-Rungkut, Surabaya</textarea>
-            </div>
+  <div class="form-group">
+    <label>Nama Lengkap</label>
+    <input type="text" name="nama_lengkap"value="angga aldi yunanda" {{-- {{ $anggota->nama_lengkap}} --}}>
+  </div>
 
-            <div class="form-group">
-              <label>Jabatan</label>
-              <input type="text" value="anggota">
-            </div>
+  <div class="form-group">
+    <label>Alamat</label>
+    <textarea name="alamat_anggota" rows="3">Perum Griya Sejahtera, Blok J No. 20 jl. Medayu Utara 30A, Medokan Ayu, Rungkut Surabaya {{-- {{ $anggota->alamat_anggota }} --}}</textarea>
+  </div>
+
+  <div class="form-group">
+    <label>Jabatan</label>
+    <input type="text" name="jabatan" value="anggota"  {{-- {{ $anggota->jabatan}} --}}>
+  </div>
 
             <button type="submit" class="btn btn-primary">Edit Profil</button>
           </form>
