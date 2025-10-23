@@ -26,7 +26,7 @@
           alt="Foto Anggota" class="avatar-70">
         </div>
         <div class="profile-right">
-          <div class="profile-name">angga</div>
+          <div class="profile-name">Angga</div>
           <div class="profile-role">Anggota</div>
         </div>
         <a href="#" class="btn-profil push-right" aria-label="Buka Profil">
