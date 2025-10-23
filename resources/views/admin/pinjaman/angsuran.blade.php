@@ -1,4 +1,4 @@
-@extends('layouts.lebar')
+@extends('layouts.app-admin3')
 
 @section('title', 'Pembayaran Angsuran')  
 @section('title-1', 'Pinjaman')  
@@ -69,8 +69,7 @@
 .pengajuan-pinjaman-table-wrap {
   border: 1.5px solid var(--border);
   background: var(--body-bg);
-  width: 100%;
-  max-width: 1000px;
+  width: 96%;
   margin-left: 25px;
   margin-top: 20px;
   overflow-x: auto;
@@ -90,7 +89,7 @@
   background: var(--header-bg);
   color: var(--header-text);
   padding: 10px;
-  font-weight: 600;
+  font-weight: 650;
   border: 1px solid var(--border);
 }
 

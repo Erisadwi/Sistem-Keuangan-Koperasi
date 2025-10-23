@@ -1,4 +1,4 @@
-@extends('layouts.lebar')
+@extends('layouts.app-admin3')
 
 @section('title', 'Transaksi Simpanan')
 @section('title-1', 'Simpanan')
@@ -63,12 +63,11 @@
 }
 
 .penarikan-wrap {
-  border: 1.5px solid var(--border);
   border-radius: 0;
   background: var(--bg);
-  width: 870px;
-  margin-left: 25px;
-  margin-top: 60px;
+  width: 100%;
+  margin-left: 15px;
+  margin-top: -15px;
   padding: 0;
   box-shadow: none;
 }
@@ -78,8 +77,8 @@
   overflow-x: auto;
   overflow-y: auto;
   max-height: 400px;
-  width: 100%;
-  padding: 30px 16px 10px 16px;
+  width: 98%;
+  padding: 30px 16px 8px 16px;
   box-sizing: border-box;
 }
 .table-scroll-wrapper::-webkit-scrollbar {

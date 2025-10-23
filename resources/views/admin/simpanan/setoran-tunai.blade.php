@@ -1,4 +1,4 @@
-@extends('layouts.lebar')
+@extends('layouts.app-admin3')
 
 @section('title', 'Simpanan Setoran Tunai')
 @section('title-1', 'Simpanan')
@@ -105,7 +105,6 @@
 
 .simpanan-table {
   width: 100%;
-  min-width: 1000px;
   border-collapse: collapse;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: 14px;

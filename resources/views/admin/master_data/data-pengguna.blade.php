@@ -79,12 +79,11 @@
 }
 
 .laporan-data-pengguna-wrap {
-  border: 1.5px solid var(--border);
   border-radius: 0;
   background: var(--bg);
-  width: 870px;
-  margin-left: 25px;
-  margin-top: 60px;
+  width: 98%;          
+  margin-left: 10px;     
+  margin-top: 0px; 
   padding: 0;
   box-shadow: none;
 }

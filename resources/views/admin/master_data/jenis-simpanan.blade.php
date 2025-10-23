@@ -1,4 +1,4 @@
-@extends('layouts.app-admin')
+@extends('layouts.app-admin3')
 
 @push('styles')
   @vite('resources/css/admin/jenis-simpanan.css')
@@ -69,16 +69,16 @@
     border: 1.5px solid var(--outer-border);
     border-radius: 0;
     background: var(--bg);
-    width: 870px;
+    width: 96%;
     margin-left: 25px;
-    margin-top: 20px;
+    margin-top: 30px;
     padding: 0;
     box-shadow: none;
     overflow-x: visible;
   }
 
   .simpanan-table {
-    width: 870px;
+    width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
@@ -90,7 +90,7 @@
     background: var(--head-dark);
     color: #fff;
     text-align: center;
-    font-weight: 600;
+    font-weight: 650;
     padding: 10px;
     border-bottom: 1px solid var(--grid);
     white-space: nowrap;

@@ -1,4 +1,4 @@
-@extends('layouts.app-admin4')
+@extends('layouts.app-admin3')
 
 @section('title', 'Identitas Koperasi')  
 @section('title-1', 'Identitas Koperasi')  
@@ -132,9 +132,9 @@
     background-color: transparent;
     padding: 20px;
     border-radius: 10px;
-    width: 900px;
-    margin-left:10px;
-    margin-top:55px;
+    width: 100%;
+    margin-left:0px;
+    margin-top:40px;
 }
 
 .form-row {
@@ -187,9 +187,9 @@ button {
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.519);
     transition: background-color 0.3s;
     margin-top: 40px;
-    margin-left: 740px; 
     display: block;
     text-align: center;
+    justify-content: flex-start;
 }
 
 button:hover {

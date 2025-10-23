@@ -72,6 +72,7 @@
   overflow-y: auto;
   max-height: 420px;
   width: 100%;
+  left:10px;
   background: white;
   border: 1px solid var(--border);
   border-radius: 0;
@@ -80,7 +81,6 @@
 
 .pinjaman-lunas-table {
   width: 100%;
-  min-width: 1150px;
   border-collapse: collapse;
   font-size: 14px;
 }

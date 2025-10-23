@@ -70,7 +70,6 @@
   </div>
 </div>
 
-{{-- Komponen pagination --}}
 <x-menu.pagination />
 
 {{-- STYLE --}}
@@ -126,7 +125,7 @@
   min-width: 1000px;
   border-collapse: collapse;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text);
 }
 
@@ -184,35 +183,6 @@
   background-color: #d9534f;
   color: white;
   border: none;
-}
-
-/* Pagination */
-.pagination {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 6px;
-  margin-top: 15px;
-  font-size: 14px;
-}
-
-.pagination select,
-.pagination button {
-  padding: 4px 6px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  background: white;
-  cursor: pointer;
-}
-
-.pagination button {
-  background: var(--primary);
-  color: white;
-  border: none;
-}
-
-.pagination button:hover {
-  background: var(--primary-dark);
 }
 
 /* Responsif */

@@ -50,9 +50,9 @@
     background-color: transparent;
     padding: 20px;
     border-radius: 10px;
-    width: 900px;
-    margin-left:10px;
-    margin-top:55px;
+    width: 100%;
+    margin-left:0px;
+    margin-top:40px;
 }
 
 label {
@@ -96,9 +96,8 @@ button {
     font-weight: bold; 
     cursor: pointer;
     box-shadow: 0 4px 8px rgba(82, 76, 76, 0.15);
-    transition: background-color 0.3s;
-    margin-left: 745px; 
-    margin-top:15px;
+    transition: background-color 0.3s; 
+    margin-top:30px;
     display: block; 
     text-align: center; 
 }

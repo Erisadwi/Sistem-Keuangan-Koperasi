@@ -64,18 +64,17 @@
     border: 1.5px solid var(--outer-border);
     border-radius: 0;
     background: var(--bg);
-    width: 870px;
-    margin-left: 25px;
-    margin-top: 20px;
+    width: 96%;          
+    margin-left: 20px;     
+    margin-top: 35px;       
     padding: 0;
     box-shadow: none;
     overflow-x: visible;
   }
 
   .barang-inventaris-table {
-    width: 870px;
+    width: 100%;                
     border-collapse: collapse;
-    table-layout: fixed;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     font-size: 13px;
     color: #222;
@@ -85,7 +84,7 @@
     background: var(--head-dark);
     color: #fff;
     text-align: center;
-    font-weight: 600;
+    font-weight: 650;
     padding: 10px;
     border-bottom: 1px solid var(--grid);
     white-space: nowrap;

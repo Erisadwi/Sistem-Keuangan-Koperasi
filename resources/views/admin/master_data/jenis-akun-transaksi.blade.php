@@ -1,4 +1,4 @@
-@extends('layouts.lebar')
+@extends('layouts.app-admin3')
 
 @section('title', 'Jenis Akun Transaksi')
 @section('title-1', 'Master Data')
@@ -83,7 +83,7 @@
 .content-inner {
   padding-left: 25px;   /* sejajar tombol */
   padding-right: 25px;
-  margin-top: 25px;     /* jarak ideal antara tombol dan tabel */
+  margin-top: 30px;     /* jarak ideal antara tombol dan tabel */
 }
 
 /* Scroll area tabel */
@@ -121,7 +121,7 @@
   min-width: 1000px; /* supaya scroll horizontal aktif kalau kolom banyak */
   border-collapse: collapse;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text);
 }
 
