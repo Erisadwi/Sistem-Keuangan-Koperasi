@@ -321,12 +321,8 @@ Route::get('/admin/pinjaman/detail-peminjaman', function () {
 Route::get('/anggota/tambah-data-pengajuan', function () {
     return view('anggota.tambah-data-pengajuan');
 })->name('anggota.tambah-data-pengajuan');
-<<<<<<< HEAD
 
-=======
->>>>>>> 748da86fbff8fa2b2888ddd75ab1e49ccd3d202b
 Route::get('/anggota/data-pengajuan-coba', function () {
     return view('anggota.data-pengajuan-coba');
 })->name('anggota.data-pengajuan-coba');
-
 
