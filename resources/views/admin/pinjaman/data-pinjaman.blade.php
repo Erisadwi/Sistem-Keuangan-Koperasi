@@ -26,8 +26,8 @@
       </tr>
     </thead>
     <tbody>
-      @if(isset($data) && count($data) > 0)
-        @foreach ($data as $index => $row)
+      @if(isset($pinjaman) && count($pinjaman) > 0)
+        @foreach ($pinjaman as $index => $row)
         <tr>
           <td>{{ $index + 1 }}</td>
           <td>{{ $row->kode }}</td>

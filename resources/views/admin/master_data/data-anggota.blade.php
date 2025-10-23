@@ -1,4 +1,4 @@
-@extends('layouts.app-admin3')
+@extends('layouts.lebar')
 
 @section('title', 'Data Anggota')
 @section('title-1', 'Master Data')
@@ -70,7 +70,10 @@
   </div>
 </div>
 
+<<<<<<< HEAD
 <x-menu.pagination />
+=======
+>>>>>>> 0980209f3364fdee5e89bfd684d6b84092d1ea2b
 
 {{-- STYLE --}}
 <style>
@@ -185,6 +188,14 @@
   border: none;
 }
 
+<<<<<<< HEAD
+=======
+
+.pagination button:hover {
+  background: var(--primary-dark);
+}
+
+>>>>>>> 0980209f3364fdee5e89bfd684d6b84092d1ea2b
 /* Responsif */
 @media (max-width: 640px) {
   .data-anggota-table {

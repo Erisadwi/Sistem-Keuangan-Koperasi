@@ -31,7 +31,7 @@
 
       <tbody>
         {{-- Loop data transaksi, aman walau belum ada controller/database --}}
-        @forelse(($transaksi ?? collect()) as $index => $row)
+        @forelse(($transaksi ?? collect()) as $index => $transaksi)
           <tr class="text-center">
             <td>{{ $index + 1 }}</td>
             <td>{{ $transaksi->kode_transaksi ?? '-' }}</td>
@@ -39,7 +39,7 @@
             <td>{{ $transaksi->ket_transaksi ?? '-' }}</td>
             <td>{{ $transaksi->jenisAkunTransaksi_sumber ?? '-' }}</td>
             <td>{{ $transaksi->jenisAkunTransaksi_tujuan ?? '-' }}</td>
-            <td>{{ isset($transaksi->jumlah_transaksi) ? number_format($row->jumlah, 0, ',', '.') : '-' }}</td>
+            <td>{{ isset($transaksi->jumlah_transaksi) ? number_format($transaksi->jumlah, 0, ',', '.') : '-' }}</td>
             <td>{{ $transaksi->user ?? '-' }}</td>
           </tr>
         @empty
