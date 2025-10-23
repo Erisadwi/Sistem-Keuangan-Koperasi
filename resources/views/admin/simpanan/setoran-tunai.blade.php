@@ -31,18 +31,18 @@
       </thead>
 
       <tbody>
-        @forelse(($transaksi ?? collect()) as $index => $row)
+        @forelse(($simpanan ?? collect()) as $index => $simpanan)
           <tr class="text-center">
             <td>{{ $index + 1 }}</td>
-            <td>{{ $row->kode_transaksi ?? '-' }}</td>
-            <td>{{ $row->tanggal_transaksi ?? '-' }}</td>
-            <td>{{ $row->id_anggota ?? '-' }}</td>
-            <td>{{ $row->nama_anggota ?? '-' }}</td>
-            <td>{{ $row->jenis_simpanan ?? '-' }}</td>
-            <td>{{ isset($row->jumlah) ? number_format($row->jumlah, 0, ',', '.') : '-' }}</td>
-            <td>{{ $row->user ?? '-' }}</td>
+            <td>{{ $simpanan->kode_simpanan ?? '-' }}</td>
+            <td>{{ $simpanan->tanggal_transaksi ?? '-' }}</td>
+            <td>{{ $simpanan->id_anggota ?? '-' }}</td>
+            <td>{{ $simpanan->nama_anggota ?? '-' }}</td>
+            <td>{{ $simpanan->jenis_simpanan ?? '-' }}</td>
+            <td>{{ isset($simpanan->jumlah) ? number_format($simpanan->jumlah, 0, ',', '.') : '-' }}</td>
+            <td>{{ $simpanan->user ?? '-' }}</td>
             <td>
-              <a href="{{ route('simpanan.cetak', $row->id ?? '#') }}" 
+              <a href="{{ route('simpanan.cetak', $simpanan->id ?? '#') }}" 
                  class="btn-nota">🧾 Nota</a>
             </td>
           </tr>

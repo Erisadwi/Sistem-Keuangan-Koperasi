@@ -59,7 +59,6 @@
 
 
 
-{{-- Komponen pagination --}}
-<x-menu.pagination />
+
 
 @endsection

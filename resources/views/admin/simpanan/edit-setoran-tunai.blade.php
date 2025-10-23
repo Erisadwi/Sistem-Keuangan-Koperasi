@@ -3,21 +3,21 @@
 @section('title', 'Simpanan Setoran Tunai')  
 @section('back-title', 'Transaksi Simpanan >')
 @section('title-1', 'Setoran Tunai')  
-@section('sub-title', 'Edit Data Setoran Tunai')  
+@section('sub-title', 'Edit simpanan Setoran Tunai')  
 
 @section('content')
 
 <div class="form-container">
     <form id="formEditSetoranTunai"
-          action="#" {{-- nanti diganti route('simpanan.update', $data->id) --}}
-          method="POST" enctype="multipart/form-data">
+          action="#" {{-- nanti diganti route('simpanan.update', $simpanan->id) --}}
+          method="POST" enctype="multipart/form-simpanan">
         @csrf
         {{-- @method('PUT') --}}
 
         {{-- Bagian Tanggal Transaksi --}}
         <label for="tanggal_transaksi">Tanggal Transaksi</label>
         <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi"
-            value="{{ isset($data->tanggal_transaksi) ? \Carbon\Carbon::parse($data->tanggal_transaksi)->format('Y-m-d\TH:i') : '' }}" required>
+            value="{{ isset($simpanan->tanggal_transaksi) ? \Carbon\Carbon::parse($simpanan->tanggal_transaksi)->format('Y-m-d\TH:i') : '' }}" required>
 
         <hr style="margin:20px 0; border:1px solid #ccc;">
 
@@ -26,16 +26,16 @@
 
         <label for="nama_penyetor">Nama Penyetor</label>
         <input type="text" id="nama_penyetor" name="nama_penyetor"
-            value="{{ $data->nama_penyetor ?? '' }}" required>
+            value="{{ $simpanan->nama_anggota ?? '' }}" required>
 
         <label for="nomor_identitas">Nomor Identitas</label>
         <input type="text" id="nomor_identitas" name="nomor_identitas"
-            value="{{ $data->nomor_identitas ?? '' }}" required>
+            value="{{ $simpanan->nomor_identitas ?? '' }}" required>
 
         <label for="alamat">Alamat</label>
         <textarea id="alamat" name="alamat" rows="2" required
             style="width:100%; padding:8px; border:1px solid #565656; border-radius:5px;
-                   font-size:13px; background-color:#fff; margin-bottom:15px;">{{ $data->alamat ?? '' }}</textarea>
+                   font-size:13px; background-color:#fff; margin-bottom:15px;">{{ $simpanan->alamat ?? '' }}</textarea>
 
         <hr style="margin:20px 0; border:1px solid #ccc;">
 
@@ -44,32 +44,32 @@
 
         <label for="nama_anggota">Nama Anggota</label>
         <input type="text" id="nama_anggota" name="nama_anggota"
-            value="{{ $data->nama_anggota ?? '' }}" required>
+            value="{{ $simpanan->nama_anggota ?? '' }}" required>
 
         <label for="jenis_simpanan">Jenis Simpanan</label>
         <select name="jenis_simpanan" id="jenis_simpanan" required>
-            <option value="" disabled {{ !isset($data->jenis_simpanan) ? 'selected' : '' }}>-- Pilih Jenis Simpanan --</option>
-            <option value="wajib" {{ (isset($data->jenis_simpanan) && $data->jenis_simpanan == 'wajib') ? 'selected' : '' }}>Simpanan Wajib</option>
-            <option value="pokok" {{ (isset($data->jenis_simpanan) && $data->jenis_simpanan == 'pokok') ? 'selected' : '' }}>Simpanan Pokok</option>
-            <option value="sukarela" {{ (isset($data->jenis_simpanan) && $data->jenis_simpanan == 'sukarela') ? 'selected' : '' }}>Simpanan Sukarela</option>
+            <option value="" disabled {{ !isset($simpanan->jenis_simpanan) ? 'selected' : '' }}>-- Pilih Jenis Simpanan --</option>
+            <option value="wajib" {{ (isset($simpanan->jenis_simpanan) && $simpanan->jenis_simpanan == 'wajib') ? 'selected' : '' }}>Simpanan Wajib</option>
+            <option value="pokok" {{ (isset($simpanan->jenis_simpanan) && $simpanan->jenis_simpanan == 'pokok') ? 'selected' : '' }}>Simpanan Pokok</option>
+            <option value="sukarela" {{ (isset($simpanan->jenis_simpanan) && $simpanan->jenis_simpanan == 'sukarela') ? 'selected' : '' }}>Simpanan Sukarela</option>
         </select>
 
         <label for="jumlah_simpanan">Jumlah Simpanan</label>
         <input type="number" id="jumlah_simpanan" name="jumlah_simpanan"
-            value="{{ $data->jumlah_simpanan ?? '' }}" required>
+            value="{{ $simpanan->jumlah_simpanan ?? '' }}" required>
 
         <label for="keterangan">Keterangan</label>
         <input type="text" id="keterangan" name="keterangan"
-            value="{{ $data->keterangan ?? '' }}" placeholder="Opsional...">
+            value="{{ $simpanan->keterangan ?? '' }}" placeholder="Opsional...">
 
-        <label for="simpan_ke_kas">Simpan Ke Kas</label>
-        <select name="simpan_ke_kas" id="simpan_ke_kas" required>
-            <option value="" disabled {{ !isset($data->simpan_ke_kas) ? 'selected' : '' }}>-- Pilih Kas --</option>
-            <option value="kas_besar" {{ (isset($data->simpan_ke_kas) && $data->simpan_ke_kas == 'kas_besar') ? 'selected' : '' }}>Kas Besar</option>
-            <option value="bank_mandiri" {{ (isset($data->simpan_ke_kas) && $data->simpan_ke_kas == 'bank_mandiri') ? 'selected' : '' }}>Bank Mandiri</option>
-            <option value="kas_kecil" {{ (isset($data->simpan_ke_kas) && $data->simpan_ke_kas == 'kas_kecil') ? 'selected' : '' }}>Kas Kecil</option>
-            <option value="kas_niaga" {{ (isset($data->simpan_ke_kas) && $data->simpan_ke_kas == 'kas_niaga') ? 'selected' : '' }}>Kas Niaga</option>
-            <option value="bank_bri" {{ (isset($data->simpan_ke_kas) && $data->simpan_ke_kas == 'bank_bri') ? 'selected' : '' }}>Bank BRI</option>
+        <label for="jenisAkunTransaksi_tujuan">Simpan Ke Kas</label>
+        <select name="jenisAkunTransaksi_tujuan" id="jenisAkunTransaksi_tujuan" required>
+            <option value="" disabled {{ !isset($simpanan->jenisAkunTransaksi_tujuan) ? 'selected' : '' }}>-- Pilih Kas --</option>
+            <option value="kas_besar" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'kas_besar') ? 'selected' : '' }}>Kas Besar</option>
+            <option value="bank_mandiri" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'bank_mandiri') ? 'selected' : '' }}>Bank Mandiri</option>
+            <option value="kas_kecil" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'kas_kecil') ? 'selected' : '' }}>Kas Kecil</option>
+            <option value="kas_niaga" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'kas_niaga') ? 'selected' : '' }}>Kas Niaga</option>
+            <option value="bank_bri" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'bank_bri') ? 'selected' : '' }}>Bank BRI</option>
         </select>
 
         <label for="photo">Photo</label>
@@ -77,9 +77,9 @@
                style="border:1px solid #565656; border-radius:5px; padding:6px; width:100%; font-size:13px; margin-bottom:20px;">
 
         {{-- tampilkan jika photo sudah ada --}}
-        @if(isset($data->photo) && $data->photo)
+        @if(isset($simpanan->photo) && $simpanan->photo)
             <div style="margin-bottom:10px;">
-                <img src="{{ asset('storage/' . $data->photo) }}" alt="Foto Bukti" width="100" style="border-radius:5px;">
+                <img src="{{ asset('storage/' . $simpanan->photo) }}" alt="Foto Bukti" width="100" style="border-radius:5px;">
             </div>
         @endif
 
@@ -180,12 +180,12 @@ document.getElementById('formEditSetoranTunai').addEventListener('submit', funct
     });
 
     if (!valid) {
-        alert('⚠️ Harap lengkapi semua data wajib sebelum menyimpan!');
+        alert('⚠️ Harap lengkapi semua simpanan wajib sebelum menyimpan!');
         return;
     }
 
-    if (confirm('Apakah Anda yakin ingin menyimpan perubahan data setoran tunai ini?')) {
-        alert('✅ Data setoran tunai berhasil diperbarui!');
+    if (confirm('Apakah Anda yakin ingin menyimpan perubahan simpanan setoran tunai ini?')) {
+        alert('✅ simpanan setoran tunai berhasil diperbarui!');
         // this.submit(); // aktifkan kalau sudah ada route
     }
 });
