@@ -107,22 +107,15 @@ a.btn-profil:focus-visible, btn-profil:focus-visible{ outline: 2px solid #1d4ed8
   inset: 0;
 }
 .title-container {
-  width: 925px;
-  height: 50px;
-  position: absolute;
-  left: 0px;
-  top: 0px;
-}
-.title-container2 {
   background: #6e9eb6;
   border-radius: 15px 15px 0px 0px;
-  width: 100%;
-  max-width: 925px;
+  width: 97%;
   height: 50px;
   position: absolute;
   left: 0px;
   top: 0px;
 }
+
 .sub-title {
   color: #ffffff;
   text-align: left;
@@ -134,35 +127,29 @@ a.btn-profil:focus-visible, btn-profil:focus-visible{ outline: 2px solid #1d4ed8
   top: 14px;
 }
 .content-container {
-  position: relative;
-  width: 925px;
-  height: auto;
-  padding: 24px;
-  margin-bottom: 20px;
-}
-.content-container2 {
   background: #c4dae5;
   border-radius: 15px;
-  width: 925px;
+  width: 97%;
   min-height: 700px;
   position: relative;
-  left: -24px;
+  left: 0px;
   top: 0px;
-
+  bottom: -20px;
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
-  text-align: center;
+  padding: 24px;
 }
+
 .title-content {
   color: #000000;
-  text-align: center;
+  top:19%;
+  left: 50%;
+  transform: translateX(-50%);
   font-family: "Inter-SemiBold", sans-serif;
   font-size: 20px;
   font-weight: 600;
   position: absolute;
-  left: 236px;
-  top: 105px;
-  width: 495px;
-  height: 18.68px;
+  align-items: center;
+
 }
 
 

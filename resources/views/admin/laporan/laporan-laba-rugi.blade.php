@@ -1,8 +1,6 @@
 @extends('layouts.laporan-admin2')
 
-@push('styles')
- @vite('resources/css/style-laporanBukuBesar.css')
-@endpush
+
 
 @section('title', 'Laporan Laba Rugi')  
 @section('title-1', 'Laba Rugi')  
@@ -52,9 +50,9 @@
   border: 1.5px solid var(--outer-border);
   border-radius: 0;
   background: var(--bg);
-  width: 870px;          
-  margin-left: 25px;     
-  margin-top: 65px;       
+  width: 98%;          
+  margin-left: 10px;     
+  margin-top: 65px;     
   padding: 0;             
   box-shadow: none;       
   overflow-x: visible; 

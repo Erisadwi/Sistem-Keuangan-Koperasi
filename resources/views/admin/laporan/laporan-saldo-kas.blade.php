@@ -1,4 +1,4 @@
-@extends('layouts.laporan-admin')
+@extends('layouts.laporan-admin2')
 
 
 @section('title', 'Laporan Saldo Kas')  
@@ -61,12 +61,12 @@
 
 <style>
         table {
-            width: 860px;
             border-collapse: collapse;
             background-color: #a7c7d9;
             border-radius: 8px;
-            margin-left:30px;
-            margin-top:60px;
+            width: 98%;          
+            margin-left: 10px;     
+            margin-top: 90px;
         }
         th, td {
             font-size:14px;
