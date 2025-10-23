@@ -95,11 +95,11 @@
 
 <style>
     table {
-        width: 870px;
         border-collapse: collapse;
         font-size: 13px;
-        margin-left:25px;
-        margin-top:70px;
+        width: 98%;          
+        margin-left: 10px;     
+        margin-top: 100px;
         background-color: #fff;
     }
     td, th {

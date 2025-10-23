@@ -26,8 +26,8 @@
       </tr>
     </thead>
     <tbody>
-      @if(isset($data) && count($data) > 0)
-        @foreach ($data as $index => $row)
+      @if(isset($pinjaman) && count($pinjaman) > 0)
+        @foreach ($pinjaman as $index => $row)
         <tr>
           <td>{{ $index + 1 }}</td>
           <td>{{ $row->kode }}</td>
@@ -64,12 +64,11 @@
 }
 
 .data-pinjaman-wrap {
-  border: 1.5px solid var(--border);
   border-radius: 0;
   background: var(--bg);
-  width: 870px;
-  margin-left: 25px;
-  margin-top: 60px;
+  width: 100%;
+  margin-left: 15px;
+  margin-top: 0px;
   padding: 0;
   box-shadow: none;
 }
@@ -97,8 +96,7 @@
 
 /* Tabel */
 .data-pinjaman-table {
-  width: 100%;
-  min-width: 1000px;
+  width: 97%;
   border-collapse: collapse;
   background: #ffffff;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;

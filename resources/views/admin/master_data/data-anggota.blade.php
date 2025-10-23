@@ -1,4 +1,4 @@
-@extends('layouts.app-admin3')
+@extends('layouts.lebar')
 
 @section('title', 'Data Anggota')
 @section('title-1', 'Master Data')
@@ -70,8 +70,10 @@
   </div>
 </div>
 
-{{-- Komponen pagination --}}
+<<<<<<< HEAD
 <x-menu.pagination />
+=======
+>>>>>>> 0980209f3364fdee5e89bfd684d6b84092d1ea2b
 
 {{-- STYLE --}}
 <style>
@@ -126,7 +128,7 @@
   min-width: 1000px;
   border-collapse: collapse;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  font-size: 14px;
+  font-size: 13px;
   color: var(--text);
 }
 
@@ -186,35 +188,14 @@
   border: none;
 }
 
-/* Pagination */
-.pagination {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 6px;
-  margin-top: 15px;
-  font-size: 14px;
-}
-
-.pagination select,
-.pagination button {
-  padding: 4px 6px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  background: white;
-  cursor: pointer;
-}
-
-.pagination button {
-  background: var(--primary);
-  color: white;
-  border: none;
-}
+<<<<<<< HEAD
+=======
 
 .pagination button:hover {
   background: var(--primary-dark);
 }
 
+>>>>>>> 0980209f3364fdee5e89bfd684d6b84092d1ea2b
 /* Responsif */
 @media (max-width: 640px) {
   .data-anggota-table {

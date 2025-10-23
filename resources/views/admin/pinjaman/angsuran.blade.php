@@ -1,4 +1,4 @@
-@extends('layouts.lebar')
+@extends('layouts.app-admin3')
 
 @section('title', 'Pembayaran Angsuran')  
 @section('title-1', 'Pinjaman')  
@@ -29,21 +29,21 @@
     </thead>
 
     <tbody>
-      @forelse(($dataAngsuran ?? collect()) as $idx => $row)
+      @forelse(($dataAngsuran ?? collect()) as $idx => $angsuran)
         <tr>
           <td>{{ $loop->iteration }}</td>
-          <td>{{ $row->kode ?? '' }}</td>
-          <td>{{ $row->tanggal_pinjam ?? '' }}</td>
-          <td>{{ $row->id_anggota ?? '' }}</td>
-          <td>{{ $row->nama_anggota ?? '' }}</td>
-          <td>{{ number_format($row->pokok_pinjaman ?? 0, 0, ',', '.') }}</td>
-          <td>{{ $row->lama_pinjam ?? '' }}</td>
-          <td>{{ number_format($row->angsuran_pokok ?? 0, 0, ',', '.') }}</td>
-          <td>{{ number_format($row->bunga_angsuran ?? 0, 0, ',', '.') }}</td>
-          <td>{{ number_format($row->biaya_admin ?? 0, 0, ',', '.') }}</td>
-          <td>{{ number_format($row->angsuran_per_bulan ?? 0, 0, ',', '.') }}</td>
+          <td>{{ $angsuran->kode ?? '' }}</td>
+          <td>{{ $angsuran->tanggal_pinjam ?? '' }}</td>
+          <td>{{ $angsuran->id_anggota ?? '' }}</td>
+          <td>{{ $angsuran->nama_anggota ?? '' }}</td>
+          <td>{{ number_format($angsuran->pokok_pinjaman ?? 0, 0, ',', '.') }}</td>
+          <td>{{ $angsuran->lama_pinjam ?? '' }}</td>
+          <td>{{ number_format($angsuran->angsuran_pokok ?? 0, 0, ',', '.') }}</td>
+          <td>{{ number_format($angsuran->bunga_angsuran ?? 0, 0, ',', '.') }}</td>
+          <td>{{ number_format($angsuran->biaya_admin ?? 0, 0, ',', '.') }}</td>
+          <td>{{ number_format($angsuran->angsuran_per_bulan ?? 0, 0, ',', '.') }}</td>
           <td class="actions">
-            <a href="{{ route('bayar.angsuran', ['id' => $row->id]) }}" class="btn-bayar">
+            <a href="{{ route('bayar.angsuran', ['id' => $angsuran->id]) }}" class="btn-bayar">
               💳 Bayar
             </a>
           </td>
@@ -69,8 +69,7 @@
 .pengajuan-pinjaman-table-wrap {
   border: 1.5px solid var(--border);
   background: var(--body-bg);
-  width: 100%;
-  max-width: 1000px;
+  width: 96%;
   margin-left: 25px;
   margin-top: 20px;
   overflow-x: auto;
@@ -90,7 +89,7 @@
   background: var(--header-bg);
   color: var(--header-text);
   padding: 10px;
-  font-weight: 600;
+  font-weight: 650;
   border: 1px solid var(--border);
 }
 

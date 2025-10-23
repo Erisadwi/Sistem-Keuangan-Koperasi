@@ -7,7 +7,7 @@
 @section('content')
 
 @php
-    $anggota = $anggota ?? null;
+    $pinjaman = $pinjaman ?? null;
     $pinjaman = $pinjaman ?? null;
     $payments = $payments ?? [];
 @endphp
@@ -30,8 +30,8 @@
         <div class="card-putih">
             <div class="data-anggota">
                 @php
-                    $fotoPath = (!empty($anggota) && !empty($anggota->foto))
-                        ? asset('storage/'.$anggota->foto)
+                    $fotoPath = (!empty($pinjaman) && !empty($pinjaman->foto))
+                        ? asset('storage/'.$pinjaman->foto)
                         : asset('images/default.jpeg');
                 @endphp
                 <img src="{{ $fotoPath }}" alt="Foto Anggota" class="foto-anggota">
@@ -39,19 +39,19 @@
                 <div class="info">
                     <div class="left">
                         <h4>Data Anggota</h4>
-                        <p>ID Anggota: <span>{{ $anggota->id_anggota ?? '-' }}</span></p>
-                        <p>Nama Anggota: <span>{{ $anggota->nama ?? '-' }}</span></p>
-                        <p>Departemen: <span>{{ $anggota->departemen ?? '-' }}</span></p>
+                        <p>ID Anggota: <span>{{ $pinjaman->id_anggota ?? '-' }}</span></p>
+                        <p>Nama Anggota: <span>{{ $pinjaman->nama ?? '-' }}</span></p>
+                        <p>Departemen: <span>{{ $pinjaman->departemen ?? '-' }}</span></p>
                         <p>Tempat, Tanggal Lahir: 
                             <span>
-                                @if(!empty($anggota?->tempat_lahir) || !empty($anggota?->tgl_lahir))
-                                    {{ $anggota->tempat_lahir ?? '-' }}, {{ $anggota->tgl_lahir ?? '-' }}
+                                @if(!empty($pinjaman?->tempat_lahir) || !empty($pinjaman?->tgl_lahir))
+                                    {{ $pinjaman->tempat_lahir ?? '-' }}, {{ $pinjaman->tgl_lahir ?? '-' }}
                                 @else
                                     -
                                 @endif
                             </span>
                         </p>
-                        <p>Kota Tinggal: <span>{{ $anggota->kota ?? '-' }}</span></p>
+                        <p>Kota Tinggal: <span>{{ $pinjaman->kota ?? '-' }}</span></p>
                     </div>
 
                     <div class="right">

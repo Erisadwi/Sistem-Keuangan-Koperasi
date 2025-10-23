@@ -1,4 +1,4 @@
-@extends('layouts.laporan-admin')
+@extends('layouts.laporan-admin2')
 
 @section('title', 'Laporan Kas Simpanan')  
 @section('title-1', 'Kas Simpanan')  
@@ -75,9 +75,9 @@
   border: 1.5px solid var(--outer-border);
   border-radius: 0;
   background: var(--bg);
-  width: 870px;          
-  margin-left: 25px;     
-  margin-top: 60px;       
+  width: 98%;          
+  margin-left: 10px;     
+  margin-top: 65px;      
   padding: 0;             
   box-shadow: none;       
   overflow-x: visible;

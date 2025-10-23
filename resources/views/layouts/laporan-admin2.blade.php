@@ -92,15 +92,14 @@
           <div class="title-1">@yield('title-1', 'Default Title')</div>       
         <div class="container">
             <div class="content-container">
-                <div class="content-container2"></div>
                 <div class="title-content">
                     @yield('title-content', 'Default title') 
                     <br />
                     @yield('period', 'Default period')
                 </div>
-            </div>
+                @yield('content')
+                </div>
             <div class="title-container">
-                <div class="title-container2"></div>
                 <div class="sub-title">
                     @yield('sub-title', 'Default sub title')
                 </div>
@@ -108,10 +107,7 @@
         </div>
 
     </main>
-    <!-- Konten Halaman -->
-    <div class="container">
-        @yield('content')
-    </div>
+    <!-- Konten Halaman 
 
 
 </body>

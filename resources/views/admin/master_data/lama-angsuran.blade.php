@@ -53,9 +53,9 @@
 
   .lama-angsuran-table-wrap {
     background: var(--table-bg);
-    width: 870px;
+    width: 96%;
     margin-left: 25px;
-    margin-top: 20px;
+    margin-top: 30px;
     overflow-x: auto;
   }
 
@@ -71,7 +71,7 @@
     background: var(--head-bg);
     color: #fff;
     text-align: center;
-    font-weight: 600;
+    font-weight: 650;
     padding: 10px;
   }
 
