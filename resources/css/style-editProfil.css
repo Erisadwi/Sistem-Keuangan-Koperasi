@@ -158,12 +158,10 @@ body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,"Helv
   transition: border-color 0.2s, color 0.2s;
 }
 
-/* Saat fokus (klik dropdown) */
 .field select:focus {
   border-color: var(--blue-800);
 }
 
-/* Saat ada opsi yang dipilih */
 .field select option:checked {
   background-color: #c4dae5;
   color: #fff;
