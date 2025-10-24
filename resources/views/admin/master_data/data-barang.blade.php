@@ -7,7 +7,7 @@
 @section('content')
 
 <x-menu.tambah-unduh 
-    addUrl="# {{-- {{ route('data-barang.create') }} --}}" 
+    addUrl="{{ route('jenis-barang.create') }}" 
     downloadFile="data_barang.pdf" />
 
 <div class="barang-inventaris-table-wrap">
@@ -16,7 +16,6 @@
       <tr class="head-group">
         <th>Nama Barang</th>
         <th>Type</th>
-        <th>Type</th>
         <th>Jumlah</th>
         <th>Keterangan</th>
         <th>Aksi</th> 
@@ -24,15 +23,15 @@
     </thead>
 
     <tbody>
-      @forelse(($barang_inventaris ?? collect()) as $idx => $row)
+      @forelse(($jenis_barang ?? collect()) as $idx => $row)
         <tr>
           <td>{{ $row->nama_barang ?? '' }}</td>
           <td>{{ $row->type_barang ?? '' }}</td>
           <td>{{ $row->jumlah_barang ?? '' }}</td>
           <td>{{ $row->keterangan_barang ?? '' }}</td>
           <td class="actions">
-            <a href="{{ route('barang-inventaris.edit', ['id' => $row->id]) }}" class="edit">✏️ Edit</a>
-            <form action="{{ route('barang-inventaris.destroy', ['id' => $row->id]) }}" method="POST" style="display: inline;">
+            <a href="{{ route('jenis-barang.edit', ['id' => $row->id_barangInventaris]) }}" class="edit">✏️ Edit</a>
+            <form action="{{ route('jenis-barang.destroy', ['id' => $row->id_barangInventaris]) }}" method="POST" class="form-hapus" style="display: inline;">
               @csrf
               @method('DELETE')
               <button type="submit" class="delete">❌ Hapus</button>
@@ -66,7 +65,7 @@
     background: var(--bg);
     width: 96%;          
     margin-left: 20px;     
-    margin-top: 35px;       
+    margin-top: 30px;       
     padding: 0;
     box-shadow: none;
     overflow-x: visible;
@@ -81,13 +80,16 @@
   }
 
   .barang-inventaris-table thead .head-group th {
+    width: 20%;
     background: var(--head-dark);
     color: #fff;
     text-align: center;
     font-weight: 650;
     padding: 10px;
     border-bottom: 1px solid var(--grid);
-    white-space: nowrap;
+    white-space: normal;
+    word-wrap: break-word;  
+    word-break: break-word;
   }
 
   .barang-inventaris-table td {
@@ -95,6 +97,7 @@
     border-bottom: 1px solid var(--grid)!important;
     border-right: 1px solid var(--grid)!important;
     background: #fff;
+    text-align: center;
   }
 
   .barang-inventaris-table tbody td:last-child {
@@ -135,6 +138,10 @@
     padding: 5px 10px;
     border-radius: 5px;
     cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width:90px;
   }
 
   .edit {
@@ -180,6 +187,23 @@
     }
   }
 </style>
+
+<script>
+document.querySelectorAll('.form-hapus').forEach(function(form) {
+    form.addEventListener('submit', function (e) {
+        e.preventDefault(); 
+
+        const yakin = confirm('⚠️ Apakah Anda yakin ingin menghapus data ini?');
+
+        if (yakin) {
+            alert('🗑️ Data berhasil dihapus!');
+            form.submit(); 
+        } else {
+            alert('❌ Penghapusan data dibatalkan.');
+        }
+    });
+});
+</script>
 
 
 @endsection

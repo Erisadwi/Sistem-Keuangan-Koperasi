@@ -11,7 +11,7 @@
 @section('content')
 
 <x-menu.tambah-unduh 
-    addUrl="# {{-- {{ route('jenis-simpanan.create') }} --}}" 
+    addUrl="{{ route('jenis-simpanan.create') }}" 
     downloadFile="jenis_simpanan.pdf" />
 
 <div class="simpanan-table-wrap">
@@ -36,8 +36,8 @@
           <td>{{ $row->tampil_simpanan ?? '' }}</td>
 
           <td class="actions">
-            <a href="{{ route('simpanan.edit', ['id' => $row->id]) }}" class="edit">✏️ Edit</a>
-            <form action="{{ route('simpanan.destroy', ['id' => $row->id]) }}" method="POST" style="display: inline;">
+            <a href="{{ route('jenis-simpanan.edit', ['id' => $row->id_jenis_simpanan]) }}" class="edit">✏️ Edit</a>
+            <form action="{{ route('jenis-simpanan.destroy', ['id' => $row->id_jenis_simpanan]) }}" method="POST" style="display: inline;">
               @csrf
               @method('DELETE')
               <button type="submit" class="delete">❌ Hapus</button>
@@ -70,7 +70,7 @@
     border-radius: 0;
     background: var(--bg);
     width: 96%;
-    margin-left: 25px;
+    margin-left: 20px;
     margin-top: 30px;
     padding: 0;
     box-shadow: none;
@@ -101,6 +101,7 @@
     border-bottom: 1px solid var(--grid)!important;
     border-right: 1px solid var(--grid)!important;
     background: #fff;
+    text-align: center;
   }
 
   .simpanan-table tbody td:last-child {
@@ -125,7 +126,7 @@
 
   .simpanan-table .empty-cell {
     text-align: center;
-    padding: 8px 10px;
+    padding: 6px 8px;
     color: #6b7280;
     font-style: italic;
   }
@@ -139,8 +140,12 @@
   .edit,
   .delete {
     padding: 5px 10px;
-    border-radius: 5px;
+    border-radius: 7px;
     cursor: pointer;
+    font-weight: 600;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width:90px;
   }
 
   .edit {
@@ -154,11 +159,9 @@
   }
 
   .delete {
-    background-color: #FF0000;
+    background-color: #EA2828;
     color: white;
     border: none; 
-    padding: 5px 10px;
-    border-radius: 5px;
     cursor: pointer;
   }
 

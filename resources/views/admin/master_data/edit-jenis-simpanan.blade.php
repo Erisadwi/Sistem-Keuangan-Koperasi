@@ -9,26 +9,26 @@
 @section('content')
 
 <div class="form-container">
-    <form action="# {{-- {{ route('edit-jenis-simpanan.update', $jenis_simpanan->id) }} --}}" method="POST">
+    <form action="{{ route('jenis-simpanan.update', $jenis_simpanan->id_jenis_simpanan) }}" method="POST">
         @csrf
         @method('PUT')
 
         <label for="jenis_simpanan">Jenis Simpanan*</label>
-        <input type="text" id="jenis_simpanan" name="jenis_simpanan" value="{{-- {{ $jenis_simpanan->jenis_simpanan }} --}}">
+        <input type="text" id="jenis_simpanan" name="jenis_simpanan" value="{{ $jenis_simpanan->jenis_simpanan }}">
 
         <label for="jumlah_simpanan">Jumlah*</label>
-        <input type="number" id="jumlah_simpanan" name="jumlah_simpanan" value=" {{-- {{ isset($jenis_simpanan) ? number_format($jenis_simpanan->jumlah_simpanan, 0, ',', '.') : '' }} --}}">
+        <input type="number" id="jumlah_simpanan" name="jumlah_simpanan" value="{{ $jenis_simpanan->jumlah_simpanan }}">
 
         <label for="tampil_simpanan">Tampil*</label>
             <select name="tampil_simpanan" id="tampil_simpanan">
-                <option value="" disabled selected>Y/N</option>
+                <option value="" disabled selected>---- Pilih Tampilan ----</option>
                 <option value="Y">Y</option>
                 <option value="N">N</option>
             </select>
 
         <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>
-            <a href="# {{-- {{ route('data-barang.index') }} --}}" class="btn btn-batal">Batal</a>
+            <a href="{{ route('jenis-simpanan.index') }}" class="btn btn-batal">Batal</a>
         </div>
 
     </form>
