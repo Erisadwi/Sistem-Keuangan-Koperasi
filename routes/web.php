@@ -326,8 +326,7 @@ Route::get('/anggota/data-pengajuan-coba', function () {
     return view('anggota.data-pengajuan-coba');
 })->name('anggota.data-pengajuan-coba');
 
-<<<<<<< HEAD
-=======
 
 
->>>>>>> cb4626a5b41c4e7c7002d81a5bb452e2cd1459b9
+
+

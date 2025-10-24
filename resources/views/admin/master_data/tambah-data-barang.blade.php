@@ -1,6 +1,7 @@
 @extends('layouts.app-admin-add')
 
 @section('title', 'Data Barang Inventaris')  
+@section('back-url', url('admin/master_data/data-barang'))
 @section('back-title', 'Master Data >')
 @section('title-1', 'Data Barang')  
 @section('sub-title', 'Tambah Data Barang')  
@@ -22,6 +23,7 @@
 
         <label for="keterangan_barang">Keterangan</label>
         <input type="text" id="keterangan_barang" name="keterangan_barang" value="{{-- {{ $barang_inventaris->keterangan_barang }} --}}">
+        
 
         <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>
@@ -36,9 +38,9 @@
     background-color: transparent;
     padding: 20px;
     border-radius: 10px;
-    width: 900px;
+    width: 98%;
     margin-left:10px;
-    margin-top:55px;
+    margin-top:40px;
 }
 
 label {

@@ -1,6 +1,7 @@
 @extends('layouts.app-admin-add')
 
 @section('title', 'Transaksi Kas')  
+@section('back-url', url('admin/transaksi_kas/transfer')) 
 @section('back-title', 'Transaksi Kas >')
 @section('title-1', 'Transfer')  
 @section('sub-title', 'Tambah Data Transfer')  
@@ -21,24 +22,25 @@
         <label for="keterangan">Keterangan</label>
         <input type="text" id="keterangan" name="keterangan" value="{{-- {{ $transaksi->keterangan }} --}}">
 
-         <label for="dari_kas">Dari Kas</label>
-            <select name="dari_kas" id="dari_kas">
-                <option value="" disabled selected>Pilih Jenis Kas</option>
-                <option value="/">Kas Besar</option>
-                <option value="/">Bank Mandiri</option>
-                <option value="/">Kas Kecil</option>
-                <option value="/">Kas Niaga</option>
-                <option value="/">Bank BNI</option>
+        <label for="id_jenisAkunTransaksi_sumber">Dari Kas</label>
+            <select name="id_jenisAkunTransaksi_sumber" id="id_jenisAkunTransaksi_sumber">
+                <option value="" disabled {{ empty($transaksi->id_jenisAkunTransaksi_sumber) ? 'selected' : '' }}>Pilih Jenis Kas</option>
+                <option value="kas_besar" {{ ($transaksi->id_jenisAkunTransaksi_sumber ?? '') == 'kas_besar' ? 'selected' : '' }}>Kas Besar</option>
+                <option value="bank_mandiri" {{ ($transaksi->id_jenisAkunTransaksi_sumber ?? '') == 'bank_mandiri' ? 'selected' : '' }}>Bank Mandiri</option>
+                <option value="kas_kecil" {{ ($transaksi->id_jenisAkunTransaksi_sumber ?? '') == 'kas_kecil' ? 'selected' : '' }}>Kas Kecil</option>
+                <option value="kas_niaga" {{ ($transaksi->id_jenisAkunTransaksi_sumber ?? '') == 'kas_niaga' ? 'selected' : '' }}>Kas Niaga</option>
+                <option value="bank_bni" {{ ($transaksi->id_jenisAkunTransaksi_sumber ?? '') == 'bank_bni' ? 'selected' : '' }}>Bank BNI</option>
             </select>
 
-        <label for="untuk_kas">Untuk Kas</label>
-            <select name="dari_kas" id="dari_kas">
-                <option value="" disabled selected>Pilih Jenis Kas</option>
-                <option value="/">Kas Besar</option>
-                <option value="/">Bank Mandiri</option>
-                <option value="/">Kas Kecil</option>
-                <option value="/">Kas Niaga</option>
-                <option value="/">Bank BNI</option>
+
+        <label for="id_jenisAkunTransaksi_tujuan">Untuk Kas</label>
+            <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan">
+                <option value="" disabled {{ empty($transaksi->id_jenisAkunTransaksi_tujuan) ? 'selected' : '' }}>Pilih Jenis Kas</option>
+                <option value="kas_besar"{{ ($transaksi->id_jenisAkunTransaksi_tujuan ?? '') == 'kas_besar' ? 'selected' : '' }}>Kas Besar</option>
+                <option value="bank_mandiri"{{ ($transaksi->id_jenisAkunTransaksi_tujuan ?? '') == 'bank_mandiri' ? 'selected' : '' }}>Bank Mandiri</option>
+                <option value="kas_kecil"{{ ($transaksi->id_jenisAkunTransaksi_tujuan ?? '') == 'kas_kecil' ? 'selected' : '' }}>Kas Kecil</option>
+                <option value="kas_niaga"{{ ($transaksi->id_jenisAkunTransaksi_tujuan ?? '') == 'kas_niaga' ? 'selected' : '' }}>Kas Niaga</option>
+                <option value="bank_bni"{{ ($transaksi->id_jenisAkunTransaksi_tujuan ?? '') == 'bank_bni' ? 'selected' : '' }}>Bank BNI</option>
             </select>
 
         <div class="form-buttons">
@@ -54,9 +56,9 @@
     background-color: transparent;
     padding: 20px;
     border-radius: 10px;
-    width: 900px;
+    width: 98%;
     margin-left:10px;
-    margin-top:55px;
+    margin-top:40px;
 }
 
 label {

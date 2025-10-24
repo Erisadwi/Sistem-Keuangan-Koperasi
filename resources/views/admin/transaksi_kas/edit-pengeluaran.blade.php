@@ -1,6 +1,7 @@
 @extends('layouts.app-admin-add')
 
 @section('title', 'Edit Data Pengeluaran')
+@section('back-url', url('admin/transaksi_kas/pengeluaran'))
 @section('back-title', 'Transaksi Kas >')
 @section('title-1', 'Pengeluaran')
 @section('sub-title', 'Edit Data Pengeluaran')
@@ -114,9 +115,9 @@
     background-color: transparent;
     padding: 20px;
     border-radius: 10px;
-    width: 900px;
+    width: 98%;
     margin-left: 10px;
-    margin-top: 55px;
+    margin-top: 40px;
 }
 
 .form-grid {
@@ -142,7 +143,7 @@ input[type="number"],
 input[type="datetime-local"],
 select {
     width: 100%;
-    padding: 9px;
+    padding: 8px;
     border: 1px solid #565656;
     border-radius: 5px;
     font-size: 13px;
@@ -153,7 +154,7 @@ select {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    margin-top: 30px;
+    margin-top: 40px;
 }
 
 .btn {

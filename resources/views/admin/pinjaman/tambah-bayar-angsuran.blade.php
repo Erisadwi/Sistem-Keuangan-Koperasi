@@ -1,6 +1,7 @@
-@extends('layouts.app-admin-add4')
+@extends('layouts.app-admin-add')
 
 @section('title', 'Tambah Bayar Angsuran')
+@section('back-url', url('admin/pinjaman/bayar-angsuran')) 
 @section('back-title', 'Bayar Angsuran >')
 @section('title-1', 'Tambah Pembayaran Angsuran')
 @section('sub-title', 'Tambah Pembayaran Angsuran')
@@ -71,26 +72,16 @@
     background-color: transparent;
     padding: 20px;
     border-radius: 10px;
-    width: 900px;
+    width: 98%;
     margin-left: 10px;
-    margin-top: 55px;
-}
-
-.form-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 15px 25px;
-}
-
-.form-group {
-    display: flex;
-    flex-direction: column;
+    margin-top: 40px;
 }
 
 label {
     font-size: 13px;
     font-weight: 600;
     margin-bottom: 5px;
+    display: block;
     color: #000;
 }
 
@@ -105,13 +96,14 @@ input[type="file"] {
     border-radius: 5px;
     font-size: 13px;
     background-color: #fff;
+    margin-bottom: 15px;
 }
 
 .form-buttons {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    margin-top: 30px;
+    margin-top: 50px;
 }
 
 .btn {

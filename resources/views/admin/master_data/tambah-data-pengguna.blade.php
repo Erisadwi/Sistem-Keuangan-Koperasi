@@ -1,6 +1,7 @@
 @extends('layouts.app-admin-add')
 
 @section('title', 'Data Pengguna')  
+@section('back-url', url('admin/master_data/data-pengguna'))
 @section('back-title', 'Master Data >')
 @section('title-1', 'Data Pengguna')  
 @section('sub-title', 'Tambah Data Pengguna')  
@@ -81,17 +82,15 @@
 <style>
 .form-container {
     background-color: transparent;
-    width: 900px;
+    width: 98%;
     margin-left: 10px;
-    margin-top: 55px;
+    margin-top: 40px;
 }
 
 .form-wrapper {
     background-color: #c7dbe6; /* tetap biru muda */
     border-radius: 8px;
     padding: 20px;
-    max-height: 500px;
-    overflow-y: auto;
     box-sizing: border-box;
 }
 
@@ -131,11 +130,11 @@ input:focus, select:focus {
     display: flex;
     justify-content: flex-end; 
     gap: 10px;
-    margin-top: 15px;
+    margin-top: 40px;
 }
 
 .btn {
-    padding: 8px 0;
+    padding: 8px 0px;
     width: 110px;
     font-size: 14px;
     font-weight: bold;

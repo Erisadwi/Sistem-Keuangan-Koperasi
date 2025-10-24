@@ -1,6 +1,7 @@
-@extends('layouts.app-admin-add3')
+@extends('layouts.app-admin-add')
 
 @section('title', 'Penarikan Tunai')  
+@section('back-url', url('admin/simpanan/penarikan-tunai')) 
 @section('back-title', 'Transaksi Simpanan >')
 @section('title-1', 'Penarikan Tunai')  
 @section('sub-title', 'Tambah Data Penarikan Tunai')  
@@ -82,9 +83,9 @@
     background-color: transparent;
     padding: 20px;
     border-radius: 10px;
-    width: 900px;
+    width: 985;
     margin-left: 10px;
-    margin-top: 55px;
+    margin-top: 40px;
 }
 
 label {

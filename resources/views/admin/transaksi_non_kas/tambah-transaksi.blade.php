@@ -1,6 +1,7 @@
 @extends('layouts.app-admin-add')
 
 @section('title', 'Transaksi Non Kas')  
+@section('back-url', url('admin/transaksi_non_kas/transaksi'))
 @section('back-title', 'Transaksi Non Kas >')
 @section('title-1', 'Transaksi')  
 @section('sub-title', 'Tambah Data Transaksi')  
@@ -234,9 +235,9 @@
     background-color: transparent;
     padding: 20px;
     border-radius: 10px;
-    width: 900px;
+    width: 98%;
     margin-left:10px;
-    margin-top:55px;
+    margin-top:40px;
 }
 
 label {
