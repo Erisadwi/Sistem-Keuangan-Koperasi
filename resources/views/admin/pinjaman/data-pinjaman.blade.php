@@ -5,12 +5,10 @@
 @section('sub-title', 'Data Pinjaman')
 
 @section('content')
-<x-menu.toolbar-filter/>
+<x-menu.date-filter/>
 
-
-<div class="data-pinjaman-wrap">
-  <div class="table-scroll-wrapper">
-    <table class="data-pinjaman-table">
+<div class="data-pinjaman-table-wrap">
+  <table class="data-pinjaman-table">
     <thead>
       <tr class="head-group">
         <th>No</th>
@@ -25,7 +23,6 @@
         <th>Aksi</th>
       </tr>
     </thead>
-    <tbody>
       @if(isset($pinjaman) && count($pinjaman) > 0)
         @foreach ($pinjaman as $index => $row)
         <tr>
@@ -44,7 +41,7 @@
         @endforeach
       @else
       <tr>
-        <td colspan="11" class="empty-cell">Belum ada data pinjaman.</td>
+        <td colspan="10" class="empty-cell">Belum ada data pinjaman.</td>
       </tr>
       @endif
     </tbody>
@@ -54,90 +51,80 @@
 <x-menu.pagination />
 
 <style>
-:root {
-  --primary: #6ba1be;
-  --primary-dark: #558ca3;
-  --header-bg: #4a4a4a;
-  --header-text: #ffffff;
-  --border: #c0c0c0;
-  --text: #222;
-}
+  :root {
+    --outer-border: #838383;
+    --head-dark: #4a4a4a;
+    --head-mid: #9a9a9a;
+    --line: #fffafa;
+    --grid: #fffcfc;
+    --bg: #ffffff;
+  }
 
-.data-pinjaman-wrap {
-  border-radius: 0;
-  background: var(--bg);
-  width: 100%;
-  margin-left: 15px;
-  margin-top: 0px;
-  padding: 0;
-  box-shadow: none;
-}
+  .data-pinjaman-table-wrap {
+    border: 1.5px solid var(--outer-border);
+    border-radius: 0;
+    background: var(--bg);
+    width: 95%;
+    margin-left: 25px;
+    margin-top: 30px;
+    padding: 0;
+    box-shadow: none;
+    overflow-x: visible;
+  }
 
-/* Scroll aktif */
-.table-scroll-wrapper {
-  overflow-x: auto;
-  overflow-y: auto;
-  max-height: 400px;
-  width: 100%;
-  padding: 30px 16px 10px 16px;
-  box-sizing: border-box;
-}
-.table-scroll-wrapper::-webkit-scrollbar {
-  height: 8px;
-  width: 8px;
-}
-.table-scroll-wrapper::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: 4px;
-}
-.table-scroll-wrapper::-webkit-scrollbar-track {
-  background: #f0f0f0;
-}
+  .data-pinjaman-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 13px;
+    color: #222;
+  }
 
-/* Tabel */
-.data-pinjaman-table {
-  width: 97%;
-  border-collapse: collapse;
-  background: #ffffff;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  font-size: 13px;
-  color: var(--text);
-  table-layout: auto;
-}
+  .data-pinjaman-table thead .head-group th {
+    background: var(--head-dark);
+    color: #fff;
+    text-align: center;
+    font-weight: 600;
+    padding: 10px;
+    border-bottom: 1px solid var(--grid);
+    white-space: nowrap;
+  }
 
-.data-pinjaman-table thead {
-  background: var(--header-bg);
-  color: var(--header-text);
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
+  .data-pinjaman-table td {
+    padding: 10px;
+    border-bottom: 1px solid var(--grid)!important;
+    border-right: 1px solid var(--grid)!important;
+    background: #fff;
+  }
 
-.data-pinjaman-table th,
-.data-pinjaman-table td {
-  text-align: center;
-  padding: 10px 14px;
-  border: 1px solid var(--border);
-  white-space: nowrap;
-  vertical-align: middle;
-}
+  .data-pinjaman-table tbody td:last-child {
+    border-right: 2px solid var(--grid)!important;
+  }
 
-.data-pinjaman-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
+  .data-pinjaman-table tbody tr td:nth-child(1) {
+    border-right: 1.5px solid var(--line) !important;
+  }
 
-data-pinjaman-table tbody tr:hover {
-  background-color: #eef7ff;
-}
+  .data-pinjaman-table tbody tr {
+    background: #fff;
+  }
 
-.empty-cell {
-  text-align: center;
-  padding: 12px;
-  color: #6b7280;
-  font-style: italic;
-}
+  .data-pinjaman-table tbody tr:nth-child(even) {
+    background: #fff;
+  }
 
-/* Tombol aksi tabel */
+  .data-pinjaman-table tbody tr:hover {
+    background: #fff;
+  }
+
+  .data-pinjaman-table .empty-cell {
+    text-align: center;
+    padding: 8px 10px;
+    color: #6b7280;
+    font-style: italic;
+  }
+
 .btn-aksi {
   background: var(--primary);
   color: white;
@@ -149,6 +136,15 @@ data-pinjaman-table tbody tr:hover {
 .btn-aksi:hover {
   background: var(--primary-dark);
 }
+
+  @media (max-width: 768px) {
+    .pengajuan-pinjaman-table thead .head-group th:nth-child(3),
+    .pengajuan-pinjaman-table tbody td:nth-child(3),
+    .pengajuan-pinjaman-table thead .head-group th:nth-child(4),
+    .pengajuan-pinjaman-table tbody td:nth-child(4) {
+      display: none;
+    }
+  }
 </style>
 
 @endsection
