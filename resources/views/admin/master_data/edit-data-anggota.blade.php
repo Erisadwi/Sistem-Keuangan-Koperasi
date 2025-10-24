@@ -240,20 +240,31 @@ input[type="file"] {
 </style>
 
 <script>
-document.getElementById('formEditAnggota').addEventListener('submit', function(e) {
-    e.preventDefault();
-    if (confirm('Apakah Anda yakin ingin menyimpan perubahan data ini?')) {
-        alert('✅ Data anggota berhasil diperbarui!');
-        this.submit();
-    }
-});
+document.getElementById(''formEditAnggota').addEventListener('submit', function(e) {
+    const wajib = ['nama_lengkap','username','jenis_kelamin','tempat_lahir','tanggal_lahir','status',
+                   'departemen','pekerjaan','agama','alamat','kota','no_telp','tgl_registrasi',
+                   'jabatan','password','aktif_keanggotaan'];
 
-document.getElementById('btnBatal').addEventListener('click', function() {
-    if (confirm('Apakah Anda yakin ingin membatalkan perubahan?')) {
-        window.history.back();
+    for (let id of wajib) {
+        const el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
+            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            e.preventDefault(); 
+            return;
+        }
     }
+
+    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
+
+    if (!yakin) {
+        e.preventDefault(); 
+        alert('❌ Pengisian data dibatalkan.');
+        return;
+    }
+
+    alert('✅ Data barang berhasil disimpan!');
 });
-</script>
+<script>
 
 @endsection
 

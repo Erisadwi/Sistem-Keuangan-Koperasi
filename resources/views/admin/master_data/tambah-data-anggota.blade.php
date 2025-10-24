@@ -236,38 +236,30 @@ input[type="file"] {
 
 {{-- ========== VALIDASI JS ========== --}}
 <script>
-document.getElementById('formDataAnggota').addEventListener('submit', function(e) {
-    e.preventDefault();
-
+document.getElementById(''formDataAnggota').addEventListener('submit', function(e) {
     const wajib = ['nama_lengkap','username','jenis_kelamin','tempat_lahir','tanggal_lahir','status',
                    'departemen','pekerjaan','agama','alamat','kota','no_telp','tgl_registrasi',
                    'jabatan','password','aktif_keanggotaan'];
 
     for (let id of wajib) {
-        if (!document.getElementById(id).value.trim()) {
+        const el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
             alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            e.preventDefault(); 
             return;
         }
     }
 
-    const foto = document.getElementById('foto').files[0];
-    if (foto && foto.size > 5 * 1024 * 1024) {
-        alert('⚠️ Ukuran foto melebihi 5MB.');
+    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
+
+    if (!yakin) {
+        e.preventDefault(); 
+        alert('❌ Pengisian data dibatalkan.');
         return;
     }
 
-    if (confirm('Apakah data sudah benar dan ingin disimpan?')) {
-        alert('✅ Data anggota berhasil disimpan!');
-        this.reset();
-    }
+    alert('✅ Data barang berhasil disimpan!');
 });
-
-document.getElementById('btnBatal').addEventListener('click', function() {
-    if (confirm('Apakah Anda yakin ingin membatalkan pengisian data?')) {
-        alert('❌ Pengisian data dibatalkan.');
-        window.history.back();
-    }
-});
-</script>
+<script>
 
 @endsection

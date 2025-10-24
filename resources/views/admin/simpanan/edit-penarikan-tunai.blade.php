@@ -160,39 +160,27 @@ textarea:focus {
 </style>
 
 <script>
-// Validasi form & konfirmasi simpan
 document.getElementById('formPenarikanTunai').addEventListener('submit', function(e) {
-    e.preventDefault();
+    const wajib = [''];
 
-    const requiredFields = this.querySelectorAll('[required]');
-    let valid = true;
-
-    requiredFields.forEach(field => {
-        if (!field.value.trim()) {
-            valid = false;
-            field.style.borderColor = 'red';
-        } else {
-            field.style.borderColor = '#565656';
+    for (let id of wajib) {
+        const el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
+            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            e.preventDefault(); 
+            return;
         }
-    });
+    }
 
-    if (!valid) {
-        alert('⚠️ Harap lengkapi semua data wajib sebelum menyimpan!');
+    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
+
+    if (!yakin) {
+        e.preventDefault(); 
+        alert('❌ Pengisian data dibatalkan.');
         return;
     }
 
-    if (confirm('Apakah Anda yakin ingin menyimpan data penarikan tunai ini?')) {
-        alert('✅ Data penarikan tunai berhasil disimpan!');
-        // this.submit(); // aktifkan jika ingin kirim ke backend
-    }
-});
-
-// Tombol batal
-document.getElementById('btnBatal').addEventListener('click', function() {
-    if (confirm('Apakah Anda yakin ingin membatalkan pengisian data?')) {
-        alert('❌ Pengisian data dibatalkan.');
-        window.history.back();
-    }
+    alert('✅ Data barang berhasil disimpan!');
 });
 </script>
 

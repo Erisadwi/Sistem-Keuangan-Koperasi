@@ -138,29 +138,27 @@
 
 <script>
 document.getElementById('form-container').addEventListener('submit', function(e) {
-    e.preventDefault();
-
     const wajib = ['lama_angsuran','is_active'];
 
     for (let id of wajib) {
-        if (!document.getElementById(id).value.trim()) {
+        const el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
             alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            e.preventDefault(); 
             return;
         }
     }
 
-    if (confirm('Apakah data sudah benar dan ingin disimpan?')) {
-        alert('✅ Data barang berhasil disimpan!');
-        this.reset();
-    }
-});
+    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
 
-document.getElementById('btnBatal').addEventListener('click', function() {
-    if (confirm('Apakah Anda yakin ingin membatalkan pengisian data?')) {
+    if (!yakin) {
+        e.preventDefault(); 
         alert('❌ Pengisian data dibatalkan.');
-        window.history.back();
+        return;
     }
-});
-</script>
 
+    alert('✅ Data barang berhasil disimpan!');
+});
+<script>
+  
 @endsection

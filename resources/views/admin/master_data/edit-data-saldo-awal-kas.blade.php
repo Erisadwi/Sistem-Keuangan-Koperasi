@@ -31,7 +31,7 @@
         {{-- ======= Akun ======= --}}
         <div class="form-group">
             <label for="id_akun_transaksi">Akun</label>
-            <select id="id_akun_transaksi" name="id_akun_transaksi" required>
+            <select id="akun_transaksi" name="akun_transaksi" required>
                 <option value="">-- Pilih Akun --</option>
 
                 {{-- nanti kalau sudah terhubung DB bisa diaktifkan --}}
@@ -166,32 +166,27 @@ select:focus {
 
 {{-- ======== SCRIPT POP-UP VALIDASI DAN KONFIRMASI ======== --}}
 <script>
-document.getElementById('saldoAwalKasForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // cegah submit langsung
+document.getElementById('saldoAwalKasForm').addEventListener('submit', function(e) {
+    const wajib = ['tanggal_transaksi', 'akun_transaksi', 'jumlah_transaksi'];
 
-    const tanggal = document.getElementById('tanggal_transaksi').value.trim();
-    const akun = document.getElementById('id_akun_transaksi').value.trim();
-    const keterangan = document.getElementById('ket_transaksi').value.trim();
-    const jumlah = document.getElementById('jumlah_transaksi').value.trim();
+    for (let id of wajib) {
+        const el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
+            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            e.preventDefault(); 
+            return;
+        }
+    }
 
-    if (!tanggal || !akun || !jumlah) {
-        alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
+
+    if (!yakin) {
+        e.preventDefault(); 
+        alert('❌ Pengisian data dibatalkan.');
         return;
     }
 
-    const konfirmasi = confirm('Apakah Anda yakin ingin mengupdate data saldo awal kas ini?');
-    if (konfirmasi) {
-        alert('✅ Data saldo awal kas berhasil diperbarui!');
-        this.reset();
-    }
-});
-
-document.getElementById('btnBatal').addEventListener('click', function() {
-    const batal = confirm('Apakah Anda yakin ingin membatalkan perubahan data?');
-    if (batal) {
-        alert('❌ Perubahan data dibatalkan.');
-        window.history.back();
-    }
+    alert('✅ Data barang berhasil disimpan!');
 });
 </script>
 

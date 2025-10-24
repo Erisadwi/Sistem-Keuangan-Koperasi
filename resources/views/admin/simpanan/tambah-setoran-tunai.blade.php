@@ -61,8 +61,8 @@
         <input type="text" id="keterangan" name="keterangan" 
             value="{{ $simpanan->keterangan ?? '' }}" placeholder="Opsional...">
 
-        <label for="simpan_ke_kas">Simpan Ke Kas</label>
-        <select name="simpan_ke_kas" id="simpan_ke_kas" required>
+        <label for="jenisAkunTransaksi_tujuan">Simpan Ke Kas</label>
+        <select name="jenisAkunTransaksi_tujuan" id="jenisAkunTransaksi_tujuan" required>
             <option value="" disabled {{ !isset($simpanan->jenisAkunTransaksi_tujuan) ? 'selected' : '' }}>-- Pilih Kas --</option>
             <option value="kas_besar" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'kas_besar') ? 'selected' : '' }}>Kas Besar</option>
             <option value="bank_mandiri" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'bank_mandiri') ? 'selected' : '' }}>Bank Mandiri</option>
@@ -171,39 +171,27 @@ textarea:focus {
 </style>
 
 <script>
-// Validasi form & konfirmasi simpan
 document.getElementById('formSetoranTunai').addEventListener('submit', function(e) {
-    e.preventDefault();
+    const wajib = ['nama_anggota', 'jenis_simpanan', 'jumlah_simpanan', 'jenisAkunTransaksi_tujuan'];
 
-    const requiredFields = this.querySelectorAll('[required]');
-    let valid = true;
-
-    requiredFields.forEach(field => {
-        if (!field.value.trim()) {
-            valid = false;
-            field.style.borderColor = 'red';
-        } else {
-            field.style.borderColor = '#565656';
+    for (let id of wajib) {
+        const el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
+            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            e.preventDefault(); 
+            return;
         }
-    });
+    }
 
-    if (!valid) {
-        alert('⚠️ Harap lengkapi semua data wajib sebelum menyimpan!');
+    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
+
+    if (!yakin) {
+        e.preventDefault(); 
+        alert('❌ Pengisian data dibatalkan.');
         return;
     }
 
-    if (confirm('Apakah Anda yakin ingin menyimpan data setoran tunai ini?')) {
-        alert('✅ Data setoran tunai berhasil disimpan!');
-        // this.submit(); // Uncomment jika ingin benar-benar kirim form ke backend
-    }
-});
-
-// Tombol batal
-document.getElementById('btnBatal').addEventListener('click', function() {
-    if (confirm('Apakah Anda yakin ingin membatalkan pengisian data?')) {
-        alert('❌ Pengisian data dibatalkan.');
-        window.history.back();
-    }
+    alert('✅ Data barang berhasil disimpan!');
 });
 </script>
 

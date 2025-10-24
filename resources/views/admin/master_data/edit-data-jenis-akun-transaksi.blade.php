@@ -176,35 +176,27 @@ select {
 
 {{-- ======== SCRIPT POP-UP VALIDASI DAN KONFIRMASI ======== --}}
 <script>
-document.getElementById('editJenisAkunTransaksiForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+document.getElementById('editJenisAkunTransaksiForm').addEventListener('submit', function(e) {
+    const wajib = ['kode_aktiva', 'kode_aktiva','akun', 'pemasukan',  'pengeluaran', 'aktif'];
 
-    const kode = document.getElementById('kode_aktiva').value.trim();
-    const jenis = document.getElementById('jenis_transaksi').value.trim();
-    const akun = document.getElementById('akun').value.trim();
-    const pemasukan = document.getElementById('pemasukan').value.trim();
-    const pengeluaran = document.getElementById('pengeluaran').value.trim();
-    const aktif = document.getElementById('aktif').value.trim();
+    for (let id of wajib) {
+        const el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
+            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            e.preventDefault(); 
+            return;
+        }
+    }
 
-    if (!kode || !jenis || !akun || !pemasukan || !pengeluaran || !aktif) {
-        alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
+
+    if (!yakin) {
+        e.preventDefault(); 
+        alert('❌ Pengisian data dibatalkan.');
         return;
     }
 
-    const konfirmasi = confirm('Apakah Anda yakin ingin memperbarui data ini?');
-    if (konfirmasi) {
-        alert('✅ Data Jenis Akun Transaksi berhasil diperbarui!');
-        this.reset(); // sementara reset, nanti ganti dengan redirect setelah tersambung DB
-    }
+    alert('✅ Data barang berhasil disimpan!');
 });
-
-document.getElementById('btnBatal').addEventListener('click', function() {
-    const batal = confirm('Apakah Anda yakin ingin membatalkan perubahan?');
-    if (batal) {
-        alert('❌ Perubahan dibatalkan.');
-        window.history.back();
-    }
-});
-</script>
 
 @endsection

@@ -164,39 +164,27 @@ textarea {
 </style>
 
 <script>
-// Validasi dan konfirmasi simpan
 document.getElementById('formEditSetoranTunai').addEventListener('submit', function(e) {
-    e.preventDefault();
+    const wajib = ['nama_anggota', 'jenis_simpanan', 'jumlah_simpanan', 'jenisAkunTransaksi_tujuan'];
 
-    const requiredFields = this.querySelectorAll('[required]');
-    let valid = true;
-
-    requiredFields.forEach(field => {
-        if (!field.value.trim()) {
-            valid = false;
-            field.style.borderColor = 'red';
-        } else {
-            field.style.borderColor = '#565656';
+    for (let id of wajib) {
+        const el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
+            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            e.preventDefault(); 
+            return;
         }
-    });
+    }
 
-    if (!valid) {
-        alert('⚠️ Harap lengkapi semua simpanan wajib sebelum menyimpan!');
+    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
+
+    if (!yakin) {
+        e.preventDefault(); 
+        alert('❌ Pengisian data dibatalkan.');
         return;
     }
 
-    if (confirm('Apakah Anda yakin ingin menyimpan perubahan simpanan setoran tunai ini?')) {
-        alert('✅ simpanan setoran tunai berhasil diperbarui!');
-        // this.submit(); // aktifkan kalau sudah ada route
-    }
-});
-
-// Tombol batal
-document.getElementById('btnBatal').addEventListener('click', function() {
-    if (confirm('Apakah Anda yakin ingin membatalkan perubahan?')) {
-        alert('❌ Perubahan dibatalkan.');
-        window.history.back();
-    }
+    alert('✅ Data barang berhasil disimpan!');
 });
 </script>
 
