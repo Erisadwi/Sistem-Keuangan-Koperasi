@@ -1,6 +1,7 @@
-@extends('layouts.app-admin-add4')
+@extends('layouts.app-admin-add')
 
 @section('title', 'Edit Data Anggota')
+@section('back-url', url('admin/master_data/data-anggota')) 
 @section('back-title', 'Master Data >')
 @section('title-1', 'Data Anggota')
 @section('sub-title', 'Edit Data Anggota')
@@ -176,9 +177,9 @@
     background-color: transparent;
     padding: 20px;
     border-radius: 10px;
-    width: 900px;
+    width: 98%;
     margin-left: 10px;
-    margin-top: 55px;
+    margin-top: 40px;
 }
 
 .form-grid {
@@ -216,7 +217,7 @@ input[type="file"] {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    margin-top: 30px;
+    margin-top: 50px;
 }
 
 .btn {

@@ -1,6 +1,7 @@
 @extends('layouts.app-admin-add')
 
 @section('title', 'Saldo Awal Kas')  
+@section('back-url', url('admin/master_data/saldo-awal-kas'))
 @section('back-title', 'Master Data >')
 @section('title-1', 'Saldo Awal Kas')  
 @section('sub-title', 'Tambah Data Saldo Awal Kas')  
@@ -50,9 +51,9 @@
     background-color: transparent;
     padding: 20px;
     border-radius: 10px;
-    width: 900px;
+    width: 98%;
     margin-left: 10px;
-    margin-top: 55px;
+    margin-top: 40px;
 }
 
 .form-group {
@@ -90,7 +91,7 @@ select:focus {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    margin-top: 40px;
+    margin-top: 100px;
 }
 
 .btn {

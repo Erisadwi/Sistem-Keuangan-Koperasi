@@ -1,182 +1,157 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Beranda | Koperasi TSM</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    @vite('resources/css/style-berandaProfil.css')
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Profile - Anggota</title>
+  @vite(['resources/css/style-profilAnggota.css'])
 </head>
-<body>
-    <header class="topbar">
-        <div class="left-section">
-            <button id="menu-toggle" class="menu-btn"><i class="fa fa-bars"></i></button>
-            <div class="title-group">
-                <span class="title">Beranda</span>
-                <span class="subtitle">Menu Utama</span>
-            </div>
-        </div>
+<body class="bg-gray-50 font-sans">
 
-        <div class="right-section">
-            <div class="icons">
-                <i class="fa fa-calendar"></i>
-                <div class="notif-wrapper">
-                    <i class="fa fa-bell"></i>
-                    <span class="notif-count">111</span>
-                </div>
-                <span class="clock" id="clock"></span>
-            </div>
-            <div class="brand">
-                <img src="/images/logo.png" alt="Logo" class="logo-img">
-                <div class="brand-text">
-                    <h3>KOPERASI</h3>
-                    <p>'TSM'</p>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <div class="container">
-        <aside class="sidebar" id="sidebar">
-            <div class="profile-card">
-                <div class="profile-photo">
-                    <img src="/images/profile.jpg" alt="User Photo">
-                </div>
-                <div class="profile-info">
-                    <h3>Iqbaal</h3>
-                    <p>Admin Simpanan</p>
-                </div>
-            </div>
-
-            <nav class="menu">
-                <button class="menu-item dropdown-btn">Transaksi Kas <i class="fa fa-chevron-down"></i></button>
-                <div class="dropdown-container">
-                    <a href="#">Pemasukan</a>
-                    <a href="#">Pengeluaran</a>
-                    <a href="#">Transfer Kas</a>
-                    <a href="#">Transaksi Non Kas</a>
-                </div>
-
-                <button class="menu-item dropdown-btn">Simpanan <i class="fa fa-chevron-down"></i></button>
-                <div class="dropdown-container">
-                    <a href="#">Simpanan Pokok</a>
-                    <a href="#">Simpanan Wajib</a>
-                    <a href="#">Simpanan Sukarela</a>
-                </div>
-
-                <button class="menu-item dropdown-btn">Pinjaman <i class="fa fa-chevron-down"></i></button>
-                <div class="dropdown-container">
-                    <a href="#">Data Pinjaman</a>
-                    <a href="#">Pelunasan</a>
-                </div>
-
-                <button class="menu-item dropdown-btn">Laporan <i class="fa fa-chevron-down"></i></button>
-                <div class="dropdown-container">
-                    <a href="#">Laporan Keuangan</a>
-                    <a href="#">Laporan Simpanan</a>
-                </div>
-
-                <button class="menu-item dropdown-btn">Master Data <i class="fa fa-chevron-down"></i></button>
-                <div class="dropdown-container">
-                    <a href="#">Data Anggota</a>
-                    <a href="#">Data Pengguna</a>
-                </div>
-
-                <button class="menu-item dropdown-btn">Setting <i class="fa fa-chevron-down"></i></button>
-                <div class="dropdown-container">
-                    <a href="#">Profil</a>
-                    <a href="#">Logout</a>
-                </div>
-            </nav>
-        </aside>
-
-        <main class="content">
-            <section class="welcome">
-                <h1>Selamat Datang</h1>
-                <p>Hai, silahkan pilih menu untuk mengoperasikan aplikasi</p>
-            </section>
-
-            <section class="cards">
-                <article class="card orange">
-                    <h2>Pinjaman</h2>
-                    <p>7,180,059,100 <span>Jumlah Tagihan</span></p>
-                    <p>6,389,993,269 <span>Jumlah Pelunasan</span></p>
-                    <p>790,065,831 <span>Sisa Tagihan</span></p>
-                    <i class="fa fa-money-bill-wave icon-bg"></i>
-                    <a href="#" class="more-info">More info <i class="fa fa-circle-info"></i></a>
-                </article>
-
-                <article class="card green">
-                    <h2>Simpanan</h2>
-                    <p>1,861,247,000 <span>Simpanan Anggota</span></p>
-                    <p>876,049,740 <span>Penarikan Tunai</span></p>
-                    <p>985,197,260 <span>Jumlah Simpanan</span></p>
-                    <i class="fa fa-briefcase icon-bg"></i>
-                    <a href="#" class="more-info">More info <i class="fa fa-circle-info"></i></a>
-                </article>
-
-                <article class="card purple">
-                    <h2>Kas Bulan Oktober 2025</h2>
-                    <p>429,565,371 <span>Saldo Awal</span></p>
-                    <p>0 <span>Mutasi</span></p>
-                    <p>429,565,371 <span>Saldo Akhir</span></p>
-                    <i class="fa fa-book icon-bg"></i>
-                    <a href="#" class="more-info">More info <i class="fa fa-circle-info"></i></a>
-                </article>
-
-                <article class="card blue">
-                    <h2>Data Anggota</h2>
-                    <p>267 <span>Anggota Aktif</span></p>
-                    <p>330 <span>Anggota Tidak Aktif</span></p>
-                    <p>579 <span>Jumlah Anggota</span></p>
-                    <i class="fa fa-user-plus icon-bg"></i>
-                    <a href="#" class="more-info">More info <i class="fa fa-circle-info"></i></a>
-                </article>
-
-                <article class="card sky">
-                    <h2>Data Peminjam</h2>
-                    <p>6071 <span>Peminjam</span></p>
-                    <p>5850 <span>Sudah Lunas</span></p>
-                    <p>221 <span>Belum Lunas</span></p>
-                    <i class="fa fa-calendar icon-bg"></i>
-                    <a href="#" class="more-info">More info <i class="fa fa-circle-info"></i></a>
-                </article>
-
-                <article class="card red">
-                    <h2>Data Pengguna</h2>
-                    <p>9 <span>User Aktif</span></p>
-                    <p>3 <span>User Non-Aktif</span></p>
-                    <p>12 <span>Jumlah User</span></p>
-                    <i class="fa fa-users icon-bg"></i>
-                    <a href="#" class="more-info">More info <i class="fa fa-circle-info"></i></a>
-                </article>
-            </section>
-        </main>
+  {{-- 🔹 HEADER ATAS --}}
+  <nav class="nav-top">
+    <div class="nav-left"></div>
+    <div class="nav-right">
+      <img src="{{ asset('images/logo.png') }}" alt="Koperasi TSM" class="logo-coop">
     </div>
+  </nav>
 
-    <script>
-        const toggleBtn = document.getElementById('menu-toggle');
-        const sidebar = document.getElementById('sidebar');
-        toggleBtn.addEventListener('click', () => {
-            sidebar.classList.toggle('collapsed');
-        });
+  {{-- 🔹 KONTEN UTAMA --}}
+  <div class="layout">
+            <aside class="sidebar">
+        <div class="profile-card">
+        <div class="profile-left">
+          <img src="{{ asset('images/profil-admin.jpg') }}"
+          alt="Foto {{-- {{ $user->nama_lengkap ?? 'Pengguna' }} --}}" class="avatar-70">
+        </div>
+        <div class="profile-right">
+          <div class="profile-name">Iqbal{{-- {{ $user->nama_lengkap ?? 'Nama Tidak Ditemukan' }} --}}</div>
+          <div class="profile-role">Admin Simpanan{{-- {{ $user->role ?? '' }} --}}</div>
+        </div>
+        <a href="#{{-- {{ route('admin.profil') }} --}}" class="btn-profil push-right" aria-label="Buka Profil">
+          <img src="{{ asset('icons/arrow-profil.png') }}" alt="">
+        </a>
+      </div>
 
-        const dropdownBtns = document.querySelectorAll('.dropdown-btn');
-        dropdownBtns.forEach(btn => {
-            btn.addEventListener('click', function() {
-                this.classList.toggle('active');
-                const content = this.nextElementSibling;
-                content.style.display = content.style.display === 'block' ? 'none' : 'block';
-            });
-        });
+      <ul class="menu-list">
+        <x-menu.section title="Transaksi Kas" :open="false" :has-sub="true">
+          <a href="#" class="submenu-row">Pemasukan</a>
+          <a href="#" class="submenu-row">Pengeluaran</a>
+          <a href="#" class="submenu-row">Transfer</a>
+        </x-menu.section>
 
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('clock').textContent =
-                now.toLocaleTimeString('id-ID', { hour12: false });
-        }
-        setInterval(updateClock, 1000);
-        updateClock();
-    </script>
+        <x-menu.section title="Transaksi Non Kas" :open="false" :has-sub="false">
+        </x-menu.section>
+
+        <x-menu.section title="Simpanan" :open="false" :has-sub="true">
+          <a href="#" class="submenu-row">Setoran Tunai</a>
+          <a href="#" class="submenu-row">Penarikan Tunai</a>
+        </x-menu.section>
+
+        <x-menu.section title="Pinjaman" :open="false" :has-sub="true">
+          <a href="#" class="submenu-row">Data Pengajuan</a>
+          <a href="#" class="submenu-row">Data Pinjaman</a>
+          <a href="#" class="submenu-row">Angsuran</a>
+          <a href="#" class="submenu-row">Pinjaman Lunas</a>
+        </x-menu.section>
+
+        <x-menu.section title="Laporan" :open="false" :has-sub="true">
+          <a href="#" class="submenu-row">Jatuh Tempo</a>
+          <a href="#" class="submenu-row">Buku Besar</a>
+          <a href="#" class="submenu-row">Neraca Saldo</a>
+          <a href="#" class="submenu-row">Neraca</a>
+          <a href="#" class="submenu-row">Kas Pinjaman</a>
+          <a href="#" class="submenu-row">Kas Simpanan</a>
+          <a href="#" class="submenu-row">Saldo Kas</a>
+          <a href="#" class="submenu-row">Laba Rugi</a>
+          <a href="#" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
+        </x-menu.section>
+
+        <x-menu.section title="Master Data" :open="false" :has-sub="true">
+          <a href="#" class="submenu-row">Saldo Awal Kas</a>
+          <a href="#" class="submenu-row">Saldo Awal Non Kas</a>
+          <a href="#" class="submenu-row">Jenis Simpanan</a>
+          <a href="#" class="submenu-row">Jenis Akun Transaksi</a>
+          <a href="#" class="submenu-row">Lama Angsuran</a>
+          <a href="#" class="submenu-row">Data Barang</a>
+          <a href="#" class="submenu-row">Data Anggota</a>
+          <a href="#" class="submenu-row">Data Pengguna</a>
+        </x-menu.section>
+
+        <x-menu.section title="Setting" :open="false" :has-sub="true">
+          <a href="#" class="submenu-row">Identitas Koperasi</a>
+          <a href="#" class="submenu-row">Suku Bunga</a>
+        </x-menu.section>
+      </ul>
+    </aside>
+
+    <main class="content">
+      <h2 class="page-title">My Profile <span class="subtitle">Anggota</span></h2>
+
+      <div class="profile-wrapper">
+        <section class="card-profile">
+          <img src="{{ asset('images/profil-admin.jpg') }}" alt="Foto Admin" class="profile-photo">
+          <h3 class="profile-nama">Iqbaal Diafakhri Ramadhan</h3>
+          <p class="profile-status aktif">Aktif</p>
+
+          <div class="action-group">
+            <button class="btn btn-danger">Non Aktifkan Akun</button>
+            <button class="btn btn-light">Logout</button>
+          </div>
+        </section>
+
+        {{-- Form Profil Kanan --}}
+        <section class="card-form"> 
+          <form>
+         <form class="form" method="post" action="#" {{-- {{ route('profile.update', $anggota->id_anggota) }} --}} enctype="multipart/form-data">
+          @csrf
+          @method('PUT')
+
+  <div class="form-group">
+    <label>Username</label>
+    <input type="text" name="username_anggota" value="angga" {{-- {{ $anggota->username_anggota }} --}}>
+  </div>
+
+  <div class="form-group">
+    <label>Password</label>
+    <input type="password" name="password" placeholder="Masukkan password">
+  </div>
+
+  <div class="form-group">
+    <label>Nama Lengkap</label>
+    <input type="text" name="nama_lengkap"value="angga aldi yunanda" {{-- {{ $anggota->nama_lengkap}} --}}>
+  </div>
+
+  <div class="form-group">
+    <label>Alamat</label>
+    <textarea name="alamat_anggota" rows="3">Perum Griya Sejahtera, Blok J No. 20 jl. Medayu Utara 30A, Medokan Ayu, Rungkut Surabaya {{-- {{ $anggota->alamat_anggota }} --}}</textarea>
+  </div>
+  
+<div class="form-group">
+            <label>Role</label>
+            <select name="id_role">
+              <option value="" disabled selected>pilih role</option>
+              <option value="admin simpanan">admin simpanan</option>
+              <option value="admin pinjaman">admin pinjaman</option>
+              <option value="admin accounting">admin accounting</option>
+              <option value="pengurus">pengurus</option>
+            </select>
+          </div>
+
+            <button type="submit" class="btn btn-primary">Edit Profil</button>
+          </form>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script>
+    // dropdown sidebar
+    function toggleSubmenu(button) {
+      const submenu = button.nextElementSibling;
+      submenu.classList.toggle("active");
+      button.querySelector(".chev").classList.toggle("rotate");
+    }
+  </script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 @extends('layouts.app-admin-add')
 
 @section('title', 'Lama Angsuran')  
+@section('back-url', url('admin/master_data/lama-angsuran'))
 @section('back-title', 'Master Data >')
 @section('title-1', 'Lama Angsuran')  
 @section('sub-title', 'Tambah Data Lama Angsuran')  
@@ -43,8 +44,8 @@
   /* Wrapper utama form */
   .form-wrapper {
     margin-top: 60px; /* jarak dari judul */
-    margin-left: 40px;
-    width: 750px;
+    margin-left: 30px;
+    width: 94%;
   }
 
   /* Judul kecil form */
@@ -95,7 +96,8 @@
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    margin-top: 300px;
+    margin-top: 250px;
+    margin-bottom: 20px;
   }
 
   .btn-simpan {

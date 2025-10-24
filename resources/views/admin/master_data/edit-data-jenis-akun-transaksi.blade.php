@@ -1,6 +1,7 @@
-@extends('layouts.app-admin-add3')
+@extends('layouts.app-admin-add')
 
 @section('title', 'Edit Jenis Akun Transaksi')
+@section('back-url', url('admin/master_data/jenis-akun-transaksi')) 
 @section('back-title', 'Master Data >')
 @section('title-1', 'Jenis Akun Transaksi')
 @section('sub-title', 'Edit Jenis Akun Transaksi')
@@ -128,9 +129,9 @@
     background-color: transparent;
     padding: 20px;
     border-radius: 10px;
-    width: 900px;
+    width: 98%;
     margin-left: 10px;
-    margin-top: 55px;
+    margin-top: 40px;
 }
 .form-group { margin-bottom: 15px; }
 label {
@@ -154,7 +155,7 @@ select {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    margin-top: 40px;
+    margin-top: 50px;
 }
 .btn {
     padding: 8px 0;

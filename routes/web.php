@@ -325,6 +325,3 @@ Route::get('/anggota/tambah-data-pengajuan', function () {
 Route::get('/anggota/data-pengajuan-coba', function () {
     return view('anggota.data-pengajuan-coba');
 })->name('anggota.data-pengajuan-coba');
-
-
-

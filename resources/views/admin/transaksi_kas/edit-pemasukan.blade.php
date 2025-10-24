@@ -1,6 +1,7 @@
 @extends('layouts.app-admin-add')
 
 @section('title', 'Transaksi Kas')  
+@section('back-url', url('admin/transaksi_kas/pemasukan'))
 @section('back-title', 'Transaksi Kas >')
 @section('title-1', 'Pemasukan')  
 @section('sub-title', 'Edit Data Pemasukan')  
@@ -144,9 +145,9 @@
     background-color: transparent;
     padding: 20px;
     border-radius: 10px;
-    width: 900px;
+    width: 98%;
     margin-left:10px;
-    margin-top:55px;
+    margin-top:40px;
 }
 
 label {

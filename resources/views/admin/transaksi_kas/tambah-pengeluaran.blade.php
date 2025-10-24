@@ -1,6 +1,7 @@
 @extends('layouts.app-admin-add')
 
 @section('title', 'Transaksi Kas')  
+@section('back-url', url('admin/transaksi_kas/pengeluaran'))
 @section('back-title', 'Transaksi Kas >')
 @section('title-1', 'Pengeluaran')  
 @section('sub-title', 'Tambah Data Pengeluaran')  
@@ -34,6 +35,7 @@
             <option value="/">Bank BNI</option>
         </select>
 
+            
         <label for="akun_debit">Untuk Akun</label>
         <select name="akun_debit" id="akun_debit" required>
             <option value="" disabled selected>-- Pilih Jenis Akun --</option>
@@ -58,9 +60,9 @@
     background-color: transparent;
     padding: 20px;
     border-radius: 10px;
-    width: 900px;
+    width: 98%;
     margin-left:10px;
-    margin-top:55px;
+    margin-top:40px;
 }
 
 label {

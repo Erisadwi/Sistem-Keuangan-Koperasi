@@ -1,4 +1,4 @@
-@extends('layouts.app-admin')
+@extends('layouts.app-admin3')
 
 @section('title', 'Saldo Awal Non Kas')
 @section('title-1', 'Master Data')
@@ -8,7 +8,7 @@
 
 <x-menu.tambah-unduh 
     addUrl="#" {{-- nanti diganti route('saldo-awal-non-kas.create') --}}
-    downloadFile="saldo-awal-kas.pdf" 
+    downloadFile="saldo-awal-non-kas.pdf" 
 />
 
 <div class="saldo-awal-non-kas-table-wrap">
@@ -62,7 +62,7 @@
     border: 1.5px solid var(--outer-border);
     background: var(--bg);
     width: 870px;
-    margin-left: 25px;
+    margin-left: 20px;
     margin-top: 20px;
     padding: 0;
     overflow-x: auto;
@@ -117,15 +117,14 @@
   }
 
   @media (max-width: 640px) {
-    .saldo-awal-kas-table {
+    .saldo-awal-non-kas-table {
       font-size: 12px;
     }
-    .saldo-awal-kas-table th, .saldo-awal-kas-table td {
+    .saldo-awal-non-kas-table th, .saldo-awal-non-kas-table td {
       padding: 8px;
     }
   }
   
-  /* Pagination style */
 .pagination {
   display: flex;
   justify-content: flex-end;
