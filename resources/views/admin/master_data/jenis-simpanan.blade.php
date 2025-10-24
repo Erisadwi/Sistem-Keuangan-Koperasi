@@ -36,8 +36,8 @@
           <td>{{ $row->tampil_simpanan ?? '' }}</td>
 
           <td class="actions">
-            <a href="# {{-- {{ route('simpanan.edit', ['id' => $row->id_jenis_simpanan]) }} --}}" class="edit">✏️ Edit</a>
-            <form action="# {{-- {{ route('simpanan.destroy', ['id' => $row->id_jenis_simpanan]) }} --}}" method="POST" style="display: inline;">
+            <a href="{{ route('jenis-simpanan.edit', ['id' => $row->id_jenis_simpanan]) }}" class="edit">✏️ Edit</a>
+            <form action="{{ route('jenis-simpanan.destroy', ['id' => $row->id_jenis_simpanan]) }}" method="POST" style="display: inline;">
               @csrf
               @method('DELETE')
               <button type="submit" class="delete">❌ Hapus</button>
@@ -70,7 +70,7 @@
     border-radius: 0;
     background: var(--bg);
     width: 96%;
-    margin-left: 25px;
+    margin-left: 20px;
     margin-top: 30px;
     padding: 0;
     box-shadow: none;

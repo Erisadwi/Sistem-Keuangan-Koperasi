@@ -33,4 +33,24 @@ class JenisSimpananController extends Controller
         return redirect()->route('jenis-simpanan.index')
                          ->with('success', 'Jenis simpanan berhasil ditambahkan!');
     }
+
+    public function edit($id)
+    {
+        $jenis_simpanan = JenisSimpanan::findOrFail($id);
+        return view('admin.master_data.edit-jenis-simpanan', compact('jenis_simpanan'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $jenis_simpanan = JenisSimpanan::findOrFail($id);
+        $jenis_simpanan->update($request->only(['jenis_simpanan', 'jumlah_simpanan', 'tampil_simpanan']));
+        return redirect()->route('jenis-simpanan.index')->with('success', 'Data berhasil diperbarui');
+    }
+
+    public function destroy($id)
+    {
+        $jenis_simpanan = JenisSimpanan::findOrFail($id);
+        $jenis_simpanan->delete();
+        return redirect()->route('jenis-simpanan.index')->with('success', 'Data berhasil dihapus');
+    }
 }
