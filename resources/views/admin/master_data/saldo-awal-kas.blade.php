@@ -1,4 +1,4 @@
-@extends('layouts.app-admin')
+@extends('layouts.app-admin3')
 
 @section('title', 'Saldo Awal Kas')
 @section('title-1', 'Master Data')
@@ -47,6 +47,8 @@
   </table>
 </div>
 
+{{-- Komponen pagination --}}
+<x-menu.pagination />
 
 <style>
   :root {
@@ -123,6 +125,34 @@
     }
   }
   
+  /* Pagination style */
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+  margin-top: 15px;
+  font-size: 14px;
+}
 
+.pagination select,
+.pagination button {
+  padding: 4px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: white;
+  cursor: pointer;
+}
+
+.pagination button {
+  background: var(--primary);
+  color: white;
+  border: none;
+}
+
+.pagination button:hover {
+  background: var(--primary-dark);
+}
+</style>
 
 @endsection
