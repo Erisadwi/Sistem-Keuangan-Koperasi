@@ -2,9 +2,20 @@
 
 use Illuminate\Support\Facades\Route;
 
+
+use App\Http\Controllers\Admin\MasterData\JenisSimpananController;
+
+Route::prefix('admin/master_data')->group(function () {
+    Route::get('jenis-simpanan', [JenisSimpananController::class, 'index'])->name('jenis-simpanan.index');
+    Route::get('jenis-simpanan/create', [JenisSimpananController::class, 'create'])->name('jenis-simpanan.create');
+    Route::post('jenis-simpanan', [JenisSimpananController::class, 'store'])->name('jenis-simpanan.store');
+});
+
 //Route::get('/', function () {
 //    return view('welcome');
 //});
+
+
 
 Route::get('/', function () {
     return view('login');
@@ -50,9 +61,6 @@ Route::get('/admin/laporan/laporan-SHU', function () {
     return view('admin.laporan.laporan-SHU');
 })->name('admin.laporan.laporan-SHU');
 
-Route::get('/admin/master_data/jenis-simpanan', function () {
-    return view('admin.master_data.jenis-simpanan');
-})->name('admin.master_data.jenis-simpanan');
 
 Route::get('/admin/master_data/data-barang', function () {
     return view('admin.master_data.data-barang');
@@ -102,9 +110,6 @@ Route::get('/admin/master_data/edit-data-barang', function () {
     return view('admin.master_data.edit-data-barang');
 })->name('admin.master_data.edit-data-barang');
 
-Route::get('/admin/master_data/tambah-jenis-simpanan', function () {
-    return view('admin.master_data.tambah-jenis-simpanan');
-})->name('admin.master_data.tambah-jenis-simpanan');
 
 Route::get('/admin/master_data/edit-jenis-simpanan', function () {
     return view('admin.master_data.edit-jenis-simpanan');

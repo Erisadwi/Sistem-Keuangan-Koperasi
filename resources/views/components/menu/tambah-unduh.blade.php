@@ -1,5 +1,5 @@
 <div class="button-wrapper">
-    <a href="# {{-- {{ $addUrl }} --}}" class="df-btn df-add">
+    <a href="{{ $addUrl }}" class="df-btn df-add">
         <span class="df-ic" aria-hidden="true">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
                 <path d="M12 5v14m-7-7h14" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
