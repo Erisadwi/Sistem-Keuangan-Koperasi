@@ -9,148 +9,133 @@
 @section('content')
 
 <div class="form-container">
-    <form id="formDataAnggota" action="#" method="POST" enctype="multipart/form-data">
+    <form id="formTambahAnggota" action="{{ route('admin.anggota.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <div class="form-grid">
             <div class="form-group">
-                <label for="nama_lengkap">Nama Lengkap</label>
-                <input type="text" id="nama_lengkap" name="nama_lengkap" placeholder="Masukkan nama lengkap" required>
+                <label for="nama_anggota">Nama Lengkap</label>
+                <input type="text" id="nama_anggota" name="nama_anggota" 
+                       value="{{ old('nama_anggota') }}" required>
             </div>
 
             <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" placeholder="Masukkan username" required>
+                <label for="username_anggota">Username</label>
+                <input type="text" id="username_anggota" name="username_anggota" 
+                       value="{{ old('username_anggota') }}" required>
             </div>
 
             <div class="form-group">
                 <label for="jenis_kelamin">Jenis Kelamin</label>
                 <select id="jenis_kelamin" name="jenis_kelamin" required>
                     <option value="">-- Pilih Jenis Kelamin --</option>
-                    <option value="Laki-laki">Laki-laki</option>
-                    <option value="Perempuan">Perempuan</option>
-                    <option value="Lainnya">Lainnya</option>
+                    <option value="L" {{ old('jenis_kelamin') == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                    <option value="P" {{ old('jenis_kelamin') == 'P' ? 'selected' : '' }}>Perempuan</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="tempat_lahir">Tempat Lahir</label>
-                <input type="text" id="tempat_lahir" name="tempat_lahir" placeholder="Masukkan tempat lahir" required>
+                <input type="text" id="tempat_lahir" name="tempat_lahir" 
+                       value="{{ old('tempat_lahir') }}">
             </div>
 
             <div class="form-group">
                 <label for="tanggal_lahir">Tanggal Lahir</label>
-                <input type="date" id="tanggal_lahir" name="tanggal_lahir" required>
+                <input type="date" id="tanggal_lahir" name="tanggal_lahir" 
+                       value="{{ old('tanggal_lahir') }}">
             </div>
 
             <div class="form-group">
-                <label for="status">Status Perkawinan</label>
-                <select id="status" name="status" required>
+                <label for="status_perkawinan">Status Perkawinan</label>
+                <select id="status_perkawinan" name="status_perkawinan">
                     <option value="">-- Pilih Status --</option>
-                    <option value="Belum Kawin">Belum Kawin</option>
-                    <option value="Kawin">Kawin</option>
-                    <option value="Cerai Hidup">Cerai Hidup</option>
-                    <option value="Cerai Mati">Cerai Mati</option>
-                    <option value="Lainnya">Lainnya</option>
+                    @foreach(['BELUM KAWIN','KAWIN','CERAI HIDUP','CERAI MATI','LAINNYA'] as $s)
+                        <option value="{{ $s }}" {{ old('status_perkawinan') == $s ? 'selected' : '' }}>{{ $s }}</option>
+                    @endforeach
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="departemen">Departemen</label>
-                <select id="departemen" name="departemen" required>
+                <select id="departemen" name="departemen">
                     <option value="">-- Pilih Departemen --</option>
-                    <option value="Produksi BOPP">Produksi BOPP</option>
-                    <option value="Produksi Slitting">Produksi Slitting</option>
-                    <option value="WH">WH</option>
-                    <option value="QA">QA</option>
-                    <option value="HRD">HRD</option>
-                    <option value="GA">GA</option>
-                    <option value="Purchasing">Purchasing</option>
-                    <option value="Accounting">Accounting</option>
-                    <option value="Engineering">Engineering</option>
-                    <option value="Lainnya">Lainnya</option>
+                    @foreach(['PRODUKSI BOPP','PRODUKSI SLITTING','WH','QA','HRD','GA','PURCHASING','ACCOUNTING','ENGINEERING'] as $d)
+                        <option value="{{ $d }}" {{ old('departemen') == $d ? 'selected' : '' }}>{{ $d }}</option>
+                    @endforeach
                 </select>
             </div>
 
-            <div class="form-group">
+           <div class="form-group">
                 <label for="pekerjaan">Pekerjaan</label>
-                <select id="pekerjaan" name="pekerjaan" required>
+                <select id="pekerjaan" name="pekerjaan">
                     <option value="">-- Pilih Pekerjaan --</option>
-                    <option value="TNI">TNI</option>
-                    <option value="PNS">PNS</option>
-                    <option value="Karyawan">Karyawan</option>
-                    <option value="Guru">Guru</option>
-                    <option value="Buruh">Buruh</option>
-                    <option value="Mengurus Rumah Tangga">Mengurus Rumah Tangga</option>
-                    <option value="Lainnya">Lainnya</option>
+                    @foreach(['TNI','PNS','KARYAWAN SWASTA','GURU','BURUH','TANI','PEDAGANG','WIRASWASTA','MENGURUS RUMAH TANGGA','LAINNYA','PENSIUNAN','PENJAHIT'] as $p)
+                        <option value="{{ $p }}" {{ old('pekerjaan') == $p ? 'selected' : '' }}>{{ $p }}</option>
+                    @endforeach
                 </select>
             </div>
 
-            <div class="form-group">
+           <div class="form-group">
                 <label for="agama">Agama</label>
-                <select id="agama" name="agama" required>
+                <select id="agama" name="agama">
                     <option value="">-- Pilih Agama --</option>
-                    <option value="Islam">Islam</option>
-                    <option value="Kristen Protestan">Kristen Protestan</option>
-                    <option value="Katolik">Katolik</option>
-                    <option value="Hindu">Hindu</option>
-                    <option value="Buddha">Buddha</option>
-                    <option value="Konghucu">Konghucu</option>
-                    <option value="Lainnya">Lainnya</option>
+                    @foreach(['ISLAM','KATOLIK','PROTESTAN','HINDU','BUDHA','LAINNYA'] as $a)
+                        <option value="{{ $a }}" {{ old('agama') == $a ? 'selected' : '' }}>{{ $a }}</option>
+                    @endforeach
                 </select>
             </div>
 
-            <div class="form-group">
-                <label for="alamat">Alamat</label>
-                <input type="text" id="alamat" name="alamat" placeholder="Masukkan alamat" required>
+           <div class="form-group">
+                <label for="alamat_anggota">Alamat</label>
+                <input type="text" id="alamat_anggota" name="alamat_anggota" 
+                       value="{{ old('alamat_anggota') }}">
             </div>
 
             <div class="form-group">
-                <label for="kota">Kota</label>
-                <input type="text" id="kota" name="kota" placeholder="Masukkan kota" required>
+                <label for="kota_anggota">Kota</label>
+                <input type="text" id="kota_anggota" name="kota_anggota" 
+                       value="{{ old('kota_anggota') }}">
             </div>
 
             <div class="form-group">
-                <label for="no_telp">No. Telp / HP</label>
-                <input type="text" id="no_telp" name="no_telp" placeholder="Masukkan nomor telepon" required>
+                <label for="no_telepon">No Telepon</label>
+                <input type="text" id="no_telepon" name="no_telepon" 
+                       value="{{ old('no_telepon') }}">
             </div>
 
             <div class="form-group">
-                <label for="tgl_registrasi">Tanggal Registrasi</label>
-                <input type="date" id="tgl_registrasi" name="tgl_registrasi" required>
+                <label for="tanggal_registrasi">Tanggal Registrasi</label>
+                <input type="date" id="tanggal_registrasi" name="tanggal_registrasi" 
+                       value="{{ old('tanggal_registrasi', date('Y-m-d')) }}">
             </div>
 
             <div class="form-group">
                 <label for="jabatan">Jabatan</label>
-                <select id="jabatan" name="jabatan" required>
+                <select id="jabatan" name="jabatan">
                     <option value="">-- Pilih Jabatan --</option>
-                    <option value="Ketua">Ketua</option>
-                    <option value="Sekretaris">Sekretaris</option>
-                    <option value="Bendahara">Bendahara</option>
-                    <option value="Anggota">Anggota</option>
-                    <option value="Karyawan">Karyawan</option>
-                    <option value="Pengawas">Pengawas</option>
-                    <option value="Perusahaan">Perusahaan</option>
-                    <option value="Lainnya">Lainnya</option>
+                    @foreach(['KETUA','SEKRETARIS','BENDAHARA','PENGAWAS','KARYAWAN','PERUSAHAAN'] as $j)
+                        <option value="{{ $j }}" {{ old('jabatan') == $j ? 'selected' : '' }}>{{ $j }}</option>
+                    @endforeach
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Masukkan password" required>
+                <label for="password_anggota">Password</label>
+                <input type="password" id="password_anggota" name="password_anggota" required>
             </div>
 
             <div class="form-group">
-                <label for="tgl_keluar">Tanggal Keluar</label>
-                <input type="date" id="tgl_keluar" name="tgl_keluar">
+                <label for="tanggal_keluar">Tanggal Keluar</label>
+                <input type="date" id="tanggal_keluar" name="tanggal_keluar" 
+                       value="{{ old('tanggal_keluar') }}">
             </div>
 
             <div class="form-group">
-                <label for="aktif_keanggotaan">Aktif Keanggotaan</label>
-                <select id="aktif_keanggotaan" name="aktif_keanggotaan" required>
-                    <option value="">-- Pilih Status --</option>
-                    <option value="Aktif">Aktif</option>
-                    <option value="Non Aktif">Non Aktif</option>
+                <label for="status_anggota">Aktif Keanggotaan</label>
+                <select id="status_anggota" name="status_anggota" required>
+                    <option value="AKTIF" {{ old('status_anggota', 'AKTIF') == 'AKTIF' ? 'selected' : '' }}>AKTIF</option>
+                    <option value="NON AKTIF" {{ old('status_anggota') == 'NON AKTIF' ? 'selected' : '' }}>NON AKTIF</option>
                 </select>
             </div>
 
@@ -236,10 +221,9 @@ input[type="file"] {
 
 {{-- ========== VALIDASI JS ========== --}}
 <script>
-document.getElementById(''formDataAnggota').addEventListener('submit', function(e) {
-    const wajib = ['nama_lengkap','username','jenis_kelamin','tempat_lahir','tanggal_lahir','status',
-                   'departemen','pekerjaan','agama','alamat','kota','no_telp','tgl_registrasi',
-                   'jabatan','password','aktif_keanggotaan'];
+document.getElementById('formDataAnggota').addEventListener('submit', function(e) {
+    const wajib = ['nama_anggota','username_anggota','password_anggota','jenis_kelamin','status_anggota'];
+
 
     for (let id of wajib) {
         const el = document.getElementById(id);
@@ -260,6 +244,6 @@ document.getElementById(''formDataAnggota').addEventListener('submit', function(
 
     alert('✅ Data berhasil disimpan!');
 });
-<script>
+</script>
 
 @endsection
