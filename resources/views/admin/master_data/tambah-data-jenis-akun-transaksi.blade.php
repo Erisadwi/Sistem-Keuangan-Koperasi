@@ -14,65 +14,69 @@
 
         <div class="form-group">
             <label for="kode_aktiva">Kode Aktiva</label>
-            <input type="text" id="kode_aktiva" name="kode_aktiva" placeholder="Masukkan kode aktiva" required>
+            <input type="text" id="kode_aktiva" name="kode_aktiva" 
+                   value="{{ old('kode_aktiva') }}" 
+                   placeholder="Masukkan kode aktiva" required>
         </div>
 
         <div class="form-group">
-            <label for="jenis_transaksi">Jenis Transaksi</label>
-            <input type="text" id="jenis_transaksi" name="jenis_transaksi" placeholder="Masukkan jenis transaksi" required>
+            <label for="nama_AkunTransaksi">Jenis Transaksi</label>
+            <input type="text" id="nama_AkunTransaksi" name="nama_AkunTransaksi" 
+                   value="{{ old('nama_AkunTransaksi') }}" 
+                   placeholder="Masukkan nama akun transaksi" required>
         </div>
 
         <div class="form-group">
-            <label for="akun">Akun</label>
-            <select id="akun" name="akun" required>
-                <option value="">-- Pilih Akun --</option>
-                <option value="Aktiva">Aktiva</option>
-                <option value="Pasiva">Pasiva</option>
+            <label for="type_akun">Tipe Akun</label>
+            <select id="type_akun" name="type_akun" required>
+                <option value="">-- Pilih --</option>
+                <option value="ACTIVA" {{ old('type_akun') == 'ACTIVA' ? 'selected' : '' }}>ACTIVA</option>
+                <option value="PASIVA" {{ old('type_akun') == 'PASIVA' ? 'selected' : '' }}>PASIVA</option>
             </select>
         </div>
 
-        <div class="form-group">
+         <div class="form-group">
             <label for="pemasukan">Pemasukan</label>
             <select id="pemasukan" name="pemasukan" required>
                 <option value="">-- Pilih --</option>
-                <option value="Y">Ya</option>
-                <option value="T">Tidak</option>
+                <option value="Y" {{ old('pemasukan') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('pemasukan') == 'N' ? 'selected' : '' }}>Tidak</option>
             </select>
         </div>
-
+       
         <div class="form-group">
             <label for="pengeluaran">Pengeluaran</label>
             <select id="pengeluaran" name="pengeluaran" required>
                 <option value="">-- Pilih --</option>
-                <option value="Y">Ya</option>
-                <option value="T">Tidak</option>
+                <option value="Y" {{ old('pengeluaran') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('pengeluaran') == 'N' ? 'selected' : '' }}>Tidak</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="aktif">Aktif</label>
-            <select id="aktif" name="aktif" required>
+            <label for="status_akun">Aktif</label>
+            <select id="status_akun" name="status_akun" required>
                 <option value="">-- Pilih --</option>
-                <option value="Y">Ya</option>
-                <option value="T">Tidak</option>
+                <option value="Y" {{ old('status_akun') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('status_akun') == 'N' ? 'selected' : '' }}>Tidak</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="laba_rugi">Laba Rugi</label>
-            <select id="laba_rugi" name="laba_rugi">
+            <label for="labarugi">Laba Rugi</label>
+            <select id="labarugi" name="labarugi">
                 <option value="">-- Pilih --</option>
-                <option value="Pendapatan">Pendapatan</option>
-                <option value="Biaya">Biaya</option>
+                <option value="PENDAPATAN" {{ old('labarugi') == 'PENDAPATAN' ? 'selected' : '' }}>Pendapatan</option>
+                <option value="BIAYA" {{ old('labarugi') == 'BIAYA' ? 'selected' : '' }}>Biaya</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="non_kas">Non Kas</label>
-            <select id="non_kas" name="non_kas">
+            <label for="nonkas">Non Kas</label>
+            <select id="nonkas" name="nonkas">
                 <option value="">-- Pilih --</option>
-                <option value="Y">Ya</option>
-                <option value="T">Tidak</option>
+                <option value="Y" {{ old('nonkas') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('nonkas') == 'N' ? 'selected' : '' }}>Tidak</option>
             </select>
         </div>
 
@@ -80,8 +84,8 @@
             <label for="simpanan">Simpanan</label>
             <select id="simpanan" name="simpanan">
                 <option value="">-- Pilih --</option>
-                <option value="Y">Ya</option>
-                <option value="T">Tidak</option>
+                <option value="Y" {{ old('simpanan') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('simpanan') == 'N' ? 'selected' : '' }}>Tidak</option>
             </select>
         </div>
 
@@ -89,8 +93,8 @@
             <label for="pinjaman">Pinjaman</label>
             <select id="pinjaman" name="pinjaman">
                 <option value="">-- Pilih --</option>
-                <option value="Y">Ya</option>
-                <option value="T">Tidak</option>
+                <option value="Y" {{ old('pinjaman') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('pinjaman') == 'N' ? 'selected' : '' }}>Tidak</option>
             </select>
         </div>
 
@@ -98,8 +102,8 @@
             <label for="pinjam_dari">Pinjaman Dari</label>
             <select id="pinjam_dari" name="pinjam_dari">
                 <option value="">-- Pilih --</option>
-                <option value="Y">Ya</option>
-                <option value="T">Tidak</option>
+                <option value="Y" {{ old('pinjaman_dari') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('pinjaman_dari') == 'N' ? 'selected' : '' }}>Tidak</option>
             </select>
         </div>
 
@@ -107,10 +111,11 @@
             <label for="angsuran">Angsuran</label>
             <select id="angsuran" name="angsuran">
                 <option value="">-- Pilih --</option>
-                <option value="Y">Ya</option>
-                <option value="T">Tidak</option>
+                <option value="Y" {{ old('angsuran') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('angsuran') == 'N' ? 'selected' : '' }}>Tidak</option>
             </select>
         </div>
+
 
         <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>
@@ -201,8 +206,9 @@ select:focus {
 {{-- ======== SCRIPT POP-UP VALIDASI DAN KONFIRMASI ======== --}}
 
 <script>
-document.getElementById('form-container').addEventListener('submit', function(e) {
-    const wajib = ['kode_aktiva', 'kode_aktiva','akun', 'pemasukan',  'pengeluaran', 'aktif'];
+document.getElementById('jenisAkunTransaksiForm').addEventListener('submit', function(e) {
+    const wajib = ['kode_aktiva', 'nama_AkunTransaksi', 'type_akun', 'pemasukan', 'pengeluaran', 'status_akun'];
+
 
     for (let id of wajib) {
         const el = document.getElementById(id);
@@ -221,7 +227,7 @@ document.getElementById('form-container').addEventListener('submit', function(e)
         return;
     }
 
-    alert('✅ Data barang berhasil disimpan!');
+    alert('✅ Data berhasil disimpan!');
 });
 </script>
 

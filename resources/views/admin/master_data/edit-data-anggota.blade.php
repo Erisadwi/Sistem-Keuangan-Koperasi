@@ -262,7 +262,7 @@ document.getElementById(''formEditAnggota').addEventListener('submit', function(
         return;
     }
 
-    alert('✅ Data barang berhasil disimpan!');
+    alert('✅ Data berhasil disimpan!');
 });
 <script>
 

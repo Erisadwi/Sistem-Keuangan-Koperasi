@@ -158,7 +158,7 @@ document.getElementById('form-container').addEventListener('submit', function(e)
         return;
     }
 
-    alert('✅ Data barang berhasil disimpan!');
+    alert('✅ Data berhasil disimpan!');
 });
 </script>
 

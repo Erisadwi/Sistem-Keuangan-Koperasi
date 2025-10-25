@@ -186,7 +186,7 @@ document.getElementById('saldoAwalKasForm').addEventListener('submit', function(
         return;
     }
 
-    alert('✅ Data barang berhasil disimpan!');
+    alert('✅ Data berhasil disimpan!');
 });
 </script>
 
