@@ -7,39 +7,39 @@
 @section('content')
 
 <div class="form-container">
-    <form action="# {{-- {{ route('koperasi.update', $data_koperasi->id) }} --}}" method="POST">
+    <form action="{{ route('identitas-koperasi.update', $identitas_koperasi ->id) }}" method="POST">
         @csrf
         @method('PUT')
 
         <label for="namaKoperasi">Nama Koperasi</label>
-        <input type="text" id="namaKoperasi" name="namaKoperasi" value=" {{-- {{ $data_koperasi->nama_koperasi }} --}}">
+        <input type="text" id="namaKoperasi" name="nama_koperasi" value="{{ $identitas_koperasi->nama_koperasi }}">
 
         <label for="npwp">NPWP</label>
-        <input type="text" id="npwp" name="npwp" value=" {{-- {{ $data_koperasi->npwp }} --}}">
+        <input type="text" id="npwp" name="npwp" value="{{ $identitas_koperasi->npwp }}">
 
         <label for="namaPimpinan">Nama Pimpinan</label>
-        <input type="text" id="namaPimpinan" name="namaPimpinan" value="{{-- {{ $data_koperasi->nama_pimpinan }} --}}">
+        <input type="text" id="namaPimpinan" name="nama_pimpinan" value="{{ $identitas_koperasi->nama_pimpinan }}">
 
         <label for="telepon">Telepon</label>
-        <input type="tel" id="telepon" name="telepon" value="{{-- {{ $data_koperasi->telepon_koperasi }} --}}">
+        <input type="tel" id="telepon" name="telepon_koperasi" value="{{ $identitas_koperasi->telepon_koperasi }}">
 
         <label for="alamat">Alamat</label>
-        <input type="text" id="alamat" name="alamat" value="{{-- {{ $data_koperasi->alamat_koperasi }} --}}">
+        <input type="text" id="alamat" name="alamat_koperasi" value="{{ $identitas_koperasi->alamat_koperasi }}">
 
         <label for="kodePos">Kode Pos</label>
-        <input type="number" id="kodePos" name="kodePos" value="{{-- {{ $data_koperasi->kode_pos }} --}}">
+        <input type="number" id="kodePos" name="kode_pos" value="{{ $identitas_koperasi->kode_pos }}">
 
         <label for="fax">Fax</label>
-        <input type="text" id="fax" name="fax" value="{{-- {{ $data_koperasi->fax_koperasi }} --}}">
+        <input type="text" id="fax" name="fax_koperasi" value="{{ $identitas_koperasi->fax_koperasi }}">
 
         <label for="email">Email</label>
-        <input type="email" id="email" name="email" value="{{-- {{ $data_koperasi->email_koperasi }} --}}">
+        <input type="email" id="email" name="email_koperasi" value="{{ $identitas_koperasi->email_koperasi }}">
 
         <label for="website">Website</label>
-        <input type="url" id="website" name="website" value="{{-- {{ $data_koperasi->website }} --}}">
+        <input type="url" id="website" name="website" value="{{ $identitas_koperasi->website }}">
 
         <label for="logo">Logo</label>
-        <input type="file" id="logo" name="logo" accept="image/*">
+        <input type="file" id="logo" name="logo_koperasi" accept="image/*">
 
         <button type="submit">Update</button>
     </form>

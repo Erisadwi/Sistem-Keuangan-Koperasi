@@ -4,6 +4,9 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\MasterData\JenisBarangController;
 use App\Http\Controllers\Admin\MasterData\JenisSimpananController;
+use App\Http\Controllers\Admin\setting\SukuBungaController;
+use App\Http\Controllers\Admin\setting\identitasKoperasiController;
+use App\Models\identitasKoperasi;
 
 Route::prefix('admin/master_data')->group(function () {
     Route::get('jenis-simpanan', [JenisSimpananController::class, 'index'])->name('jenis-simpanan.index');
@@ -19,6 +22,14 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('jenis-barang/{id}/edit', [JenisBarangController::class, 'edit'])->name('jenis-barang.edit');
     Route::put('jenis-barang/{id}', [JenisBarangController::class, 'update'])->name('jenis-barang.update');
     Route::delete('jenis-barang/{id}', [JenisBarangController::class, 'destroy'])->name('jenis-barang.destroy');
+});
+
+Route::prefix('admin/setting')->group(function () {
+    Route::get('identitas-koperasi/edit', [identitasKoperasiController::class, 'edit'])->name('identitas-koperasi.edit');
+    Route::put('identitas-koperasi/update', [identitasKoperasiController::class, 'update'])->name('identitas-koperasi.update');
+
+    Route::get('suku-bunga/edit', [SukuBungaController::class, 'edit'])->name('suku-bunga.editSingle');
+    Route::put('suku-bunga/', [SukuBungaController::class, 'update'])->name('suku-bunga.updateSingle');
 });
 
 //Route::get('/', function () {
@@ -71,11 +82,6 @@ Route::get('/admin/laporan/laporan-SHU', function () {
     return view('admin.laporan.laporan-SHU');
 })->name('admin.laporan.laporan-SHU');
 
-
-Route::get('/admin/setting/identitas-koperasi', function () {
-    return view('admin.setting.identitas-koperasi');
-})->name('admin.setting.identitas-koperasi');
-
 Route::get('/admin/laporan/laporan-jatuh-tempo', function () {
     return view('admin.laporan.laporan-jatuh-tempo');
 })->name('admin.laporan.laporan-jatuh-tempo');
@@ -87,10 +93,6 @@ Route::get('/admin/laporan/laporan-buku-besar', function () {
 Route::get('/admin/laporan/laporan-neraca-saldo', function () {
     return view('admin.laporan.laporan-neraca-saldo');
 })->name('admin.laporan.laporan-neraca-saldo');
-
-Route::get('/admin/setting/suku-bunga', function () {
-    return view('admin.setting.suku-bunga'); 
-})->name('admin.setting.suku-bunga');
 
 Route::get('/admin/transaksi_non_kas/tambah-transaksi', function () {
     return view('admin.transaksi_non_kas.tambah-transaksi');
