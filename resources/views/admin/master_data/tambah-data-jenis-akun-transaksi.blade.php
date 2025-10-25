@@ -35,12 +35,30 @@
             </select>
         </div>
 
-         <div class="form-group">
+        <div class="form-group">
             <label for="pemasukan">Pemasukan</label>
             <select id="pemasukan" name="pemasukan" required>
                 <option value="">-- Pilih --</option>
                 <option value="Y" {{ old('pemasukan') == 'Y' ? 'selected' : '' }}>Ya</option>
                 <option value="N" {{ old('pemasukan') == 'N' ? 'selected' : '' }}>Tidak</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="pemasukan">Penarikan</label>
+            <select id="pemasukan" name="pemasukan" required>
+                <option value="">-- Pilih --</option>
+                <option value="Y" {{ old('penarikan') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('penarikan') == 'N' ? 'selected' : '' }}>Tidak</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="pemasukan">Transfer</label>
+            <select id="pemasukan" name="pemasukan" required>
+                <option value="">-- Pilih --</option>
+                <option value="Y" {{ old('transfer') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('transfer') == 'N' ? 'selected' : '' }}>Tidak</option>
             </select>
         </div>
        

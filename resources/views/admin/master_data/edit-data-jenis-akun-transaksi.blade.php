@@ -42,6 +42,24 @@
                 <option value="N" {{ old('pemasukan', $jenis_akun_transaksi->pemasukan ?? '') == 'N' ? 'selected' : '' }}>Tidak</option>
             </select>
         </div>
+
+        <div class="form-group">
+            <label for="pemasukan">Penarikan</label>
+            <select id="pemasukan" name="pemasukan" required>
+                <option value="">-- Pilih --</option>
+                <option value="Y" {{ old('penarikan', $jenis_akun_transaksi->penarikan ?? '') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('penarikan', $jenis_akun_transaksi->penarikan ?? '') == 'N' ? 'selected' : '' }}>Tidak</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="pemasukan">Transfer</label>
+            <select id="pemasukan" name="pemasukan" required>
+                <option value="">-- Pilih --</option>
+                <option value="Y" {{ old('transfer', $jenis_akun_transaksi->transfer ?? '') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('transfer', $jenis_akun_transaksi->transfer ?? '') == 'N' ? 'selected' : '' }}>Tidak</option>
+            </select>
+        </div>
        
         <div class="form-group">
             <label for="pengeluaran">Pengeluaran</label>

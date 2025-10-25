@@ -7,8 +7,8 @@
 @section('content')
 
 <x-menu.tambah-unduh-cari
-    addUrl="{{ route('jenis-akun-transaksi.create') }}
-    downloadFile="jenis-akun-transaksi.pdf" 
+    addUrl="{{ route('jenis-akun-transaksi.create') }}"
+    downloadFile="jenis-akun-transaksi.pdf"
 />
 
 {{-- Wrapper konten tabel --}}
@@ -21,6 +21,8 @@
           <th>Jenis Transaksi</th>
           <th>Akun</th>
           <th>Pemasukan</th>
+          <th>Penarikann</th>
+          <th>Transfer</th>
           <th>Pengeluaran</th>
           <th>Aktif</th>
           <th>Laba Rugi</th>
@@ -41,6 +43,8 @@
             <td>{{ $row->nama_transaksi ?? '-' }}</td>
             <td>{{ $row->akun ?? '-' }}</td>
             <td>{{ $row->pemasukan ?? '-' }}</td>
+            <td>{{ $row->penarikan ?? '-' }}</td>
+            <td>{{ $row->transfer ?? '-' }}</td>
             <td>{{ $row->pengeluaran ?? '-' }}</td>
             <td>{{ $row->aktif ?? '-' }}</td>
             <td>{{ $row->laba_rugi ?? '-' }}</td>
