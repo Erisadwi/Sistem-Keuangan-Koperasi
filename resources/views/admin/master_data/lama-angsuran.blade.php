@@ -7,7 +7,7 @@
 @section('content')
 
 <x-menu.tambah-unduh 
-    addUrl="# {{-- {{ route('lama-angsuran.create') }} --}}" 
+    addUrl="{{ route('lama-angsuran.create') }}" 
     downloadFile="lama_angsuran.pdf" />
 
 <div class="lama-angsuran-table-wrap">
@@ -26,8 +26,8 @@
           <td class="text-center">{{ $row->lama_angsuran ?? '' }}</td>
           <td class="text-center">{{ $row->is_active == 'Y' ? 'Y' : 'T' }}</td>
           <td class="actions">
-            <a href="{{ route('lama-angsuran.edit', ['id' => $row->id]) }}" class="edit">✏️ Edit</a>
-            <form action="{{ route('lama-angsuran.destroy', ['id' => $row->id]) }}" method="POST" style="display: inline;">
+            <a href="{{ route('lama-angsuran.edit', ['id' => $row->id_lamaAngsuran]) }}" class="edit">✏️ Edit</a>
+            <form action="{{ route('lama-angsuran.destroy', ['id' => $row->id_lamaAngsuran]) }}" method="POST" style="display: inline;">
               @csrf
               @method('DELETE')
               <button type="submit" class="delete">❌ Hapus</button>

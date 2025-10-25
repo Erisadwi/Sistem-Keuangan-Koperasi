@@ -6,9 +6,8 @@
 
 @section('content')
 
-{{-- Komponen tombol tambah & unduh --}}
 <x-menu.tambah-unduh-cari
-    addUrl="#" {{-- nanti bisa diganti route('jenis-akun-transaksi.create') --}}
+    addUrl="{{ route('jenis-akun-transaksi.create') }}
     downloadFile="jenis-akun-transaksi.pdf" 
 />
 
@@ -51,7 +50,7 @@
             <td>{{ $row->pinjam_dari ?? '-' }}</td>
             <td>{{ $row->angsuran ?? '-' }}</td>
             <td class="actions">
-              <a href="{{ route('jenis-akun-transaksi.edit', $row->id_transaksi ?? '#') }}" class="btn btn-sm btn-warning">✏️ Edit</a>
+              <a href="{{ route('jenis-akun-transaksi.edit', ['id' => $row->id_jenisAkunTransaksi]) }}" class="btn btn-sm btn-warning">✏️ Edit</a>
             </td>
           </tr>
         @empty

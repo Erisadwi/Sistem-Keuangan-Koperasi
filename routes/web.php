@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\MasterData\JenisBarangController;
 use App\Http\Controllers\Admin\MasterData\JenisSimpananController;
+use App\Http\Controllers\Admin\MasterData\JenisAkunTransaksiController;
+use App\Http\Controllers\Admin\MasterData\LamaAngsuranController;
 use App\Http\Controllers\Admin\setting\SukuBungaController;
 use App\Http\Controllers\Admin\setting\identitasKoperasiController;
 use App\Models\identitasKoperasi;
@@ -22,6 +24,19 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('jenis-barang/{id}/edit', [JenisBarangController::class, 'edit'])->name('jenis-barang.edit');
     Route::put('jenis-barang/{id}', [JenisBarangController::class, 'update'])->name('jenis-barang.update');
     Route::delete('jenis-barang/{id}', [JenisBarangController::class, 'destroy'])->name('jenis-barang.destroy');
+
+    Route::get('jenis-akun-transaksi', [JenisAkunTransaksiController::class, 'index'])->name('jenis-akun-transaksi.index');
+    Route::get('jenis-akun-transaksi/create', [JenisAkunTransaksiController::class, 'create'])->name('jenis-akun-transaksi.create');
+    Route::post('jenis-akun-transaksi', [JenisAkunTransaksiController::class, 'store'])->name('jenis-akun-transaksi.store');
+    Route::get('jenis-akun-transaksi/{id}/edit', [JenisAkunTransaksiController::class, 'edit'])->name('jenis-akun-transaksi.edit');
+    Route::put('jenis-akun-transaksi/{id}', [JenisAkunTransaksiController::class, 'update'])->name('jenis-akun-transaksi.update');
+
+    Route::get('lama-angsuran', [LamaAngsuranController::class, 'index'])->name('lama-angsuran.index');
+    Route::get('lama-angsuran/create', [LamaAngsuranController::class, 'create'])->name('lama-angsuran.create');
+    Route::post('lama-angsuran', [LamaAngsuranController::class, 'store'])->name('lama-angsuran.store');
+    Route::get('lama-angsuran/{id}/edit', [LamaAngsuranController::class, 'edit'])->name('lama-angsuran.edit');
+    Route::put('lama-angsuran/{id}', [LamaAngsuranController::class, 'update'])->name('lama-angsuran.update');
+    Route::delete('lama-angsuran/{id}', [LamaAngsuranController::class, 'destroy'])->name('lama-angsuran.destroy');
 });
 
 Route::prefix('admin/setting')->group(function () {
@@ -131,18 +146,6 @@ Route::get('/admin/transaksi_kas/pemasukan', function () {
     return view('admin.transaksi_kas.pemasukan');
 })->name('admin.transaksi_kas.pemasukan');
 
-Route::get('/admin/master_data/jenis-akun-transaksi', function () {
-    return view('admin.master_data.jenis-akun-transaksi');
-})->name('admin.master_data.jenis-akun-transaksi');
-
-Route::get('/admin/master_data/tambah-data-jenis-akun-transaksi', function () {
-    return view('admin.master_data.tambah-data-jenis-akun-transaksi');
-})->name('admin.master_data.tambah-data-jenis-akun-transaksi');
-
-Route::get('/admin/master_data/edit-data-jenis-akun-transaksi', function () {
-    return view('admin.master_data.edit-data-jenis-akun-transaksi');
-})->name('admin.master_data.edit-data-jenis-akun-transaksi');
-
 Route::get('/admin/master_data/data-anggota', function () {
     return view('admin.master_data.data-anggota');
 })->name('admin.master_data.data-anggota');
@@ -230,18 +233,6 @@ Route::get('/admin/master_data/tambah-data-saldo-awal-non-kas', function () {
 Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
     return view('admin.master_data.edit-data-saldo-awal-non-kas');
 })->name('admin.master_data.edit-data-saldo-awal-non-kas');
-
-Route::get('/admin/master_data/lama-angsuran', function () {
-    return view('admin.master_data.lama-angsuran');
-})->name('admin.master_data.lama-angsuran');
-
-Route::get('/admin/master_data/tambah-data-lama-angsuran', function () {
-    return view('admin.master_data.tambah-data-lama-angsuran');
-})->name('admin.master_data.tambah-data-lama-angsuran');
-
-Route::get('/admin/master_data/edit-data-lama-angsuran', function () {
-    return view('admin.master_data.edit-data-lama-angsuran');
-})->name('admin.master_data.edit-data-lama-angsuran');
 
 Route::get('/admin/master_data/data-pengguna', function () {
     return view('admin.master_data.data-pengguna');

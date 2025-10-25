@@ -10,7 +10,7 @@
 @section('content')
 
 <div class="form-wrapper">
-    <form action="# {{-- {{ route('tambah-data-lama-angsuran.store', $transaksi->id) }} --}}" method="POST">
+    <form action="{{ route('lama-angsuran.store') }}" method="POST">
         @csrf
         
         <div class="form-group">
@@ -20,14 +20,14 @@
                 name="lama_angsuran" 
                 id="lama_angsuran" 
                 class="form-input" 
-                placeholder="Masukkan lama angsuran dalam bulan"
+                placeholder="Masukkan lama angsuran dalam bulan" value="{{ old('lama_angsuran') }}"
                 required>
         </div>
 
         <div class="form-group">
-            <label for="is_active">Keterangan Aktif*</label>
-            <select name="is_active" id="is_active" class="form-select" required>
-                <option value="">Pilih Keterangan Aktif</option>
+            <label for="status_angsuran">Keterangan Aktif*</label>
+            <select name="status_angsuran" id="status_angsuran" class="form-select" required>
+                <option value="disabled selected">--- Pilih Keterangan Aktif ---</option>
                 <option value="Y">Y</option>
                 <option value="T">T</option>
             </select>
@@ -35,7 +35,7 @@
 
         <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>
-            <a href="# {{-- {{ route('transaksi.index') }} --}}" class="btn btn-batal">Batal</a>
+            <a href="{{ route('lama-angsuran.index') }}" class="btn btn-batal">Batal</a>
         </div>
     </form>
 </div>
@@ -139,7 +139,7 @@
 
 <script>
 document.getElementById('form-container').addEventListener('submit', function(e) {
-    const wajib = ['lama_angsuran','is_active'];
+    const wajib = ['lama_angsuran','status_angsuran'];
 
     for (let id of wajib) {
         const el = document.getElementById(id);
@@ -160,7 +160,6 @@ document.getElementById('form-container').addEventListener('submit', function(e)
 
     alert('✅ Data barang berhasil disimpan!');
 });
-<script>
 </script>
 
 @endsection

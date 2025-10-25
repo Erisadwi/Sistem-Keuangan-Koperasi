@@ -20,7 +20,7 @@
 
         <label for="tampil_simpanan">Tampil*</label>
             <select name="tampil_simpanan" id="tampil_simpanan">
-                <option value="" disabled selected>Y/N</option>
+                <option value="" disabled selected>--- Pilih Tampil ---</option>
                 <option value="Y">Y</option>
                 <option value="N">N</option>
             </select>
