@@ -9,6 +9,16 @@
 @section('content')
 
 <div class="form-container">
+    @if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
     <form id="jenisAkunTransaksiForm" action="{{ route('jenis-akun-transaksi.store') }}" method="POST">
         @csrf
 
@@ -45,8 +55,8 @@
         </div>
 
         <div class="form-group">
-            <label for="pemasukan">Penarikan</label>
-            <select id="pemasukan" name="pemasukan" required>
+            <label for="penarikan">Penarikan</label>
+            <select id="penarikan" name="penarikan" required>
                 <option value="">-- Pilih --</option>
                 <option value="Y" {{ old('penarikan') == 'Y' ? 'selected' : '' }}>Ya</option>
                 <option value="N" {{ old('penarikan') == 'N' ? 'selected' : '' }}>Tidak</option>
@@ -54,8 +64,8 @@
         </div>
 
         <div class="form-group">
-            <label for="pemasukan">Transfer</label>
-            <select id="pemasukan" name="pemasukan" required>
+            <label for="transfer">Transfer</label>
+            <select id="transfer" name="transfer" required>
                 <option value="">-- Pilih --</option>
                 <option value="Y" {{ old('transfer') == 'Y' ? 'selected' : '' }}>Ya</option>
                 <option value="N" {{ old('transfer') == 'N' ? 'selected' : '' }}>Tidak</option>
@@ -115,16 +125,7 @@
                 <option value="N" {{ old('pinjaman') == 'N' ? 'selected' : '' }}>Tidak</option>
             </select>
         </div>
-
-        <div class="form-group">
-            <label for="pinjam_dari">Pinjaman Dari</label>
-            <select id="pinjam_dari" name="pinjam_dari">
-                <option value="">-- Pilih --</option>
-                <option value="Y" {{ old('pinjaman_dari') == 'Y' ? 'selected' : '' }}>Ya</option>
-                <option value="N" {{ old('pinjaman_dari') == 'N' ? 'selected' : '' }}>Tidak</option>
-            </select>
-        </div>
-
+        
         <div class="form-group">
             <label for="angsuran">Angsuran</label>
             <select id="angsuran" name="angsuran">

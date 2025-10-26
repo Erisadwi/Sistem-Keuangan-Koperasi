@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\MasterData\JenisBarangController;
 use App\Http\Controllers\Admin\MasterData\JenisSimpananController;
 use App\Http\Controllers\Admin\MasterData\JenisAkunTransaksiController;
 use App\Http\Controllers\Admin\MasterData\LamaAngsuranController;
+use App\Http\Controllers\Admin\MasterData\AnggotaController;
 use App\Http\Controllers\Admin\setting\SukuBungaController;
 use App\Http\Controllers\Admin\setting\identitasKoperasiController;
 use App\Models\identitasKoperasi;
@@ -37,6 +38,13 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('lama-angsuran/{id}/edit', [LamaAngsuranController::class, 'edit'])->name('lama-angsuran.edit');
     Route::put('lama-angsuran/{id}', [LamaAngsuranController::class, 'update'])->name('lama-angsuran.update');
     Route::delete('lama-angsuran/{id}', [LamaAngsuranController::class, 'destroy'])->name('lama-angsuran.destroy');
+
+    Route::get('anggota', [AnggotaController::class, 'index'])->name('anggota.index');
+    Route::get('anggota/create', [AnggotaController::class, 'create'])->name('anggota.create');
+    Route::post('anggota', [AnggotaController::class, 'store'])->name('anggota.store');
+    Route::get('anggota/{id}/edit', [AnggotaController::class, 'edit'])->name('anggota.edit');
+    Route::put('anggota/{id}', [AnggotaController::class, 'update'])->name('anggota.update');
+    Route::delete('anggota/{id}', [AnggotaController::class, 'destroy'])->name('anggota.destroy');
 });
 
 Route::prefix('admin/setting')->group(function () {
@@ -145,18 +153,6 @@ Route::get('/admin/pinjaman/data-pengajuan', function () {
 Route::get('/admin/transaksi_kas/pemasukan', function () {
     return view('admin.transaksi_kas.pemasukan');
 })->name('admin.transaksi_kas.pemasukan');
-
-Route::get('/admin/master_data/data-anggota', function () {
-    return view('admin.master_data.data-anggota');
-})->name('admin.master_data.data-anggota');
-
-Route::get('/admin/master_data/tambah-data-anggota', function () {
-    return view('admin.master_data.tambah-data-anggota');
-})->name('admin.master_data.tambah-data-anggota');
-
-Route::get('/admin/master_data/edit-data-anggota', function () {
-    return view('admin.master_data.edit-data-anggota');
-})->name('admin.master_data.edit-data-anggota');
 
 Route::get('/anggota/notifikasi', function () {
     return view('anggota.notifikasi');

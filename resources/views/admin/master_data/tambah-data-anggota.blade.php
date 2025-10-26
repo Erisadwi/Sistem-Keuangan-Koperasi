@@ -9,7 +9,7 @@
 @section('content')
 
 <div class="form-container">
-    <form id="formTambahAnggota" action="{{ route('admin.anggota.store') }}" method="POST" enctype="multipart/form-data">
+    <form id="formTambahAnggota" action="{{ route('anggota.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <div class="form-grid">

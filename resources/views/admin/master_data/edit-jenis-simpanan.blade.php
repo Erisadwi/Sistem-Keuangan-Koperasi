@@ -21,9 +21,9 @@
 
         <label for="tampil_simpanan">Tampil*</label>
             <select name="tampil_simpanan" id="tampil_simpanan">
-                <option value="" disabled selected>---- Pilih Tampilan ----</option>
-                <option value="Y">Y</option>
-                <option value="N">N</option>
+                <option value="disabled selected">---- Pilih Tampilan ----</option>
+                <option value="Y" {{ old('tampil_simpanan', $jenis_simpanan->tampil_simpanan) == 'Y' ? 'selected' : '' }}>Y</option>
+                <option value="N" {{ old('tampil_simpanan', $jenis_simpanan->tampil_simpanan) == 'T' ? 'selected' : '' }}>T</option>
             </select>
 
         <div class="form-buttons">

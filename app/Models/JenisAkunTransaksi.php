@@ -19,6 +19,7 @@ class JenisAkunTransaksi extends Model
         'pemasukan',
         'pengeluaran',
         'penarikan',
+        'transfer',
         'status_akun',
         'nonkas',
         'simpanan',

@@ -9,7 +9,7 @@
 @section('content')
 
 <div class="form-wrapper">
-    <form action="{{ route('jenis-barang.update', $lama_angsuran->id_lamaAngsuran) }}" method="POST">
+    <form action="{{ route('lama-angsuran.update', $lama_angsuran->id_lamaAngsuran) }}" method="POST">
         @csrf
         @method('PUT')
         
@@ -26,7 +26,7 @@
         <div class="form-group">
             <label for="status_angsuran">Keterangan Aktif*</label>
             <select name="status_angsuran" id="status_angsuran" class="form-select" required>
-                <option value="">Pilih Keterangan Aktif</option>
+                <option value="disabled selected">--- Pilih Keterangan Aktif ---</option>
                 <option value="Y" {{ old('status_angsuran', $lama_angsuran->status_angsuran) == 'Y' ? 'selected' : '' }}>Y</option>
                 <option value="T" {{ old('status_angsuran', $lama_angsuran->status_angsuran) == 'T' ? 'selected' : '' }}>T</option>
             </select>

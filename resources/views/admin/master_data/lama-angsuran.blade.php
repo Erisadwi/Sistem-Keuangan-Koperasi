@@ -24,7 +24,7 @@
       @forelse(($lama_angsuran ?? collect()) as $idx => $row)
         <tr>
           <td class="text-center">{{ $row->lama_angsuran ?? '' }}</td>
-          <td class="text-center">{{ $row->is_active == 'Y' ? 'Y' : 'T' }}</td>
+          <td class="text-center">{{ $row->status_angsuran == 'Y' ? 'Y' : 'T' }}</td>
           <td class="actions">
             <a href="{{ route('lama-angsuran.edit', ['id' => $row->id_lamaAngsuran]) }}" class="edit">✏️ Edit</a>
             <form action="{{ route('lama-angsuran.destroy', ['id' => $row->id_lamaAngsuran]) }}" method="POST" style="display: inline;">
@@ -107,6 +107,9 @@
     text-decoration: none;
     cursor: pointer;
     font-size: 14px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width:90px;
   }
 
   .edit {

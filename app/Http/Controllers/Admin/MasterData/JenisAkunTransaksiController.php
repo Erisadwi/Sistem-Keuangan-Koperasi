@@ -18,6 +18,7 @@ class JenisAkunTransaksiController extends Controller
         return view('admin.master_data.tambah-data-jenis-akun-transaksi', [
             'jenis_akun_transaksi' => null
         ]);
+        
     }
 
     public function store(Request $request)
@@ -29,6 +30,7 @@ class JenisAkunTransaksiController extends Controller
             'pemasukan'            => 'required|in:Y,N',
             'pengeluaran'          => 'required|in:Y,N',
             'penarikan'            => 'required|in:Y,N',
+            'transfer'             => 'required|in:Y,N',
             'status_akun'          => 'required|in:Y,N',
             'nonkas'               => 'required|in:Y,N',
             'simpanan'             => 'required|in:Y,N',
@@ -39,8 +41,8 @@ class JenisAkunTransaksiController extends Controller
 
         JenisAkunTransaksi::create($validated);
 
-        return redirect()->route('jenis-simpanan.index')
-                         ->with('success', 'Jenis simpanan berhasil ditambahkan!');
+        return redirect()->route('jenis-akun-transaksi.index')
+                         ->with('success', 'Jenis akun transaksi berhasil ditambahkan!');
     }
 
     public function edit($id)
@@ -52,7 +54,7 @@ class JenisAkunTransaksiController extends Controller
     public function update(Request $request, $id)
     {
         $jenis_akun_transaksi = JenisAkunTransaksi::findOrFail($id);
-        $jenis_akun_transaksi->update($request->only(['kode_aktiva','nama_AkunTransaksi','type_akun','pemasukan','pengeluaran','penarikan','status_akun','nonkas','simpanan','pinjaman','angsuran','labarugi',]));
+        $jenis_akun_transaksi->update($request->only(['kode_aktiva','nama_AkunTransaksi','type_akun','pemasukan','pengeluaran','penarikan','transfer','status_akun','nonkas','simpanan','pinjaman','angsuran','labarugi',]));
         return redirect()->route('jenis-akun-transaksi.index')->with('success', 'Data berhasil diperbarui');
     }
 }

@@ -10,6 +10,7 @@ class LamaAngsuranController extends Controller
 
         public function index()
     {
+        
          $lama_angsuran = \App\Models\LamaAngsuran::all();
          return view('admin.master_data.lama-angsuran', compact('lama_angsuran'));
     }

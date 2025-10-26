@@ -29,7 +29,6 @@
           <th>Non Kas</th>
           <th>Simpanan</th>
           <th>Pinjaman</th>
-          <th>Pinjaman dari</th>
           <th>Angsuran</th>
           <th>Aksi</th>
         </tr>
@@ -37,21 +36,20 @@
 
       <tbody>
         {{-- Jika belum ada data, tampilkan pesan --}}
-        @forelse(($transaksi ?? collect()) as $row)
+        @forelse(($jenis_akun_transaksi ?? collect()) as $row)
           <tr class="text-center">
             <td>{{ $row->kode_aktiva ?? '-' }}</td>
-            <td>{{ $row->nama_transaksi ?? '-' }}</td>
-            <td>{{ $row->akun ?? '-' }}</td>
+            <td>{{ $row->nama_AkunTransaksi ?? '-' }}</td>
+            <td>{{ $row->type_akun ?? '-' }}</td>
             <td>{{ $row->pemasukan ?? '-' }}</td>
             <td>{{ $row->penarikan ?? '-' }}</td>
             <td>{{ $row->transfer ?? '-' }}</td>
             <td>{{ $row->pengeluaran ?? '-' }}</td>
-            <td>{{ $row->aktif ?? '-' }}</td>
-            <td>{{ $row->laba_rugi ?? '-' }}</td>
-            <td>{{ $row->non_kas ?? '-' }}</td>
+            <td>{{ $row->status_akun ?? '-' }}</td>
+            <td>{{ $row->labarugi ?? '-' }}</td>
+            <td>{{ $row->nonkas ?? '-' }}</td>
             <td>{{ $row->simpanan ?? '-' }}</td>
             <td>{{ $row->pinjaman ?? '-' }}</td>
-            <td>{{ $row->pinjam_dari ?? '-' }}</td>
             <td>{{ $row->angsuran ?? '-' }}</td>
             <td class="actions">
               <a href="{{ route('jenis-akun-transaksi.edit', ['id' => $row->id_jenisAkunTransaksi]) }}" class="btn btn-sm btn-warning">✏️ Edit</a>

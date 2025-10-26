@@ -116,15 +116,6 @@
         </div>
 
         <div class="form-group">
-            <label for="pinjam_dari">Pinjaman Dari</label>
-            <select id="pinjam_dari" name="pinjam_dari">
-                <option value="">-- Pilih --</option>
-                <option value="Y" {{ old('pinjaman_dari', $jenis_akun_transaksi->pinjaman_dari ?? '') == 'Y' ? 'selected' : '' }}>Ya</option>
-                <option value="N" {{ old('pinjaman_dari', $jenis_akun_transaksi->pinjaman_dari ?? '') == 'N' ? 'selected' : '' }}>Tidak</option>
-            </select>
-        </div>
-
-        <div class="form-group">
             <label for="angsuran">Angsuran</label>
             <select id="angsuran" name="angsuran">
                 <option value="">-- Pilih --</option>

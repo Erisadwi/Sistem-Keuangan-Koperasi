@@ -1,6 +1,5 @@
 <div class="btn-group-container">
-  <!-- Tombol Tambah -->
-  <a href="{{ $tambah ?? '#' }}" class="df-btn df-tambah">
+  <a href="{{ $addUrl ?? '#' }}" class="df-btn df-tambah">
     <span class="df-ic" aria-hidden="true">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
         <path d="M12 5v14m-7-7h14" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
@@ -9,7 +8,6 @@
     Tambah
   </a>
 
-  <!-- Tombol Unduh -->
   <a href="{{ $unduh ?? '#' }}" class="df-btn df-unduh">
     <span class="df-ic" aria-hidden="true">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
@@ -20,7 +18,6 @@
     Unduh
   </a>
 
-  <!-- Tombol Cari -->
   <a href="{{ $cari ?? '#' }}" class="df-btn df-cari">
     <span class="df-ic" aria-hidden="true">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
