@@ -47,7 +47,8 @@ class AnggotaController extends Controller
         ]);
         
         if ($request->hasFile('foto')) {
-            $validated['foto'] = $request->file('foto')->store('uploads', 'public');
+
+        $validated['foto'] = 'storage/' . $request->file('foto')->store('uploads', 'public');
         }
 
         $validated['id_anggota'] = Anggota::generateId();
@@ -59,58 +60,59 @@ class AnggotaController extends Controller
         return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil ditambahkan!');
     }
 
-    public function edit($id)
-    {
-        $anggota = Anggota::findOrFail($id);
-        return view('admin.master_data.edit-data-anggota', compact('anggota'));
-    }
+public function update(Request $request, $id)
+{
+    $anggota = Anggota::findOrFail($id);
 
-    public function update(Request $request, $id)
-    {
-        $anggota = Anggota::findOrFail($id);
+    $validated = $request->validate([
+        'username_anggota'   => 'required|string',
+        'password_anggota'   => 'nullable|string', // ubah jadi nullable
+        'nama_anggota'       => 'required|string',
+        'jenis_kelamin'      => 'required|in:L,P',
+        'alamat_anggota'     => 'required|string',
+        'kota_anggota'       => 'required|string',
+        'tempat_lahir'       => 'required|string',
+        'tanggal_lahir'      => 'required|date_format:Y-m-d',
+        'departemen'         => 'nullable|in:PRODUKSI BOPP,PRODUKSI SLITTING,WH,QA,HRD,GA,PURCHASING,ACCOUNTING,ENGINEERING',
+        'pekerjaan'          => 'nullable|in:TNI,PNS,KARYAWAN SWASTA,GURU,BURUH,TANI,PEDAGANG,WIRASWASTA,MENGURUS RUMAH TANGGA,LAINNYA',
+        'jabatan'            => 'required|in:KETUA,SEKRETARIS,BENDAHARA,PENGAWAS,KARYAWAN,PERUSAHAAN',
+        'agama'              => 'nullable|in:ISLAM,KATOLIK,PROTESTAN,HINDU,BUDHA,LAINNYA',
+        'status_perkawinan'  => 'nullable|in:BELUM KAWIN,KAWIN,CERAI HIDUP,CERAI MATI,LAINNYA',
+        'tanggal_registrasi' => 'required|date_format:Y-m-d',
+        'tanggal_keluar'     => 'nullable|date_format:Y-m-d',
+        'no_telepon'         => 'nullable|string|max:20',
+        'status_anggota'     => 'required|in:AKTIF,NON AKTIF',
+        'foto'               => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
+    ]);
 
-        $validated = $request->validate([
-            'username_anggota'   => 'required|string',
-            'password_anggota'   => 'required|string',
-            'nama_anggota'       => 'required|string',
-            'jenis_kelamin'      => 'required|in:L,P',
-            'alamat_anggota'     => 'required|string',
-            'kota_anggota'       => 'required|string',
-            'tempat_lahir'       => 'required|string',
-            'tanggal_lahir'      => 'required|date_format:Y-m-d',
-            'departemen'         => 'nullable|in:PRODUKSI BOPP,PRODUKSI SLITTING,WH,QA,HRD,GA,PURCHASING,ACCOUNTING,ENGINEERING',
-            'pekerjaan'          => 'nullable|in:TNI,PNS,KARYAWAN SWASTA,GURU,BURUH,TANI,PEDAGANG,WIRASWASTA,MENGURUS RUMAH TANGGA,LAINNYA',
-            'jabatan'            => 'required|in:KETUA,SEKRETARIS,BENDAHARA,PENGAWAS,KARYAWAN,PERUSAHAAN',
-            'agama'              => 'nullable|in:ISLAM,KATOLIK,PROTESTAN,HINDU,BUDHA,LAINNYA',
-            'status_perkawinan'  => 'nullable|in:BELUM KAWIN,KAWIN,CERAI HIDUP,CERAI MATI,LAINNYA',
-            'tanggal_registrasi' => 'required|date_format:Y-m-d',
-            'tanggal_keluar'     => 'nullable|date_format:Y-m-d',
-            'no_telepon'         => 'nullable|string|max:20',
-            'status_anggota'     => 'required|in:AKTIF,NON AKTIF',
-            'foto'               => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
-
-        if ($request->hasFile('foto')) {
-            // hapus foto lama kalau ada
-            if ($anggota->foto && Storage::disk('public')->exists($anggota->foto)) {
-                Storage::disk('public')->delete($anggota->foto);
-            }
-
-            $validated['foto'] = $request->file('foto')->store('uploads', 'public');
+    // Upload foto baru (hapus lama jika ada)
+    if ($request->hasFile('foto')) {
+        if ($anggota->foto && Storage::disk('public')->exists(str_replace('storage/', '', $anggota->foto))) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $anggota->foto));
         }
 
-        $anggota->update($validated);
-
-        return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil diperbarui!');
+        $validated['foto'] = 'storage/' . $request->file('foto')->store('uploads', 'public');
     }
+
+    // Kalau password diisi → hash
+    if (!empty($validated['password_anggota'])) {
+        $validated['password_anggota'] = Hash::make($validated['password_anggota']);
+    } else {
+        unset($validated['password_anggota']); // jangan ubah password kalau kosong
+    }
+
+    $anggota->update($validated);
+
+    return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil diperbarui!');
+}
 
 
     public function destroy($id)
     {
         $anggota = Anggota::findOrFail($id);
 
-        if ($anggota->foto && Storage::disk('public')->exists($anggota->foto)) {
-            Storage::disk('public')->delete($anggota->foto);
+        if ($anggota->foto && Storage::disk('public')->exists(str_replace('storage/', '', $anggota->foto))) {
+            Storage::disk('public')->delete(str_replace('storage/', '', $anggota->foto));
         }
 
         $anggota->delete();

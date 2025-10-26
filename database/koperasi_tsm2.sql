@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Oct 24, 2025 at 06:21 AM
+-- Generation Time: Oct 26, 2025 at 01:02 PM
 -- Server version: 8.0.37
 -- PHP Version: 8.2.29
 
@@ -46,9 +46,8 @@ CREATE TABLE `agen_ekspedisi` (
 --
 
 CREATE TABLE `ajuan_pinjaman` (
-  `id_ajuanPinjaman` int UNSIGNED NOT NULL,
-  `kode_ajuan` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `id_anggota` int DEFAULT NULL,
+  `id_ajuanPinjaman` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id_anggota` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `id_lamaAngsuran` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tanggal_pengajuan` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `tanggal_update` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -56,8 +55,7 @@ CREATE TABLE `ajuan_pinjaman` (
   `jumlah_ajuan` decimal(15,2) NOT NULL DEFAULT '0.00',
   `keterangan` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status_ajuan` enum('MENUNGGU KONFIRMASI','DISETUJUI','DITOLAK') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'MENUNGGU KONFIRMASI',
-  `bunga` decimal(5,2) DEFAULT NULL,
-  `biaya_admin` decimal(15,2) DEFAULT NULL
+  `id_biayaAdministrasi` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -79,19 +77,18 @@ DELIMITER ;
 --
 
 CREATE TABLE `anggota` (
-  `id_anggota` int NOT NULL,
-  `kode_anggota` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `id_anggota` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
   `username_anggota` varchar(50) COLLATE utf8mb4_unicode_ci NOT NULL,
   `password_anggota` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `nama_anggota` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
   `jenis_kelamin` enum('L','P') COLLATE utf8mb4_unicode_ci NOT NULL,
-  `alamat_anggota` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `kota_anggota` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `tempat_lahir` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `tanggal_lahir` date DEFAULT NULL,
+  `alamat_anggota` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `kota_anggota` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tempat_lahir` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tanggal_lahir` date NOT NULL,
   `departemen` enum('PRODUKSI BOPP','PRODUKSI SLITTING','WH','QA','HRD','GA','PURCHASING','ACCOUNTING','ENGINEERING') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `pekerjaan` enum('TNI','PNS','KARYAWAN SWASTA','GURU','BURUH','TANI','PEDAGANG','WIRASWASTA','MENGURUS RUMAH TANGGA','LAINNYA','PENSIUNAN','PENJAHIT') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
-  `jabatan` enum('KETUA','SEKRETARIS','BENDAHARA','PENGAWAS','KARYAWAN','PERUSAHAAN') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `jabatan` enum('KETUA','SEKRETARIS','BENDAHARA','PENGAWAS','KARYAWAN','PERUSAHAAN') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `agama` enum('ISLAM','KATOLIK','PROTESTAN','HINDU','BUDHA','LAINNYA') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status_perkawinan` enum('BELUM KAWIN','KAWIN','CERAI HIDUP','CERAI MATI','LAINNYA') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tanggal_registrasi` date NOT NULL DEFAULT (curdate()),
@@ -107,38 +104,6 @@ CREATE TABLE `anggota` (
 DELIMITER $$
 CREATE TRIGGER `after_insert_anggota` AFTER INSERT ON `anggota` FOR EACH ROW begin update anggota set kode_anggota = concat('AG', NEW.id_anggota) where id_anggota = NEW.id_anggota;
 
-END
-$$
-DELIMITER ;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `angsuran`
---
-
-CREATE TABLE `angsuran` (
-  `id_angsuran` int UNSIGNED NOT NULL,
-  `id_pinjaman` int UNSIGNED NOT NULL,
-  `id_lamaAngsuran` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `pokok_pinjaman` decimal(15,2) NOT NULL DEFAULT '0.00',
-  `kode_angsuran` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `status_lunas` enum('BELUM LUNAS','LUNAS') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'BELUM LUNAS',
-  `tanggal_tempo` date NOT NULL,
-  `pendapatan` decimal(15,2) NOT NULL DEFAULT '0.00',
-  `bunga_angsuran` decimal(15,2) NOT NULL DEFAULT '0.00',
-  `biaya_admin` decimal(15,2) NOT NULL DEFAULT '0.00',
-  `keterangan` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Triggers `angsuran`
---
-DELIMITER $$
-CREATE TRIGGER `trg_angsuran_kode` AFTER INSERT ON `angsuran` FOR EACH ROW BEGIN
-  UPDATE `angsuran`
-     SET `kode_angsuran` = CONCAT('TPJ', LPAD(NEW.`id_angsuran`, 6, '0'))
-   WHERE `id_angsuran` = NEW.`id_angsuran`;
 END
 $$
 DELIMITER ;
@@ -191,6 +156,13 @@ CREATE TABLE `barang_inventaris` (
   `keterangan_barang` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `barang_inventaris`
+--
+
+INSERT INTO `barang_inventaris` (`id_barangInventaris`, `nama_barang`, `type_barang`, `jumlah_barang`, `keterangan_barang`) VALUES
+('BRG0001', 'Komputer', 'K300 Corei3', 3, NULL);
+
 -- --------------------------------------------------------
 
 --
@@ -198,16 +170,19 @@ CREATE TABLE `barang_inventaris` (
 --
 
 CREATE TABLE `bayar_angsuran` (
-  `id_bayar` int UNSIGNED NOT NULL,
-  `id_angsuran` int UNSIGNED NOT NULL,
+  `id_bayar_angsuran` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
+  `id_pinjaman` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `id_jenisAkunTransaksi_sumber` int UNSIGNED NOT NULL,
   `id_jenisAkunTransaksi_tujuan` int UNSIGNED NOT NULL,
-  `kode_bayar` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id_user` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `angsuran_ke` int UNSIGNED NOT NULL,
   `tanggal_bayar` date NOT NULL,
-  `jumlah_bayar` decimal(15,2) NOT NULL DEFAULT '0.00',
+  `tanggal_jatuh_tempo` date DEFAULT NULL,
+  `angsuran_pokok` decimal(15,2) DEFAULT NULL,
+  `angsuran_per_bulan` decimal(15,2) NOT NULL DEFAULT '0.00',
   `status_bayar` enum('LUNAS','BELUM LUNAS') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'BELUM LUNAS',
-  `denda` decimal(15,2) NOT NULL DEFAULT '0.00'
+  `denda` decimal(15,2) NOT NULL DEFAULT '0.00',
+  `bunga_angsuran` decimal(15,2) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
@@ -244,7 +219,8 @@ CREATE TABLE `biaya_administrasi` (
   `dana_karyawan` decimal(5,2) NOT NULL DEFAULT '0.00',
   `dana_pendidikan` decimal(5,2) NOT NULL DEFAULT '0.00',
   `dana_sosial` decimal(5,2) NOT NULL DEFAULT '0.00',
-  `pajak_pph` decimal(5,2) NOT NULL DEFAULT '0.00'
+  `pajak_pph` decimal(5,2) NOT NULL DEFAULT '0.00',
+  `id_lamaAngsuran` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
@@ -351,6 +327,7 @@ CREATE TABLE `jenis_akun_transaksi` (
   `pemasukan` enum('Y','N') COLLATE utf8mb4_unicode_ci NOT NULL,
   `pengeluaran` enum('Y','N') COLLATE utf8mb4_unicode_ci NOT NULL,
   `penarikan` enum('Y','N') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `transfer` enum('Y','N') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `status_akun` enum('Y','N') COLLATE utf8mb4_unicode_ci NOT NULL,
   `nonkas` enum('Y','N') COLLATE utf8mb4_unicode_ci NOT NULL,
   `simpanan` enum('Y','N') COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -359,6 +336,13 @@ CREATE TABLE `jenis_akun_transaksi` (
   `labarugi` enum('PENDAPATAN','BIAYA') COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `kode_aktiva` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `jenis_akun_transaksi`
+--
+
+INSERT INTO `jenis_akun_transaksi` (`id_jenisAkunTransaksi`, `nama_AkunTransaksi`, `type_akun`, `pemasukan`, `pengeluaran`, `penarikan`, `transfer`, `status_akun`, `nonkas`, `simpanan`, `pinjaman`, `angsuran`, `labarugi`, `kode_aktiva`) VALUES
+(1, 'Kas Besar', 'PASIVA', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'Y', 'BIAYA', 'A1.02');
 
 -- --------------------------------------------------------
 
@@ -370,8 +354,15 @@ CREATE TABLE `jenis_simpanan` (
   `id_jenis_simpanan` int UNSIGNED NOT NULL,
   `jenis_simpanan` varchar(20) NOT NULL,
   `jumlah_simpanan` decimal(15,2) NOT NULL DEFAULT '0.00',
-  `tampil_simpanan` enum('y','n') NOT NULL DEFAULT 'y'
+  `tampil_simpanan` enum('Y','N') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL DEFAULT 'Y'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `jenis_simpanan`
+--
+
+INSERT INTO `jenis_simpanan` (`id_jenis_simpanan`, `jenis_simpanan`, `jumlah_simpanan`, `tampil_simpanan`) VALUES
+(2, 'Simpanan Wajib', '50000.00', 'Y');
 
 -- --------------------------------------------------------
 
@@ -463,6 +454,13 @@ CREATE TABLE `lama_angsuran` (
   `status_angsuran` enum('Y','T') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Y'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `lama_angsuran`
+--
+
+INSERT INTO `lama_angsuran` (`id_lamaAngsuran`, `lama_angsuran`, `status_angsuran`) VALUES
+('LMA0001', 2, 'Y');
+
 -- --------------------------------------------------------
 
 --
@@ -503,7 +501,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (21, '2025_10_16_013521_create_role_table', 1),
 (22, '2025_10_16_013600_create_users_table', 1),
 (23, '2025_10_16_013906_create_pembelian_table', 1),
-(24, '2025_10_16_014000_create_detail_pembelian_table', 1);
+(24, '2025_10_16_014000_create_detail_pembelian_table', 1),
+(25, '2025_10_25_195702_remove_kode_anggota_from_anggota_table', 2);
 
 -- --------------------------------------------------------
 
@@ -623,17 +622,17 @@ CREATE TABLE `penjualan` (
 --
 
 CREATE TABLE `pinjaman` (
-  `id_pinjaman` int UNSIGNED NOT NULL,
-  `kode_pinjaman` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id_pinjaman` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id_ajuanPinjaman` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `id_user` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `id_ajuanPinjaman` int UNSIGNED DEFAULT NULL,
-  `id_anggota` int DEFAULT NULL,
+  `id_anggota` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `id_jenisAkunTransaksi_tujuan` int UNSIGNED NOT NULL,
   `id_jenisAkunTransaksi_sumber` int UNSIGNED NOT NULL,
-  `id_lama_angsuran` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `id_lamaAngsuran` varchar(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `tanggal_pinjaman` date NOT NULL,
   `bunga_pinjaman` decimal(5,2) DEFAULT NULL,
   `jumlah_pinjaman` decimal(15,2) NOT NULL,
+  `total_tagihan` decimal(15,2) DEFAULT NULL,
   `keterangan` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `status_lunas` enum('BELUM LUNAS','LUNAS') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'BELUM LUNAS',
   `biaya_admin` decimal(15,2) DEFAULT NULL
@@ -712,8 +711,8 @@ CREATE TABLE `sessions` (
 
 CREATE TABLE `simpanan` (
   `id_simpanan` int UNSIGNED NOT NULL,
-  `id_anggota` int DEFAULT NULL,
   `id_user` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `id_anggota` varchar(20) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `id_jenis_simpanan` int UNSIGNED NOT NULL,
   `id_jenisAkunTransaksi_tujuan` int UNSIGNED NOT NULL,
   `id_jenisAkunTransaksi_sumber` int UNSIGNED NOT NULL,
@@ -767,7 +766,7 @@ CREATE TABLE `transaksi` (
   `id_jenisAkunTransaksi_sumber` int UNSIGNED NOT NULL,
   `id_jenisAkunTransaksi_tujuan` int UNSIGNED NOT NULL,
   `id_user` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
-  `type_transaksi` enum('TKD','TKK','TRF') COLLATE utf8mb4_unicode_ci NOT NULL,
+  `type_transaksi` enum('TKD','TKK','TRF','TNK','SAK','SANK') CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `kode_transaksi` varchar(30) COLLATE utf8mb4_unicode_ci NOT NULL,
   `ket_transaksi` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `tanggal_transaksi` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -806,6 +805,35 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id_user`, `nama_lengkap`, `alamat_user`, `telepon`, `username`, `password`, `foto_user`, `jenis_kelamin`, `status`, `tanggal_masuk`, `tanggal_keluar`, `id_role`, `id_jabatan`, `id_pendidikan`, `created_at`, `updated_at`) VALUES
 ('USR001', 'Admin Utama', 'Jl. Mawar No. 1', '081234567890', 'admin', '$2y$12$lw0YrqInLwxXK8hT3Lgl0OjhIIDwobTma2CNUwEAH5vBstVJ2Yjgu', NULL, 'L', 'aktif', '2024-01-01', NULL, 'R01', 'J01', 3, '2025-10-15 18:51:48', '2025-10-15 18:51:48');
 
+-- --------------------------------------------------------
+
+--
+-- Stand-in structure for view `view_data_angsuran`
+-- (See below for the actual view)
+--
+CREATE TABLE `view_data_angsuran` (
+`id_pinjaman` varchar(20)
+,`kode_transaksi` varchar(21)
+,`tanggal_pinjaman` date
+,`username_anggota` varchar(50)
+,`nama_anggota` varchar(100)
+,`jumlah_pinjaman` decimal(15,2)
+,`lama_angsuran` int
+,`angsuran_pokok` decimal(19,6)
+,`bunga_angsuran` decimal(28,12)
+,`biaya_admin` decimal(15,2)
+,`angsuran_per_bulan` decimal(30,12)
+);
+
+-- --------------------------------------------------------
+
+--
+-- Structure for view `view_data_angsuran`
+--
+DROP TABLE IF EXISTS `view_data_angsuran`;
+
+CREATE ALGORITHM=UNDEFINED DEFINER=`root`@`localhost` SQL SECURITY DEFINER VIEW `view_data_angsuran`  AS SELECT `p`.`id_pinjaman` AS `id_pinjaman`, concat('T',`p`.`id_pinjaman`) AS `kode_transaksi`, `p`.`tanggal_pinjaman` AS `tanggal_pinjaman`, `a`.`username_anggota` AS `username_anggota`, `a`.`nama_anggota` AS `nama_anggota`, `p`.`jumlah_pinjaman` AS `jumlah_pinjaman`, `la`.`lama_angsuran` AS `lama_angsuran`, (`p`.`jumlah_pinjaman` / `la`.`lama_angsuran`) AS `angsuran_pokok`, ((`p`.`jumlah_pinjaman` * (`p`.`bunga_pinjaman` / 100)) / `la`.`lama_angsuran`) AS `bunga_angsuran`, `p`.`biaya_admin` AS `biaya_admin`, (((`p`.`jumlah_pinjaman` / `la`.`lama_angsuran`) + ((`p`.`jumlah_pinjaman` * (`p`.`bunga_pinjaman` / 100)) / `la`.`lama_angsuran`)) + `p`.`biaya_admin`) AS `angsuran_per_bulan` FROM ((`pinjaman` `p` join `anggota` `a` on((`a`.`id_anggota` = `p`.`id_anggota`))) join `lama_angsuran` `la` on((`la`.`id_lamaAngsuran` = `p`.`id_lamaAngsuran`)))  ;
+
 --
 -- Indexes for dumped tables
 --
@@ -824,10 +852,10 @@ ALTER TABLE `agen_ekspedisi`
 --
 ALTER TABLE `ajuan_pinjaman`
   ADD PRIMARY KEY (`id_ajuanPinjaman`),
-  ADD UNIQUE KEY `uq_kode_ajuan` (`kode_ajuan`),
-  ADD KEY `idx_anggota` (`id_anggota`),
   ADD KEY `idx_lama` (`id_lamaAngsuran`),
-  ADD KEY `idx_status` (`status_ajuan`);
+  ADD KEY `idx_status` (`status_ajuan`),
+  ADD KEY `fk_ajuan_anggota` (`id_anggota`),
+  ADD KEY `fk_ajuan_adm` (`id_biayaAdministrasi`);
 
 --
 -- Indexes for table `anggota`
@@ -835,16 +863,6 @@ ALTER TABLE `ajuan_pinjaman`
 ALTER TABLE `anggota`
   ADD PRIMARY KEY (`id_anggota`),
   ADD UNIQUE KEY `uq_username_anggota` (`username_anggota`);
-
---
--- Indexes for table `angsuran`
---
-ALTER TABLE `angsuran`
-  ADD PRIMARY KEY (`id_angsuran`),
-  ADD UNIQUE KEY `uq_kode_angsuran` (`kode_angsuran`),
-  ADD KEY `idx_pinjaman` (`id_pinjaman`),
-  ADD KEY `idx_lama` (`id_lamaAngsuran`),
-  ADD KEY `idx_tempo` (`tanggal_tempo`);
 
 --
 -- Indexes for table `bahasa`
@@ -871,18 +889,19 @@ ALTER TABLE `barang_inventaris`
 -- Indexes for table `bayar_angsuran`
 --
 ALTER TABLE `bayar_angsuran`
-  ADD PRIMARY KEY (`id_bayar`),
-  ADD UNIQUE KEY `uq_kode_bayar` (`kode_bayar`),
-  ADD KEY `idx_angsuran` (`id_angsuran`),
+  ADD PRIMARY KEY (`id_bayar_angsuran`),
   ADD KEY `idx_tanggal_bayar` (`tanggal_bayar`),
   ADD KEY `fk_bayar_akun_sumber` (`id_jenisAkunTransaksi_sumber`),
-  ADD KEY `fk_bayar_akun_tujuan` (`id_jenisAkunTransaksi_tujuan`);
+  ADD KEY `fk_bayar_akun_tujuan` (`id_jenisAkunTransaksi_tujuan`),
+  ADD KEY `fk_bayar_pinjaman` (`id_pinjaman`),
+  ADD KEY `fk_bayar_user` (`id_user`);
 
 --
 -- Indexes for table `biaya_administrasi`
 --
 ALTER TABLE `biaya_administrasi`
-  ADD PRIMARY KEY (`id_biayaAdministrasi`);
+  ADD PRIMARY KEY (`id_biayaAdministrasi`),
+  ADD KEY `fk_adm_lamaAngsuran` (`id_lamaAngsuran`);
 
 --
 -- Indexes for table `cache`
@@ -1034,13 +1053,12 @@ ALTER TABLE `penjualan`
 --
 ALTER TABLE `pinjaman`
   ADD PRIMARY KEY (`id_pinjaman`),
-  ADD UNIQUE KEY `uq_kode_pinjaman` (`kode_pinjaman`),
-  ADD KEY `idx_ajuan` (`id_ajuanPinjaman`),
-  ADD KEY `idx_anggota` (`id_anggota`),
   ADD KEY `idx_sumber` (`id_jenisAkunTransaksi_sumber`),
   ADD KEY `idx_tujuan` (`id_jenisAkunTransaksi_tujuan`),
-  ADD KEY `idx_lama` (`id_lama_angsuran`),
-  ADD KEY `fk_pinj_user` (`id_user`);
+  ADD KEY `fk_pinj_user` (`id_user`),
+  ADD KEY `fk_pinj_anggota` (`id_anggota`),
+  ADD KEY `fk_pinj_ajuan` (`id_ajuanPinjaman`),
+  ADD KEY `idx_lama` (`id_lamaAngsuran`) USING BTREE;
 
 --
 -- Indexes for table `provinsi`
@@ -1075,12 +1093,12 @@ ALTER TABLE `sessions`
 --
 ALTER TABLE `simpanan`
   ADD PRIMARY KEY (`id_simpanan`),
-  ADD UNIQUE KEY `uq_kode_simpanan` (`kode_simpanan`),
-  ADD KEY `idx_anggota` (`id_anggota`),
   ADD KEY `idx_jenis_simpanan` (`id_jenis_simpanan`),
   ADD KEY `idx_sumber` (`id_jenisAkunTransaksi_sumber`),
   ADD KEY `idx_tujuan` (`id_jenisAkunTransaksi_tujuan`),
-  ADD KEY `idx_tanggal` (`tanggal_transaksi`);
+  ADD KEY `idx_tanggal` (`tanggal_transaksi`),
+  ADD KEY `fk_simp_anggota` (`id_anggota`),
+  ADD KEY `fk_simp_user` (`id_user`);
 
 --
 -- Indexes for table `supplier`
@@ -1117,30 +1135,6 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `ajuan_pinjaman`
---
-ALTER TABLE `ajuan_pinjaman`
-  MODIFY `id_ajuanPinjaman` int UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `anggota`
---
-ALTER TABLE `anggota`
-  MODIFY `id_anggota` int NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `angsuran`
---
-ALTER TABLE `angsuran`
-  MODIFY `id_angsuran` int UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
--- AUTO_INCREMENT for table `bayar_angsuran`
---
-ALTER TABLE `bayar_angsuran`
-  MODIFY `id_bayar` int UNSIGNED NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT for table `detail_transaksi`
 --
 ALTER TABLE `detail_transaksi`
@@ -1150,13 +1144,13 @@ ALTER TABLE `detail_transaksi`
 -- AUTO_INCREMENT for table `jenis_akun_transaksi`
 --
 ALTER TABLE `jenis_akun_transaksi`
-  MODIFY `id_jenisAkunTransaksi` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id_jenisAkunTransaksi` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `jenis_simpanan`
 --
 ALTER TABLE `jenis_simpanan`
-  MODIFY `id_jenis_simpanan` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id_jenis_simpanan` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `jobs`
@@ -1168,13 +1162,7 @@ ALTER TABLE `jobs`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
-
---
--- AUTO_INCREMENT for table `pinjaman`
---
-ALTER TABLE `pinjaman`
-  MODIFY `id_pinjaman` int UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `simpanan`
@@ -1204,15 +1192,9 @@ ALTER TABLE `agen_ekspedisi`
 -- Constraints for table `ajuan_pinjaman`
 --
 ALTER TABLE `ajuan_pinjaman`
+  ADD CONSTRAINT `fk_ajuan_adm` FOREIGN KEY (`id_biayaAdministrasi`) REFERENCES `biaya_administrasi` (`id_biayaAdministrasi`) ON DELETE RESTRICT ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_ajuan_anggota` FOREIGN KEY (`id_anggota`) REFERENCES `anggota` (`id_anggota`) ON DELETE RESTRICT ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_ajuan_lama` FOREIGN KEY (`id_lamaAngsuran`) REFERENCES `lama_angsuran` (`id_lamaAngsuran`) ON DELETE RESTRICT ON UPDATE CASCADE;
-
---
--- Constraints for table `angsuran`
---
-ALTER TABLE `angsuran`
-  ADD CONSTRAINT `fk_ang_lama` FOREIGN KEY (`id_lamaAngsuran`) REFERENCES `lama_angsuran` (`id_lamaAngsuran`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_ang_pinjaman` FOREIGN KEY (`id_pinjaman`) REFERENCES `pinjaman` (`id_pinjaman`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
 -- Constraints for table `barang`
@@ -1228,7 +1210,14 @@ ALTER TABLE `barang`
 ALTER TABLE `bayar_angsuran`
   ADD CONSTRAINT `fk_bayar_akun_sumber` FOREIGN KEY (`id_jenisAkunTransaksi_sumber`) REFERENCES `jenis_akun_transaksi` (`id_jenisAkunTransaksi`) ON DELETE RESTRICT ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_bayar_akun_tujuan` FOREIGN KEY (`id_jenisAkunTransaksi_tujuan`) REFERENCES `jenis_akun_transaksi` (`id_jenisAkunTransaksi`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_bayar_angsuran` FOREIGN KEY (`id_angsuran`) REFERENCES `angsuran` (`id_angsuran`) ON DELETE RESTRICT ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_bayar_pinjaman` FOREIGN KEY (`id_pinjaman`) REFERENCES `pinjaman` (`id_pinjaman`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_bayar_user` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+--
+-- Constraints for table `biaya_administrasi`
+--
+ALTER TABLE `biaya_administrasi`
+  ADD CONSTRAINT `fk_adm_lamaAngsuran` FOREIGN KEY (`id_lamaAngsuran`) REFERENCES `lama_angsuran` (`id_lamaAngsuran`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
 -- Constraints for table `detail_pembelian`
@@ -1290,11 +1279,11 @@ ALTER TABLE `penjualan`
 -- Constraints for table `pinjaman`
 --
 ALTER TABLE `pinjaman`
-  ADD CONSTRAINT `fk_pinj_ajuan` FOREIGN KEY (`id_ajuanPinjaman`) REFERENCES `ajuan_pinjaman` (`id_ajuanPinjaman`) ON DELETE SET NULL ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_pinj_ajuan` FOREIGN KEY (`id_ajuanPinjaman`) REFERENCES `ajuan_pinjaman` (`id_ajuanPinjaman`) ON DELETE RESTRICT ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_pinj_akun_sumber` FOREIGN KEY (`id_jenisAkunTransaksi_sumber`) REFERENCES `jenis_akun_transaksi` (`id_jenisAkunTransaksi`) ON DELETE RESTRICT ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_pinj_akun_tujuan` FOREIGN KEY (`id_jenisAkunTransaksi_tujuan`) REFERENCES `jenis_akun_transaksi` (`id_jenisAkunTransaksi`) ON DELETE RESTRICT ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_pinj_anggota` FOREIGN KEY (`id_anggota`) REFERENCES `anggota` (`id_anggota`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_pinj_lama` FOREIGN KEY (`id_lama_angsuran`) REFERENCES `lama_angsuran` (`id_lamaAngsuran`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_pinj_lama` FOREIGN KEY (`id_lamaAngsuran`) REFERENCES `lama_angsuran` (`id_lamaAngsuran`) ON DELETE RESTRICT ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_pinj_user` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
@@ -1309,8 +1298,9 @@ ALTER TABLE `provinsi`
 ALTER TABLE `simpanan`
   ADD CONSTRAINT `fk_simp_akun_sumber` FOREIGN KEY (`id_jenisAkunTransaksi_sumber`) REFERENCES `jenis_akun_transaksi` (`id_jenisAkunTransaksi`) ON DELETE RESTRICT ON UPDATE CASCADE,
   ADD CONSTRAINT `fk_simp_akun_tujuan` FOREIGN KEY (`id_jenisAkunTransaksi_tujuan`) REFERENCES `jenis_akun_transaksi` (`id_jenisAkunTransaksi`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_simp_anggota` FOREIGN KEY (`id_anggota`) REFERENCES `anggota` (`id_anggota`),
-  ADD CONSTRAINT `fk_simp_jenis` FOREIGN KEY (`id_jenis_simpanan`) REFERENCES `jenis_simpanan` (`id_jenis_simpanan`) ON DELETE RESTRICT ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_simp_anggota` FOREIGN KEY (`id_anggota`) REFERENCES `anggota` (`id_anggota`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_simp_jenis` FOREIGN KEY (`id_jenis_simpanan`) REFERENCES `jenis_simpanan` (`id_jenis_simpanan`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `fk_simp_user` FOREIGN KEY (`id_user`) REFERENCES `users` (`id_user`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
 -- Constraints for table `supplier`

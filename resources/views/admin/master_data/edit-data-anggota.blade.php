@@ -9,7 +9,7 @@
 @section('content')
 
 <div class="form-container">
-    <form id="formEditAnggota" action="{{ route('admin.anggota.update', $anggota->id_anggota) }}" method="POST" enctype="multipart/form-data">
+    <form id="formEditAnggota" action="{{ route('anggota.update', $anggota->id_anggota) }}" method="POST" enctype="multipart/form-data">
     @csrf
     @method('PUT')
 
@@ -200,6 +200,7 @@ input[type="file"] {
     justify-content: flex-end;
     gap: 10px;
     margin-top: 50px;
+    text-decoration: none;
 }
 
 .btn {
@@ -212,6 +213,7 @@ input[type="file"] {
     cursor: pointer;
     color: #fff;
     box-shadow: 0 4px 4px rgba(0,0,0,0.3);
+    text-decoration: none;
 }
 
 .btn-simpan { background-color: #25E11B; }
