@@ -9,7 +9,7 @@
 @section('content')
 
 <div class="form-container">
-    <form id="saldoAwalKasForm" action="# {{--{{ route('saldo-awal-kas.store', $transaksi->id) }} --}}" method="POST">
+    <form id="saldoAwalKasForm" action="# {{--{{ route('saldo-awal-kas.store', $saldo_awal_kas->id_transaksi) }} --}}" method="POST">
         @csrf
 
         <div class="form-group">

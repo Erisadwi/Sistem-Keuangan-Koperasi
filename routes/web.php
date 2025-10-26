@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Admin\MasterData\UserController;
 use App\Http\Controllers\Admin\MasterData\JenisBarangController;
 use App\Http\Controllers\Admin\MasterData\JenisSimpananController;
 use App\Http\Controllers\Admin\MasterData\JenisAkunTransaksiController;

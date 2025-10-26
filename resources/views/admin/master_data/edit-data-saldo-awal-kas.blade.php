@@ -9,26 +9,22 @@
 @section('content')
 
 <div class="form-container">
-    {{-- sementara action & route dikosongkan agar aman --}}
-    <form id="saldoAwalKasForm" action="#" method="POST">
-        @csrf
-        {{-- nanti kalau sudah pakai controller: @method('PUT') --}}
-        {{-- @method('PUT') --}}
 
-        {{-- ======= Tanggal ======= --}}
+    <form id="saldoAwalKasForm" action="# {{-- {{ route('saldo-awal-kas.update', $saldo_awal_kas->id_transaksi) }} --}}" method="POST">
+        @csrf
+        @method('PUT')
+
         <div class="form-group">
             <label for="tanggal_transaksi">Tanggal</label>
             <input 
                 type="datetime-local" 
                 id="tanggal_transaksi" 
                 name="tanggal_transaksi"
-                {{-- jika nanti sudah ada data, bisa aktifkan ini --}}
                 {{-- value="{{ old('tanggal_transaksi', isset($transaksi->tanggal_transaksi) ? \Carbon\Carbon::parse($transaksi->tanggal_transaksi)->format('Y-m-d\TH:i') : '') }}" --}}
                 required
             >
         </div>
 
-        {{-- ======= Akun ======= --}}
         <div class="form-group">
             <label for="id_akun_transaksi">Akun</label>
             <select id="akun_transaksi" name="akun_transaksi" required>
