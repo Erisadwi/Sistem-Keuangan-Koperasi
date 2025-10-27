@@ -9,14 +9,16 @@
 @section('content')
 
 <div class="form-container">
-    <form id="formPenarikanTunai" action="#" method="POST" enctype="multipart/form-data">
+    <form id="formEditSetoranTunai"
+          action="#" {{-- nanti diganti route('simpanan.update', $simpanan->id) --}}
+          method="POST" enctype="multipart/form-simpanan">
         @csrf
         {{-- @method('PUT') --}}
 
         {{-- Bagian Tanggal Transaksi --}}
         <label for="tanggal_transaksi">Tanggal Transaksi</label>
-        <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi" 
-            value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}" required>
+        <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi"
+            value="{{ isset($simpanan->tanggal_transaksi) ? \Carbon\Carbon::parse($simpanan->tanggal_transaksi)->format('Y-m-d\TH:i') : '' }}" required>
 
         <hr style="margin:20px 0; border:1px solid #ccc;">
 
@@ -24,21 +26,24 @@
         <h4 style="font-size:14px; margin-bottom:10px;">Identitas Anggota</h4>
 
         <label for="nama_anggota">Nama Anggota</label>
-        <input type="text" id="nama_anggota" name="nama_anggota" placeholder="Masukkan nama anggota" required>
+        <input type="text" id="nama_anggota" name="nama_anggota"
+            value="{{ $simpanan->nama_anggota ?? '' }}" required>
 
         <label for="jenis_simpanan">Jenis Simpanan</label>
         <select name="jenis_simpanan" id="jenis_simpanan" required>
-            <option value="" disabled selected>-- Pilih Jenis Simpanan --</option>
-            <option value="wajib">Simpanan Wajib</option>
-            <option value="pokok">Simpanan Pokok</option>
-            <option value="sukarela">Simpanan Sukarela</option>
+            <option value="" disabled {{ !isset($simpanan->jenis_simpanan) ? 'selected' : '' }}>-- Pilih Jenis Simpanan --</option>
+            <option value="wajib" {{ (isset($simpanan->jenis_simpanan) && $simpanan->jenis_simpanan == 'wajib') ? 'selected' : '' }}>Simpanan Wajib</option>
+            <option value="pokok" {{ (isset($simpanan->jenis_simpanan) && $simpanan->jenis_simpanan == 'pokok') ? 'selected' : '' }}>Simpanan Pokok</option>
+            <option value="sukarela" {{ (isset($simpanan->jenis_simpanan) && $simpanan->jenis_simpanan == 'sukarela') ? 'selected' : '' }}>Simpanan Sukarela</option>
         </select>
 
         <label for="jumlah_penarikan">Jumlah Penarikan</label>
-        <input type="number" id="jumlah_penarikan" name="jumlah_penarikan" placeholder="Masukkan jumlah penarikan" required>
+        <input type="number" id="jumlah_penarikan" name="jumlah_penarikan"
+            value="{{ $simpanan->jumlah_penarikan ?? '' }}" required>
 
         <label for="keterangan">Keterangan</label>
-        <input type="text" id="keterangan" name="keterangan" placeholder="Masukkan keterangan (opsional)">
+        <input type="text" id="keterangan" name="keterangan"
+            value="{{ $simpanan->keterangan ?? '' }}" placeholder="Opsional...">
 
         <label for="ambil_dari_kas">Ambil Dari Kas</label>
         <select name="ambil_dari_kas" id="ambil_dari_kas" required>
