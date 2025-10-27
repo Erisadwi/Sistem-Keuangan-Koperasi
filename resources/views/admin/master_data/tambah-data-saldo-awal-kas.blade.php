@@ -9,34 +9,39 @@
 @section('content')
 
 <div class="form-container">
-    <form id="saldoAwalKasForm" action="# {{--{{ route('saldo-awal-kas.store', $saldo_awal_kas->id_transaksi) }} --}}" method="POST">
+    <form id="saldoAwalKasForm"  action="{{ route('saldo-awal-kas.store') }}" method="POST">
         @csrf
 
         <div class="form-group">
             <label for="tanggal_transaksi">Tanggal</label>
-            <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi" required>
+            <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi"
+                   value="{{ old('tanggal_transaksi') }}" required>
         </div>
 
-        <div class="form-group">
-            <label for="akun_transaksi">Akun</label>
-            <select id="akun_transaksi" name="akun_transaksi" required>
-                <option value="">-- Pilih Akun --</option>
-                @if(isset($akunTransaksi))
+        <<div class="form-group">
+            <label for="id_jenisAkunTransaksi_tujuan">Akun</label>
+            <select id="id_jenisAkunTransaksi_tujuan" name="id_jenisAkunTransaksi_tujuan" required>
+                <option value="">-- Pilih Akun Kas --</option>
                 @foreach($akunTransaksi as $akun)
-                    <option value="{{ $akun->id }}">{{ $akun->nama_akun }}</option>
+                    <option value="{{ $akun->id_jenisAkunTransaksi }}"
+                        {{ old('id_jenisAkunTransaksi_tujuan') == $akun->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                        {{ $akun->nama_AkunTransaksi }}
+                    </option>
                 @endforeach
-                @endif
             </select>
         </div>
 
         <div class="form-group">
             <label for="ket_transaksi">Keterangan</label>
-            <input type="text" id="ket_transaksi" name="ket_transaksi" placeholder="Masukkan keterangan">
+            <input type="text" id="ket_transaksi" name="ket_transaksi"
+                   value="{{ old('ket_transaksi') }}" placeholder="Masukkan keterangan">
         </div>
 
         <div class="form-group">
             <label for="jumlah_transaksi">Saldo Awal</label>
-            <input type="number" id="jumlah_transaksi" name="jumlah_transaksi" required placeholder="Masukkan nominal saldo awal">
+            <input type="number" id="jumlah_transaksi" name="jumlah_transaksi"
+                   value="{{ old('jumlah_transaksi') }}" step="0.01" required
+                   placeholder="Masukkan nominal saldo awal">
         </div>
 
         <div class="form-buttons">

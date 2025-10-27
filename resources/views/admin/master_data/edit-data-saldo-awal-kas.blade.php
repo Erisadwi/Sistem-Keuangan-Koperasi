@@ -10,7 +10,7 @@
 
 <div class="form-container">
 
-    <form id="saldoAwalKasForm" action="# {{-- {{ route('saldo-awal-kas.update', $saldo_awal_kas->id_transaksi) }} --}}" method="POST">
+    <form id="saldoAwalKasForm" action="{{ route('saldo-awal-kas.update', $transaksi->id_transaksi) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -20,58 +20,48 @@
                 type="datetime-local" 
                 id="tanggal_transaksi" 
                 name="tanggal_transaksi"
-                {{-- value="{{ old('tanggal_transaksi', isset($transaksi->tanggal_transaksi) ? \Carbon\Carbon::parse($transaksi->tanggal_transaksi)->format('Y-m-d\TH:i') : '') }}" --}}
+                value="{{ old('tanggal_transaksi', isset($transaksi->tanggal_transaksi) ? \Carbon\Carbon::parse($transaksi->tanggal_transaksi)->format('Y-m-d\TH:i') : '') }}"
                 required
             >
         </div>
 
         <div class="form-group">
-            <label for="id_akun_transaksi">Akun</label>
-            <select id="akun_transaksi" name="akun_transaksi" required>
-                <option value="">-- Pilih Akun --</option>
-
-                {{-- nanti kalau sudah terhubung DB bisa diaktifkan --}}
-                {{-- 
-                @if(isset($akunTransaksi) && count($akunTransaksi) > 0)
-                    @foreach($akunTransaksi as $akun)
-                        <option value="{{ $akun->id }}"
-                            {{ isset($transaksi) && $transaksi->id_akun_transaksi == $akun->id ? 'selected' : '' }}>
-                            {{ $akun->nama_akun }}
-                        </option>
-                    @endforeach
-                @else
-                    <option disabled>Tidak ada data akun</option>
-                @endif 
-                --}}
+            <label for="id_jenisAkunTransaksi_tujuan">Akun</label>
+            <select id="id_jenisAkunTransaksi_tujuan" name="id_jenisAkunTransaksi_tujuan" required>
+                <option value="">-- Pilih Akun Kas --</option>
+                @foreach($akunTransaksi as $akun)
+                    <option value="{{ $akun->id_jenisAkunTransaksi }}"
+                        {{ old('id_jenisAkunTransaksi_tujuan', $transaksi->id_jenisAkunTransaksi_tujuan ?? '') == $akun->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                        {{ $akun->nama_AkunTransaksi }}
+                    </option>
+                @endforeach
             </select>
         </div>
 
-        {{-- ======= Keterangan ======= --}}
         <div class="form-group">
             <label for="ket_transaksi">Keterangan</label>
             <input 
                 type="text" 
                 id="ket_transaksi" 
                 name="ket_transaksi"
-                {{-- value="{{ old('ket_transaksi', $transaksi->ket_transaksi ?? '') }}" --}}
+                value="{{ old('ket_transaksi', $transaksi->ket_transaksi ?? '') }}"
                 placeholder="Masukkan keterangan"
             >
         </div>
 
-        {{-- ======= Saldo Awal ======= --}}
         <div class="form-group">
             <label for="jumlah_transaksi">Saldo Awal</label>
             <input 
                 type="number" 
                 id="jumlah_transaksi" 
                 name="jumlah_transaksi"
-                {{-- value="{{ old('jumlah_transaksi', $transaksi->jumlah_transaksi ?? '') }}" --}}
+                value="{{ old('jumlah_transaksi', $transaksi->jumlah_transaksi ?? '') }}"
+                step="0.01"
                 required 
                 placeholder="Masukkan nominal saldo awal"
             >
-        </div>
+        </div> 
 
-        {{-- ======= Tombol ======= --}}
         <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>
             <button type="button" id="btnBatal" class="btn btn-batal">Batal</button>
@@ -163,7 +153,7 @@ select:focus {
 {{-- ======== SCRIPT POP-UP VALIDASI DAN KONFIRMASI ======== --}}
 <script>
 document.getElementById('saldoAwalKasForm').addEventListener('submit', function(e) {
-    const wajib = ['tanggal_transaksi', 'akun_transaksi', 'jumlah_transaksi'];
+     const wajib = ['tanggal_transaksi', 'id_jenisAkunTransaksi_tujuan', 'jumlah_transaksi'];
 
     for (let id of wajib) {
         const el = document.getElementById(id);
