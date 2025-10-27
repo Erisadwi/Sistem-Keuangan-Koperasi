@@ -8,7 +8,6 @@
 </head>
 <body class="bg-gray-50 font-sans">
 
-  {{-- 🔹 HEADER ATAS --}}
   <nav class="nav-top">
     <div class="nav-left"></div>
     <div class="nav-right">
@@ -16,7 +15,6 @@
     </div>
   </nav>
 
-  {{-- 🔹 KONTEN UTAMA --}}
   <div class="layout">
             <aside class="sidebar">
         <div class="profile-card">
@@ -100,16 +98,15 @@
           </div>
         </section>
 
-        {{-- Form Profil Kanan --}}
         <section class="card-form"> 
           <form>
-         <form class="form" method="post" action="#" {{-- {{ route('profile.update', $anggota->id_anggota) }} --}} enctype="multipart/form-data">
+         <form class="form" method="post" action="#" {{-- {{ route('profile.update', $users->id_user) }} --}} enctype="multipart/form-data">
           @csrf
           @method('PUT')
 
   <div class="form-group">
     <label>Username</label>
-    <input type="text" name="username_anggota" value="angga" {{-- {{ $anggota->username_anggota }} --}}>
+    <input type="text" name="username" value="angga" {{-- {{ $users->username }} --}}>
   </div>
 
   <div class="form-group">
@@ -119,12 +116,12 @@
 
   <div class="form-group">
     <label>Nama Lengkap</label>
-    <input type="text" name="nama_lengkap"value="angga aldi yunanda" {{-- {{ $anggota->nama_lengkap}} --}}>
+    <input type="text" name="nama_lengkap"value="angga aldi yunanda" {{-- {{ $users->nama_lengkap}} --}}>
   </div>
 
   <div class="form-group">
     <label>Alamat</label>
-    <textarea name="alamat_anggota" rows="3">Perum Griya Sejahtera, Blok J No. 20 jl. Medayu Utara 30A, Medokan Ayu, Rungkut Surabaya {{-- {{ $anggota->alamat_anggota }} --}}</textarea>
+    <textarea name="alamat_user" rows="3">Perum Griya Sejahtera, Blok J No. 20 jl. Medayu Utara 30A, Medokan Ayu, Rungkut Surabaya {{-- {{ $users->alamat_user }} --}}</textarea>
   </div>
   
 <div class="form-group">
@@ -146,7 +143,6 @@
   </div>
 
   <script>
-    // dropdown sidebar
     function toggleSubmenu(button) {
       const submenu = button.nextElementSibling;
       submenu.classList.toggle("active");

@@ -6,6 +6,7 @@
 
 @section('content')
 <x-menu.tambah-edit-hapus/>
+<x-menu.toolbar-right :downloadFile="'data-pengajuan.pdf'"/>
 
 <div class="transfer-table-wrap">
   <table class="transfer-table">
@@ -56,16 +57,15 @@
     border: 1.5px solid var(--outer-border);
     border-radius: 0;
     background: var(--bg);
-    width: 870px;
+    width: 95%;
     margin-left: 25px;
     margin-top: 20px;
     padding: 0;
     box-shadow: none;
     overflow-x: visible;
   }
-
   .transfer-table {
-    width: 870px;
+    width: 100%;
     border-collapse: collapse;
     table-layout: fixed;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;

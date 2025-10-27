@@ -41,9 +41,8 @@
 </div>
 
 <style>
-  /* Wrapper utama form */
   .form-wrapper {
-    margin-top: 60px; /* jarak dari judul */
+    margin-top: 60px; 
     margin-left: 30px;
     width: 94%;
   }
@@ -58,7 +57,6 @@
     padding-bottom: 6px;
   }
 
-  /* Tiap grup input */
   .form-group {
     margin-bottom: 20px;
   }
@@ -71,7 +69,6 @@
     margin-bottom: 6px;
   }
 
-  /* Input dan Select */
   .form-input,
   .form-select {
     width: 100%;
@@ -79,7 +76,7 @@
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 6px;
-    background-color: rgba(255,255,255,0.7); /* sedikit transparan agar tetap selaras dengan background */
+    background-color: rgba(255,255,255,0.7); 
     outline: none;
     transition: all 0.2s ease-in-out;
   }
@@ -138,7 +135,7 @@
 </style>
 
 <script>
-document.getElementById('form-container').addEventListener('submit', function(e) {
+document.getElementById('form-wrapper').addEventListener('submit', function(e) {
     const wajib = ['lama_angsuran','status_angsuran'];
 
     for (let id of wajib) {

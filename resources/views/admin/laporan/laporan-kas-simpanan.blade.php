@@ -8,7 +8,7 @@
 
 @section('content')
 
-<x-menu.month-filter/>
+<x-menu.date-filter/>
 <x-menu.unduh/>
 
 <div class="laporan-simpanan-wrap">
@@ -56,8 +56,6 @@
   </div>
 </div>
 
-{{-- Pagination --}}
-<x-menu.pagination />
 
 <style>
 :root {

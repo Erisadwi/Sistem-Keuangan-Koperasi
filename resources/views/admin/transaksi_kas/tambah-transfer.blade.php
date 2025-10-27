@@ -19,8 +19,8 @@
         <label for="jumlah_transaksi">Jumlah</label>
         <input type="number" id="jumlah_transaksi" name="jumlah_transaksi" value=" {{-- {{ isset($transaksi) ? number_format($transaksi->jumlah_transaksi, 0, ',', '.') : '' }} --}}">
 
-        <label for="keterangan">Keterangan</label>
-        <input type="text" id="keterangan" name="keterangan" value="{{-- {{ $transaksi->keterangan }} --}}">
+        <label for="ket_transaksi">Keterangan</label>
+        <input type="text" id="ket_transaksi" name="ket_transaksi" value="{{-- {{ $transaksi->keterangan }} --}}">
 
         <label for="id_jenisAkunTransaksi_sumber">Dari Kas</label>
             <select name="id_jenisAkunTransaksi_sumber" id="id_jenisAkunTransaksi_sumber">

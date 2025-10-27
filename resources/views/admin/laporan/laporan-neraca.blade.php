@@ -12,7 +12,7 @@
 
 @section('content')
 
-<x-menu.month-filter/>
+<x-menu.date-filter/>
 <x-menu.unduh/>
 
 <div class="laporan-neraca-wrap">
@@ -62,8 +62,5 @@
     </table>
   </div>
 </div>
-
-{{-- Komponen pagination --}}
-<x-menu.pagination />
 
 @endsection
