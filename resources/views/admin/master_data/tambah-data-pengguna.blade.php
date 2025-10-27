@@ -9,71 +9,77 @@
 @section('content')
 
 <div class="form-container">
-    <div class="form-wrapper">
-    <form id="formDataPengguna" action="# {{-- {{ route('tambah-data-pengguna.store', $data_pengguna->id) }} --}}" method="POST">
+        <form id="formTambahUsers" action="{{--{{ route('users.store') }}--}}" method="POST" enctype="multipart/form-data">
         @csrf
 
             <div class="form-group">
-                <label for="nama_lengkap">Nama Lengkap*</label>
-                <input type="text" id="nama_lengkap" name="nama_lengkap">
+                <label for="nama_lengkap">Nama Lengkap</label>
+                <input type="text" id="nama_lengkap" name="nama_lengkap" 
+                       value="{{ old('nama_lengkap') }}" required>
             </div>
 
             <div class="form-group">
                 <label for="username">Username</label>
-                <input type="text" id="username" name="username">
+                <input type="text" id="username" name="username" 
+                       value="{{ old('username') }}" required>
             </div>
 
             <div class="form-group">
-                <label for="jenis_kelamin">Jenis Kelamin*</label>
-                <select id="jenis_kelamin" name="jenis_kelamin">
-                    <option value="">Pilih Jenis Kelamin</option>
-                    <option value="Laki-laki">Laki-laki</option>
-                    <option value="Perempuan">Perempuan</option>
+                <label for="jenis_kelamin">Jenis Kelamin</label>
+                <select id="jenis_kelamin" name="jenis_kelamin" required>
+                    <option value="">-- Pilih Jenis Kelamin --</option>
+                    <option value="L" {{ old('jenis_kelamin') == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                    <option value="P" {{ old('jenis_kelamin') == 'P' ? 'selected' : '' }}>Perempuan</option>
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="alamat">Alamat</label>
-                <input type="text" id="alamat" name="alamat">
+                <label for="alamat_user">Alamat</label>
+                <input type="text" id="alamat_user" name="alamat_user" 
+                       value="{{ old('alamat_anggota') }}">
             </div>
 
-            <div class="form-group">
-                <label for="nomor_telepon">Nomor Telepon/HP</label>
-                <input type="text" id="nomor_telepon" name="nomor_telepon">
+             <div class="form-group">
+                <label for="telepon">No Telepon/HP</label>
+                <input type="text" id="telepon" name="telepon" 
+                       value="{{ old('telepon') }}">
             </div>
 
             <div class="form-group">
                 <label for="tanggal_masuk">Tanggal Masuk</label>
-                <input type="datetime-local" id="tanggal_masuk" name="tanggal_masuk">
+                <input type="date" id="tanggal_masuk" name="tanggal_masuk" 
+                       value="{{ old('tanggal_masuk', date('Y-m-d')) }}">
             </div>
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password">
+                <input type="password" id="password" name="password" required>
             </div>
 
             <div class="form-group">
                 <label for="tanggal_keluar">Tanggal Keluar</label>
-                <input type="datetime-local" id="tanggal_keluar" name="tanggal_keluar">
+                <input type="date" id="tanggal_keluar" name="tanggal_keluar" 
+                       value="{{ old('tanggal_keluar', date('Y-m-d')) }}">
             </div>
 
             <div class="form-group">
-                <label for="is_active">Status Keanggotaan*</label>
-                <select id="is_active" name="is_active">
-                    <option value="">Pilih Status Keanggotaan</option>
-                    <option value="Aktif">Aktif</option>
-                    <option value="Non Aktif">Non Aktif</option>
+                <label for="status">Status Keanggotaan</label>
+                <select id="status" name="status">
+                    <option value="">-- Aktif --</option>
+                    @foreach(['Aktif','Non Aktif'] as $s)
+                        <option value="{{ $s }}" {{ old('status') == $s ? 'selected' : '' }}>{{ $s }}</option>
+                    @endforeach
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="foto">Foto Pengguna</label>
-                <input type="file" id="foto" name="foto" accept="image/*">
+                <label for="foto_user">Foto Pengguna</label>
+                <input type="file" id="foto_user" name="foto_user" accept="image/*">
             </div>
 
             <div class="form-buttons">
-                <button type="submit" class="btn btn-simpan">Simpan</button>
-                <a href="# {{-- {{ route('data-pengguna.index') }} --}}" class="btn btn-batal">Batal</a>
+            <button type="submit" class="btn btn-simpan">Simpan</button>
+            <button type="button" id="btnBatal" class="btn btn-batal">Batal</button>
         </div>
         </form>
     </div>
@@ -82,16 +88,11 @@
 <style>
 .form-container {
     background-color: transparent;
-    width: 98%;
-    margin-left: 10px;
-    margin-top: 40px;
-}
-
-.form-wrapper {
-    background-color: #c7dbe6; /* tetap biru muda */
-    border-radius: 8px;
     padding: 20px;
-    box-sizing: border-box;
+    border-radius: 10px;
+    width: 98%;
+    margin-left:10px;
+    margin-top:40px;
 }
 
 .form-group {
@@ -107,70 +108,60 @@ label {
 }
 
 input[type="text"],
+input[type="date"],
 input[type="password"],
-input[type="file"],
-input[type="datetime-local"],
-select {
+select,
+input[type="file"] {
     width: 100%;
-    padding: 8px;
+    padding: 9px;
     border: 1px solid #565656;
     border-radius: 5px;
     font-size: 13px;
     background-color: #fff;
-    box-sizing: border-box;
 }
 
-input:focus, select:focus {
+input[type="text"]:focus {
+    border-color: #565656;
     outline: none;
-    border-color: #1976d2;
-    box-shadow: 0 0 2px rgba(25, 118, 210, 0.5);
 }
 
 .form-buttons {
     display: flex;
     justify-content: flex-end; 
-    gap: 10px;
-    margin-top: 40px;
+    gap: 10px;                  
+    margin-top: 110px; 
 }
 
 .btn {
-    padding: 8px 0px;
-    width: 110px;
-    font-size: 14px;
+    padding: 8px 0;             
+    font-size: 16px;
     font-weight: bold;
-    border-radius: 6px;
+    border-radius: 7px;
     border: none;
     cursor: pointer;
-    color: #fff;
-    box-shadow: 0 3px 4px rgba(0, 0, 0, 0.2);
-    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    width: 120px;               
+    text-align: center;         
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.293);
 }
 
 .btn-simpan {
-    background-color: #25E11B;
+    background-color: #25E11B; 
+    color: #fff;
 }
 
 .btn-simpan:hover {
-    background-color: #1db115;
+    background-color: #45a049;
 }
 
 .btn-batal {
-    background-color: #EA2828;
+    background-color: #EA2828; 
+    color: #fff;
 }
 
 .btn-batal:hover {
-    background-color: #c71e1e;
-}
-
-.form-wrapper::-webkit-scrollbar {
-    width: 8px;
-}
-.form-wrapper::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 5px;
-}
-.form-wrapper::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background-color: #d73833;
 }
 </style>
 

@@ -147,7 +147,7 @@
 
         <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>
-            <button type="button" id="btnBatal" class="btn btn-batal">Batal</button>
+            <a href="{{ route('anggota.index') }}" class="btn btn-batal">Batal</a>
         </div>
     </form>
 </div>
@@ -210,6 +210,8 @@ input[type="file"] {
     cursor: pointer;
     color: #fff;
     box-shadow: 0 4px 4px rgba(0,0,0,0.3);
+    text-align: center;
+    text-decoration: none;
 }
 
 .btn-simpan { background-color: #25E11B; }
@@ -222,7 +224,7 @@ input[type="file"] {
 {{-- ========== VALIDASI JS ========== --}}
 <script>
 document.getElementById('formDataAnggota').addEventListener('submit', function(e) {
-    const wajib = ['nama_anggota','username_anggota','password_anggota','jenis_kelamin','status_anggota'];
+    const wajib = ['nama_anggota','username_anggota','password_anggota','jenis_kelamin','status_anggota','alamat_anggota','kota_anggota','tempat_lahir','tanggal_lahir','jabatan','tanggal_registrasi''status_anggota'];
 
 
     for (let id of wajib) {

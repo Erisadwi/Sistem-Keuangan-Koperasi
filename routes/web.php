@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\MasterData\UserController;
+use App\Http\Controllers\Admin\MasterData\RoleController;
 use App\Http\Controllers\Admin\MasterData\JenisBarangController;
 use App\Http\Controllers\Admin\MasterData\JenisSimpananController;
 use App\Http\Controllers\Admin\MasterData\JenisAkunTransaksiController;
@@ -46,6 +47,14 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('anggota/{id}/edit', [AnggotaController::class, 'edit'])->name('anggota.edit');
     Route::put('anggota/{id}', [AnggotaController::class, 'update'])->name('anggota.update');
     Route::delete('anggota/{id}', [AnggotaController::class, 'destroy'])->name('anggota.destroy');
+
+    Route::get('users', [UserController::class, 'index'])->name('data-user.index');
+    Route::get('users/create', [UserController::class, 'create'])->name('data-user.create');
+    Route::post('users', [UserController::class, 'store'])->name('data-user.store');
+    Route::get('users/{id}/edit', [UserController::class, 'edit'])->name('data-user.edit');
+    Route::put('users/{id}', [UserController::class, 'update'])->name('data-user.update');
+    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('data-user.destroy');
+
 });
 
 Route::prefix('admin/setting')->group(function () {

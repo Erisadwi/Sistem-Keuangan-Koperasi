@@ -6,15 +6,13 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Role;
-use App\Models\Jabatan;
-use App\Models\Pendidikan;
 use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $query = User::with(['role', 'jabatan', 'pendidikan']);
+        $query = User::with(['role']);
 
         if ($search = $request->query('q')) {
             $query->where(function ($q) use ($search) {
@@ -28,17 +26,15 @@ class UserController extends Controller
         $perPage = (int) $request->query('per_page', 10);
         $users = $query->orderBy('id_user', 'asc')->paginate($perPage);
 
-        return view('master.data-user.index', compact('users'));
+        return view('admin.master_data.data-user.index', compact('users'));
     }
 
     public function create()
     {
         $nextId = $this->generateNextId();
         $roles = Role::orderBy('nama_role')->get();
-        $jabatans = Jabatan::orderBy('nama_jabatan')->get();
-        $pendidikans = Pendidikan::orderBy('tingkat_pendidikan')->get();
 
-        return view('master.data-user.create', compact('nextId', 'roles', 'jabatans', 'pendidikans'));
+        return view('admin.master_data.data-user.create', compact('nextId', 'roles'));
     }
 
     public function store(Request $request)
@@ -52,8 +48,6 @@ class UserController extends Controller
             'tanggal_masuk' => 'required|date',
             'tanggal_keluar' => 'nullable|date|after_or_equal:tanggal_masuk',
             'id_role' => 'required|exists:role,id_role',
-            'id_jabatan' => 'nullable|exists:jabatan,id_jabatan',
-            'id_pendidikan' => 'nullable|exists:pendidikan,id_pendidikan',
             'telepon' => 'nullable|string|max:16',
             'alamat_user' => 'nullable|string|max:255',
         ], [
@@ -79,22 +73,17 @@ class UserController extends Controller
             'tanggal_masuk' => $request->tanggal_masuk,
             'tanggal_keluar' => $request->tanggal_keluar,
             'id_role' => $request->id_role,
-            'id_jabatan' => $request->id_jabatan,
-            'id_pendidikan' => $request->id_pendidikan,
-            // foto_user intentionally omitted
         ]);
 
-        return redirect()->route('master.data-user.index')->with('success', 'Data user berhasil ditambahkan.');
+        return redirect()->route('admin.master_data.data-user.index')->with('success', 'Data user berhasil ditambahkan.');
     }
 
     public function edit($id)
     {
         $user = User::findOrFail($id);
         $roles = Role::orderBy('nama_role')->get();
-        $jabatans = Jabatan::orderBy('nama_jabatan')->get();
-        $pendidikans = Pendidikan::orderBy('tingkat_pendidikan')->get();
 
-        return view('master.data-user.edit', compact('user', 'roles', 'jabatans', 'pendidikans'));
+        return view('admin.master_data.data-user.edit', compact('user', 'roles'));
     }
 
     public function update(Request $request, $id)
@@ -108,8 +97,6 @@ class UserController extends Controller
             'tanggal_masuk' => 'required|date',
             'tanggal_keluar' => 'nullable|date|after_or_equal:tanggal_masuk',
             'id_role' => 'required|exists:role,id_role',
-            'id_jabatan' => 'nullable|exists:jabatan,id_jabatan',
-            'id_pendidikan' => 'nullable|exists:pendidikan,id_pendidikan',
             'telepon' => 'nullable|string|max:16',
             'alamat_user' => 'nullable|string|max:255',
         ], [
@@ -134,8 +121,6 @@ class UserController extends Controller
             'tanggal_masuk',
             'tanggal_keluar',
             'id_role',
-            'id_jabatan',
-            'id_pendidikan',
         ]);
 
         if ($request->filled('password')) {
@@ -144,7 +129,7 @@ class UserController extends Controller
 
         $user->update($data);
 
-        return redirect()->route('master.data-user.index')->with('success', 'Data user berhasil diperbarui.');
+        return redirect()->route('admin.master_data.data-user.index')->with('success', 'Data user berhasil diperbarui.');
     }
 
     public function destroy($id)
@@ -152,7 +137,7 @@ class UserController extends Controller
         $user = User::findOrFail($id);
         $user->delete();
 
-        return redirect()->route('master.data-user.index')->with('success', 'Data user berhasil dihapus.');
+        return redirect()->route('admin.master_data.data-user.index')->with('success', 'Data user berhasil dihapus.');
     }
 
     private function generateNextId()

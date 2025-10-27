@@ -18,6 +18,7 @@
           <th>ID Pengguna</th>
           <th>Username</th>
           <th>Nama Lengkap</th>
+          <th>Role</th>
           <th>Jenis Kelamin</th>
           <th>Alamat</th>
           <th>Tanggal Masuk</th>
@@ -33,6 +34,7 @@
             <td>{{ $row->id_pengguna ?? '' }}</td>
             <td>{{ $row->username ?? '' }}</td>
             <td>{{ $row->nama_lengkap ?? '' }}</td>
+            <td>{{ $row->role->nama_role ?? '' }}</td>
             <td>{{ $row->jenis_kelamin ?? '' }}</td>
             <td>{{ $row->alamat ?? '' }}</td>
             <td>{{ $row->tgl_masuk ?? '' }}</td>
@@ -50,8 +52,8 @@
               @endif
             </td>
             <td class="actions">
-              <a href="{{ route('data-pengguna.edit', ['id' => $row->id]) }}" class="edit">✏️ Edit</a>
-              <form action="{{ route('data-pengguna.destroy', ['id' => $row->id]) }}" method="POST" style="display: inline;">
+              <a href="{{ route('data-user.edit', ['id' => $row->id_user]) }}" class="edit">✏️ Edit</a>
+              <form action="{{ route('data-user.destroy', ['id' => $row->id_user]) }}" method="POST" style="display: inline;">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="delete">❌ Hapus</button>
@@ -60,7 +62,7 @@
           </tr>
         @empty
           <tr>
-            <td colspan="10" class="empty-cell">Belum ada data pengguna</td>
+            <td colspan="11" class="empty-cell">Belum ada data pengguna</td>
           </tr>
         @endforelse
       </tbody>

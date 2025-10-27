@@ -17,7 +17,6 @@ class User extends Authenticatable
     protected $fillable = [
         'id_user',
         'nama_lengkap',
-        'jabatan_karyawan',
         'alamat_user',
         'telepon',
         'username',
@@ -28,8 +27,6 @@ class User extends Authenticatable
         'tanggal_masuk',
         'tanggal_keluar',
         'id_role',       // foreign key ke tabel role
-        'id_jabatan',    // foreign key ke tabel jabatan
-        'id_pendidikan', // foreign key ke tabel pendidikan
     ];
 
     protected $hidden = [
@@ -44,19 +41,4 @@ class User extends Authenticatable
         return $this->belongsTo(Role::class, 'id_role', 'id_role');
     }
 
-    /**
-     * Relasi ke tabel Jabatan
-     */
-    public function jabatan()
-    {
-        return $this->belongsTo(Jabatan::class, 'id_jabatan', 'id_jabatan');
-    }
-
-    /**
-     * Relasi ke tabel Pendidikan
-     */
-    public function pendidikan()
-    {
-        return $this->belongsTo(Pendidikan::class, 'id_pendidikan', 'id_pendidikan');
-    }
 }
