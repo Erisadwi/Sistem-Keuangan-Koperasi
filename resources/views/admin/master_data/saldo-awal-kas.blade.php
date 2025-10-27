@@ -1,4 +1,4 @@
-@extends('layouts.app-admin')
+@extends('layouts.app-admin3')
 
 @section('title', 'Saldo Awal Kas')
 @section('title-1', 'Master Data')
@@ -7,7 +7,7 @@
 @section('content')
 
 <x-menu.tambah-unduh 
-    addUrl="#" {{-- nanti diganti route('saldo-awal-kas.create') --}}
+    addUrl="# {{-- {{ route('saldo-awal-kas.create') }} --}}" 
     downloadFile="saldo-awal-kas.pdf" 
 />
 
@@ -19,7 +19,6 @@
         <th>Akun</th>
         <th>Keterangan</th>
         <th>Saldo Awal</th>
-        <th>Update Data</th>
         <th>Username</th>
         <th>Aksi</th>
       </tr>
@@ -29,10 +28,9 @@
       @forelse(($transaksi ?? collect()) as $row)
         <tr>
           <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d/m/Y - H:i') }}</td>
-          <td>{{ $row->nama_akunTransaksi ?? '-' }}</td>
+          <td>{{ $row->id_jenisAkunTransaksi_sumber ?? '-' }}</td>
           <td>{{ $row->ket_transaksi ?? '-' }}</td>
           <td>{{ number_format($row->jumlah_transaksi ?? 0, 0, ',', '.') }}</td>
-          <td>{{ $row->updated_at ? $row->updated_at->format('d/m/Y - H:i') : '-' }}</td>
           <td>{{ $row->username ?? '-' }}</td>
           <td class="actions">
             <a href="{{ route('saldo-awal-kas.edit', $row->id_transaksi) }}" class="edit">✏️ Edit</a>
@@ -47,6 +45,8 @@
   </table>
 </div>
 
+{{-- Komponen pagination --}}
+<x-menu.pagination />
 
 <style>
   :root {
@@ -59,7 +59,7 @@
   .saldo-awal-kas-table-wrap {
     border: 1.5px solid var(--outer-border);
     background: var(--bg);
-    width: 870px;
+    width: 96%;
     margin-left: 25px;
     margin-top: 20px;
     padding: 0;
@@ -123,6 +123,34 @@
     }
   }
   
+  /* Pagination style */
+.pagination {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 6px;
+  margin-top: 15px;
+  font-size: 14px;
+}
 
+.pagination select,
+.pagination button {
+  padding: 4px 6px;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: white;
+  cursor: pointer;
+}
+
+.pagination button {
+  background: var(--primary);
+  color: white;
+  border: none;
+}
+
+.pagination button:hover {
+  background: var(--primary-dark);
+}
+</style>
 
 @endsection

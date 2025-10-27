@@ -1,7 +1,7 @@
 @extends('layouts.app-admin-add')
 
 @section('title', 'Data Barang Inventaris')  
-@section('back-url', url('admin/master_data/data-barang'))
+@section('back-url', url('admin/master_data/jenis-barang'))
 @section('back-title', 'Master Data >')
 @section('title-1', 'Data Barang')  
 @section('sub-title', 'Tambah Data Barang')  
@@ -9,25 +9,25 @@
 @section('content')
 
 <div class="form-container">
-    <form id="formDataBarang" action="# {{-- {{ route('tambah-data-barang.store', $barang_inventaris->id) }} --}}" method="POST">
+    <form id="formDataBarang" action="{{ route('jenis-barang.store') }}" method="POST">
         @csrf
 
         <label for="nama_barang">Nama Barang*</label>
-        <input type="text" id="nama_barang" name="nama_barang" value="{{-- {{ $barang_inventaris->nama_barang }} --}}">
+        <input type="text" id="nama_barang" name="nama_barang" value="{{ old('nama_barang') }}">
 
         <label for="type_barang">Type</label>
-        <input type="text" id="type_barang" name="type_barang" value="{{-- {{ $barang_inventaris->type_barang }} --}}">
+        <input type="text" id="type_barang" name="type_barang" value="{{ old('type_barang') }}">
 
         <label for="jumlah_barang">Jumlah*</label>
-        <input type="text" id="jumlah_barang" name="jumlah_barang" value=" {{-- {{ $barang_inventaris)->jumlah_barang }} --}}">
+        <input type="text" id="jumlah_barang" name="jumlah_barang" value=" {{ old('jumlah_barang') }}">
 
         <label for="keterangan_barang">Keterangan</label>
-        <input type="text" id="keterangan_barang" name="keterangan_barang" value="{{-- {{ $barang_inventaris->keterangan_barang }} --}}">
+        <input type="text" id="keterangan_barang" name="keterangan_barang" value="{{ old('keterangan_barang') }}">
         
 
         <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>
-            <a href="# {{-- {{ route('data-barang.index') }} --}}" class="btn btn-batal">Batal</a>
+            <a href="{{ route('jenis-barang.index') }}" class="btn btn-batal">Batal</a>
         </div>
 
     </form>
@@ -108,29 +108,30 @@ input[type="text"]:focus {
 
 <script>
 document.getElementById('formDataBarang').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const wajib = ['nama_barang','jumlah_barang'];
+    const wajib = ['nama_barang', 'jumlah_barang'];
 
     for (let id of wajib) {
-        if (!document.getElementById(id).value.trim()) {
+        const el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
             alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            e.preventDefault(); 
             return;
         }
     }
 
-    if (confirm('Apakah data sudah benar dan ingin disimpan?')) {
-        alert('✅ Data barang berhasil disimpan!');
-        this.reset();
-    }
-});
+    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
 
-document.getElementById('btnBatal').addEventListener('click', function() {
-    if (confirm('Apakah Anda yakin ingin membatalkan pengisian data?')) {
+    if (!yakin) {
+        e.preventDefault(); 
         alert('❌ Pengisian data dibatalkan.');
-        window.history.back();
+        return;
     }
+
+    alert('✅ Data barang berhasil disimpan!');
 });
 </script>
+
+
+
 
 @endsection

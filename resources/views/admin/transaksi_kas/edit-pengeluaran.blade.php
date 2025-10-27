@@ -177,39 +177,27 @@ select {
 </style>
 
 <script>
-// Validasi form & konfirmasi simpan
 document.getElementById('formEditPengeluaran').addEventListener('submit', function(e) {
-    e.preventDefault();
+    const wajib = ['tanggal_transaksi', 'jumlah_transaksi', 'akun_kredit', 'akun_debit'];
 
-    const requiredFields = this.querySelectorAll('[required]');
-    let valid = true;
-
-    requiredFields.forEach(field => {
-        if (!field.value.trim()) {
-            valid = false;
-            field.style.borderColor = 'red';
-        } else {
-            field.style.borderColor = '#565656';
+    for (let id of wajib) {
+        const el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
+            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            e.preventDefault(); 
+            return;
         }
-    });
+    }
 
-    if (!valid) {
-        alert('⚠️ Harap lengkapi semua data wajib sebelum menyimpan!');
+    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
+
+    if (!yakin) {
+        e.preventDefault(); 
+        alert('❌ Pengisian data dibatalkan.');
         return;
     }
 
-    if (confirm('Apakah Anda yakin ingin menyimpan perubahan data pengeluaran ini?')) {
-        alert('✅ Data pengeluaran berhasil diperbarui!');
-        // this.submit(); // Uncomment kalau backend sudah siap
-    }
-});
-
-// Tombol batal
-document.getElementById('btnBatal').addEventListener('click', function() {
-    if (confirm('Apakah Anda yakin ingin membatalkan perubahan data?')) {
-        alert('❌ Perubahan data dibatalkan.');
-        window.history.back();
-    }
+    alert('✅ Data barang berhasil disimpan!');
 });
 </script>
 

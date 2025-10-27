@@ -9,25 +9,25 @@
 @section('content')
 
 <div class="form-container">
-    <form action="# {{-- {{ route('tambah-data-barang.update', $barang_inventaris->id) }} --}}" method="POST">
+    <form action="{{ route('jenis-barang.update', $jenis_barang->id_barangInventaris) }}" method="POST">
         @csrf
         @method('PUT')
 
         <label for="nama_barang">Nama Barang*</label>
-        <input type="text" id="nama_barang" name="nama_barang" value="{{-- {{ $barang_inventaris->nama_barang }} --}}">
+        <input type="text" id="nama_barang" name="nama_barang" value="{{ $jenis_barang->nama_barang }}">
 
         <label for="type_barang">Type</label>
-        <input type="text" id="type_barang" name="type_barang" value="{{-- {{ $barang_inventaris->type_barang }} --}}">
+        <input type="text" id="type_barang" name="type_barang" value="{{ $jenis_barang->type_barang }}">
 
         <label for="jumlah_barang">Jumlah*</label>
-        <input type="text" id="jumlah_barang" name="jumlah_barang" value=" {{-- {{ $barang_inventaris)->jumlah_barang }} --}}">
+        <input type="text" id="jumlah_barang" name="jumlah_barang" value="{{ $jenis_barang->jumlah_barang }}">
 
         <label for="keterangan_barang">Keterangan</label>
-        <input type="text" id="keterangan_barang" name="keterangan_barang" value="{{-- {{ $barang_inventaris->keterangan_barang }} --}}">
+        <input type="text" id="keterangan_barang" name="keterangan_barang" value="{{ $jenis_barang->keterangan_barang }}">
 
         <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>
-            <a href="# {{-- {{ route('data-barang.index') }} --}}" class="btn btn-batal">Batal</a>
+            <a href="{{ route('jenis-barang.index') }}" class="btn btn-batal">Batal</a>
         </div>
 
     </form>
@@ -105,6 +105,5 @@ input[type="text"]:focus {
     background-color: #d73833;
 }
 </style>
-
 
 @endsection

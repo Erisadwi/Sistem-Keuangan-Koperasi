@@ -6,13 +6,11 @@
 
 @section('content')
 
-{{-- Komponen tombol tambah & unduh --}}
 <x-menu.tambah-unduh-cari
-    addUrl="#" {{-- nanti bisa diganti route('anggota.create') --}}
+    addUrl="{{ route('anggota.create') }}" 
     downloadFile="data-anggota.pdf" 
 />
 
-{{-- Wrapper konten tabel --}}
 <div class="content-inner">
   <div class="table-scroll-wrapper">
     <table class="table table-bordered table-striped data-anggota-table">
@@ -34,7 +32,6 @@
       </thead>
 
       <tbody>
-        {{-- Loop data anggota, aman walau belum ada controller/database --}}
         @forelse(($anggota ?? collect()) as $row)
           <tr class="text-center">
             <td>
@@ -44,17 +41,17 @@
                    alt="Foto">
             </td>
             <td>{{ $row->id_anggota ?? '-' }}</td>
-            <td>{{ $row->username ?? '-' }}</td>
-            <td>{{ $row->nama_lengkap ?? '-' }}</td>
+            <td>{{ $row->username_anggota ?? '-' }}</td>
+            <td>{{ $row->nama_anggota ?? '-' }}</td>
             <td>{{ $row->jenis_kelamin ?? '-' }}</td>
-            <td>{{ $row->alamat ?? '-' }}</td>
-            <td>{{ $row->kota ?? '-' }}</td>
+            <td>{{ $row->alamat_anggota ?? '-' }}</td>
+            <td>{{ $row->kota_anggota ?? '-' }}</td>
             <td>{{ $row->jabatan ?? '-' }}</td>
             <td>{{ $row->tanggal_registrasi ?? '-' }}</td>
             <td>{{ $row->tanggal_keluar ?? '-' }}</td>
-            <td>{{ $row->status_keanggotaan ?? '-' }}</td>
+            <td>{{ $row->status_anggota ?? '-' }}</td>
             <td class="actions">
-              <a href="{{ route('anggota.edit', $row->id ?? '#') }}" class="btn btn-sm btn-warning">✏️ Edit</a>
+              <a href="{{ route('anggota.edit', ['id' => $row->id_anggota]) }}" class="btn btn-sm btn-warning">✏️ Edit</a>
               <button class="btn btn-sm btn-danger">🗑️ Hapus</button>
             </td>
           </tr>

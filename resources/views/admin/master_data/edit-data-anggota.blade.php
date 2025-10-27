@@ -9,63 +9,58 @@
 @section('content')
 
 <div class="form-container">
-    <form id="formEditAnggota" action="#" method="POST" enctype="multipart/form-data">
-        @csrf
-        @method('PUT')
+    <form id="formEditAnggota" action="{{ route('admin.anggota.update', $anggota->id_anggota) }}" method="POST" enctype="multipart/form-data">
+    @csrf
+    @method('PUT')
 
         <div class="form-grid">
-            <div class="form-group">
-                <label for="nama_lengkap">Nama Lengkap</label>
-                <input type="text" id="nama_lengkap" name="nama_lengkap" 
-                       value="{{ old('nama_lengkap', $anggota->nama_lengkap ?? '') }}" required>
+             <div class="form-group">
+                <label for="nama_anggota">Nama Lengkap</label>
+                <input type="text" id="nama_anggota" name="nama_anggota" 
+                       value="{{ old('nama_anggota', $anggota->nama_anggota ?? '') }}" required>
             </div>
 
             <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" 
-                       value="{{ old('username', $anggota->username ?? '') }}" required>
+                <label for="username_anggota">Username</label>
+                <input type="text" id="username_anggota" name="username_anggota" 
+                       value="{{ old('username_anggota', $anggota->username_anggota ?? '') }}" required>
             </div>
 
             <div class="form-group">
                 <label for="jenis_kelamin">Jenis Kelamin</label>
                 <select id="jenis_kelamin" name="jenis_kelamin" required>
                     <option value="">-- Pilih Jenis Kelamin --</option>
-                    <option value="Laki-laki" {{ old('jenis_kelamin', $anggota->jenis_kelamin ?? '') == 'Laki-laki' ? 'selected' : '' }}>Laki-laki</option>
-                    <option value="Perempuan" {{ old('jenis_kelamin', $anggota->jenis_kelamin ?? '') == 'Perempuan' ? 'selected' : '' }}>Perempuan</option>
-                    <option value="Lainnya" {{ old('jenis_kelamin', $anggota->jenis_kelamin ?? '') == 'Lainnya' ? 'selected' : '' }}>Lainnya</option>
+                    <option value="L" {{ old('jenis_kelamin', $anggota->jenis_kelamin ?? '') == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                    <option value="P" {{ old('jenis_kelamin', $anggota->jenis_kelamin ?? '') == 'P' ? 'selected' : '' }}>Perempuan</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="tempat_lahir">Tempat Lahir</label>
                 <input type="text" id="tempat_lahir" name="tempat_lahir" 
-                       value="{{ old('tempat_lahir', $anggota->tempat_lahir ?? '') }}" required>
+                       value="{{ old('tempat_lahir', $anggota->tempat_lahir ?? '') }}" >
             </div>
 
             <div class="form-group">
                 <label for="tanggal_lahir">Tanggal Lahir</label>
                 <input type="date" id="tanggal_lahir" name="tanggal_lahir" 
-                       value="{{ old('tanggal_lahir', $anggota->tanggal_lahir ?? '') }}" required>
+                       value="{{ old('tanggal_lahir', $anggota->tanggal_lahir ?? '') }}">
             </div>
-
+        
             <div class="form-group">
-                <label for="status">Status Perkawinan</label>
-                <select id="status" name="status" required>
-                    <option value="">-- Pilih Status --</option>
-                    @foreach(['Belum Kawin','Kawin','Cerai Hidup','Cerai Mati','Lainnya'] as $s)
-                        <option value="{{ $s }}" {{ old('status', $anggota->status ?? '') == $s ? 'selected' : '' }}>{{ $s }}</option>
+                <label for="status_perkawinan">Status Perkawinan</label>
+                <select id="status_perkawinan" name="status_perkawinan">
+                    @foreach(['BELUM KAWIN','KAWIN','CERAI HIDUP','CERAI MATI','LAINNYA'] as $s)
+                        <option value="{{ $s }}" {{ old('status_perkawinan', $anggota->status_perkawinan ?? '') == $s ? 'selected' : '' }}>{{ $s }}</option>
                     @endforeach
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="departemen">Departemen</label>
-                <select id="departemen" name="departemen" required>
-                    @php
-                        $departemenList = ['Produksi BOPP','Produksi Slitting','WH','QA','HRD','GA','Purchasing','Accounting','Engineering','Lainnya'];
-                    @endphp
+                <select id="departemen" name="departemen">
                     <option value="">-- Pilih Departemen --</option>
-                    @foreach($departemenList as $d)
+                    @foreach(['PRODUKSI BOPP','PRODUKSI SLITTING','WH','QA','HRD','GA','PURCHASING','ACCOUNTING','ENGINEERING'] as $d)
                         <option value="{{ $d }}" {{ old('departemen', $anggota->departemen ?? '') == $d ? 'selected' : '' }}>{{ $d }}</option>
                     @endforeach
                 </select>
@@ -73,12 +68,8 @@
 
             <div class="form-group">
                 <label for="pekerjaan">Pekerjaan</label>
-                <select id="pekerjaan" name="pekerjaan" required>
-                    @php
-                        $pekerjaanList = ['TNI','PNS','Karyawan','Guru','Buruh','Mengurus Rumah Tangga','Lainnya'];
-                    @endphp
-                    <option value="">-- Pilih Pekerjaan --</option>
-                    @foreach($pekerjaanList as $p)
+                <select id="pekerjaan" name="pekerjaan">
+                    @foreach(['TNI','PNS','KARYAWAN SWASTA','GURU','BURUH','TANI','PEDAGANG','WIRASWASTA','MENGURUS RUMAH TANGGA','LAINNYA','PENSIUNAN','PENJAHIT'] as $p)
                         <option value="{{ $p }}" {{ old('pekerjaan', $anggota->pekerjaan ?? '') == $p ? 'selected' : '' }}>{{ $p }}</option>
                     @endforeach
                 </select>
@@ -86,71 +77,62 @@
 
             <div class="form-group">
                 <label for="agama">Agama</label>
-                <select id="agama" name="agama" required>
-                    @php
-                        $agamaList = ['Islam','Kristen Protestan','Katolik','Hindu','Buddha','Konghucu','Lainnya'];
-                    @endphp
-                    <option value="">-- Pilih Agama --</option>
-                    @foreach($agamaList as $a)
+                <select id="agama" name="agama">
+                    @foreach(['ISLAM','KATOLIK','PROTESTAN','HINDU','BUDHA','LAINNYA'] as $a)
                         <option value="{{ $a }}" {{ old('agama', $anggota->agama ?? '') == $a ? 'selected' : '' }}>{{ $a }}</option>
                     @endforeach
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="alamat">Alamat</label>
-                <input type="text" id="alamat" name="alamat" 
-                       value="{{ old('alamat', $anggota->alamat ?? '') }}" required>
+                <label for="alamat_anggota">Alamat</label>
+                <input type="text" id="alamat_anggota" name="alamat_anggota" 
+                       value="{{ old('alamat_anggota', $anggota->alamat_anggota ?? '') }}">
             </div>
 
             <div class="form-group">
-                <label for="kota">Kota</label>
-                <input type="text" id="kota" name="kota" 
-                       value="{{ old('kota', $anggota->kota ?? '') }}" required>
+                <label for="kota_anggota">Kota</label>
+                <input type="text" id="kota_anggota" name="kota_anggota" 
+                       value="{{ old('kota_anggota', $anggota->kota_anggota ?? '') }}">
             </div>
 
             <div class="form-group">
-                <label for="no_telp">No. Telp / HP</label>
-                <input type="text" id="no_telp" name="no_telp" 
-                       value="{{ old('no_telp', $anggota->no_telp ?? '') }}" required>
+                <label for="no_telepon">No Telepon</label>
+                <input type="text" id="no_telepon" name="no_telepon" 
+                       value="{{ old('no_telepon', $anggota->no_telepon ?? '') }}">
             </div>
 
             <div class="form-group">
-                <label for="tgl_registrasi">Tanggal Registrasi</label>
-                <input type="date" id="tgl_registrasi" name="tgl_registrasi" 
-                       value="{{ old('tgl_registrasi', $anggota->tgl_registrasi ?? '') }}" required>
+                <label for="tanggal_registrasi">Tanggal Registrasi</label>
+                <input type="date" id="tanggal_registrasi" name="tanggal_registrasi" 
+                       value="{{ old('tanggal_registrasi', $anggota->tanggal_registrasi ?? '') }}">
             </div>
 
             <div class="form-group">
                 <label for="jabatan">Jabatan</label>
-                <select id="jabatan" name="jabatan" required>
-                    @php
-                        $jabatanList = ['Ketua','Sekretaris','Bendahara','Anggota','Karyawan','Pengawas','Perusahaan','Lainnya'];
-                    @endphp
-                    <option value="">-- Pilih Jabatan --</option>
-                    @foreach($jabatanList as $j)
+                <select id="jabatan" name="jabatan">
+                    @foreach(['KETUA','SEKRETARIS','BENDAHARA','PENGAWAS','KARYAWAN','PERUSAHAAN'] as $j)
                         <option value="{{ $j }}" {{ old('jabatan', $anggota->jabatan ?? '') == $j ? 'selected' : '' }}>{{ $j }}</option>
                     @endforeach
                 </select>
             </div>
 
             <div class="form-group">
-                <label for="password">Password (Opsional)</label>
-                <input type="password" id="password" name="password" placeholder="Kosongkan jika tidak diubah">
+                <label for="password_anggota">Password (Opsional)</label>
+                <input type="password" id="password_anggota" name="password_anggota" placeholder="Kosongkan jika tidak diubah">
             </div>
 
             <div class="form-group">
-                <label for="tgl_keluar">Tanggal Keluar</label>
-                <input type="date" id="tgl_keluar" name="tgl_keluar" 
-                       value="{{ old('tgl_keluar', $anggota->tgl_keluar ?? '') }}">
+                <label for="tanggal_keluar">Tanggal Keluar</label>
+                <input type="date" id="tanggal_keluar" name="tanggal_keluar" 
+                       value="{{ old('tanggal_keluar', $anggota->tanggal_keluar ?? '') }}">
             </div>
 
             <div class="form-group">
-                <label for="aktif_keanggotaan">Aktif Keanggotaan</label>
-                <select id="aktif_keanggotaan" name="aktif_keanggotaan" required>
-                    <option value="">-- Pilih Status --</option>
-                    <option value="Aktif" {{ old('aktif_keanggotaan', $anggota->aktif_keanggotaan ?? '') == 'Aktif' ? 'selected' : '' }}>Aktif</option>
-                    <option value="Non Aktif" {{ old('aktif_keanggotaan', $anggota->aktif_keanggotaan ?? '') == 'Non Aktif' ? 'selected' : '' }}>Non Aktif</option>
+                <label for="status_anggota">Aktif Keanggota</label>
+                <select id="status_anggota" name="status_anggota" required>
+                    <option value="AKTIF" {{ old('status_anggota', $anggota->status_anggota ?? '') == 'AKTIF' ? 'selected' : '' }}>AKTIF</option>
+                    <option value="NON AKTIF" {{ old('status_anggota', $anggota->status_anggota ?? '') == 'NON AKTIF' ? 'selected' : '' }}>NON AKTIF</option>
                 </select>
             </div>
 
@@ -241,17 +223,26 @@ input[type="file"] {
 
 <script>
 document.getElementById('formEditAnggota').addEventListener('submit', function(e) {
-    e.preventDefault();
-    if (confirm('Apakah Anda yakin ingin menyimpan perubahan data ini?')) {
-        alert('✅ Data anggota berhasil diperbarui!');
-        this.submit();
-    }
-});
+    const wajib = ['nama_anggota','username_anggota','jenis_kelamin','status_anggota'];
 
-document.getElementById('btnBatal').addEventListener('click', function() {
-    if (confirm('Apakah Anda yakin ingin membatalkan perubahan?')) {
-        window.history.back();
+    for (let id of wajib) {
+        const el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
+            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            e.preventDefault(); 
+            return;
+        }
     }
+
+    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
+
+    if (!yakin) {
+        e.preventDefault(); 
+        alert('❌ Pengisian data dibatalkan.');
+        return;
+    }
+
+    alert('✅ Data berhasil disimpan!');
 });
 </script>
 

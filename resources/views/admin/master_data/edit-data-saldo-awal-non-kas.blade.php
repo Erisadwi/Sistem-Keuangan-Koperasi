@@ -129,36 +129,27 @@ select:focus {
 
 {{-- ======== SCRIPT POP-UP VALIDASI DAN KONFIRMASI ======== --}}
 <script>
-document.getElementById('saldoAwalNonKasForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Cegah form terkirim langsung
+document.getElementById('form-container').addEventListener('submit', function(e) {
+    const wajib = ['tanggal_transaksi', 'akun_transaksi', 'jumlah_transaksi'];
 
-    // Ambil nilai input
-    const tanggal = document.getElementById('tanggal_transaksi').value.trim();
-    const akun = document.getElementById('id_akun_transaksi').value.trim();
-    const keterangan = document.getElementById('ket_transaksi').value.trim();
-    const jumlah = document.getElementById('jumlah_transaksi').value.trim();
+    for (let id of wajib) {
+        const el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
+            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            e.preventDefault(); 
+            return;
+        }
+    }
 
-    // Validasi input kosong
-    if (!tanggal || !akun || !jumlah) {
-        alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
+
+    if (!yakin) {
+        e.preventDefault(); 
+        alert('❌ Pengisian data dibatalkan.');
         return;
     }
 
-    // Simulasi "berhasil disimpan"
-    const konfirmasi = confirm('Apakah data sudah benar dan ingin disimpan?');
-    if (konfirmasi) {
-        alert('✅ Data saldo awal Non kas berhasil disimpan!');
-        this.reset(); // Kosongkan form setelah disimpan
-    }
-});
-
-// Tombol batal
-document.getElementById('btnBatal').addEventListener('click', function() {
-    const batal = confirm('Apakah Anda yakin ingin membatalkan pengisian data?');
-    if (batal) {
-        alert('❌ Pengisian data dibatalkan.');
-        window.history.back(); // Kembali ke halaman sebelumnya
-    }
+    alert('✅ Data berhasil disimpan!');
 });
 </script>
 

@@ -126,28 +126,26 @@ select {
 
 <script>
 document.getElementById('formPengeluaranKas').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const wajib = ['tanggal_transaksi','jumlah_transaksi','id_jenisAkunTransaksi_sumber','id_jenisAkunTransaksi_tujuan'];
+    const wajib = ['tanggal_transaksi', 'jumlah_transaksi', 'akun_kredit', 'akun_debit'];
 
     for (let id of wajib) {
-        if (!document.getElementById(id).value.trim()) {
+        const el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
             alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            e.preventDefault(); 
             return;
         }
     }
 
-    if (confirm('Apakah data sudah benar dan ingin disimpan?')) {
-        alert('✅ Data Pengeluaran berhasil disimpan!');
-        this.reset();
-    }
-});
+    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
 
-document.getElementById('btnBatal').addEventListener('click', function() {
-    if (confirm('Apakah Anda yakin ingin membatalkan pengisian data?')) {
+    if (!yakin) {
+        e.preventDefault(); 
         alert('❌ Pengisian data dibatalkan.');
-        window.history.back();
+        return;
     }
+
+    alert('✅ Data barang berhasil disimpan!');
 });
 </script>
 

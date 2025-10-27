@@ -217,4 +217,29 @@ input:focus, select:focus {
     background: #555;
 }
 </style>
+
+<script>
+document.getElementById('form-container').addEventListener('submit', function(e) {
+    const wajib = [''];
+
+    for (let id of wajib) {
+        const el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
+            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            e.preventDefault(); 
+            return;
+        }
+    }
+
+    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
+
+    if (!yakin) {
+        e.preventDefault(); 
+        alert('❌ Pengisian data dibatalkan.');
+        return;
+    }
+
+    alert('✅ Data barang berhasil disimpan!');
+});
+</script>
 @endsection

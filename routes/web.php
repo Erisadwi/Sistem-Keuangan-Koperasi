@@ -2,9 +2,65 @@
 
 use Illuminate\Support\Facades\Route;
 
+use App\Http\Controllers\Admin\MasterData\UserController;
+use App\Http\Controllers\Admin\MasterData\JenisBarangController;
+use App\Http\Controllers\Admin\MasterData\JenisSimpananController;
+use App\Http\Controllers\Admin\MasterData\JenisAkunTransaksiController;
+use App\Http\Controllers\Admin\MasterData\LamaAngsuranController;
+use App\Http\Controllers\Admin\MasterData\AnggotaController;
+use App\Http\Controllers\Admin\setting\SukuBungaController;
+use App\Http\Controllers\Admin\setting\identitasKoperasiController;
+use App\Models\identitasKoperasi;
+
+Route::prefix('admin/master_data')->group(function () {
+    Route::get('jenis-simpanan', [JenisSimpananController::class, 'index'])->name('jenis-simpanan.index');
+    Route::get('jenis-simpanan/create', [JenisSimpananController::class, 'create'])->name('jenis-simpanan.create');
+    Route::post('jenis-simpanan', [JenisSimpananController::class, 'store'])->name('jenis-simpanan.store');
+    Route::get('jenis-simpanan/{id}/edit', [JenisSimpananController::class, 'edit'])->name('jenis-simpanan.edit');
+    Route::put('jenis-simpanan/{id}', [JenisSimpananController::class, 'update'])->name('jenis-simpanan.update');
+    Route::delete('jenis-simpanan/{id}', [JenisSimpananController::class, 'destroy'])->name('jenis-simpanan.destroy');
+
+    Route::get('jenis-barang', [JenisBarangController::class, 'index'])->name('jenis-barang.index');
+    Route::get('jenis-barang/create', [JenisBarangController::class, 'create'])->name('jenis-barang.create');
+    Route::post('jenis-barang', [JenisBarangController::class, 'store'])->name('jenis-barang.store');
+    Route::get('jenis-barang/{id}/edit', [JenisBarangController::class, 'edit'])->name('jenis-barang.edit');
+    Route::put('jenis-barang/{id}', [JenisBarangController::class, 'update'])->name('jenis-barang.update');
+    Route::delete('jenis-barang/{id}', [JenisBarangController::class, 'destroy'])->name('jenis-barang.destroy');
+
+    Route::get('jenis-akun-transaksi', [JenisAkunTransaksiController::class, 'index'])->name('jenis-akun-transaksi.index');
+    Route::get('jenis-akun-transaksi/create', [JenisAkunTransaksiController::class, 'create'])->name('jenis-akun-transaksi.create');
+    Route::post('jenis-akun-transaksi', [JenisAkunTransaksiController::class, 'store'])->name('jenis-akun-transaksi.store');
+    Route::get('jenis-akun-transaksi/{id}/edit', [JenisAkunTransaksiController::class, 'edit'])->name('jenis-akun-transaksi.edit');
+    Route::put('jenis-akun-transaksi/{id}', [JenisAkunTransaksiController::class, 'update'])->name('jenis-akun-transaksi.update');
+
+    Route::get('lama-angsuran', [LamaAngsuranController::class, 'index'])->name('lama-angsuran.index');
+    Route::get('lama-angsuran/create', [LamaAngsuranController::class, 'create'])->name('lama-angsuran.create');
+    Route::post('lama-angsuran', [LamaAngsuranController::class, 'store'])->name('lama-angsuran.store');
+    Route::get('lama-angsuran/{id}/edit', [LamaAngsuranController::class, 'edit'])->name('lama-angsuran.edit');
+    Route::put('lama-angsuran/{id}', [LamaAngsuranController::class, 'update'])->name('lama-angsuran.update');
+    Route::delete('lama-angsuran/{id}', [LamaAngsuranController::class, 'destroy'])->name('lama-angsuran.destroy');
+
+    Route::get('anggota', [AnggotaController::class, 'index'])->name('anggota.index');
+    Route::get('anggota/create', [AnggotaController::class, 'create'])->name('anggota.create');
+    Route::post('anggota', [AnggotaController::class, 'store'])->name('anggota.store');
+    Route::get('anggota/{id}/edit', [AnggotaController::class, 'edit'])->name('anggota.edit');
+    Route::put('anggota/{id}', [AnggotaController::class, 'update'])->name('anggota.update');
+    Route::delete('anggota/{id}', [AnggotaController::class, 'destroy'])->name('anggota.destroy');
+});
+
+Route::prefix('admin/setting')->group(function () {
+    Route::get('identitas-koperasi/edit', [identitasKoperasiController::class, 'edit'])->name('identitas-koperasi.edit');
+    Route::put('identitas-koperasi/update', [identitasKoperasiController::class, 'update'])->name('identitas-koperasi.update');
+
+    Route::get('suku-bunga/edit', [SukuBungaController::class, 'edit'])->name('suku-bunga.editSingle');
+    Route::put('suku-bunga/', [SukuBungaController::class, 'update'])->name('suku-bunga.updateSingle');
+});
+
 //Route::get('/', function () {
 //    return view('welcome');
 //});
+
+
 
 Route::get('/', function () {
     return view('login');
@@ -50,18 +106,6 @@ Route::get('/admin/laporan/laporan-SHU', function () {
     return view('admin.laporan.laporan-SHU');
 })->name('admin.laporan.laporan-SHU');
 
-Route::get('/admin/master_data/jenis-simpanan', function () {
-    return view('admin.master_data.jenis-simpanan');
-})->name('admin.master_data.jenis-simpanan');
-
-Route::get('/admin/master_data/data-barang', function () {
-    return view('admin.master_data.data-barang');
-})->name('admin.master_data.data-barang');
-
-Route::get('/admin/setting/identitas-koperasi', function () {
-    return view('admin.setting.identitas-koperasi');
-})->name('admin.setting.identitas-koperasi');
-
 Route::get('/admin/laporan/laporan-jatuh-tempo', function () {
     return view('admin.laporan.laporan-jatuh-tempo');
 })->name('admin.laporan.laporan-jatuh-tempo');
@@ -73,10 +117,6 @@ Route::get('/admin/laporan/laporan-buku-besar', function () {
 Route::get('/admin/laporan/laporan-neraca-saldo', function () {
     return view('admin.laporan.laporan-neraca-saldo');
 })->name('admin.laporan.laporan-neraca-saldo');
-
-Route::get('/admin/setting/suku-bunga', function () {
-    return view('admin.setting.suku-bunga'); 
-})->name('admin.setting.suku-bunga');
 
 Route::get('/admin/transaksi_non_kas/tambah-transaksi', function () {
     return view('admin.transaksi_non_kas.tambah-transaksi');
@@ -94,21 +134,6 @@ Route::get('/admin/transaksi_kas/edit-pemasukan', function () {
     return view('admin.transaksi_kas.edit-pemasukan');
 })->name('admin.transaksi_kas.edit-pemasukan');
 
-Route::get('/admin/master_data/tambah-data-barang', function () {
-    return view('admin.master_data.tambah-data-barang');
-})->name('admin.master_data.tambah-data-barang');
-
-Route::get('/admin/master_data/edit-data-barang', function () {
-    return view('admin.master_data.edit-data-barang');
-})->name('admin.master_data.edit-data-barang');
-
-Route::get('/admin/master_data/tambah-jenis-simpanan', function () {
-    return view('admin.master_data.tambah-jenis-simpanan');
-})->name('admin.master_data.tambah-jenis-simpanan');
-
-Route::get('/admin/master_data/edit-jenis-simpanan', function () {
-    return view('admin.master_data.edit-jenis-simpanan');
-})->name('admin.master_data.edit-jenis-simpanan');
 
 Route::get('/admin/master_data/saldo-awal-kas', function () {
     return view('admin.master_data.saldo-awal-kas');
@@ -129,30 +154,6 @@ Route::get('/admin/pinjaman/data-pengajuan', function () {
 Route::get('/admin/transaksi_kas/pemasukan', function () {
     return view('admin.transaksi_kas.pemasukan');
 })->name('admin.transaksi_kas.pemasukan');
-
-Route::get('/admin/master_data/jenis-akun-transaksi', function () {
-    return view('admin.master_data.jenis-akun-transaksi');
-})->name('admin.master_data.jenis-akun-transaksi');
-
-Route::get('/admin/master_data/tambah-data-jenis-akun-transaksi', function () {
-    return view('admin.master_data.tambah-data-jenis-akun-transaksi');
-})->name('admin.master_data.tambah-data-jenis-akun-transaksi');
-
-Route::get('/admin/master_data/edit-data-jenis-akun-transaksi', function () {
-    return view('admin.master_data.edit-data-jenis-akun-transaksi');
-})->name('admin.master_data.edit-data-jenis-akun-transaksi');
-
-Route::get('/admin/master_data/data-anggota', function () {
-    return view('admin.master_data.data-anggota');
-})->name('admin.master_data.data-anggota');
-
-Route::get('/admin/master_data/tambah-data-anggota', function () {
-    return view('admin.master_data.tambah-data-anggota');
-})->name('admin.master_data.tambah-data-anggota');
-
-Route::get('/admin/master_data/edit-data-anggota', function () {
-    return view('admin.master_data.edit-data-anggota');
-})->name('admin.master_data.edit-data-anggota');
 
 Route::get('/anggota/notifikasi', function () {
     return view('anggota.notifikasi');
@@ -229,18 +230,6 @@ Route::get('/admin/master_data/tambah-data-saldo-awal-non-kas', function () {
 Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
     return view('admin.master_data.edit-data-saldo-awal-non-kas');
 })->name('admin.master_data.edit-data-saldo-awal-non-kas');
-
-Route::get('/admin/master_data/lama-angsuran', function () {
-    return view('admin.master_data.lama-angsuran');
-})->name('admin.master_data.lama-angsuran');
-
-Route::get('/admin/master_data/tambah-data-lama-angsuran', function () {
-    return view('admin.master_data.tambah-data-lama-angsuran');
-})->name('admin.master_data.tambah-data-lama-angsuran');
-
-Route::get('/admin/master_data/edit-data-lama-angsuran', function () {
-    return view('admin.master_data.edit-data-lama-angsuran');
-})->name('admin.master_data.edit-data-lama-angsuran');
 
 Route::get('/admin/master_data/data-pengguna', function () {
     return view('admin.master_data.data-pengguna');

@@ -9,34 +9,39 @@
 @section('content')
 
 <div class="form-container">
-    <form id="saldoAwalKasForm" action="# {{--{{ route('saldo-awal-kas.store', $transaksi->id) }} --}}" method="POST">
+    <form id="saldoAwalKasForm"  action="{{ route('saldo-awal-kas.store') }}" method="POST">
         @csrf
 
         <div class="form-group">
             <label for="tanggal_transaksi">Tanggal</label>
-            <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi" required>
+            <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi"
+                   value="{{ old('tanggal_transaksi') }}" required>
         </div>
 
-        <div class="form-group">
-            <label for="id_akun_transaksi">Akun</label>
-            <select id="id_akun_transaksi" name="id_akun_transaksi" required>
-                <option value="">-- Pilih Akun --</option>
-                @if(isset($akunTransaksi))
+        <<div class="form-group">
+            <label for="id_jenisAkunTransaksi_tujuan">Akun</label>
+            <select id="id_jenisAkunTransaksi_tujuan" name="id_jenisAkunTransaksi_tujuan" required>
+                <option value="">-- Pilih Akun Kas --</option>
                 @foreach($akunTransaksi as $akun)
-                    <option value="{{ $akun->id }}">{{ $akun->nama_akun }}</option>
+                    <option value="{{ $akun->id_jenisAkunTransaksi }}"
+                        {{ old('id_jenisAkunTransaksi_tujuan') == $akun->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                        {{ $akun->nama_AkunTransaksi }}
+                    </option>
                 @endforeach
-                @endif
             </select>
         </div>
 
         <div class="form-group">
             <label for="ket_transaksi">Keterangan</label>
-            <input type="text" id="ket_transaksi" name="ket_transaksi" placeholder="Masukkan keterangan">
+            <input type="text" id="ket_transaksi" name="ket_transaksi"
+                   value="{{ old('ket_transaksi') }}" placeholder="Masukkan keterangan">
         </div>
 
         <div class="form-group">
             <label for="jumlah_transaksi">Saldo Awal</label>
-            <input type="number" id="jumlah_transaksi" name="jumlah_transaksi" required placeholder="Masukkan nominal saldo awal">
+            <input type="number" id="jumlah_transaksi" name="jumlah_transaksi"
+                   value="{{ old('jumlah_transaksi') }}" step="0.01" required
+                   placeholder="Masukkan nominal saldo awal">
         </div>
 
         <div class="form-buttons">
@@ -129,36 +134,27 @@ select:focus {
 
 {{-- ======== SCRIPT POP-UP VALIDASI DAN KONFIRMASI ======== --}}
 <script>
-document.getElementById('saldoAwalKasForm').addEventListener('submit', function(event) {
-    event.preventDefault(); // Cegah form terkirim langsung
+document.getElementById('saldoAwalKasForm').addEventListener('submit', function(e) {
+    const wajib = ['tanggal_transaksi', 'akun_transaksi', 'jumlah_transaksi'];
 
-    // Ambil nilai input
-    const tanggal = document.getElementById('tanggal_transaksi').value.trim();
-    const akun = document.getElementById('id_akun_transaksi').value.trim();
-    const keterangan = document.getElementById('ket_transaksi').value.trim();
-    const jumlah = document.getElementById('jumlah_transaksi').value.trim();
+    for (let id of wajib) {
+        const el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
+            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            e.preventDefault(); 
+            return;
+        }
+    }
 
-    // Validasi input kosong
-    if (!tanggal || !akun || !jumlah) {
-        alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
+
+    if (!yakin) {
+        e.preventDefault(); 
+        alert('❌ Pengisian data dibatalkan.');
         return;
     }
 
-    // Simulasi "berhasil disimpan"
-    const konfirmasi = confirm('Apakah data sudah benar dan ingin disimpan?');
-    if (konfirmasi) {
-        alert('✅ Data saldo awal kas berhasil disimpan!');
-        this.reset(); // Kosongkan form setelah disimpan
-    }
-});
-
-// Tombol batal
-document.getElementById('btnBatal').addEventListener('click', function() {
-    const batal = confirm('Apakah Anda yakin ingin membatalkan pengisian data?');
-    if (batal) {
-        alert('❌ Pengisian data dibatalkan.');
-        window.history.back(); // Kembali ke halaman sebelumnya
-    }
+    alert('✅ Data berhasil disimpan!');
 });
 </script>
 

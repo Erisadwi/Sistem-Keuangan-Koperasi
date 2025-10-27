@@ -9,29 +9,28 @@
 @section('content')
 
 <div class="form-container">
-    {{-- FORM EDIT --}}
-    <form id="editJenisAkunTransaksiForm" action="#" method="POST">
+    <form id="editJenisAkunTransaksiForm" action="{{ route('jenis-akun-transaksi.update', $jenis_akun_transaksi->id_jenisAkunTransaksi) }}" method="POST">
         @csrf
         @method('PUT')
 
         <div class="form-group">
             <label for="kode_aktiva">Kode Aktiva</label>
             <input type="text" id="kode_aktiva" name="kode_aktiva" 
-                value="{{ $jenisAkunTransaksi->kode_aktiva ?? '' }}" required>
+                value="{{ old('kode_aktiva', $jenis_akun_transaksi->kode_aktiva ?? '') }}" required>
         </div>
-
+          
         <div class="form-group">
-            <label for="jenis_transaksi">Jenis Transaksi</label>
-            <input type="text" id="jenis_transaksi" name="jenis_transaksi" 
-                value="{{ $jenisAkunTransaksi->jenis_transaksi ?? '' }}" required>
+            <label for="nama_AkunTransaksi">Jenis Transaksi</label>
+            <input type="text" id="nama_AkunTransaksi" name="nama_AkunTransaksi" 
+                value="{{ old('nama_AkunTransaksi', $jenis_akun_transaksi->nama_AkunTransaksi ?? '') }}" required>
         </div>
-
+      
         <div class="form-group">
-            <label for="akun">Akun</label>
-            <select id="akun" name="akun" required>
+            <label for="type_akun">Tipe Akun</label>
+            <select id="type_akun" name="type_akun" required>
                 <option value="">-- Pilih Akun --</option>
-                <option value="Aktiva" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->akun == 'Aktiva') ? 'selected' : '' }}>Aktiva</option>
-                <option value="Pasiva" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->akun == 'Pasiva') ? 'selected' : '' }}>Pasiva</option>
+                <option value="ACTIVA" {{ old('type_akun', $jenis_akun_transaksi->type_akun ?? '') == 'ACTIVA' ? 'selected' : '' }}>ACTIVA</option>
+                <option value="PASIVA" {{ old('type_akun', $jenis_akun_transaksi->type_akun ?? '') == 'PASIVA' ? 'selected' : '' }}>PASIVA</option>
             </select>
         </div>
 
@@ -39,44 +38,62 @@
             <label for="pemasukan">Pemasukan</label>
             <select id="pemasukan" name="pemasukan" required>
                 <option value="">-- Pilih --</option>
-                <option value="Y" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->pemasukan == 'Y') ? 'selected' : '' }}>Ya</option>
-                <option value="T" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->pemasukan == 'T') ? 'selected' : '' }}>Tidak</option>
+                <option value="Y" {{ old('pemasukan', $jenis_akun_transaksi->pemasukan ?? '') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('pemasukan', $jenis_akun_transaksi->pemasukan ?? '') == 'N' ? 'selected' : '' }}>Tidak</option>
             </select>
         </div>
 
+        <div class="form-group">
+            <label for="pemasukan">Penarikan</label>
+            <select id="pemasukan" name="pemasukan" required>
+                <option value="">-- Pilih --</option>
+                <option value="Y" {{ old('penarikan', $jenis_akun_transaksi->penarikan ?? '') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('penarikan', $jenis_akun_transaksi->penarikan ?? '') == 'N' ? 'selected' : '' }}>Tidak</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="pemasukan">Transfer</label>
+            <select id="pemasukan" name="pemasukan" required>
+                <option value="">-- Pilih --</option>
+                <option value="Y" {{ old('transfer', $jenis_akun_transaksi->transfer ?? '') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('transfer', $jenis_akun_transaksi->transfer ?? '') == 'N' ? 'selected' : '' }}>Tidak</option>
+            </select>
+        </div>
+       
         <div class="form-group">
             <label for="pengeluaran">Pengeluaran</label>
             <select id="pengeluaran" name="pengeluaran" required>
                 <option value="">-- Pilih --</option>
-                <option value="Y" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->pengeluaran == 'Y') ? 'selected' : '' }}>Ya</option>
-                <option value="T" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->pengeluaran == 'T') ? 'selected' : '' }}>Tidak</option>
+                <option value="Y" {{ old('pengeluaran', $jenis_akun_transaksi->pengeluaran ?? '') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('pengeluaran', $jenis_akun_transaksi->pengeluaran ?? '') == 'N' ? 'selected' : '' }}>Tidak</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="aktif">Aktif</label>
-            <select id="aktif" name="aktif" required>
+            <label for="status_akun">Aktif</label>
+            <select id="status_akun" name="status_akun" required>
                 <option value="">-- Pilih --</option>
-                <option value="Y" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->aktif == 'Y') ? 'selected' : '' }}>Ya</option>
-                <option value="T" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->aktif == 'T') ? 'selected' : '' }}>Tidak</option>
+                <option value="Y" {{ old('status_akun', $jenis_akun_transaksi->status_akun ?? '') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('status_akun', $jenis_akun_transaksi->status_akun ?? '') == 'N' ? 'selected' : '' }}>Tidak</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="laba_rugi">Laba Rugi</label>
-            <select id="laba_rugi" name="laba_rugi">
+            <label for="labarugi">Laba Rugi</label>
+            <select id="labarugi" name="labarugi">
                 <option value="">-- Pilih --</option>
-                <option value="Pendapatan" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->laba_rugi == 'Pendapatan') ? 'selected' : '' }}>Pendapatan</option>
-                <option value="Biaya" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->laba_rugi == 'Biaya') ? 'selected' : '' }}>Biaya</option>
+                <option value="PENDAPATAN" {{ old('labarugi', $jenis_akun_transaksi->labarugi ?? '') == 'PENDAPATAN' ? 'selected' : '' }}>Pendapatan</option>
+                <option value="BIAYA" {{ old('labarugi', $jenis_akun_transaksi->labarugi ?? '') == 'BIAYA' ? 'selected' : '' }}>Biaya</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="non_kas">Non Kas</label>
-            <select id="non_kas" name="non_kas">
+            <label for="nonkas">Non Kas</label>
+            <select id="nonkas" name="nonkas">
                 <option value="">-- Pilih --</option>
-                <option value="Y" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->non_kas == 'Y') ? 'selected' : '' }}>Ya</option>
-                <option value="T" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->non_kas == 'T') ? 'selected' : '' }}>Tidak</option>
+                <option value="Y" {{ old('nonkas', $jenis_akun_transaksi->nonkas ?? '') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('nonkas', $jenis_akun_transaksi->nonkas ?? '') == 'N' ? 'selected' : '' }}>Tidak</option>
             </select>
         </div>
 
@@ -84,8 +101,8 @@
             <label for="simpanan">Simpanan</label>
             <select id="simpanan" name="simpanan">
                 <option value="">-- Pilih --</option>
-                <option value="Y" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->simpanan == 'Y') ? 'selected' : '' }}>Ya</option>
-                <option value="T" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->simpanan == 'T') ? 'selected' : '' }}>Tidak</option>
+                <option value="Y" {{ old('simpanan', $jenis_akun_transaksi->simpanan ?? '') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('simpanan', $jenis_akun_transaksi->simpanan ?? '') == 'N' ? 'selected' : '' }}>Tidak</option>
             </select>
         </div>
 
@@ -93,17 +110,8 @@
             <label for="pinjaman">Pinjaman</label>
             <select id="pinjaman" name="pinjaman">
                 <option value="">-- Pilih --</option>
-                <option value="Y" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->pinjaman == 'Y') ? 'selected' : '' }}>Ya</option>
-                <option value="T" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->pinjaman == 'T') ? 'selected' : '' }}>Tidak</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label for="pinjam_dari">Pinjaman Dari</label>
-            <select id="pinjam_dari" name="pinjam_dari">
-                <option value="">-- Pilih --</option>
-                <option value="Y" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->pinjam_dari == 'Y') ? 'selected' : '' }}>Ya</option>
-                <option value="T" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->pinjam_dari == 'T') ? 'selected' : '' }}>Tidak</option>
+                <option value="Y" {{ old('pinjaman', $jenis_akun_transaksi->pinjaman ?? '') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('pinjaman', $jenis_akun_transaksi->pinjaman ?? '') == 'N' ? 'selected' : '' }}>Tidak</option>
             </select>
         </div>
 
@@ -111,8 +119,8 @@
             <label for="angsuran">Angsuran</label>
             <select id="angsuran" name="angsuran">
                 <option value="">-- Pilih --</option>
-                <option value="Y" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->angsuran == 'Y') ? 'selected' : '' }}>Ya</option>
-                <option value="T" {{ (isset($jenisAkunTransaksi) && $jenisAkunTransaksi->angsuran == 'T') ? 'selected' : '' }}>Tidak</option>
+                <option value="Y" {{ old('angsuran', $jenis_akun_transaksi->angsuran ?? '') == 'Y' ? 'selected' : '' }}>Ya</option>
+                <option value="N" {{ old('angsuran', $jenis_akun_transaksi->angsuran ?? '') == 'N' ? 'selected' : '' }}>Tidak</option>
             </select>
         </div>
 
@@ -176,35 +184,27 @@ select {
 
 {{-- ======== SCRIPT POP-UP VALIDASI DAN KONFIRMASI ======== --}}
 <script>
-document.getElementById('editJenisAkunTransaksiForm').addEventListener('submit', function(event) {
-    event.preventDefault();
+document.getElementById('editJenisAkunTransaksiForm').addEventListener('submit', function(e) {
+    const wajib = ['kode_aktiva', 'nama_AkunTransaksi', 'type_akun', 'pemasukan', 'pengeluaran', 'status_akun'];
 
-    const kode = document.getElementById('kode_aktiva').value.trim();
-    const jenis = document.getElementById('jenis_transaksi').value.trim();
-    const akun = document.getElementById('akun').value.trim();
-    const pemasukan = document.getElementById('pemasukan').value.trim();
-    const pengeluaran = document.getElementById('pengeluaran').value.trim();
-    const aktif = document.getElementById('aktif').value.trim();
+    for (let id of wajib) {
+        const el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
+            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            e.preventDefault(); 
+            return;
+        }
+    }
 
-    if (!kode || !jenis || !akun || !pemasukan || !pengeluaran || !aktif) {
-        alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
+
+    if (!yakin) {
+        e.preventDefault(); 
+        alert('❌ Pengisian data dibatalkan.');
         return;
     }
 
-    const konfirmasi = confirm('Apakah Anda yakin ingin memperbarui data ini?');
-    if (konfirmasi) {
-        alert('✅ Data Jenis Akun Transaksi berhasil diperbarui!');
-        this.reset(); // sementara reset, nanti ganti dengan redirect setelah tersambung DB
-    }
+    alert('✅ Data berhasil disimpan!');
 });
-
-document.getElementById('btnBatal').addEventListener('click', function() {
-    const batal = confirm('Apakah Anda yakin ingin membatalkan perubahan?');
-    if (batal) {
-        alert('❌ Perubahan dibatalkan.');
-        window.history.back();
-    }
-});
-</script>
 
 @endsection
