@@ -11,7 +11,7 @@ class User extends Authenticatable
 
     protected $table = 'users';
     protected $primaryKey = 'id_user';
-    public $incrementing = false; // karena bukan auto increment
+    public $incrementing = false;
     protected $keyType = 'string';
 
     protected $fillable = [
@@ -26,19 +26,29 @@ class User extends Authenticatable
         'status',
         'tanggal_masuk',
         'tanggal_keluar',
-        'id_role',       // foreign key ke tabel role
+        'id_role',
     ];
 
     protected $hidden = [
         'password',
     ];
 
-    /**
-     * Relasi ke tabel Role
-     */
+    protected $casts = [
+        'password' => 'hashed',
+    ];
+
     public function role()
     {
         return $this->belongsTo(Role::class, 'id_role', 'id_role');
     }
 
+    public function getAuthIdentifierName()
+    {
+        return 'username';
+    }
+
+    public function username()
+    {
+        return 'username';
+    }
 }

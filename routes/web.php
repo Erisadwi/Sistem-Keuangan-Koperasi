@@ -12,8 +12,17 @@ use App\Http\Controllers\Admin\MasterData\AnggotaController;
 use App\Http\Controllers\Admin\setting\SukuBungaController;
 use App\Http\Controllers\Admin\setting\identitasKoperasiController;
 use App\Models\identitasKoperasi;
+use App\Http\Controllers\AuthController;
 
-Route::prefix('admin/master_data')->group(function () {
+
+// ======================
+// AUTHENTICATION ROUTES
+// ======================
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.process');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::middleware(['auth.role:1'])->prefix('admin/master_data')->group(function () {
     Route::get('jenis-simpanan', [JenisSimpananController::class, 'index'])->name('jenis-simpanan.index');
     Route::get('jenis-simpanan/create', [JenisSimpananController::class, 'create'])->name('jenis-simpanan.create');
     Route::post('jenis-simpanan', [JenisSimpananController::class, 'store'])->name('jenis-simpanan.store');
@@ -57,13 +66,14 @@ Route::prefix('admin/master_data')->group(function () {
 
 });
 
-Route::prefix('admin/setting')->group(function () {
+Route::middleware(['auth.role:1'])->prefix('admin/setting')->group(function () {
     Route::get('identitas-koperasi/edit', [identitasKoperasiController::class, 'edit'])->name('identitas-koperasi.edit');
     Route::put('identitas-koperasi/update', [identitasKoperasiController::class, 'update'])->name('identitas-koperasi.update');
 
     Route::get('suku-bunga/edit', [SukuBungaController::class, 'edit'])->name('suku-bunga.editSingle');
     Route::put('suku-bunga/', [SukuBungaController::class, 'update'])->name('suku-bunga.updateSingle');
 });
+
 
 //Route::get('/', function () {
 //    return view('welcome');
