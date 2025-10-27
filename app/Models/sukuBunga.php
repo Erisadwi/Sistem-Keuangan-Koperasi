@@ -31,6 +31,7 @@ class sukuBunga extends Model
         'dana_pendidikan',
         'dana_sosial',
         'pajak_pph',
+        'id_lamaAngsuran'
     ];
 
     public $timestamps = false;
@@ -55,4 +56,10 @@ class sukuBunga extends Model
 
         return $prefix . $nextNumberPadded; 
         }
+
+        public function role()
+        {
+        return $this->belongsTo(LamaAngsuran::class, 'id_lamaAngsuran', 'id_lamaAngsuran');
+        }
+
 }

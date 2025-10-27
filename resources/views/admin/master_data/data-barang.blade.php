@@ -47,6 +47,11 @@
   </table>
 </div>
 
+    <div class="pagination-container">
+      <x-menu.pagination :data="$jenis_barang" />
+    </div>
+
+
 
 
 <style>
@@ -166,6 +171,14 @@
   .delete:hover {
     background-color: #f12f2f;
   }
+
+.pagination-container {
+  margin-top: auto;        
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 16px;
+}
 
   @media (max-width: 640px) {
     .barang-inventaris-table {

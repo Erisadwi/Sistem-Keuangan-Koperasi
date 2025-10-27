@@ -54,13 +54,10 @@
 <main class="main">
   <div class="title-1">@yield('title-1', 'Default Title')</div>
   <div class="container">
-    <div class="content-container">
       <div class="content-container2">
         @yield('content')
       </div>
-    </div>
     <div class="title-container">
-      <div class="title-container2"></div>
       <div class="sub-title">
         @yield('sub-title', 'Default sub title')
       </div>

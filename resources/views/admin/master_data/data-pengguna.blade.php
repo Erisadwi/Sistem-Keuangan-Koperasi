@@ -7,7 +7,7 @@
 @section('content')
 
 <x-menu.tambah-unduh 
-    addUrl="# {{-- {{ route('data-pengguna.create') }} --}}" 
+    addUrl="{{ route('data-user.create') }} " 
     downloadFile="data_pengguna.pdf" />
 
 <div class="laporan-data-pengguna-wrap">
@@ -29,27 +29,32 @@
         </tr>
       </thead>
       <tbody>
-        @forelse(($pengguna ?? collect()) as $idx => $row)
+        @forelse(($users ?? collect()) as $idx => $row)
           <tr>
-            <td>{{ $row->id_pengguna ?? '' }}</td>
+            <td>{{ $row->id_user ?? '' }}</td>
             <td>{{ $row->username ?? '' }}</td>
             <td>{{ $row->nama_lengkap ?? '' }}</td>
             <td>{{ $row->role->nama_role ?? '' }}</td>
             <td>{{ $row->jenis_kelamin ?? '' }}</td>
-            <td>{{ $row->alamat ?? '' }}</td>
-            <td>{{ $row->tgl_masuk ?? '' }}</td>
-            <td>{{ $row->tgl_keluar ?? '-' }}</td>
+            <td>{{ $row->alamat_user ?? '' }}</td>
+            <td>{{ $row->tanggal_masuk ?? '' }}</td>
+            <td>{{ $row->tanggal_keluar ?? '' }}</td>
             <td>
-              <span class="{{ $row->keanggotaan == 'Aktif' ? 'aktif' : 'nonaktif' }}">
-                {{ $row->keanggotaan ?? '' }}
+              <span class="{{ $row->status == 'Aktif' ? 'aktif' : 'nonaktif' }}">
+                {{ $row->status ?? '' }}
               </span>
             </td>
             <td>
-              @if(!empty($row->foto))
-                <img src="{{ asset('storage/foto/' . $row->foto) }}" alt="Foto" class="foto-user">
-              @else
-                <span>-</span>
-              @endif
+            @if ($row->foto_user)
+            <img src="{{ asset('storage/foto_user/' . $row->foto_user) }}" 
+              alt="Foto {{ $row->nama_lengkap }}" 
+              width="70" height="70" 
+              style="object-fit: cover; border-radius: 50%;">
+            @else
+              <img src="{{ asset('images/default-user.png') }}" 
+              alt="Default" 
+              width="70" height="70">
+            @endif
             </td>
             <td class="actions">
               <a href="{{ route('data-user.edit', ['id' => $row->id_user]) }}" class="edit">✏️ Edit</a>
@@ -68,7 +73,9 @@
       </tbody>
     </table>
   </div>
+  <x-menu.pagination :data="$users" />
 </div>
+  
 
 <style>
 :root {
@@ -90,11 +97,9 @@
   box-shadow: none;
 }
 
-/* Scroll aktif */
 .table-scroll-wrapper {
   overflow-x: auto;
-  overflow-y: auto;
-  max-height: 400px;
+  overflow-y: hidden; 
   width: 100%;
   padding: 30px 16px 10px 16px;
   box-sizing: border-box;

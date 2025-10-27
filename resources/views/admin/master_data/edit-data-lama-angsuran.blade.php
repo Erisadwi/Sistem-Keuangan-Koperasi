@@ -10,8 +10,9 @@
 @section('content')
 
 <div class="form-wrapper">
-    <form action="{{ route('lama-angsuran.store') }}" method="POST">
+    <form action="{{ route('lama-angsuran.update', $lama_angsuran->id_lamaAngsuran) }}" method="POST">
         @csrf
+        @method('PUT')
         
         <div class="form-group">
             <label for="lama_angsuran">Lama Angsuran (Bulan)*</label>
@@ -20,7 +21,7 @@
                 name="lama_angsuran" 
                 id="lama_angsuran" 
                 class="form-input" 
-                placeholder="Masukkan lama angsuran dalam bulan" value="{{ old('lama_angsuran') }}"
+                placeholder="Masukkan lama angsuran dalam bulan" value="{{ $lama_angsuran->lama_angsuran }}">
                 required>
         </div>
 
@@ -28,8 +29,8 @@
             <label for="status_angsuran">Keterangan Aktif*</label>
             <select name="status_angsuran" id="status_angsuran" class="form-select" required>
                 <option value="disabled selected">--- Pilih Keterangan Aktif ---</option>
-                <option value="Y">Y</option>
-                <option value="T">T</option>
+                <option value="Y" {{ old('status_angsuran', $lama_angsuran->status_angsuran) == 'Y' ? 'selected' : '' }}>Y</option>
+                <option value="T" {{ old('status_angsuran', $lama_angsuran->status_angsuran) == 'T' ? 'selected' : '' }}>T</option>
             </select>
         </div>
 
@@ -47,7 +48,6 @@
     width: 94%;
   }
 
-  /* Judul kecil form */
   .form-title {
     font-size: 18px;
     font-weight: 600;

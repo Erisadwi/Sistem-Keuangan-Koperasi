@@ -11,7 +11,6 @@
     downloadFile="jenis-akun-transaksi.pdf"
 />
 
-{{-- Wrapper konten tabel --}}
 <div class="content-inner">
   <div class="table-scroll-wrapper">
     <table class="table table-bordered table-striped jenis-akun-transaksi-table">
@@ -35,7 +34,6 @@
       </thead>
 
       <tbody>
-        {{-- Jika belum ada data, tampilkan pesan --}}
         @forelse(($jenis_akun_transaksi ?? collect()) as $row)
           <tr class="text-center">
             <td>{{ $row->kode_aktiva ?? '-' }}</td>
@@ -65,11 +63,11 @@
       </tbody>
     </table>
   </div>
+  <x-menu.pagination :data="$jenis_akun_transaksi" />
 </div>
 
 
 
-{{-- STYLE --}}
 <style>
 :root {
   --primary: #6ba1be;
@@ -80,31 +78,27 @@
   --text: #222;
 }
 
-/* Wrapper utama agar sejajar dengan tombol */
 .content-inner {
-  padding-left: 25px;   /* sejajar tombol */
+  padding-left: 25px;   
   padding-right: 25px;
-  margin-top: 30px;     /* jarak ideal antara tombol dan tabel */
+  margin-top: 30px;    
 }
 
-/* Scroll area tabel */
 .table-scroll-wrapper {
   overflow-x: auto;
   overflow-y: auto;
   max-height: 400px;
   width: 100%;
-  background: transparent;  /* hindari warna putih antar tabel dan scrollbar */
+  background: transparent; 
   border-radius: 4px;
-  padding-bottom: 8px;       /* jarak kecil agar scrollbar tidak nempel */
+  padding-bottom: 8px;       
 }
 
-/* Pastikan tabel tetap putih */
 .table-scroll-wrapper table {
   margin-bottom: 0;
   background: white;
 }
 
-/* Scrollbar styling */
 .table-scroll-wrapper::-webkit-scrollbar {
   height: 8px;
 }
@@ -116,10 +110,10 @@
   background: #f0f0f0;
 }
 
-/* Tabel */
+
 .jenis-akun-transaksi-table {
   width: 100%;
-  min-width: 1000px; /* supaya scroll horizontal aktif kalau kolom banyak */
+  min-width: 1000px; 
   border-collapse: collapse;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: 13px;
@@ -163,7 +157,7 @@
     font-style: italic;
   }
 
-/* Tombol Edit */
+
 .actions {
   display: flex;
   justify-content: center;
@@ -183,7 +177,7 @@
   background-color: #1da213;
 }
 
-/* Responsif */
+
 @media (max-width: 640px) {
   .jenis-akun-transaksi-table {
     font-size: 12px;

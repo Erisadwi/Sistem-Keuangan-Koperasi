@@ -8,10 +8,13 @@ use Illuminate\Http\Request;
 class LamaAngsuranController extends Controller
 {
 
-        public function index()
+        public function index(Request $request)
     {
         
-         $lama_angsuran = \App\Models\LamaAngsuran::all();
+        $lama_angsuran = \App\Models\LamaAngsuran::all();
+        $perPage = (int) $request->query('per_page', 10);
+        $query = LamaAngsuran::query();
+        $lama_angsuran = $query->orderBy('id_lamaAngsuran', 'asc')->paginate($perPage);
          return view('admin.master_data.lama-angsuran', compact('lama_angsuran'));
     }
     public function create()

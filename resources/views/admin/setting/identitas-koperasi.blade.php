@@ -7,7 +7,7 @@
 @section('content')
 
 <div class="form-container">
-    <form action="{{ route('identitas-koperasi.update', $identitas_koperasi ->id) }}" method="POST">
+    <form action="{{ route('identitas-koperasi.updateSingle') }}" method="POST">
         @csrf
         @method('PUT')
 
