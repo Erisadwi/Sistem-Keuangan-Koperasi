@@ -135,7 +135,7 @@ select:focus {
 {{-- ======== SCRIPT POP-UP VALIDASI DAN KONFIRMASI ======== --}}
 <script>
 document.getElementById('saldoAwalKasForm').addEventListener('submit', function(e) {
-    const wajib = ['tanggal_transaksi', 'akun_transaksi', 'jumlah_transaksi'];
+    const wajib = ['tanggal_transaksi', 'id_jenisAkunTransaksi_tujuan', 'jumlah_transaksi'];
 
     for (let id of wajib) {
         const el = document.getElementById(id);

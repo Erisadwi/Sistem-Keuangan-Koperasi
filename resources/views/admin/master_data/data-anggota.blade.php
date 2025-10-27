@@ -52,7 +52,7 @@
             <td>{{ $row->status_anggota ?? '-' }}</td>
             <td class="actions">
               <a href="{{ route('anggota.edit', ['id' => $row->id_anggota]) }}" class="btn btn-sm btn-warning">✏️ Edit</a>
-              <button class="btn btn-sm btn-danger">🗑️ Hapus</button>
+              <button class="btn btn-sm btn-danger">❌ Hapus</button>
             </td>
           </tr>
         @empty
@@ -171,9 +171,10 @@
 }
 
 .actions .btn-warning {
-  background-color: #f0ad4e;
+  background-color: #25E11B;
   color: white;
   border: none;
+  text-decoration: none;
 }
 
 .actions .btn-danger {
@@ -197,6 +198,8 @@
     padding: 8px;
   }
 }
+
+
 </style>
 
 @endsection

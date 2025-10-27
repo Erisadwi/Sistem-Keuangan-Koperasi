@@ -22,16 +22,16 @@
 
         <hr style="margin:20px 0; border:1px solid #ccc;">
 
-        {{-- Identitas Penyetor --}}
-        <h4 style="font-size:14px; margin-bottom:10px;">Identitas Penyetor</h4>
+        {{-- Identitas Penerima --}}
+        <h4 style="font-size:14px; margin-bottom:10px;">Identitas Penerima</h4>
 
-        <label for="nama_penyetor">Nama Penyetor</label>
-        <input type="text" id="nama_penyetor" name="nama_penyetor"
-            value="{{ $simpanan->nama_anggota ?? '' }}" required>
+        <label for="nama_penyetor">Nama Penerima</label>
+        <input type="text" id="nama_lengkap" name="nama_lengkap" placeholder="Masukkan nama penerima" 
+            value="{{ $simpanan->nama_lengkap ?? '' }}" required>
 
         <label for="nomor_identitas">Nomor Identitas</label>
-        <input type="text" id="nomor_identitas" name="nomor_identitas"
-            value="{{ $simpanan->nomor_identitas ?? '' }}" required>
+        <input type="text" id="id_user" name="id_user" placeholder="Masukkan nomor identitas" 
+            value="{{ $simpanan->id_user ?? '' }}" required>
 
         <label for="alamat">Alamat</label>
         <textarea id="alamat" name="alamat" rows="2" required
