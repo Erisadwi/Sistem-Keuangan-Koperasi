@@ -52,7 +52,7 @@
             <td>{{ $row->pinjaman ?? '-' }}</td>
             <td>{{ $row->angsuran ?? '-' }}</td>
             <td class="actions">
-              <a href="{{ route('jenis-akun-transaksi.edit', ['id' => $row->id_jenisAkunTransaksi]) }}" class="btn btn-sm btn-warning">✏️ Edit</a>
+              <a href="{{ route('jenis-akun-transaksi.edit', ['id' => $row->id_jenisAkunTransaksi]) }}" class="edit">✏️ Edit</a>
             </td>
           </tr>
         @empty

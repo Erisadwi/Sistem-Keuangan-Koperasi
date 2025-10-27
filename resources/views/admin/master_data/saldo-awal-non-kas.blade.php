@@ -47,9 +47,6 @@
   </table>
 </div>
 
-{{-- Komponen pagination --}}
-<x-menu.pagination />
-
 <style>
   :root {
     --outer-border: #838383;
@@ -61,8 +58,8 @@
   .saldo-awal-non-kas-table-wrap {
     border: 1.5px solid var(--outer-border);
     background: var(--bg);
-    width: 870px;
-    margin-left: 20px;
+    width: 100%;
+    margin-left: 0px;
     margin-top: 20px;
     padding: 0;
     overflow-x: auto;

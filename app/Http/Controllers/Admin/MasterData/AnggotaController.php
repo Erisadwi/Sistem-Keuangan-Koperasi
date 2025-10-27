@@ -60,13 +60,20 @@ class AnggotaController extends Controller
         return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil ditambahkan!');
     }
 
+
+    public function edit($id)
+{
+    $anggota = Anggota::findOrFail($id);
+    return view('admin.master_data.edit-data-anggota', compact('anggota'));
+}
+
 public function update(Request $request, $id)
 {
     $anggota = Anggota::findOrFail($id);
 
     $validated = $request->validate([
         'username_anggota'   => 'required|string',
-        'password_anggota'   => 'nullable|string', // ubah jadi nullable
+        'password_anggota'   => 'nullable|string', 
         'nama_anggota'       => 'required|string',
         'jenis_kelamin'      => 'required|in:L,P',
         'alamat_anggota'     => 'required|string',
@@ -85,7 +92,7 @@ public function update(Request $request, $id)
         'foto'               => 'nullable|image|mimes:jpg,jpeg,png|max:5120',
     ]);
 
-    // Upload foto baru (hapus lama jika ada)
+
     if ($request->hasFile('foto')) {
         if ($anggota->foto && Storage::disk('public')->exists(str_replace('storage/', '', $anggota->foto))) {
             Storage::disk('public')->delete(str_replace('storage/', '', $anggota->foto));
@@ -94,7 +101,6 @@ public function update(Request $request, $id)
         $validated['foto'] = 'storage/' . $request->file('foto')->store('uploads', 'public');
     }
 
-    // Kalau password diisi → hash
     if (!empty($validated['password_anggota'])) {
         $validated['password_anggota'] = Hash::make($validated['password_anggota']);
     } else {

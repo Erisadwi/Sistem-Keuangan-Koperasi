@@ -8,7 +8,7 @@
 
 {{-- Komponen --}}
 <x-menu.toolbar-simpanan
-    addUrl="#" {{-- nanti bisa diganti route('simpanan.create') --}}
+     addUrl="{{ route('simpanan.create') }}"
 />
 
 
@@ -31,18 +31,18 @@
       </thead>
 
       <tbody>
-        @forelse(($simpanan ?? collect()) as $index => $simpanan)
+        @forelse($simpanan ?? collect() as $index => $simpanan)
           <tr class="text-center">
             <td>{{ $index + 1 }}</td>
             <td>{{ $simpanan->kode_simpanan ?? '-' }}</td>
-            <td>{{ $simpanan->tanggal_transaksi ?? '-' }}</td>
+            <td>{{ $simpanan->tanggal_transaksi ? \Carbon\Carbon::parse($simpanan->tanggal_transaksi)->format('d-m-Y H:i') : '-' }}</td>
             <td>{{ $simpanan->id_anggota ?? '-' }}</td>
             <td>{{ $simpanan->nama_anggota ?? '-' }}</td>
             <td>{{ $simpanan->jenis_simpanan ?? '-' }}</td>
-            <td>{{ isset($simpanan->jumlah) ? number_format($simpanan->jumlah, 0, ',', '.') : '-' }}</td>
+            <td>{{ isset($simpanan->jumlah_simpanan) ? number_format($simpanan->jumlah_simpanan, 0, ',', '.') : '-' }}</td>
             <td>{{ $simpanan->user ?? '-' }}</td>
             <td>
-              <a href="{{ route('simpanan.cetak', $simpanan->id ?? '#') }}" 
+              <a href="{{ route('simpanan.cetak', $simpanan->id_simpanan ?? 0) }}" 
                  class="btn-nota">🧾 Nota</a>
             </td>
           </tr>
@@ -57,8 +57,6 @@
     </table>
   </div>
 </div>
-
-
 
 {{-- STYLE --}}
 <style>

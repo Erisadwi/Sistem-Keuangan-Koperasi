@@ -175,9 +175,10 @@
 }
 
 .actions .btn-warning {
-  background-color: #f0ad4e;
+  background-color: #25E11B;
   color: white;
   border: none;
+  text-decoration: none;
 }
 
 .actions .btn-danger {
@@ -201,6 +202,8 @@
     padding: 8px;
   }
 }
+
+
 </style>
 
 @endsection

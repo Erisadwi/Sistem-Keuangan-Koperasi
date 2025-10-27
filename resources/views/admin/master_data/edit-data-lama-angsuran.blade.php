@@ -1,17 +1,17 @@
 @extends('layouts.app-admin-add')
 
 @section('title', 'Lama Angsuran')  
-@section('back-url', url('admin/master_data/data-lama-angsuran')) 
+@section('back-url', url('admin/master_data/lama-angsuran'))
 @section('back-title', 'Master Data >')
 @section('title-1', 'Lama Angsuran')  
 @section('sub-title', 'Edit Data Lama Angsuran')  
 
+
 @section('content')
 
 <div class="form-wrapper">
-    <form action="{{ route('lama-angsuran.update', $lama_angsuran->id_lamaAngsuran) }}" method="POST">
+    <form action="{{ route('lama-angsuran.store') }}" method="POST">
         @csrf
-        @method('PUT')
         
         <div class="form-group">
             <label for="lama_angsuran">Lama Angsuran (Bulan)*</label>
@@ -20,15 +20,16 @@
                 name="lama_angsuran" 
                 id="lama_angsuran" 
                 class="form-input" 
-                value="{{ $lama_angsuran->lama_angsuran }}">
+                placeholder="Masukkan lama angsuran dalam bulan" value="{{ old('lama_angsuran') }}"
+                required>
         </div>
 
         <div class="form-group">
             <label for="status_angsuran">Keterangan Aktif*</label>
             <select name="status_angsuran" id="status_angsuran" class="form-select" required>
                 <option value="disabled selected">--- Pilih Keterangan Aktif ---</option>
-                <option value="Y" {{ old('status_angsuran', $lama_angsuran->status_angsuran) == 'Y' ? 'selected' : '' }}>Y</option>
-                <option value="T" {{ old('status_angsuran', $lama_angsuran->status_angsuran) == 'T' ? 'selected' : '' }}>T</option>
+                <option value="Y">Y</option>
+                <option value="T">T</option>
             </select>
         </div>
 
@@ -40,9 +41,8 @@
 </div>
 
 <style>
-  /* Wrapper utama form */
   .form-wrapper {
-    margin-top: 60px; /* jarak dari judul */
+    margin-top: 60px; 
     margin-left: 30px;
     width: 94%;
   }
@@ -57,7 +57,6 @@
     padding-bottom: 6px;
   }
 
-  /* Tiap grup input */
   .form-group {
     margin-bottom: 20px;
   }
@@ -70,7 +69,6 @@
     margin-bottom: 6px;
   }
 
-  /* Input dan Select */
   .form-input,
   .form-select {
     width: 100%;
@@ -78,7 +76,7 @@
     font-size: 14px;
     border: 1px solid #ccc;
     border-radius: 6px;
-    background-color: rgba(255,255,255,0.7); /* sedikit transparan agar tetap selaras dengan background */
+    background-color: rgba(255,255,255,0.7); 
     outline: none;
     transition: all 0.2s ease-in-out;
   }
@@ -159,6 +157,6 @@ document.getElementById('form-container').addEventListener('submit', function(e)
 
     alert('✅ Data berhasil disimpan!');
 });
-<script>
-  
+</script>
+
 @endsection

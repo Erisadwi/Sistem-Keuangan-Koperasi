@@ -9,37 +9,38 @@
 @section('content')
 
 <div class="form-container">
-    <form id="formSetoranTunai" action="#" method="POST" enctype="multipart/form-data">
+    <form id="formSetoranTunai" action="{{ route('simpanan.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         {{-- Bagian Tanggal Transaksi --}}
+
         <label for="tanggal_transaksi">Tanggal Transaksi</label>
         <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi" 
             value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}" required>
 
         <hr style="margin:20px 0; border:1px solid #ccc;">
 
-        {{-- Identitas Penyetor --}}
-        <h4 style="font-size:14px; margin-bottom:10px;">Identitas Penyetor</h4>
+        {{-- Identitas Penerima--}}
+        <h4 style="font-size:14px; margin-bottom:10px;">Identitas Penerima</h4>
 
-        <label for="nama_penyetor">Nama Penyetor</label>
-        <input type="text" id="nama_penyetor" name="nama_penyetor" placeholder="Masukkan nama penyetor" 
-            value="{{ $simpanan->nama_anggota ?? '' }}" required>
+        <label for="nama_penyetor">Nama Penerima</label>
+        <input type="text" id="nama_lengkap" name="nama_lengkap" placeholder="Masukkan nama penerima" 
+            value="{{ $simpanan->nama_lengkap ?? '' }}" required>
 
         <label for="nomor_identitas">Nomor Identitas</label>
-        <input type="text" id="nomor_identitas" name="nomor_identitas" placeholder="Masukkan nomor identitas" 
-            value="{{ $simpanan->nomor_identitas ?? '' }}" required>
+        <input type="text" id="id_user" name="id_user" placeholder="Masukkan nomor identitas" 
+            value="{{ $simpanan->id_user ?? '' }}" required>
 
         <label for="alamat">Alamat</label>
-        <textarea id="alamat" name="alamat" rows="2" placeholder="Masukkan alamat penyetor"
+        <textarea id="alamat" name="alamat" rows="2" placeholder="Masukkan alamat penerima"
             required
             style="width:100%; padding:8px; border:1px solid #565656; border-radius:5px;
                    font-size:13px; background-color:#fff; margin-bottom:15px;"></textarea>
 
         <hr style="margin:20px 0; border:1px solid #ccc;">
 
-        {{-- Identitas Penerima --}}
-        <h4 style="font-size:14px; margin-bottom:10px;">Identitas Penerima</h4>
+        {{-- Identitas Penyetor --}}
+        <h4 style="font-size:14px; margin-bottom:10px;">Identitas Penyetor</h4>
 
         <label for="nama_anggota">Nama Anggota</label>
         <input type="text" id="nama_anggota" name="nama_anggota" placeholder="Masukkan nama anggota"
