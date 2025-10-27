@@ -66,9 +66,15 @@ Route::middleware(['auth.role:1'])->prefix('admin/master_data')->group(function 
 
 });
 
+<<<<<<< HEAD
 Route::middleware(['auth.role:1'])->prefix('admin/setting')->group(function () {
     Route::get('identitas-koperasi/edit', [identitasKoperasiController::class, 'edit'])->name('identitas-koperasi.edit');
     Route::put('identitas-koperasi/update', [identitasKoperasiController::class, 'update'])->name('identitas-koperasi.update');
+=======
+Route::prefix('admin/setting')->group(function () {
+    Route::get('identitas-koperasi/edit', [identitasKoperasiController::class, 'edit'])->name('identitas-koperasi.editSingle');
+    Route::put('identitas-koperasi/', [identitasKoperasiController::class, 'update'])->name('identitas-koperasi.updateSingle');
+>>>>>>> 9ee3ff9013ac40e282c6194fcde7088160361fd6
 
     Route::get('suku-bunga/edit', [SukuBungaController::class, 'edit'])->name('suku-bunga.editSingle');
     Route::put('suku-bunga/', [SukuBungaController::class, 'update'])->name('suku-bunga.updateSingle');
@@ -250,17 +256,6 @@ Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
     return view('admin.master_data.edit-data-saldo-awal-non-kas');
 })->name('admin.master_data.edit-data-saldo-awal-non-kas');
 
-Route::get('/admin/master_data/data-pengguna', function () {
-    return view('admin.master_data.data-pengguna');
-})->name('admin.master_data.data-pengguna');
-
-Route::get('/admin/master_data/tambah-data-pengguna', function () {
-    return view('admin.master_data.tambah-data-pengguna');
-})->name('admin.master_data.tambah-data-pengguna');
-
-Route::get('/admin/master_data/edit-data-pengguna', function () {
-    return view('admin.master_data.edit-data-pengguna');
-})->name('admin.master_data.edit-data-pengguna');
 
 Route::get('/admin/simpanan/setoran-tunai', function () {
     return view('admin.simpanan.setoran-tunai');

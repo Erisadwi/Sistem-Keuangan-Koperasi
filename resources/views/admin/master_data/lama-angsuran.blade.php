@@ -43,6 +43,10 @@
   </table>
 </div>
 
+    <div class="pagination-container">
+      <x-menu.pagination :data="$lama_angsuran" />
+    </div>
+
 <style>
   :root {
     --border: #cccccc;
@@ -130,6 +134,14 @@
   .delete:hover {
     background-color: #d90b0b;
   }
+
+  .pagination-container {
+  margin-top: auto;        
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 16px;
+}
 
   @media (max-width: 640px) {
     .lama-angsuran-table {

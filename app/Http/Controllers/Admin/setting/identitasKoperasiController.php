@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 
 class identitasKoperasiController extends Controller
 {
-    public function editSingle()
+    public function edit()
     {
         $identitas_koperasi = identitasKoperasi::firstOrFail();
         return view('admin.setting.identitas-koperasi', compact('identitas_koperasi'));
@@ -17,22 +17,23 @@ class identitasKoperasiController extends Controller
     {   
             $validated = $request->validate([
             'nama_koperasi'        => 'required|string',
-            'npwp'                 => 'nullable|string',
-            'alamat_koperasi'      => 'required|numeric',
-            'telepon_koperasi'     => 'nullable|string',
-            'email_koperasi'       => 'nullable|string',
-            'fax_koperasi'         => 'nullable|string',
-            'kode_pos'             => 'nullable|string',
-            'website'              => 'nullable|string',
+            'npwp'                 => 'required|string',
+            'alamat_koperasi'      => 'required|string',
+            'telepon_koperasi'     => 'required|string',
+            'email_koperasi'       => 'required|string',
+            'fax_koperasi'         => 'required|string',
+            'kode_pos'             => 'required|string',
+            'website'              => 'required|string',
             'logo_koperasi'        => 'nullable|string',
-            'nama_pimpinan'        => 'nullable|string',
+            'nama_pimpinan'        => 'required|string',
         ]);
 
         $identitas_koperasi = identitasKoperasi::firstOrFail();
-        identitasKoperasi::update($validated);
+        $identitas_koperasi->update($validated);
+
 
         return redirect()
-                ->route('identitas-koperasi.edit')
+                ->route('identitas-koperasi.editSingle')
                 ->with('success', 'Data berhasil diperbarui');
     }
 

@@ -22,35 +22,25 @@
     </thead>
 
     <tbody>
-      @forelse(($pengajuan ?? collect()) as $idx => $row)
+      @forelse(($ajuan_pinjaman ?? collect()) as $idx => $row)
         <tr>
-          <td>
-            {{-- Jika paginate, nomor urut mengikuti halaman --}}
-            @if($pengajuan instanceof \Illuminate\Pagination\AbstractPaginator)
-              {{ ($pengajuan->currentPage() - 1) * $pengajuan->perPage() + $loop->iteration }}
-            @else
-              {{ $idx + 1 }}
-            @endif
-          </td>
-
-          <td>{{ $row->kode ?? '' }}</td>
-          <td>{{ $row->tanggal ?? '' }}</td>
-          <td>{{ $row->jenis ?? '' }}</td>
+          <td>{{ $row->tanggal_pengajuan ?? '' }}</td>
+          <td>{{ $row->jenis_ajuan ?? '' }}</td>
 
           <td>
-            @php $nom = $row->nominal ?? null; @endphp
+            @php $nom = $row->jumlah_ajuan ?? null; @endphp
             {{ $nom !== null ? number_format($nom, 0, ',', '.') : '' }}
           </td>
 
           <td>
             @php
-              $status = trim((string)($row->status ?? ''));
+              $status_ajuan = trim((string)($row->status_ajuan ?? ''));
               $cls = '';
-              if ($status === 'Disetujui') $cls = 'disetujui';
-              elseif ($status === 'Ditolak') $cls = 'ditolak';
-              elseif ($status === 'Menunggu konfirmasi') $cls = 'menunggu konfirmasi';
+              if ($status_ajuan === 'DISETUJUI') $cls = 'DISETUJUI';
+              elseif ($status_ajuan === 'DITOLAK') $cls = 'DITOLAK';
+              elseif ($status_ajuan === 'MENUNGGU KONFIRMASI') $cls = 'MENUNGGU KONFIRMASI';
             @endphp
-            <span class="badge {{ $cls }}">{{ $status }}</span>
+            <span class="badge {{ $cls }}">{{ $status_ajuan }}</span>
           </td>
 
       @empty
@@ -61,8 +51,6 @@
     </tbody>
   </table>
 </div>
-
-<x-menu.pagination/>
 
 <style>
   :root{
@@ -78,7 +66,7 @@
   border: 1.5px solid var(--outer-border);
   border-radius: 0;
   background: var(--bg);
-  width: 860px;          
+  width: 95%;          
   margin-left: 25px;     
   margin-top: 75px;       
   padding: 0;             
@@ -87,7 +75,7 @@
 }
 
 .pengajuan-table{
-  width: 870px;         
+  width: 100%;         
   border-collapse: collapse;
   table-layout: fixed;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
