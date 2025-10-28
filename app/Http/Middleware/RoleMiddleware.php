@@ -8,19 +8,19 @@ use Illuminate\Support\Facades\Auth;
 
 class RoleMiddleware
 {
-    public function handle(Request $request, Closure $next, $roleId)
+    public function handle(Request $request, Closure $next, ...$roles)
     {
         // Pastikan user sudah login
         if (!Auth::check()) {
             return redirect('login');
         }
 
-        // Cek role user berdasarkan role_id
-        if (Auth::user()->id_role != (string) $roleId) {
-            abort(403, 'Unauthorized');
+        // Jika id_role user tidak termasuk role yang diizinkan
+        if (!in_array(Auth::user()->id_role, $roles)) {
+            abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 
+        // Lanjutkan request
         return $next($request);
     }
 }
-
