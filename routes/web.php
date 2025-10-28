@@ -11,28 +11,16 @@ use App\Http\Controllers\Admin\MasterData\LamaAngsuranController;
 use App\Http\Controllers\Admin\MasterData\AnggotaController;
 use App\Http\Controllers\Admin\setting\SukuBungaController;
 use App\Http\Controllers\Admin\setting\identitasKoperasiController;
-use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login'])->name('login.process');
-Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::middleware(['auth', 'role:R04'])
-    ->get('/dashboard/simpanan', [DashboardController::class, 'simpanan'])
-    ->name('dashboard.simpanan');
+Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [LoginController::class, 'login'])->name('login.process');
+Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::middleware(['auth', 'role:R05'])
-    ->get('/dashboard/pinjaman', [DashboardController::class, 'pinjaman'])
-    ->name('dashboard.pinjaman');
+Route::middleware(['auth'])->get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
-Route::middleware(['auth', 'role:R06'])
-    ->get('/dashboard/akunting', [DashboardController::class, 'akunting'])
-    ->name('dashboard.akunting');
-
-Route::middleware(['auth', 'role:R07'])
-    ->get('/dashboard/pengurus', [DashboardController::class, 'pengurus'])
-    ->name('dashboard.pengurus');
 
 Route::prefix('admin/master_data')->group(function () {
     Route::get('jenis-simpanan', [JenisSimpananController::class, 'index'])->name('jenis-simpanan.index');
@@ -85,7 +73,6 @@ Route::prefix('admin/setting')->group(function () {
     Route::get('suku-bunga/edit', [SukuBungaController::class, 'edit'])->name('suku-bunga.editSingle');
     Route::put('suku-bunga/', [SukuBungaController::class, 'update'])->name('suku-bunga.updateSingle');
 });
-
 
 
 //Route::get('/', function () {
@@ -300,9 +287,6 @@ Route::get('/admin/simpanan/edit-penarikan-tunai', function () {
     return view('admin.simpanan.edit-penarikan-tunai');
 })->name('admin.simpanan.edit-penarikan-tunai');
 
-Route::get('/admin/beranda', function () {
-    return view('admin.beranda');
-})->name('admin.beranda');
 
 Route::get('/admin/pinjaman/data-pinjaman', function () {
     return view('admin.pinjaman.data-pinjaman');
@@ -335,3 +319,7 @@ Route::get('/anggota/tambah-data-pengajuan', function () {
 Route::get('/anggota/data-pengajuan-coba', function () {
     return view('anggota.data-pengajuan-coba');
 })->name('anggota.data-pengajuan-coba');
+
+Route::get('/admin/master_data/tambah-data-users', function () {
+    return view('admin.master_data.tambah-data-users');
+})->name('admin.master_data.tambah-data-users');
