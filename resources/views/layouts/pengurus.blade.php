@@ -11,20 +11,21 @@
         <x-menu.nav-top/>
     </header>
 
-      {{-- @php
-        $user = Auth::guard('user')->user();
-        @endphp --}}
+@php
+    $user = Auth::user(); 
+@endphp
+
 
     <div class="layout">
         <aside class="sidebar">
         <div class="profile-card">
         <div class="profile-left">
           <img src="{{ asset('images/profil-admin.jpg') }}"
-          alt="Foto {{-- {{ $user->nama_lengkap ?? 'Pengguna' }} --}}" class="avatar-70">
+          alt="Foto {{-- {{ $user->foto ?? '' }} --}}" class="avatar-70">
         </div>
         <div class="profile-right">
-          <div class="profile-name">Iqbal{{-- {{ $user->nama_lengkap ?? 'Nama Tidak Ditemukan' }} --}}</div>
-          <div class="profile-role">Admin Pengurus</div>
+          <div class="profile-name">{{ $user->nama_lengkap ?? 'Nama Tidak Ditemukan' }}</div>
+          <div class="profile-role">{{ $user->role->nama_role ?? 'Role Tidak Ditemukan' }}</div>
         </div>
         <a href="#{{-- {{ route('anggota.profil') }} --}}" class="btn-profil push-right" aria-label="Buka Profil">
           <img src="{{ asset('icons/arrow-profil.png') }}" alt="">

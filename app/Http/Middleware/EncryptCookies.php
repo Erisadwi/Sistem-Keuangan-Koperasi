@@ -18,3 +18,4 @@ class EncryptCookies
         return $next($request);
     }
 }
+
