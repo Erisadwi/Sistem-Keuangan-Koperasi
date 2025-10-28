@@ -6,10 +6,6 @@ use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    public function master()
-    {
-        return view('dashboard.master');
-    }
 
     public function simpanan()
     {

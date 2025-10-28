@@ -28,7 +28,7 @@ class AuthController extends Controller
             $request->session()->regenerate();
             $user = Auth::user();
 
-            if (!$user->role || !$user->role->nama_role) {
+            if (!$user->role || !$user->role->id_role) {
                 Auth::logout();
                 return back()->withErrors([
                     'login' => 'Akun tidak memiliki role yang valid. Hubungi admin.',
@@ -54,16 +54,19 @@ class AuthController extends Controller
     }
 
     // Redirect berdasarkan role
-    protected function redirectByRole($user)
-    {
-        $roleName = strtoupper($user->role->nama_role);
+protected function redirectByRole($user)
+{
+    $roleId = strtoupper($user->id_role);
 
-        return match ($roleName) {
-            'PINJAMAN'   => redirect()->route('dashboard.pinjaman'),
-            'SIMPANAN'   => redirect()->route('dashboard.simpanan'),
-            'ACCOUNTING' => redirect()->route('dashboard.akunting'),
-            'PENGURUS'   => redirect()->route('dashboard.pengurus'),
-            default      => redirect()->route('dashboard.master'),
-        };
-    }
+    return match ($roleId) {
+        'R05' => redirect()->route('dashboard.pinjaman'),
+        'R04' => redirect()->route('dashboard.simpanan'),
+        'R06' => redirect()->route('dashboard.akunting'),
+        'R07' => redirect()->route('dashboard.pengurus'),
+        default => redirect('/login')->withErrors([
+            'login' => 'Role tidak dikenali.',
+        ]),
+    };
 }
+}
+

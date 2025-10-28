@@ -11,7 +11,7 @@ class AuthMiddleware
     /**
      * Handle an incoming request.
      */
-    public function handle(Request $request, Closure $next, ...$roles)
+    public function handle(Request $request, Closure $next, ...$role)
     {
         // Jika user belum login
         if (!Auth::check()) {
@@ -21,9 +21,9 @@ class AuthMiddleware
         $user = Auth::user();
 
         // Jika ada parameter role di middleware
-        if (!empty($roles)) {
+        if (!empty($role)) {
             // Cek apakah role user sesuai dengan salah satu yang diizinkan
-            if (!in_array($user->id_role, $roles)) {
+            if (!in_array($user->id_role, $role)) {
                 return redirect()->route('dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
             }
         }

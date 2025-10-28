@@ -13,16 +13,16 @@ class CheckRole
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
-     * @param  mixed ...$roles
+     * @param  mixed ...$role
      * @return \Symfony\Component\HttpFoundation\Response
      */
-    public function handle(Request $request, Closure $next, ...$roles): Response
+    public function handle(Request $request, Closure $next, ...$role): Response
     {
         // Ambil user yang sedang login
         $user = $request->user();
 
         // Cek apakah user login dan punya salah satu role yang diizinkan
-        if (!$user || !in_array($user->nama_role, $roles)) {
+        if (!$user || !in_array($user->id_role, $role)) {
             abort(403, 'Anda tidak memiliki akses ke halaman ini.');
         }
 
