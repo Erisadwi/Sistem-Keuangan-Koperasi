@@ -18,7 +18,11 @@
 @endif
 
 <div class="form-container">
+<<<<<<< HEAD
+    <form id="formTambahUsers" action="{{--{{ route('users.store') }}--}}" method="POST" enctype="multipart/form-data">
+=======
         <form id="formTambahUsers" action="{{ route('data-user.store') }}" method="POST" enctype="multipart/form-data">
+>>>>>>> 30a5c2044096897f26a7282c7fee46925505f253
         @csrf
 
             <div class="form-group">
@@ -104,16 +108,15 @@
         </div>
         </form>
     </div>
-</div>
 
 <style>
 .form-container {
     background-color: transparent;
     padding: 20px;
     border-radius: 10px;
-    width: 98%;
-    margin-left:10px;
-    margin-top:40px;
+    width: 100%;
+    margin-left: 10px;
+    margin-top: 40px;
 }
 
 .form-group {
@@ -150,7 +153,7 @@ input[type="text"]:focus {
     display: flex;
     justify-content: flex-end; 
     gap: 10px;                  
-    margin-top: 110px; 
+    margin-top: 30px; 
 }
 
 .btn {
