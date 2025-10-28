@@ -11,9 +11,9 @@
         <x-menu.nav-top/>
     </header>
 
-      {{-- @php
+      @php
         $user = Auth::guard('user')->user();
-        @endphp --}}
+        @endphp 
 
     <div class="layout">
         <aside class="sidebar">

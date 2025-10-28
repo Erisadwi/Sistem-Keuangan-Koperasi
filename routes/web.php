@@ -11,7 +11,6 @@ use App\Http\Controllers\Admin\MasterData\LamaAngsuranController;
 use App\Http\Controllers\Admin\MasterData\AnggotaController;
 use App\Http\Controllers\Admin\setting\SukuBungaController;
 use App\Http\Controllers\Admin\setting\identitasKoperasiController;
-use App\Models\identitasKoperasi;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 
@@ -19,7 +18,23 @@ Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [AuthController::class, 'login'])->name('login.process');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::middleware(['auth.role:R07'])->prefix('admin/master_data')->group(function () {
+Route::middleware(['auth', 'role:R04'])
+    ->get('/dashboard/simpanan', [DashboardController::class, 'simpanan'])
+    ->name('dashboard.simpanan');
+
+Route::middleware(['auth', 'role:R05'])
+    ->get('/dashboard/pinjaman', [DashboardController::class, 'pinjaman'])
+    ->name('dashboard.pinjaman');
+
+Route::middleware(['auth', 'role:R06'])
+    ->get('/dashboard/akunting', [DashboardController::class, 'akunting'])
+    ->name('dashboard.akunting');
+
+Route::middleware(['auth', 'role:R07'])
+    ->get('/dashboard/pengurus', [DashboardController::class, 'pengurus'])
+    ->name('dashboard.pengurus');
+
+Route::prefix('admin/master_data')->group(function () {
     Route::get('jenis-simpanan', [JenisSimpananController::class, 'index'])->name('jenis-simpanan.index');
     Route::get('jenis-simpanan/create', [JenisSimpananController::class, 'create'])->name('jenis-simpanan.create');
     Route::post('jenis-simpanan', [JenisSimpananController::class, 'store'])->name('jenis-simpanan.store');
@@ -63,7 +78,7 @@ Route::middleware(['auth.role:R07'])->prefix('admin/master_data')->group(functio
 
 });
 
-Route::middleware(['auth.role:R07'])->prefix('admin/setting')->group(function () {
+Route::prefix('admin/setting')->group(function () {
     Route::get('identitas-koperasi/edit', [identitasKoperasiController::class, 'edit'])->name('identitas-koperasi.editSingle');
     Route::put('identitas-koperasi/', [identitasKoperasiController::class, 'update'])->name('identitas-koperasi.updateSingle');
 
@@ -71,11 +86,6 @@ Route::middleware(['auth.role:R07'])->prefix('admin/setting')->group(function ()
     Route::put('suku-bunga/', [SukuBungaController::class, 'update'])->name('suku-bunga.updateSingle');
 });
 
-Route::middleware(['auth', 'role:MASTER'])->get('/dashboard/master', [DashboardController::class, 'master'])->name('dashboard.master');
-Route::middleware(['auth', 'role:SIMPANAN'])->get('/dashboard/simpanan', [DashboardController::class, 'simpanan'])->name('dashboard.simpanan');
-Route::middleware(['auth', 'role:PINJAMAN'])->get('/dashboard/pinjaman', [DashboardController::class, 'pinjaman'])->name('dashboard.pinjaman');
-Route::middleware(['auth', 'role:ACCOUNTING'])->get('/dashboard/akunting', [DashboardController::class, 'akunting'])->name('dashboard.akunting');
-Route::middleware(['auth', 'role:PENGURUS'])->get('/dashboard/pengurus', [DashboardController::class, 'pengurus'])->name('dashboard.pengurus');
 
 
 //Route::get('/', function () {

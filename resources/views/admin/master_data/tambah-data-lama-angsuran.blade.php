@@ -47,7 +47,6 @@
     width: 94%;
   }
 
-  /* Judul kecil form */
   .form-title {
     font-size: 18px;
     font-weight: 600;
