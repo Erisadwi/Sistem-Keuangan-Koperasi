@@ -113,7 +113,7 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 25px;
-  max-width: 1000px;
+  width: 100%;
   margin: 0 auto;
 }
 
