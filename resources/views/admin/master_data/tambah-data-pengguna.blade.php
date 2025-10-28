@@ -9,7 +9,7 @@
 @section('content')
 
 <div class="form-container">
-        <form id="formTambahUsers" action="{{--{{ route('users.store') }}--}}" method="POST" enctype="multipart/form-data">
+    <form id="formTambahUsers" action="{{--{{ route('users.store') }}--}}" method="POST" enctype="multipart/form-data">
         @csrf
 
             <div class="form-group">
@@ -83,16 +83,15 @@
         </div>
         </form>
     </div>
-</div>
 
 <style>
 .form-container {
     background-color: transparent;
     padding: 20px;
     border-radius: 10px;
-    width: 98%;
-    margin-left:10px;
-    margin-top:40px;
+    width: 100%;
+    margin-left: 10px;
+    margin-top: 40px;
 }
 
 .form-group {
@@ -129,7 +128,7 @@ input[type="text"]:focus {
     display: flex;
     justify-content: flex-end; 
     gap: 10px;                  
-    margin-top: 110px; 
+    margin-top: 30px; 
 }
 
 .btn {
