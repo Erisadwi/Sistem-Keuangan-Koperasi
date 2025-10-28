@@ -13,16 +13,16 @@
         @csrf
 
         <label for="nama_barang">Nama Barang*</label>
-        <input type="text" id="nama_barang" name="nama_barang" value="{{ old('nama_barang') }}">
+        <input type="text" id="nama_barang" name="nama_barang" value="{{ old('nama_barang') }}" placeholder="Masukkan nama barang" required>
 
         <label for="type_barang">Type</label>
-        <input type="text" id="type_barang" name="type_barang" value="{{ old('type_barang') }}">
+        <input type="text" id="type_barang" name="type_barang" value="{{ old('type_barang') }}" placeholder="Masukkan type barang">
 
         <label for="jumlah_barang">Jumlah*</label>
         <input type="text" id="jumlah_barang" name="jumlah_barang" value=" {{ old('jumlah_barang') }}">
 
         <label for="keterangan_barang">Keterangan</label>
-        <input type="text" id="keterangan_barang" name="keterangan_barang" value="{{ old('keterangan_barang') }}">
+        <input type="text" id="keterangan_barang" name="keterangan_barang" value="{{ old('keterangan_barang') }}" placeholder="Masukkan keterangan barang">
         
 
         <div class="form-buttons">

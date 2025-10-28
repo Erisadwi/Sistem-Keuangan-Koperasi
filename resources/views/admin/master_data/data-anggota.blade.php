@@ -52,7 +52,11 @@
             <td>{{ $row->status_anggota ?? '-' }}</td>
             <td class="actions">
               <a href="{{ route('anggota.edit', ['id' => $row->id_anggota]) }}" class="btn btn-sm btn-warning">✏️ Edit</a>
-              <button class="btn btn-sm btn-danger">❌ Hapus</button>
+              <form action="{{ route('anggota.destroy', ['id' => $row->id_anggota]) }}" method="POST" class="form-hapus" style="display: inline;">
+              @csrf
+              @method('DELETE')
+              <button type="submit" class="btn btn-sm btn-danger">❌ Hapus</button>
+            </form
             </td>
           </tr>
         @empty

@@ -19,16 +19,25 @@
         </div>
       </div>
 
+     <!-- Pesan error -->
+      @if ($errors->has('login'))
+      <div class="error-message" style="color: red; margin-bottom: 10px;">
+         {{ $errors->first('login') }}
+      </div>
+      @endif
+
+
       <!-- Form Login -->
-      <form class="login-form">
+      <form class="login-form" action="{{ route('login.process') }}" method="POST">
+        @csrf
+
         <label for="username">Username</label>
-        <input type="text" id="username" class="input-username" placeholder="Masukkan username">
+        <input type="text" id="username" name="username" class="input-username" placeholder="Masukkan username" value="{{ old('username') }}" required>
 
         <label for="password">Password</label>
         <div class="password-wrapper">
-          <input type="password" id="password" class="input-password" placeholder="Masukkan password">
-          <button type="button" class="icon-eye" id="togglePassword">
-          </button>
+          <input type="password" id="password" name="password" class="input-password" placeholder="Masukkan password" required>
+          <button type="button" class="icon-eye" id="togglePassword"></button>
         </div>
 
         <button type="submit" class="button-login">Login</button>

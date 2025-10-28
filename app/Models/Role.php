@@ -19,4 +19,13 @@ class Role extends Model
         'nama_role',
         'keterangan',
     ];
+
+     // 🔗 Relasi ke model User
+    public function users()
+    {
+        return $this->hasMany(User::class, 'id_role', 'id_role');
+    }
+    
 }
+
+

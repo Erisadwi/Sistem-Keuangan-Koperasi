@@ -129,10 +129,9 @@ btn-profil:focus-visible {
 
 main.main {
     position: absolute;
-    top: 40px; /* Sesuaikan 56px ini jika tinggi nav-top Anda beda */
+    top: 40px; 
     left: 280px;
     width: calc(100vw - 280px - 24px);
-    max-width: 1300px;
     padding: 24px;
     box-sizing: border-box;
 }

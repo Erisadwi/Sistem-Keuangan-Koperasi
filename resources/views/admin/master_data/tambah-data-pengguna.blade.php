@@ -8,20 +8,45 @@
 
 @section('content')
 
+
+@if ($errors->any())
+    <ul>
+        @foreach ($errors->all() as $error)
+            <li style="color:red">{{ $error }}</li>
+        @endforeach
+    </ul>
+@endif
+
 <div class="form-container">
+<<<<<<< HEAD
     <form id="formTambahUsers" action="{{--{{ route('users.store') }}--}}" method="POST" enctype="multipart/form-data">
+=======
+        <form id="formTambahUsers" action="{{ route('data-user.store') }}" method="POST" enctype="multipart/form-data">
+>>>>>>> 30a5c2044096897f26a7282c7fee46925505f253
         @csrf
 
             <div class="form-group">
                 <label for="nama_lengkap">Nama Lengkap</label>
                 <input type="text" id="nama_lengkap" name="nama_lengkap" 
-                       value="{{ old('nama_lengkap') }}" required>
+                       value="{{ old('nama_lengkap') }}" placeholder="Masukkan nama lengkap" required>
             </div>
 
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" 
-                       value="{{ old('username') }}" required>
+                       value="{{ old('username') }}" placeholder="Masukkan username" required>
+            </div>
+            
+            <div class="form-group">
+                <label>Role</label>
+                <select name="id_role" required>
+                <option value="">-- Pilih Role --</option>
+                    @foreach($roles as $role)
+                <option value="{{ $role->id_role }}" {{ old('id_role') == $role->id_role ? 'selected' : '' }}>
+                    {{ $role->nama_role }}
+                </option>
+                    @endforeach
+                </select>
             </div>
 
             <div class="form-group">
@@ -36,13 +61,13 @@
             <div class="form-group">
                 <label for="alamat_user">Alamat</label>
                 <input type="text" id="alamat_user" name="alamat_user" 
-                       value="{{ old('alamat_anggota') }}">
+                       value="{{ old('alamat_user') }}" placeholder="Masukkan alamat" required>
             </div>
 
              <div class="form-group">
                 <label for="telepon">No Telepon/HP</label>
                 <input type="text" id="telepon" name="telepon" 
-                       value="{{ old('telepon') }}">
+                       value="{{ old('telepon') }}" placeholder="Masukkan nomor telepon" required>
             </div>
 
             <div class="form-group">
@@ -53,20 +78,20 @@
 
             <div class="form-group">
                 <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
+                <input type="password" id="password" name="password" placeholder="Masukkan password" required>
             </div>
 
             <div class="form-group">
                 <label for="tanggal_keluar">Tanggal Keluar</label>
                 <input type="date" id="tanggal_keluar" name="tanggal_keluar" 
-                       value="{{ old('tanggal_keluar', date('Y-m-d')) }}">
+                        value="{{ old('tanggal_keluar') }}">
             </div>
 
             <div class="form-group">
                 <label for="status">Status Keanggotaan</label>
                 <select id="status" name="status">
                     <option value="">-- Aktif --</option>
-                    @foreach(['Aktif','Non Aktif'] as $s)
+                    @foreach(['aktif','nonaktif'] as $s)
                         <option value="{{ $s }}" {{ old('status') == $s ? 'selected' : '' }}>{{ $s }}</option>
                     @endforeach
                 </select>
@@ -79,7 +104,7 @@
 
             <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>
-            <button type="button" id="btnBatal" class="btn btn-batal">Batal</button>
+            <a href="{{ route('data-user.index') }}" class="btn btn-batal">Batal</a>
         </div>
         </form>
     </div>

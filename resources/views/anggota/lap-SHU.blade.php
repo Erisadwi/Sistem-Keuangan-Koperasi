@@ -1,10 +1,5 @@
 @extends('layouts.laporan')
 
-@push('styles')
-  @vite('resources/css/laporan-SHU.css')
-@endpush
-
-
 @section('title', 'Laporan Sisa Hasil Usaha')  
 @section('title-1', 'Laporan')  
 @section('title-content', 'Laporan SHU Anggota')  
@@ -62,3 +57,91 @@
 </div>
 
 @endsection
+
+<style>
+  /* ====== SHU Table ====== */
+:root{
+  --outer-border: #838383;      
+  --head-dark:   #4a4a4a;       
+  --head-mid:    #9a9a9a;       
+  --line:        #7f7f7f;       
+  --grid:        #bdbdbd;      
+  --bg:          #ffffff;
+}
+
+.shu-table-wrap{
+  border: 1.5px solid var(--outer-border);
+  border-radius: 0px;
+  background: var(--bg);
+  width: 95%;
+  margin-left: 30px;
+  margin-top: 75px;
+}
+
+.shu-table{
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 12px;
+  color: #222;
+}
+
+.shu-table .head-title th{
+  background: var(--head-dark);
+  color: #fff;
+  text-align: center;
+  font-weight: 700;
+  padding: 10px 8px;
+  border-bottom: 1px solid var(--grid);
+}
+
+.shu-table .head-group th{
+  background: var(--head-mid);
+  color: #fff;
+  text-align: left;
+  font-weight: 600;
+  padding: 8px;
+  border-bottom: 1px solid var(--grid);
+}
+
+.shu-table .head-group .group-left{
+  border-right: 1.5px solid var(--line);
+}
+
+.shu-table td{
+  padding: 8px;
+  border-bottom: 1px solid var(--grid);
+  border-right: 1px solid var(--grid);
+  background: #fff;
+}
+
+.shu-table tbody td:last-child { 
+  border-right: 2px solid var(--grid);
+}
+
+.shu-table tbody tr td:nth-child(2){
+  border-right: 1.5px solid var(--line);
+}
+
+.shu-table td.label{ 
+  font-weight: 500; 
+}
+.shu-table td.value{ 
+  text-align: right; 
+  font-variant-numeric: tabular-nums; 
+}
+
+.shu-table td.value.negative{ 
+  color: #333;              
+}
+
+.shu-table tbody tr:last-child td{
+  border-bottom: 0;
+}
+
+@media (max-width: 640px){
+  .shu-table{ font-size: 13px; }
+  .shu-table td, .shu-table th{ padding: 10px; }
+}
+</style>

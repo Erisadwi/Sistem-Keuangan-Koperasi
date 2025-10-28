@@ -8,9 +8,13 @@ use Illuminate\Http\Request;
 class JenisBarangController extends Controller
 {
 
-        public function index()
+        public function index(Request $request)
     {
          $jenis_barang = \App\Models\JenisBarang::all();
+
+        $perPage = (int) $request->query('per_page', 10);
+        $query = JenisBarang::query();
+        $jenis_barang = $query->orderBy('id_barangInventaris', 'asc')->paginate($perPage);
          return view('admin.master_data.data-barang', compact('jenis_barang'));
     }
     public function create()

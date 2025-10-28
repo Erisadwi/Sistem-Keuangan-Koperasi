@@ -8,10 +8,13 @@ use Illuminate\Http\Request;
 class JenisAkunTransaksiController extends Controller
 {
 
-        public function index()
+        public function index(Request $request)
     {
-         $jenis_akun_transaksi = \App\Models\JenisAkunTransaksi::all();
-         return view('admin.master_data.jenis-akun-transaksi', compact('jenis_akun_transaksi'));
+        $jenis_akun_transaksi = \App\Models\JenisAkunTransaksi::all();
+        $perPage = (int) $request->query('per_page', 10);
+        $query = JenisAkunTransaksi::query();
+        $jenis_akun_transaksi = $query->orderBy('id_jenisAkunTransaksi', 'asc')->paginate($perPage);
+        return view('admin.master_data.jenis-akun-transaksi', compact('jenis_akun_transaksi'));
     }
     public function create()
     {

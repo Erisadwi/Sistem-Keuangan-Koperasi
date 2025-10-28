@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\MasterData\UserController;
+use App\Http\Controllers\Admin\MasterData\RoleController;
 use App\Http\Controllers\Admin\MasterData\JenisBarangController;
 use App\Http\Controllers\Admin\MasterData\JenisSimpananController;
 use App\Http\Controllers\Admin\MasterData\JenisAkunTransaksiController;
@@ -11,8 +12,14 @@ use App\Http\Controllers\Admin\MasterData\AnggotaController;
 use App\Http\Controllers\Admin\setting\SukuBungaController;
 use App\Http\Controllers\Admin\setting\identitasKoperasiController;
 use App\Models\identitasKoperasi;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DashboardController;
 
-Route::prefix('admin/master_data')->group(function () {
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
+Route::post('/login', [AuthController::class, 'login'])->name('login.process');
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::middleware(['auth.role:R07'])->prefix('admin/master_data')->group(function () {
     Route::get('jenis-simpanan', [JenisSimpananController::class, 'index'])->name('jenis-simpanan.index');
     Route::get('jenis-simpanan/create', [JenisSimpananController::class, 'create'])->name('jenis-simpanan.create');
     Route::post('jenis-simpanan', [JenisSimpananController::class, 'store'])->name('jenis-simpanan.store');
@@ -46,15 +53,30 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('anggota/{id}/edit', [AnggotaController::class, 'edit'])->name('anggota.edit');
     Route::put('anggota/{id}', [AnggotaController::class, 'update'])->name('anggota.update');
     Route::delete('anggota/{id}', [AnggotaController::class, 'destroy'])->name('anggota.destroy');
+
+    Route::get('users', [UserController::class, 'index'])->name('data-user.index');
+    Route::get('users/create', [UserController::class, 'create'])->name('data-user.create');
+    Route::post('users', [UserController::class, 'store'])->name('data-user.store');
+    Route::get('users/{id}/edit', [UserController::class, 'edit'])->name('data-user.edit');
+    Route::put('users/{id}', [UserController::class, 'update'])->name('data-user.update');
+    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('data-user.destroy');
+
 });
 
-Route::prefix('admin/setting')->group(function () {
-    Route::get('identitas-koperasi/edit', [identitasKoperasiController::class, 'edit'])->name('identitas-koperasi.edit');
-    Route::put('identitas-koperasi/update', [identitasKoperasiController::class, 'update'])->name('identitas-koperasi.update');
+Route::middleware(['auth.role:R07'])->prefix('admin/setting')->group(function () {
+    Route::get('identitas-koperasi/edit', [identitasKoperasiController::class, 'edit'])->name('identitas-koperasi.editSingle');
+    Route::put('identitas-koperasi/', [identitasKoperasiController::class, 'update'])->name('identitas-koperasi.updateSingle');
 
     Route::get('suku-bunga/edit', [SukuBungaController::class, 'edit'])->name('suku-bunga.editSingle');
     Route::put('suku-bunga/', [SukuBungaController::class, 'update'])->name('suku-bunga.updateSingle');
 });
+
+Route::middleware(['auth', 'role:MASTER'])->get('/dashboard/master', [DashboardController::class, 'master'])->name('dashboard.master');
+Route::middleware(['auth', 'role:SIMPANAN'])->get('/dashboard/simpanan', [DashboardController::class, 'simpanan'])->name('dashboard.simpanan');
+Route::middleware(['auth', 'role:PINJAMAN'])->get('/dashboard/pinjaman', [DashboardController::class, 'pinjaman'])->name('dashboard.pinjaman');
+Route::middleware(['auth', 'role:ACCOUNTING'])->get('/dashboard/akunting', [DashboardController::class, 'akunting'])->name('dashboard.akunting');
+Route::middleware(['auth', 'role:PENGURUS'])->get('/dashboard/pengurus', [DashboardController::class, 'pengurus'])->name('dashboard.pengurus');
+
 
 //Route::get('/', function () {
 //    return view('welcome');
@@ -231,17 +253,6 @@ Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
     return view('admin.master_data.edit-data-saldo-awal-non-kas');
 })->name('admin.master_data.edit-data-saldo-awal-non-kas');
 
-Route::get('/admin/master_data/data-pengguna', function () {
-    return view('admin.master_data.data-pengguna');
-})->name('admin.master_data.data-pengguna');
-
-Route::get('/admin/master_data/tambah-data-pengguna', function () {
-    return view('admin.master_data.tambah-data-pengguna');
-})->name('admin.master_data.tambah-data-pengguna');
-
-Route::get('/admin/master_data/edit-data-pengguna', function () {
-    return view('admin.master_data.edit-data-pengguna');
-})->name('admin.master_data.edit-data-pengguna');
 
 Route::get('/admin/simpanan/setoran-tunai', function () {
     return view('admin.simpanan.setoran-tunai');
