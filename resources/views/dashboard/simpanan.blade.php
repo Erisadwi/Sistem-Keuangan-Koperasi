@@ -1,4 +1,4 @@
-@extends('layouts.pengurus')
+@extends('layouts.simpanan')
 
 @section('content')
 <div class="dashboard-container">
