@@ -1,55 +1,42 @@
 @extends('layouts.app-admin-add')
 
-@section('title', 'Data Pengguna')  
+@section('title', 'Tambah Data Pengguna')
 @section('back-url', url('admin/master_data/data-pengguna'))
 @section('back-title', 'Master Data >')
-@section('title-1', 'Data Pengguna')  
-@section('sub-title', 'Tambah Data Pengguna')  
+@section('title-1', 'Data Pengguna')
+@section('sub-title', 'Tambah Data Pengguna')
 
 @section('content')
 
-
-@if ($errors->any())
-    <ul>
-        @foreach ($errors->all() as $error)
-            <li style="color:red">{{ $error }}</li>
-        @endforeach
-    </ul>
-@endif
-
 <div class="form-container">
-<<<<<<< HEAD
-    <form id="formTambahUsers" action="{{--{{ route('users.store') }}--}}" method="POST" enctype="multipart/form-data">
-=======
-        <form id="formTambahUsers" action="{{ route('data-user.store') }}" method="POST" enctype="multipart/form-data">
->>>>>>> 30a5c2044096897f26a7282c7fee46925505f253
+    <form id="formTambahPengguna" action="{{ route('anggota.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
+        <div class="form-grid">
             <div class="form-group">
                 <label for="nama_lengkap">Nama Lengkap</label>
                 <input type="text" id="nama_lengkap" name="nama_lengkap" 
-                       value="{{ old('nama_lengkap') }}" placeholder="Masukkan nama lengkap" required>
+                       value="{{ old('nama_lengkap') }}" required>
             </div>
 
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" 
-                       value="{{ old('username') }}" placeholder="Masukkan username" required>
-            </div>
-            
-            <div class="form-group">
-                <label>Role</label>
-                <select name="id_role" required>
-                <option value="">-- Pilih Role --</option>
-                    @foreach($roles as $role)
-                <option value="{{ $role->id_role }}" {{ old('id_role') == $role->id_role ? 'selected' : '' }}>
-                    {{ $role->nama_role }}
-                </option>
-                    @endforeach
-                </select>
+                       value="{{ old('username') }}" required>
             </div>
 
             <div class="form-group">
+            <label for="id_role">Role</label>
+            <select id="id_role" name="id_role" required>
+                <option value="">-- Pilih Role --</option>
+                <option value="1" {{ old('id_role') == '1' ? 'selected' : '' }}>Admin Simpanan</option>
+                <option value="2" {{ old('id_role') == '2' ? 'selected' : '' }}>Admin Pinjaman</option>
+                <option value="3" {{ old('id_role') == '3' ? 'selected' : '' }}>Admin Accounting</option>
+                <option value="4" {{ old('id_role') == '4' ? 'selected' : '' }}>Pengurus</option>
+            </select>
+        </div>
+
+           <div class="form-group">
                 <label for="jenis_kelamin">Jenis Kelamin</label>
                 <select id="jenis_kelamin" name="jenis_kelamin" required>
                     <option value="">-- Pilih Jenis Kelamin --</option>
@@ -61,13 +48,13 @@
             <div class="form-group">
                 <label for="alamat_user">Alamat</label>
                 <input type="text" id="alamat_user" name="alamat_user" 
-                       value="{{ old('alamat_user') }}" placeholder="Masukkan alamat" required>
+                       value="{{ old('alamat_user') }}">
             </div>
 
-             <div class="form-group">
-                <label for="telepon">No Telepon/HP</label>
+            <div class="form-group">
+                <label for="telepon">No Telepon</label>
                 <input type="text" id="telepon" name="telepon" 
-                       value="{{ old('telepon') }}" placeholder="Masukkan nomor telepon" required>
+                       value="{{ old('telepon') }}">
             </div>
 
             <div class="form-group">
@@ -76,7 +63,7 @@
                        value="{{ old('tanggal_masuk', date('Y-m-d')) }}">
             </div>
 
-            <div class="form-group">
+           <div class="form-group">
                 <label for="password">Password</label>
                 <input type="password" id="password" name="password" placeholder="Masukkan password" required>
             </div>
@@ -102,29 +89,35 @@
                 <input type="file" id="foto_user" name="foto_user" accept="image/*">
             </div>
 
-            <div class="form-buttons">
+        <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>
-            <a href="{{ route('data-user.index') }}" class="btn btn-batal">Batal</a>
+            <a href="{{ route('anggota.index') }}" class="btn btn-batal">Batal</a>
         </div>
-        </form>
-    </div>
+    </form>
+</div>
 
 <style>
 .form-container {
     background-color: transparent;
     padding: 20px;
     border-radius: 10px;
-    width: 100%;
+    width: 98%;
     margin-left: 10px;
     margin-top: 40px;
 }
 
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px 25px;
+}
+
 .form-group {
-    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
 }
 
 label {
-    display: block;
     font-size: 13px;
     font-weight: 600;
     margin-bottom: 5px;
@@ -144,54 +137,39 @@ input[type="file"] {
     background-color: #fff;
 }
 
-input[type="text"]:focus {
-    border-color: #565656;
-    outline: none;
-}
-
 .form-buttons {
     display: flex;
-    justify-content: flex-end; 
-    gap: 10px;                  
-    margin-top: 30px; 
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 30px;
 }
 
 .btn {
-    padding: 8px 0;             
+    padding: 8px 0;
     font-size: 16px;
     font-weight: bold;
     border-radius: 7px;
     border: none;
+    width: 120px;
     cursor: pointer;
+    color: #fff;
+    box-shadow: 0 4px 4px rgba(0,0,0,0.3);
+    text-align: center;
     text-decoration: none;
-    display: inline-block;
-    width: 120px;               
-    text-align: center;         
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.293);
 }
 
-.btn-simpan {
-    background-color: #25E11B; 
-    color: #fff;
-}
+.btn-simpan { background-color: #25E11B; }
+.btn-batal { background-color: #EA2828; }
 
-.btn-simpan:hover {
-    background-color: #45a049;
-}
-
-.btn-batal {
-    background-color: #EA2828; 
-    color: #fff;
-}
-
-.btn-batal:hover {
-    background-color: #d73833;
-}
+.btn-simpan:hover { background-color: #45a049; }
+.btn-batal:hover { background-color: #d73833; }
 </style>
 
+{{-- ========== VALIDASI JS ========== --}}
 <script>
-document.getElementById(''formDataPengguna').addEventListener('submit', function(e) {
-    const wajib = ['username'];
+document.getElementById('formDataAnggota').addEventListener('submit', function(e) {
+    const wajib = ['nama_anggota','username_anggota','password_anggota','jenis_kelamin','status_anggota','alamat_anggota','kota_anggota','tempat_lahir','tanggal_lahir','jabatan','tanggal_registrasi''status_anggota'];
+
 
     for (let id of wajib) {
         const el = document.getElementById(id);
@@ -212,6 +190,6 @@ document.getElementById(''formDataPengguna').addEventListener('submit', function
 
     alert('✅ Data berhasil disimpan!');
 });
-<script>
+</script>
 
 @endsection
