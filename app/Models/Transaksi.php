@@ -23,4 +23,19 @@ class Transaksi extends Model
         'tanggal_transaksi',
         'jumlah_transaksi',
     ];
+
+        public function sumber()
+    {
+        return $this->belongsTo(JenisAkunTransaksi::class, 'id_jenisAkunTransaksi_sumber', 'id_jenisAkunTransaksi');
+    }
+
+    public function tujuan()
+    {
+        return $this->belongsTo(JenisAkunTransaksi::class, 'id_jenisAkunTransaksi_tujuan', 'id_jenisAkunTransaksi');
+    }
+
+        public function data_user()
+    {
+        return $this->belongsTo(User::class, 'id_user', 'id_user');
+    }
 }
