@@ -34,7 +34,7 @@ class SaldoAwalKasController extends Controller
         $saldoAwal = SaldoAwalKas::create([
             'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
             'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
-            'id_user' => auth()->user()->id ?? null,
+            'id_user' => Auth::user()?->id,
             'type_transaksi' => 'SAK',
             'kode_transaksi' => 'SAK-' . uniqid(),
             'ket_transaksi' => $request->ket_transaksi,
