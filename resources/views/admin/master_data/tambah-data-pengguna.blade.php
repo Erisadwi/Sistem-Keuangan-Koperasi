@@ -1,6 +1,6 @@
 @extends('layouts.app-admin-add')
 
-@section('title', 'Tambah Data Pengguna')
+@section('title', 'Data Pengguna')
 @section('back-url', url('admin/master_data/data-pengguna'))
 @section('back-title', 'Master Data >')
 @section('title-1', 'Data Pengguna')
@@ -8,8 +8,16 @@
 
 @section('content')
 
+@if ($errors->any())
+    <ul>
+        @foreach ($errors->all() as $error)
+            <li style="color:red">{{ $error }}</li>
+        @endforeach
+    </ul>
+@endif
+
 <div class="form-container">
-    <form id="formTambahPengguna" action="{{ route('users.store') }}" method="POST" enctype="multipart/form-data">
+    <form id="formTambahPengguna" action="{{ route('data-user.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
         <div class="form-grid">
@@ -29,10 +37,11 @@
             <label for="id_role">Role</label>
             <select id="id_role" name="id_role" required>
                 <option value="">-- Pilih Role --</option>
-                <option value="1" {{ old('id_role') == '1' ? 'selected' : '' }}>Admin Simpanan</option>
-                <option value="2" {{ old('id_role') == '2' ? 'selected' : '' }}>Admin Pinjaman</option>
-                <option value="3" {{ old('id_role') == '3' ? 'selected' : '' }}>Admin Accounting</option>
-                <option value="4" {{ old('id_role') == '4' ? 'selected' : '' }}>Pengurus</option>
+                    @foreach ($roles as $role)
+                    <option value="{{ $role->id_role }}" {{ old('id_role') == $role->id_role ? 'selected' : '' }}>
+                        {{ $role->nama_role }}
+                    </option>
+                    @endforeach
             </select>
         </div>
 
@@ -167,8 +176,8 @@ input[type="file"] {
 
 
 <script>
-document.getElementById('formDataAnggota').addEventListener('submit', function(e) {
-    const wajib = ['nama_lengkap','username','id_role','jenis_kelamin','alamat_user','telepon','tanggal_masuk','password','tanggal_keluar','status''foto_user'];
+document.getElementById('formTambahPengguna').addEventListener('submit', function(e) {
+    const wajib = ['nama_lengkap','username','id_role','jenis_kelamin','alamat_user','telepon','tanggal_masuk','password','status'];
 
 
     for (let id of wajib) {
