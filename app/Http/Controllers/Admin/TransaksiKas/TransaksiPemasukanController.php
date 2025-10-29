@@ -25,6 +25,7 @@ class TransaksiPemasukanController extends Controller
 
     public function store(Request $request)
     {
+
         $request->validate([
             'id_jenisAkunTransaksi_sumber' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
             'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
@@ -35,14 +36,14 @@ class TransaksiPemasukanController extends Controller
         $TransaksiPemasukan = Transaksi::create([
             'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
             'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
-            'id_user' => Auth::user()?->id,
+            'id_user' => Auth::user()->id_user,
             'type_transaksi' => 'TKD',
             'kode_transaksi' => '',
             'ket_transaksi' => $request->ket_transaksi,
             'jumlah_transaksi' => $request->jumlah_transaksi,
         ]);
 
-        $TransaksiPemasukan->kode_transaksi = 'TKD-' . $TransaksiPemasukan->id_transaksi;
+        $TransaksiPemasukan->kode_transaksi = 'TKD' . $TransaksiPemasukan->id_transaksi;
         $TransaksiPemasukan->save();
 
         return redirect()->route('transaksi-pemasukan.index')->with('success', 'Data berhasil ditambahkan');

@@ -36,6 +36,6 @@ class Transaksi extends Model
 
         public function data_user()
     {
-        return $this->belongsTo(User::class, 'id_user', 'id');
+        return $this->belongsTo(User::class, 'id_user', 'id_user');
     }
 }
