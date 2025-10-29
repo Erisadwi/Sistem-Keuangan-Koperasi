@@ -168,9 +168,8 @@ input[type="file"] {
 
 {{-- ========== VALIDASI JS ========== --}}
 <script>
-document.getElementById('formDataAnggota').addEventListener('submit', function(e) {
-    const wajib = ['nama_anggota','username_anggota','password_anggota','jenis_kelamin','status_anggota','alamat_anggota','kota_anggota','tempat_lahir','tanggal_lahir','jabatan','tanggal_registrasi''status_anggota'];
-
+document.getElementById('formTambahUsers').addEventListener('submit', function(e) {
+    const wajib = ['nama_lengkap','username','id_role','jenis_kelamin','alamat_user','telepon','tanggal_masuk','password','tanggal_keluar','status''foto_user'];
 
     for (let id of wajib) {
         const el = document.getElementById(id);
