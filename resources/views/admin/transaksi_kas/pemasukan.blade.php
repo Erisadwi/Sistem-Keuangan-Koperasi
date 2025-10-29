@@ -5,7 +5,12 @@
 @section('sub-title', 'Pemasukan')  
 
 @section('content')
-<x-menu.tambah-edit-hapus/>
+<x-menu.tambah-edit-hapus
+    :tambah="route('transaksi-pemasukan.create')" 
+    :edit="'#'" 
+    :hapus="'#'"
+    id="action-buttons"
+/>
 <x-menu.toolbar-right :downloadFile="'data-pengajuan.pdf'"/>
 
 
@@ -26,13 +31,16 @@
     </thead>
 
     <tbody>
-      @forelse(($transaksi ?? collect()) as $idx => $row)
+      @forelse(($TransaksiPemasukan ?? collect()) as $idx => $row)
         <tr>
+          <td>
+        <input type="radio" name="selected_trx" value="{{ $row->id_transaksi }}">
+      </td>
           <td>{{ $row->id_transaksi ?? '' }}</td>
           <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y') ?? '' }}</td>
           <td>{{ $row->ket_transaksi ?? 'Nama tidak tersedia' }}</td>
-          <td>{{ $row->akun_debit ?? '' }}</td>
-          <td>{{ $row->akun_kredit ?? '' }}</td>
+          <td>{{ $row->id_jenisAkunTransaksi_tujuan ?? '' }}</td>
+          <td>{{ $row->id_jenisAkunTransaksi_sumber ?? '' }}</td>
           <td>{{ number_format($row->jumlah_transaksi ?? 0, 0, ',', '.') }}</td>
           <td>{{ $row->data_user->nama_lengkap ?? '' }}</td>
       @empty
@@ -177,6 +185,26 @@
     }
   }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const radios = document.querySelectorAll('input[name="selected_trx"]');
+    const editButton = document.querySelector('.df-edit');
+    const hapusButton = document.querySelector('.df-hapus');
+
+    radios.forEach(radio => {
+        radio.addEventListener('change', function () {
+            const id = this.value;
+
+            // Update href tombol Edit
+            editButton.href = `/admin/transaksi-pemasukan/${id}/edit`;
+
+            // Update form action tombol Hapus
+            hapusButton.closest('form').action = `/admin/transaksi-pemasukan/${id}`;
+        });
+    });
+});
+</script>
 
 
 @endsection

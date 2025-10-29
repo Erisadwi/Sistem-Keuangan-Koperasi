@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\MasterData\LamaAngsuranController;
 use App\Http\Controllers\Admin\MasterData\AnggotaController;
 use App\Http\Controllers\Admin\setting\SukuBungaController;
 use App\Http\Controllers\Admin\setting\identitasKoperasiController;
+use App\Http\Controllers\Admin\TransaksiKas\TransaksiPemasukanController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 
@@ -79,6 +80,9 @@ Route::prefix('admin/setting')->group(function () {
 
 Route::get('/test-logo', [App\Http\Controllers\Admin\setting\identitasKoperasiController::class, 'testBlob']);
 
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    Route::resource('transaksi-pemasukan', TransaksiPemasukanController::class);
+});
 
 //Route::get('/', function () {
 //    return view('welcome');
@@ -150,15 +154,6 @@ Route::get('/admin/transaksi_non_kas/edit-transaksi', function () {
     return view('admin.transaksi_non_kas.edit-transaksi');
 })->name('admin.transaksi_non_kas.edit-transaksi');
 
-Route::get('/admin/transaksi_kas/tambah-pemasukan', function () {
-    return view('admin.transaksi_kas.tambah-pemasukan');
-})->name('admin.transaksi_kas.tambah-pemasukan');
-
-Route::get('/admin/transaksi_kas/edit-pemasukan', function () {
-    return view('admin.transaksi_kas.edit-pemasukan');
-})->name('admin.transaksi_kas.edit-pemasukan');
-
-
 Route::get('/admin/master_data/saldo-awal-kas', function () {
     return view('admin.master_data.saldo-awal-kas');
 })->name('admin.master_data.saldo-awal-kas');
@@ -174,10 +169,6 @@ Route::get('/admin/master_data/edit-data-saldo-awal-kas', function () {
 Route::get('/admin/pinjaman/data-pengajuan', function () {
     return view('admin.pinjaman.data-pengajuan');
 })->name('admin.pinjaman.data-pengajuan');
-
-Route::get('/admin/transaksi_kas/pemasukan', function () {
-    return view('admin.transaksi_kas.pemasukan');
-})->name('admin.transaksi_kas.pemasukan');
 
 Route::get('/anggota/notifikasi', function () {
     return view('anggota.notifikasi');

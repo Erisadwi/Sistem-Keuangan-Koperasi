@@ -1,35 +1,42 @@
 <div class="btn-group-container">
-  <a href="{{ $tambah ?? '#' }}" class="df-btn df-tambah">
-    <span class="df-ic" aria-hidden="true">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-        <path d="M12 5v14m-7-7h14" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-    </span>
-    Tambah
-  </a>
+    @if(isset($tambah))
+    <a href="{{ $tambah }}" class="df-btn df-tambah">
+        <span class="df-ic" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path d="M12 5v14m-7-7h14" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+        </span>
+        Tambah
+    </a>
+    @endif
 
-  <a href="{{ $edit ?? '#' }}" class="df-btn df-edit">
-    <span class="df-ic" aria-hidden="true">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-        <path d="M15.232 5.232l3.536 3.536M4 20h4l10.293-10.293a1 1 0 000-1.414l-2.586-2.586a1 1 0 00-1.414 0L4 16v4z" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </span>
-    Edit
-  </a>
+    @if(isset($edit))
+    <a href="{{ $edit }}" class="df-btn df-edit">
+        <span class="df-ic" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                <path d="M15.232 5.232l3.536 3.536M4 20h4l10.293-10.293a1 1 0 000-1.414l-2.586-2.586a1 1 0 00-1.414 0L4 16v4z" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+        </span>
+        Edit
+    </a>
+    @endif
 
-  <form action="{{ $hapus ?? '#' }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus data ini?')" style="display:inline;">
-    @csrf
-    @method('DELETE')
-    <button type="submit" class="df-btn df-hapus">
-      <span class="df-ic" aria-hidden="true">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-          <path d="M6 7h12M10 11v6m4-6v6M5 7l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-      </span>
-      Hapus
-    </button>
-  </form>
+    @if(isset($hapus))
+    <form action="{{ $hapus }}" method="POST" onsubmit="return confirm('Anda yakin ingin menghapus data ini?')" style="display:inline;">
+        @csrf
+        @method('DELETE')
+        <button type="submit" class="df-btn df-hapus">
+            <span class="df-ic" aria-hidden="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+                    <path d="M6 7h12M10 11v6m4-6v6M5 7l1 12a2 2 0 002 2h8a2 2 0 002-2l1-12M9 7V5a2 2 0 012-2h2a2 2 0 012 2v2" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </span>
+            Hapus
+        </button>
+    </form>
+    @endif
 </div>
+
 
 <style>
 .btn-group-container {
