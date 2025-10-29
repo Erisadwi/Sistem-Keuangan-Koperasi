@@ -113,14 +113,14 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 25px;
-  max-width: 1000px;
+  max-width: 100%;
   margin: 0 auto;
 }
 
 /* CARD */
 .card {
   height: auto;
-  max-width: 320px;
+  max-width: 350px;
   min-width: 280px;
   display: flex;
   flex-direction: column;
