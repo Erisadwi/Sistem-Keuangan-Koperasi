@@ -120,7 +120,7 @@
 /* CARD */
 .card {
   height: auto;
-  max-width: 320px;
+  max-width: 350px;
   min-width: 280px;
   display: flex;
   flex-direction: column;

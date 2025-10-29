@@ -39,7 +39,14 @@
         <input type="url" id="website" name="website" value="{{ $identitas_koperasi->website }}">
 
         <label for="logo">Logo</label>
-        <input type="file" id="logo" name="logo_koperasi" accept="image/*">
+        <br>
+@if($identitas_koperasi && $identitas_koperasi->logo_koperasi)
+    <img src="{{ route('identitas.logo', ['nama_koperasi' => $identitas_koperasi->nama_koperasi]) }}" 
+         alt="Logo Koperasi" 
+         style="width:100px; height:auto; display:block; margin-bottom:10px;">
+@endif
+<input type="file" id="logo" name="logo_koperasi">
+
 
         <button type="submit">Update</button>
     </form>
