@@ -32,7 +32,7 @@
       </thead>
 
       <tbody>
-        @forelse(($anggota ?? collect()) as $row)
+        @forelse(($anggota ?? collect()) as $idx => $row)
           <tr class="text-center">
             <td>
               <img src="{{ asset($row->foto ?? 'images/default-user.png') }}" 
@@ -71,7 +71,9 @@
   </div>
 </div>
 
-<x-menu.pagination />
+    <div class="pagination-container">
+      <x-menu.pagination :data="$anggota" />
+    </div>
 
 {{-- STYLE --}}
 <style>

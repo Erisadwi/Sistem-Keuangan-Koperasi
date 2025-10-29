@@ -10,9 +10,12 @@ use Illuminate\Support\Facades\Storage;
 
 class AnggotaController extends Controller
 {
-    public function index()
-    {
-        $anggota = Anggota::all();
+    public function index(Request $request)
+    {   
+        $anggota = \App\Models\Anggota::all();
+        $perPage = (int) $request->query('per_page', 10);
+        $query = Anggota::query();
+        $anggota = $query->orderBy('id_anggota', 'asc')->paginate($perPage);
         return view('admin.master_data.data-anggota', compact('anggota'));
     }
 
