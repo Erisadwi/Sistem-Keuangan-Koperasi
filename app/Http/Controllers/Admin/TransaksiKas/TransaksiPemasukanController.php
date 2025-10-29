@@ -12,7 +12,7 @@ class TransaksiPemasukanController extends Controller
 {
     public function index()
     {
-        $TransaksiPemasukan = Transaksi::with(['sumber', 'tujuan'])
+        $TransaksiPemasukan = Transaksi::with(['sumber', 'tujuan', 'data_user'])
         ->where('type_transaksi', 'TKD')
         ->get();
         return view('admin.transaksi_kas.pemasukan', compact('TransaksiPemasukan'));

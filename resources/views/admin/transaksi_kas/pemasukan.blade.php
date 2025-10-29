@@ -33,9 +33,7 @@
     <tbody>
       @forelse(($TransaksiPemasukan ?? collect()) as $idx => $row)
         <tr>
-          <td>
-        <input type="radio" name="selected_trx" value="{{ $row->id_transaksi }}">
-      </td>
+          <input type="hidden" name="selected_trx" value="{{ $row->id_transaksi }}">
           <td>{{ $row->id_transaksi ?? '' }}</td>
           <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y') ?? '' }}</td>
           <td>{{ $row->ket_transaksi ?? 'Nama tidak tersedia' }}</td>
@@ -82,6 +80,7 @@
     table-layout: fixed;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     font-size: 13px;
+    text-align: center;
     color: #222;
   }
 
@@ -192,17 +191,13 @@ document.addEventListener('DOMContentLoaded', function () {
     const editButton = document.querySelector('.df-edit');
     const hapusButton = document.querySelector('.df-hapus');
 
-    radios.forEach(radio => {
-        radio.addEventListener('change', function () {
-            const id = this.value;
-
-            // Update href tombol Edit
-            editButton.href = `/admin/transaksi-pemasukan/${id}/edit`;
-
-            // Update form action tombol Hapus
-            hapusButton.closest('form').action = `/admin/transaksi-pemasukan/${id}`;
-        });
+document.querySelectorAll('.selectable-row').forEach(row => {
+    row.addEventListener('click', function() {
+        document.querySelector('input[name="selected_trx"]').value = this.dataset.id;
+        document.querySelectorAll('.selectable-row').forEach(r => r.classList.remove('bg-blue-200'));
+        this.classList.add('bg-blue-200');
     });
+});
 });
 </script>
 
