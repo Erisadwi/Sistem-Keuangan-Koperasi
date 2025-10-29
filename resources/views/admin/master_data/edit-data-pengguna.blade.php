@@ -17,76 +17,83 @@
             <div class="form-group">
                 <label for="nama_lengkap">Nama Lengkap</label>
                 <input type="text" id="nama_lengkap" name="nama_lengkap" 
-                       value="{{ old('nama_lengkap') }}" required>
+                       value="{{ old('nama_lengkap', $user->nama_lengkap ?? '') }}" required>
             </div>
 
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" 
-                       value="{{ old('username') }}" required>
+                       value="{{ old('username', $user->username ?? '') }}" required>
             </div>
 
             <div class="form-group">
-            <label for="id_role">Role</label>
-            <select id="id_role" name="id_role" required>
-                <option value="">-- Pilih Role --</option>
-                <option value="1" {{ old('id_role') == '1' ? 'selected' : '' }}>Admin Simpanan</option>
-                <option value="2" {{ old('id_role') == '2' ? 'selected' : '' }}>Admin Pinjaman</option>
-                <option value="3" {{ old('id_role') == '3' ? 'selected' : '' }}>Admin Accounting</option>
-                <option value="4" {{ old('id_role') == '4' ? 'selected' : '' }}>Pengurus</option>
-            </select>
-        </div>
+            <label>Role</label>
+                <select name="id_role" required>
+                        <option value="">-- Pilih Role --</option>
+                @foreach($roles as $role)
+                        <option value="{{ $role->id_role }}" {{ old('id_role', $user->id_role) == $role->id_role ? 'selected' : '' }}>
+                        {{ $role->nama_role }}
+                        </option>
+                @endforeach
+                </select>
+            </div>
 
            <div class="form-group">
                 <label for="jenis_kelamin">Jenis Kelamin</label>
                 <select id="jenis_kelamin" name="jenis_kelamin" required>
-                    <option value="">-- Pilih Jenis Kelamin --</option>
-                    <option value="L" {{ old('jenis_kelamin') == 'L' ? 'selected' : '' }}>Laki-laki</option>
-                    <option value="P" {{ old('jenis_kelamin') == 'P' ? 'selected' : '' }}>Perempuan</option>
+                    <option value="L" {{ old('jenis_kelamin', $user->jenis_kelamin ?? '') == 'L' ? 'selected' : '' }}>Laki-laki</option>
+                    <option value="P" {{ old('jenis_kelamin', $user->jenis_kelamin ?? '') == 'P' ? 'selected' : '' }}>Perempuan</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="alamat_user">Alamat</label>
                 <input type="text" id="alamat_user" name="alamat_user" 
-                       value="{{ old('alamat_user') }}">
+                       value="{{ old('alamat_user', $user->alamat_user ?? '') }}" required>
             </div>
 
-            <div class="form-group">
+             <div class="form-group">
                 <label for="telepon">No Telepon</label>
                 <input type="text" id="telepon" name="telepon" 
-                       value="{{ old('telepon') }}">
+                       value="{{ old('telepon', $user->telepon ?? '') }}" required>
             </div>
 
             <div class="form-group">
                 <label for="tanggal_masuk">Tanggal Masuk</label>
                 <input type="date" id="tanggal_masuk" name="tanggal_masuk" 
-                       value="{{ old('tanggal_masuk', date('Y-m-d')) }}">
+                       value="{{ old('tanggal_masuk', $user->tanggal_masuk ?? '') }}">
             </div>
 
+
            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" placeholder="Masukkan password" required>
+                <label for="password">Password (kosongkan jika tidak ingin diubah)</label>
+                <input type="password" id="password" name="password" class="form-control">
             </div>
 
             <div class="form-group">
                 <label for="tanggal_keluar">Tanggal Keluar</label>
                 <input type="date" id="tanggal_keluar" name="tanggal_keluar" 
-                        value="{{ old('tanggal_keluar') }}">
+                       value="{{ old('tanggal_keluar', $user->tanggal_keluar ?? '') }}">
             </div>
 
             <div class="form-group">
                 <label for="status">Status Keanggotaan</label>
-                <select id="status" name="status">
-                    <option value="">-- Aktif --</option>
-                    @foreach(['aktif','nonaktif'] as $s)
-                        <option value="{{ $s }}" {{ old('status') == $s ? 'selected' : '' }}>{{ $s }}</option>
-                    @endforeach
+                <select id="status" name="status" required>
+                    <option value="aktif" {{ old('status', $user->status ?? '') == 'aktif' ? 'selected' : '' }}>aktif</option>
+                    <option value="nonaktif" {{ old('status', $user->status ?? '') == 'nonaktif' ? 'selected' : '' }}>nonaktif</option>
                 </select>
             </div>
 
             <div class="form-group">
                 <label for="foto_user">Foto Pengguna</label>
+                    @if (!empty($user->foto_user))
+                    <div style="margin-bottom: 10px;">
+                    <img src="{{ asset('storage/foto_user/' . $user->foto_user) }}" 
+                    alt="Foto pengguna" 
+                    width="120" 
+                    style="border-radius: 8px;">
+                    </div>
+                    @endif
                 <input type="file" id="foto_user" name="foto_user" accept="image/*">
             </div>
 
