@@ -25,10 +25,10 @@
     </thead>
 
     <tbody>
-      @forelse(($transaksi ?? collect()) as $row)
+      @forelse(($saldoAwalKas ?? collect()) as $row)
         <tr>
           <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d/m/Y - H:i') }}</td>
-          <td>{{ $row->id_jenisAkunTransaksi_sumber ?? '-' }}</td>
+          <td>{{ $row->type_transaksi ?? '-' }}</td>
           <td>{{ $row->ket_transaksi ?? '-' }}</td>
           <td>{{ number_format($row->jumlah_transaksi ?? 0, 0, ',', '.') }}</td>
           <td>{{ $row->username ?? '-' }}</td>
@@ -46,7 +46,7 @@
 </div>
 
  {{-- <div class="pagination-container">
-      <x-menu.pagination :data="$transaksi" />
+      <x-menu.pagination :data="$saldoAwalKas" />
  </div> --}}
 
 <style>

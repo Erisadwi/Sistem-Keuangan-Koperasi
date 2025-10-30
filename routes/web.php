@@ -163,18 +163,6 @@ Route::get('/admin/transaksi_non_kas/edit-transaksi', function () {
     return view('admin.transaksi_non_kas.edit-transaksi');
 })->name('admin.transaksi_non_kas.edit-transaksi');
 
-Route::get('/admin/master_data/saldo-awal-kas', function () {
-    return view('admin.master_data.saldo-awal-kas');
-})->name('admin.master_data.saldo-awal-kas');
-
-Route::get('/admin/master_data/tambah-data-saldo-awal-kas', function () {
-    return view('admin.master_data.tambah-data-saldo-awal-kas');
-})->name('admin.master_data.tambah-data-saldo-awal-kas');
-
-Route::get('/admin/master_data/edit-data-saldo-awal-kas', function () {
-    return view('admin.master_data.edit-data-saldo-awal-kas');
-})->name('admin.master_data.edit-data-saldo-awal-kas');
-
 Route::get('/admin/pinjaman/data-pengajuan', function () {
     return view('admin.pinjaman.data-pengajuan');
 })->name('admin.pinjaman.data-pengajuan');
