@@ -69,11 +69,11 @@ Route::prefix('admin/master_data')->group(function () {
     Route::put('users/{id}', [UserController::class, 'update'])->name('data-user.update');
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('data-user.destroy');
 
-    Route::get('saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'index'])->name('saldo-awal-non-kas.index');
-    Route::get('saldo-awal-non-kas/create', [SaldoAwalNonKasController::class, 'create'])->name('saldo-awal-non-kas.create');
-    Route::post('saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'store'])->name('saldo-awal-non-kas.store');
-    Route::get('saldo-awal-non-kas/{id}/edit', [SaldoAwalNonKasController::class, 'edit'])->name('saldo-awal-non-kas.edit');
-    Route::put('saldo-awal-non-kas/{id}', [SaldoAwalNonKasController::class, 'update'])->name('saldo-awal-non-kas.update');
+    Route::get('/saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'index'])->name('saldo-awal-non-kas.index');
+    Route::get('/saldo-awal-non-kas/create', [SaldoAwalNonKasController::class, 'create'])->name('saldo-awal-non-kas.create');
+    Route::post('/saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'store'])->name('saldo-awal-non-kas.store');
+    Route::get('/saldo-awal-non-kas/{id}/edit', [SaldoAwalNonKasController::class, 'edit'])->name('saldo-awal-non-kas.edit');
+    Route::put('/saldo-awal-non-kas/{id}', [SaldoAwalNonKasController::class, 'update'])->name('saldo-awal-non-kas.update');
 
     Route::get('saldo-awal-kas', [SaldoAwalKasController::class, 'index'])->name('saldo-awal-kas.index');
     Route::get('saldo-awal-kas/create', [SaldoAwalKasController::class, 'create'])->name('saldo-awal-kas.create');
@@ -246,18 +246,6 @@ Route::get('/admin/laporan/laporan-kas-simpanan', function () {
 Route::get('/admin/laporan/laporan-kas-pinjaman', function () {
     return view('admin.laporan.laporan-kas-pinjaman');
 })->name('admin.laporan.laporan-kas-pinjaman');
-
-Route::get('/admin/master_data/saldo-awal-non-kas', function () {
-    return view('admin.master_data.saldo-awal-non-kas');
-})->name('admin.master_data.saldo-awal-non-kas');
-
-Route::get('/admin/master_data/tambah-data-saldo-awal-non-kas', function () {
-    return view('admin.master_data.tambah-data-saldo-awal-non-kas');
-})->name('admin.master_data.tambah-data-saldo-awal-non-kas');
-
-Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
-    return view('admin.master_data.edit-data-saldo-awal-non-kas');
-})->name('admin.master_data.edit-data-saldo-awal-non-kas');
 
 
 Route::get('/admin/simpanan/setoran-tunai', function () {

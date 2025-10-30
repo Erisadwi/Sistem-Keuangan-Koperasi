@@ -15,7 +15,7 @@ class SaldoAwalNonKasController extends Controller
             ->where('type_transaksi', 'SANK') 
             ->get();
 
-        return view('admin.master_data.tambah-saldo-awal-non-kas', compact('saldoAwalNonKas'));
+        return view('admin.master_data.saldo-awal-non-kas', compact('saldoAwalNonKas'));
     }
 
     public function create()
@@ -46,14 +46,14 @@ class SaldoAwalNonKasController extends Controller
         $transaksi->kode_transaksi = 'SANK' . str_pad($transaksi->id_transaksi, 5, '0', STR_PAD_LEFT);
         $transaksi->save();
 
-        return redirect()->route('saldo-awal-non-kas.index')
+       return redirect()->route('saldo-awal-non-kas.index')
             ->with('success', 'Data Saldo Awal Non Kas berhasil ditambahkan.');
     }
 
     public function edit($id)
     {
         $saldoAwalNonKas = Transaksi::findOrFail($id);
-        return view('admin.master_data.tambah-data-saldo-awal-non-kas', compact('saldoAwalNonKas'));
+        return view('admin.master_data.edit-data-saldo-awal-non-kas', compact('saldoAwalNonKas'));
     }
 
     public function update(Request $request, $id)
@@ -75,12 +75,4 @@ class SaldoAwalNonKasController extends Controller
             ->with('success', 'Data Saldo Awal Non Kas berhasil diperbarui.');
     }
 
-    public function destroy($id)
-    {
-        $transaksi = Transaksi::findOrFail($id);
-        $transaksi->delete();
-
-        return redirect()->route('saldo-awal-non-kas.index')
-            ->with('success', 'Data Saldo Awal Non Kas berhasil dihapus.');
-    }
 }
