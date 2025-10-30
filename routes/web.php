@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\setting\identitasKoperasiController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiPemasukanController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\Admin\MasterData\SaldoAwalKasController;
 
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -65,6 +66,13 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('users/{id}/edit', [UserController::class, 'edit'])->name('data-user.edit');
     Route::put('users/{id}', [UserController::class, 'update'])->name('data-user.update');
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('data-user.destroy');
+
+    Route::get('saldo-awal-kas', [SaldoAwalKasController::class, 'index'])->name('saldo-awal-kas.index');
+    Route::get('saldo-awal-kas/create', [SaldoAwalKasController::class, 'create'])->name('saldo-awal-kas.create');
+    Route::post('saldo-awal-kas', [SaldoAwalKasController::class, 'store'])->name('saldo-awal-kas.store');
+    Route::get('saldo-awal-kas/{id}/edit', [SaldoAwalKasController::class, 'edit'])->name('saldo-awal-kas.edit');
+    Route::put('saldo-awal-kas/{id}', [SaldoAwalKasController::class, 'update'])->name('saldo-awal-kas.update');
+
 
 });
 

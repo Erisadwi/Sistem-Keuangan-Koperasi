@@ -7,7 +7,7 @@
 @section('content')
 
 <x-menu.tambah-unduh 
-    addUrl="# {{-- {{ route('saldo-awal-kas.create') }} --}}" 
+    addUrl="{{ route('saldo-awal-kas.create') }}" 
     downloadFile="saldo-awal-kas.pdf" 
 />
 
@@ -45,8 +45,9 @@
   </table>
 </div>
 
-{{-- Komponen pagination --}}
-<x-menu.pagination />
+ {{-- <div class="pagination-container">
+      <x-menu.pagination :data="$transaksi" />
+ </div> --}}
 
 <style>
   :root {
@@ -122,35 +123,15 @@
       padding: 8px;
     }
   }
-  
-  /* Pagination style */
-.pagination {
+
+ .pagination-container {
+  margin-top: auto;        
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  gap: 6px;
-  margin-top: 15px;
-  font-size: 14px;
+  padding: 12px 16px;
 }
 
-.pagination select,
-.pagination button {
-  padding: 4px 6px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  background: white;
-  cursor: pointer;
-}
-
-.pagination button {
-  background: var(--primary);
-  color: white;
-  border: none;
-}
-
-.pagination button:hover {
-  background: var(--primary-dark);
-}
 </style>
 
 @endsection
