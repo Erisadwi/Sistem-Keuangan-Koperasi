@@ -41,7 +41,7 @@ class TransaksiPemasukanController extends Controller
         return view('admin.transaksi_kas.tambah-pemasukan');
     }
 
-    public function store(Request $request)
+    public function store(Request $request) 
     {
 
         $request->validate([
