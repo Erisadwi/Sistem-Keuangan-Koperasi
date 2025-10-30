@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\MasterData\AnggotaController;
 use App\Http\Controllers\Admin\setting\SukuBungaController;
 use App\Http\Controllers\Admin\setting\identitasKoperasiController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiPemasukanController;
+use App\Http\Controllers\Admin\TransaksiNonKas\TransaksiNonKasController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\MasterData\SaldoAwalKasController;
@@ -95,6 +96,11 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 Route::get('admin/transaksi_kas/pemasukan/download', [TransaksiPemasukanController::class, 'download'])
     ->name('transaksi-pemasukan.download');
 
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    Route::resource('transaksi-non-kas', TransaksiNonKasController::class);
+});
+Route::get('admin/transaksi-non-kas/download', [TransaksiNonKasController::class, 'download'])
+    ->name('transaksi-non-kas.download');
 
 //Route::get('/', function () {
 //    return view('welcome');
