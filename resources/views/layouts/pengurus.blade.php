@@ -39,7 +39,11 @@
           <a href="#" class="submenu-row">Transfer</a>
         </x-menu.section>
 
-        <x-menu.section title="Transaksi Non Kas" :open="false" :has-sub="false">
+        <x-menu.section 
+        title="Transaksi Non Kas" 
+        :open="false" 
+        :has-sub="false" 
+        :link="route('transaksi-non-kas.index')">
         </x-menu.section>
 
         <x-menu.section title="Simpanan" :open="false" :has-sub="true">

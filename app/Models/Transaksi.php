@@ -38,4 +38,11 @@ class Transaksi extends Model
     {
         return $this->belongsTo(User::class, 'id_user', 'id_user');
     }
+
+    // App/Models/Transaksi.php
+        public function details()
+    {
+    return $this->hasMany(DetailTransaksi::class, 'id_transaksi', 'id_transaksi');
+    }
+
 }

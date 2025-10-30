@@ -7,7 +7,7 @@
 @section('content')
 
 <x-menu.tambah-unduh 
-    addUrl="#" {{-- nanti diganti route('saldo-awal-non-kas.create') --}}
+    addUrl="{{ route('saldo-awal-non-kas.create') }}" 
     downloadFile="saldo-awal-non-kas.pdf" 
 />
 
@@ -26,10 +26,10 @@
     </thead>
 
     <tbody>
-      @forelse(($transaksi ?? collect()) as $row)
+      @forelse(($saldoAwalNonKas ?? collect()) as $row)
         <tr>
           <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d/m/Y - H:i') }}</td>
-          <td>{{ $row->nama_akunTransaksi ?? '-' }}</td>
+          <td>{{ $row->type_transaksi ?? '-' }}</td>
           <td>{{ $row->ket_transaksi ?? '-' }}</td>
           <td>{{ number_format($row->jumlah_transaksi ?? 0, 0, ',', '.') }}</td>
           <td>{{ $row->updated_at ? $row->updated_at->format('d/m/Y - H:i') : '-' }}</td>

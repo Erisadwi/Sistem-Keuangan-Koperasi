@@ -1,6 +1,6 @@
 @extends('layouts.app-admin-add')
 
-@section('title', 'Saldo Awal NonKas')  
+@section('title', 'Saldo Awal Non Kas')  
 @section('back-url', url('admin/master_data/saldo-awal-non-kas'))
 @section('back-title', 'Master Data >')
 @section('title-1', 'Saldo Awal Non Kas')  
@@ -8,8 +8,16 @@
 
 @section('content')
 
+@if ($errors->any())
+    <ul>
+        @foreach ($errors->all() as $error)
+            <li style="color:red">{{ $error }}</li>
+        @endforeach
+    </ul>
+@endif
+
 <div class="form-container">
-    <form id="saldoAwalNonKasForm"  action="{{--{{ route('saldo-awal-non-kas.store') }}--}}" method="POST">
+    <form id="saldoAwalNonKasForm"  action="{{ route('saldo-awal-non-kas.store') }}" method="POST">
         @csrf
 
         <div class="form-group">
@@ -21,7 +29,7 @@
         <label for="id_jenisAkunTransaksi_tujuan">Dari Akun</label>
         <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan" class="form-control">
             <option value="" disabled {{ empty($transaksi->id_jenisAkunTransaksi_tujuan) ? 'selected' : '' }}>Pilih Akun</option>
-            <option value="10" {{ ($transaksi->id_jenisAkunTransaksi_tujuan ?? '') == '10' ? 'selected' : '' }}>10 - Barang dlm Perjalanan</option>
+            <option value="11" {{ ($transaksi->id_jenisAkunTransaksi_tujuan ?? '') == '11' ? 'selected' : '' }}>11 - Barang dlm Perjalanan</option>
             <option value="110" {{ ($transaksi->id_jenisAkunTransaksi_tujuan ?? '') == '110' ? 'selected' : '' }}>110 - Transfer Antar Kas</option>
             <option value="111" {{ ($transaksi->id_jenisAkunTransaksi_tujuan ?? '') == '111' ? 'selected' : '' }}>111 - Logam Mulia</option>
             <option value="113" {{ ($transaksi->id_jenisAkunTransaksi_tujuan ?? '') == '113' ? 'selected' : '' }}>113 - Persediaan Konsinyasi / Barang titipan</option>

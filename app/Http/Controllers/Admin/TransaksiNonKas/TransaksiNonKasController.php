@@ -1,22 +1,21 @@
 <?php
 
-namespace App\Http\Controllers\Admin\TransaksiKas;
+namespace App\Http\Controllers\Admin\TransaksiNonKas;
 use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 
-class TransaksiPemasukanController extends Controller
+class TransaksiNonKasController extends Controller
 {
     public function index(Request $request)
 {
     $perPage = 10;
 
     $query = Transaksi::with(['sumber', 'tujuan', 'data_user'])
-        ->where('type_transaksi', 'TKD');
+        ->where('type_transaksi', 'TNK');
 
     if ($request->filled('start_date') && $request->filled('end_date')) {
         $query->whereBetween('tanggal_transaksi', [
@@ -29,22 +28,22 @@ class TransaksiPemasukanController extends Controller
         $query->where('kode_transaksi', 'LIKE', "%{$request->search}%");
     }
 
-    $TransaksiPemasukan = $query
+    $TransaksiNonKas = $query
         ->orderBy('id_transaksi', 'asc')
         ->paginate($perPage);
 
-    return view('admin.transaksi_kas.pemasukan', compact('TransaksiPemasukan'));
+    return view('admin.transaksi_non_kas.transaksi', compact('TransaksiNonKas'));
 }
 
 
     public function create()
     {
-        return view('admin.transaksi_kas.tambah-pemasukan');
+        return view('admin.transaksi_non_kas.tambah-transaksi');
     }
 
-    public function store(Request $request) 
+    public function store(Request $request)
     {
-        Log::info('➡️ MASUK store TransaksiPemasukanController');
+
         $request->validate([
             'id_jenisAkunTransaksi_sumber' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
             'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
@@ -52,26 +51,26 @@ class TransaksiPemasukanController extends Controller
             'ket_transaksi' => 'nullable|string|max:255',
         ]);
 
-        $TransaksiPemasukan = Transaksi::create([
+        $TransaksiNonKas = Transaksi::create([
             'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
             'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
             'id_user' => Auth::user()->id_user,
-            'type_transaksi' => 'TKD',
+            'type_transaksi' => 'TNK',
             'kode_transaksi' => '',
             'ket_transaksi' => $request->ket_transaksi,
             'jumlah_transaksi' => $request->jumlah_transaksi,
         ]);
 
-        $TransaksiPemasukan->kode_transaksi = 'TKD' . $TransaksiPemasukan->id_transaksi;
-        $TransaksiPemasukan->save();
+        $TransaksiNonKas->kode_transaksi = 'TNK' . $TransaksiNonKas->id_transaksi;
+        $TransaksiNonKas->save();
 
-        return redirect()->route('transaksi-pemasukan.index')->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('transaksi-non-kas.index')->with('success', 'Data berhasil ditambahkan');
     }
 
     public function edit($id)
     {
-        $TransaksiPemasukan = Transaksi::findOrFail($id);
-        return view('admin.transaksi_kas.edit-pemasukan', compact('TransaksiPemasukan'));
+        $TransaksiNonKas = Transaksi::findOrFail($id);
+        return view('admin.transaksi_non_kas.edit-transaksi', compact('TransaksiNonKas'));
     }
 
     public function update(Request $request, $id)
@@ -81,21 +80,21 @@ class TransaksiPemasukanController extends Controller
             'ket_transaksi' => 'nullable|string|max:255',
         ]);
 
-        $TransaksiPemasukan = Transaksi::findOrFail($id);
-        $TransaksiPemasukan->update([
+        $TransaksiNonKas = Transaksi::findOrFail($id);
+        $TransaksiNonKas->update([
             'jumlah_transaksi' => $request->jumlah_transaksi,
             'ket_transaksi' => $request->ket_transaksi,
         ]);
 
-        return redirect()->route('transaksi-pemasukan.index')->with('success', 'Data Transaksi berhasil diperbarui');
+        return redirect()->route('transaksi-non-kas.index')->with('success', 'Data Transaksi berhasil diperbarui');
     }
 
     public function destroy($id)
     {
-        $TransaksiPemasukan = Transaksi::findOrFail($id);
-        $TransaksiPemasukan->delete();
+        $TransaksiNonKas = Transaksi::findOrFail($id);
+        $TransaksiNonKas->delete();
 
-        return redirect()->route('transaksi-pemasukan.index')->with('success', 'Data Transaksi berhasil dihapus');
+        return redirect()->route('transaksi-non-kas.index')->with('success', 'Data Transaksi berhasil dihapus');
     }
 
     public function download(Request $request)
