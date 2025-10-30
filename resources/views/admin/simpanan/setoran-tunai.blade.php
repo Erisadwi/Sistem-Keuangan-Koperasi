@@ -7,9 +7,12 @@
 @section('content')
 
 {{-- Komponen --}}
-<x-menu.toolbar-simpanan
-     addUrl="{{ route('simpanan.create') }}"
+<x-menu.toolbar-simpanan 
+    addUrl="{{ route('setoran-tunai.create') }}"
+    editUrl="{{ route('setoran-tunai.edit', ['id' => '__ID__']) }}"
+    exportUrl="{{ route('setoran-tunai.export') }}"
 />
+
 
 
 {{-- Wrapper konten tabel --}}
@@ -31,21 +34,21 @@
       </thead>
 
       <tbody>
-        @forelse($simpanan ?? collect() as $index => $simpanan)
+        @forelse($setoranTunai ?? collect() as $index => $simpanan)
           <tr class="text-center">
             <td>{{ $index + 1 }}</td>
             <td>{{ $simpanan->kode_simpanan ?? '-' }}</td>
             <td>{{ $simpanan->tanggal_transaksi ? \Carbon\Carbon::parse($simpanan->tanggal_transaksi)->format('d-m-Y H:i') : '-' }}</td>
-            <td>{{ $simpanan->id_anggota ?? '-' }}</td>
-            <td>{{ $simpanan->nama_anggota ?? '-' }}</td>
-            <td>{{ $simpanan->jenis_simpanan ?? '-' }}</td>
+            <td>{{ $simpanan->anggota->id_anggota ?? '-' }}</td>
+            <td>{{ $simpanan->anggota->nama_anggota ?? '-' }}</td>
+            <td>{{ $simpanan->jenisSimpanan->jenis_simpanan ?? '-' }}</td>
             <td>{{ isset($simpanan->jumlah_simpanan) ? number_format($simpanan->jumlah_simpanan, 0, ',', '.') : '-' }}</td>
-            <td>{{ $simpanan->user ?? '-' }}</td>
+            <td>{{ $simpanan->data_user->nama_lengkap ?? '-' }}</td>
             <td>
               <a href="{{ route('simpanan.cetak', $simpanan->id_simpanan ?? 0) }}" 
                  class="btn-nota">🧾 Nota</a>
             </td>
-          </tr>
+          </tr>   
         @empty
           <tr>
             <td colspan="9" class="empty-cell"> 

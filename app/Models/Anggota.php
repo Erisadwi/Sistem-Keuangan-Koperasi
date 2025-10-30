@@ -4,13 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Simpanan;
 
 class Anggota extends Model
 {
     use HasFactory;
     protected $table = 'anggota';
     protected $primaryKey = 'id_anggota';
-
     public $incrementing = false;
     protected $keyType = 'string';
 
@@ -38,14 +38,19 @@ class Anggota extends Model
 
     public $timestamps = false;
 
-public static function generateId()
-{
-    $prefix = 'AG';
-    $last = self::where('id_anggota', 'like', $prefix.'%')
-        ->orderBy('id_anggota', 'desc')
-        ->first();
+    public function simpanan()
+    {
+        return $this->hasMany(Simpanan::class, 'id_anggota', 'id_anggota');
+    }
 
-    $number = $last ? (int) substr($last->id_anggota, strlen($prefix)) + 1 : 1;
-    return $prefix . str_pad($number, 4, '0', STR_PAD_LEFT);
-}
+    public static function generateId()
+    {
+        $prefix = 'AG';
+        $last = self::where('id_anggota', 'like', $prefix.'%')
+            ->orderBy('id_anggota', 'desc')
+            ->first();
+
+        $number = $last ? (int) substr($last->id_anggota, strlen($prefix)) + 1 : 1;
+        return $prefix . str_pad($number, 4, '0', STR_PAD_LEFT);
+    }
 }
