@@ -40,52 +40,47 @@ class UserController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'nama_lengkap' => 'required|string|max:255',
-            'username' => 'required|string|max:100|unique:users,username',
-            'password' => 'required|string|min:6',
-            'jenis_kelamin' => 'required|in:L,P',
-            'status' => 'required|in:aktif,nonaktif',
-            'tanggal_masuk' => 'required|date',
-            'tanggal_keluar' => 'nullable|date|after_or_equal:tanggal_masuk',
-            'id_role' => 'required|exists:role,id_role',
-            'telepon' => 'nullable|string|max:16',
-            'alamat_user' => 'nullable|string|max:255',
-            'foto_user' => 'nullable|image|mimes:jpg,jpeg,png|max:5048'
-        ], [
-            'nama_lengkap.required' => 'Nama lengkap wajib diisi.',
-            'username.required' => 'Username wajib diisi.',
-            'username.unique' => 'Username sudah digunakan.',
-            'password.required' => 'Password wajib diisi.',
-            'jenis_kelamin.required' => 'Jenis kelamin wajib dipilih.',
-            'status.required' => 'Status wajib dipilih.',
-            'tanggal_masuk.required' => 'Tanggal masuk wajib diisi.',
-            'id_role.required' => 'Role wajib dipilih.',
-        ]);
+{
+    $request->validate([
+        'nama_lengkap' => 'required|string|max:255',
+        'username' => 'required|string|max:100|unique:users,username',
+        'password' => 'required|string|min:6',
+        'jenis_kelamin' => 'required|in:L,P',
+        'status' => 'required|in:aktif,nonaktif',
+        'tanggal_masuk' => 'required|date',
+        'tanggal_keluar' => 'nullable|date|after_or_equal:tanggal_masuk',
+        'id_role' => 'required|exists:role,id_role',
+        'telepon' => 'nullable|string|max:16',
+        'alamat_user' => 'nullable|string|max:255',
+        'foto_user' => 'nullable|image|mimes:jpg,jpeg,png|max:5048'
+    ]);
 
-        User::create([
-            'id_user' => $this->generateNextId(),
-            'nama_lengkap' => $request->nama_lengkap,
-            'alamat_user' => $request->alamat_user,
-            'telepon' => $request->telepon,
-            'username' => $request->username,
-            'password' => Hash::make($request->password),
-            'jenis_kelamin' => $request->jenis_kelamin,
-            'status' => $request->status,
-            'tanggal_masuk' => $request->tanggal_masuk,
-            'tanggal_keluar' => $request->tanggal_keluar,
-            'id_role' => $request->id_role,
-        ]);
+    $data = [
+        'id_user' => $this->generateNextId(),
+        'nama_lengkap' => $request->nama_lengkap,
+        'alamat_user' => $request->alamat_user,
+        'telepon' => $request->telepon,
+        'username' => $request->username,
+        'password' => Hash::make($request->password),
+        'jenis_kelamin' => $request->jenis_kelamin,
+        'status' => $request->status,
+        'tanggal_masuk' => $request->tanggal_masuk,
+        'tanggal_keluar' => $request->tanggal_keluar,
+        'id_role' => $request->id_role,
+    ];
 
-        if ($request->hasFile('foto_user')) {
+    if ($request->hasFile('foto_user')) {
         $file = $request->file('foto_user');
         $filename = time() . '_' . $file->getClientOriginalName();
         $file->storeAs('public/foto_user', $filename);
         $data['foto_user'] = $filename;
     }
-        return redirect()->route('data-user.index')->with('success', 'Data user berhasil ditambahkan.');
-    }
+
+    User::create($data);
+
+    return redirect()->route('data-user.index')->with('success', 'Data user berhasil ditambahkan.');
+}
+
 
     public function edit($id)
     {

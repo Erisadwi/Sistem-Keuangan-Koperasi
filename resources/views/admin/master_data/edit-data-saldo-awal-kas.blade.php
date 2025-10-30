@@ -10,7 +10,9 @@
 
 <div class="form-container">
 
-    <form id="saldoAwalKasForm" action="{{ route('saldo-awal-kas.update', $transaksi->id_transaksi) }}" method="POST">
+
+    <form id="saldoAwalKasForm" action="{{ route('saldo-awal-kas.update', $saldoAwalKas->id_transaksi) }}" method="POST">
+
         @csrf
         @method('PUT')
 
@@ -20,20 +22,20 @@
                 type="datetime-local" 
                 id="tanggal_transaksi" 
                 name="tanggal_transaksi"
-                value="{{ old('tanggal_transaksi', isset($transaksi->tanggal_transaksi) ? \Carbon\Carbon::parse($transaksi->tanggal_transaksi)->format('Y-m-d\TH:i') : '') }}"
+                value="{{ old('tanggal_transaksi', isset($saldoAwalKas->tanggal_transaksi) ? \Carbon\Carbon::parse($saldoAwalKas->tanggal_transaksi)->format('Y-m-d\TH:i') : '') }}"
                 required
             >
         </div>
 
-        <<div class="form-group">
+        <div class="form-group">
             <label for="id_jenisAkunTransaksi_tujuan">Akun</label>
             <select id="id_jenisAkunTransaksi_tujuan" name="id_jenisAkunTransaksi_tujuan" required>
                 <option value="">-- Pilih Akun Kas --</option>
-                <option value="1" {{ old('id_jenisAkunTransaksi_tujuan') == '1' ? 'selected' : '' }}>Kas Besar</option>
-                <option value="2" {{ old('id_jenisAkunTransaksi_tujuan') == '2' ? 'selected' : '' }}>Bank BNI</option>
-                <option value="3" {{ old('id_jenisAkunTransaksi_tujuan') == '3' ? 'selected' : '' }}>Bank Mandiri</option>
-                <option value="4" {{ old('id_jenisAkunTransaksi_tujuan') == '4' ? 'selected' : '' }}>Kas Kecil</option>
-                <option value="5" {{ old('id_jenisAkunTransaksi_tujuan') == '5' ? 'selected' : '' }}>Kas Niaga</option>
+                <option value="1" {{ old('id_jenisAkunTransaksi_tujuan', $saldoAwalKas->id_jenisAkunTransaksi_tujuan ?? '') == '1' ? 'selected' : '' }}>Kas Besar</option>
+                <option value="2" {{ old('id_jenisAkunTransaksi_tujuan', $saldoAwalKas->id_jenisAkunTransaksi_tujuan ?? '') == '2' ? 'selected' : '' }}>Bank BNI</option>
+                <option value="3" {{ old('id_jenisAkunTransaksi_tujuan', $saldoAwalKas->id_jenisAkunTransaksi_tujuan ?? '') == '3' ? 'selected' : '' }}>Bank Mandiri</option>
+                <option value="4" {{ old('id_jenisAkunTransaksi_tujuan', $saldoAwalKas->id_jenisAkunTransaksi_tujuan ?? '') == '4' ? 'selected' : '' }}>Kas Kecil</option>
+                <option value="5" {{ old('id_jenisAkunTransaksi_tujuan', $saldoAwalKas->id_jenisAkunTransaksi_tujuan ?? '') == '5' ? 'selected' : '' }}>Kas Niaga</option>
             </select>
         </div>
 
@@ -43,7 +45,7 @@
                 type="text" 
                 id="ket_transaksi" 
                 name="ket_transaksi"
-                value="{{ old('ket_transaksi', $transaksi->ket_transaksi ?? '') }}"
+                value="{{ old('ket_transaksi', $saldoAwalKas->ket_transaksi ?? '') }}"
                 placeholder="Masukkan keterangan"
             >
         </div>
@@ -54,7 +56,7 @@
                 type="number" 
                 id="jumlah_transaksi" 
                 name="jumlah_transaksi"
-                value="{{ old('jumlah_transaksi', $transaksi->jumlah_transaksi ?? '') }}"
+                value="{{ old('jumlah_transaksi', $saldoAwalKas->jumlah_transaksi ?? '') }}"
                 step="0.01"
                 required 
                 placeholder="Masukkan nominal saldo awal"

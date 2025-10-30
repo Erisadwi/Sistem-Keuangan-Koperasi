@@ -9,13 +9,19 @@
 @section('content')
 
 <div class="form-container">
-    <form id="saldoAwalNonKasForm"  action="{{--{{ route('saldo-awal-non-kas.store') }}--}}" method="POST">
+    <form id="saldoAwalNonKasForm" action="{{ route('saldo-awal-non-kas.update', $saldoAwalNonKas->id_transaksi) }}" method="POST">
         @csrf
+        @method('PUT')
 
-        <div class="form-group">
+         <div class="form-group">
             <label for="tanggal_transaksi">Tanggal</label>
-            <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi"
-                   value="{{ old('tanggal_transaksi') }}" required>
+            <input 
+                type="datetime-local" 
+                id="tanggal_transaksi" 
+                name="tanggal_transaksi"
+                value="{{ old('tanggal_transaksi', isset($saldoAwalNonKas->tanggal_transaksi) ? \Carbon\Carbon::parse($saldoAwalNonKas->tanggal_transaksi)->format('Y-m-d\TH:i') : '') }}"
+                required
+            >
         </div>
 
         <label for="id_jenisAkunTransaksi_sumber">Dari Akun</label>

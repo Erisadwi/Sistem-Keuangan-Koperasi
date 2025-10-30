@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 use App\Http\Controllers\Admin\MasterData\UserController;
 use App\Http\Controllers\Admin\MasterData\RoleController;
@@ -11,9 +12,11 @@ use App\Http\Controllers\Admin\MasterData\LamaAngsuranController;
 use App\Http\Controllers\Admin\MasterData\AnggotaController;
 use App\Http\Controllers\Admin\setting\SukuBungaController;
 use App\Http\Controllers\Admin\setting\identitasKoperasiController;
+use App\Http\Controllers\Admin\TransaksiKas\TransaksiPemasukanController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\MasterData\SaldoAwalNonKasController;
+use App\Http\Controllers\Admin\MasterData\SaldoAwalKasController;
 
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -71,15 +74,33 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('saldo-awal-non-kas/{id}/edit', [SaldoAwalNonKasController::class, 'edit'])->name('saldo-awal-non-kas.edit');
     Route::put('saldo-awal-non-kas/{id}', [SaldoAwalNonKasController::class, 'update'])->name('saldo-awal-non-kas.update');
 
+    Route::get('saldo-awal-kas', [SaldoAwalKasController::class, 'index'])->name('saldo-awal-kas.index');
+    Route::get('saldo-awal-kas/create', [SaldoAwalKasController::class, 'create'])->name('saldo-awal-kas.create');
+    Route::post('saldo-awal-kas', [SaldoAwalKasController::class, 'store'])->name('saldo-awal-kas.store');
+    Route::get('saldo-awal-kas/{id}/edit', [SaldoAwalKasController::class, 'edit'])->name('saldo-awal-kas.edit');
+    Route::put('saldo-awal-kas/{id}', [SaldoAwalKasController::class, 'update'])->name('saldo-awal-kas.update');
+
+
 });
 
 Route::prefix('admin/setting')->group(function () {
     Route::get('identitas-koperasi/edit', [identitasKoperasiController::class, 'edit'])->name('identitas-koperasi.editSingle');
     Route::put('identitas-koperasi/', [identitasKoperasiController::class, 'update'])->name('identitas-koperasi.updateSingle');
+    
+    Route::get('identitas/logo/{nama_koperasi}', [IdentitasKoperasiController::class, 'showLogo'])
+    ->name('identitas.logo');
 
     Route::get('suku-bunga/edit', [SukuBungaController::class, 'edit'])->name('suku-bunga.editSingle');
     Route::put('suku-bunga/', [SukuBungaController::class, 'update'])->name('suku-bunga.updateSingle');
 });
+
+Route::get('/test-logo', [App\Http\Controllers\Admin\setting\identitasKoperasiController::class, 'testBlob']);
+
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    Route::resource('transaksi-pemasukan', TransaksiPemasukanController::class);
+});
+Route::get('admin/transaksi_kas/pemasukan/download', [TransaksiPemasukanController::class, 'download'])
+    ->name('transaksi-pemasukan.download');
 
 
 //Route::get('/', function () {
@@ -152,34 +173,9 @@ Route::get('/admin/transaksi_non_kas/edit-transaksi', function () {
     return view('admin.transaksi_non_kas.edit-transaksi');
 })->name('admin.transaksi_non_kas.edit-transaksi');
 
-Route::get('/admin/transaksi_kas/tambah-pemasukan', function () {
-    return view('admin.transaksi_kas.tambah-pemasukan');
-})->name('admin.transaksi_kas.tambah-pemasukan');
-
-Route::get('/admin/transaksi_kas/edit-pemasukan', function () {
-    return view('admin.transaksi_kas.edit-pemasukan');
-})->name('admin.transaksi_kas.edit-pemasukan');
-
-
-Route::get('/admin/master_data/saldo-awal-kas', function () {
-    return view('admin.master_data.saldo-awal-kas');
-})->name('admin.master_data.saldo-awal-kas');
-
-Route::get('/admin/master_data/tambah-data-saldo-awal-kas', function () {
-    return view('admin.master_data.tambah-data-saldo-awal-kas');
-})->name('admin.master_data.tambah-data-saldo-awal-kas');
-
-Route::get('/admin/master_data/edit-data-saldo-awal-kas', function () {
-    return view('admin.master_data.edit-data-saldo-awal-kas');
-})->name('admin.master_data.edit-data-saldo-awal-kas');
-
 Route::get('/admin/pinjaman/data-pengajuan', function () {
     return view('admin.pinjaman.data-pengajuan');
 })->name('admin.pinjaman.data-pengajuan');
-
-Route::get('/admin/transaksi_kas/pemasukan', function () {
-    return view('admin.transaksi_kas.pemasukan');
-})->name('admin.transaksi_kas.pemasukan');
 
 Route::get('/anggota/notifikasi', function () {
     return view('anggota.notifikasi');

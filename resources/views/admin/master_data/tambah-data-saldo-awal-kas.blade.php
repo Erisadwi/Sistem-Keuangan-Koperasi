@@ -8,6 +8,14 @@
 
 @section('content')
 
+@if ($errors->any())
+    <ul>
+        @foreach ($errors->all() as $error)
+            <li style="color:red">{{ $error }}</li>
+        @endforeach
+    </ul>
+@endif
+
 <div class="form-container">
     <form id="saldoAwalKasForm"  action="{{ route('saldo-awal-kas.store') }}" method="POST">
         @csrf
@@ -18,7 +26,7 @@
                    value="{{ old('tanggal_transaksi') }}" required>
         </div>
 
-        <<div class="form-group">
+        <div class="form-group">
             <label for="id_jenisAkunTransaksi_tujuan">Akun</label>
             <select id="id_jenisAkunTransaksi_tujuan" name="id_jenisAkunTransaksi_tujuan" required>
                 <option value="">-- Pilih Akun Kas --</option>
@@ -29,6 +37,7 @@
                 <option value="5" {{ old('id_jenisAkunTransaksi_tujuan') == '5' ? 'selected' : '' }}>Kas Niaga</option>
             </select>
         </div>
+        
 
         <div class="form-group">
             <label for="ket_transaksi">Keterangan</label>

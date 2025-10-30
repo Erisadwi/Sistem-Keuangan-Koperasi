@@ -26,7 +26,7 @@
     </thead>
 
     <tbody>
-      @forelse(($transaksi ?? collect()) as $row)
+      @forelse(($saldoAwalNonKas ?? collect()) as $row)
         <tr>
           <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d/m/Y - H:i') }}</td>
           <td>{{ $row->nama_akunTransaksi ?? '-' }}</td>

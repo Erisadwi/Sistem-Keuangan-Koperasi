@@ -1,18 +1,21 @@
 <?php
 
 namespace App\Http\Controllers\Admin\MasterData;
+
 use App\Http\Controllers\Controller;
-use App\Models\SaldoAwalNonKas;
+use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
 
 class SaldoAwalNonKasController extends Controller
 {
     public function index()
     {
-        $saldoAwal = SaldoAwalNonKas::all();
-        return view('admin.master_data.tambah-data-saldo-awal-non-kas', compact('saldoAwalNonKas'));
+        $saldoAwalNonKas = Transaksi::with(['tujuan'])
+            ->where('type_transaksi', 'SANK') 
+            ->get();
+
+        return view('admin.master_data.tambah-saldo-awal-non-kas', compact('saldoAwalNonKas'));
     }
 
     public function create()
@@ -23,33 +26,34 @@ class SaldoAwalNonKasController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'id_jenisAkunTransaksi_sumber' => 'required|integer',
-            'id_jenisAkunTransaksi_tujuan' => 'required|integer',
+            'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
             'jumlah_transaksi' => 'required|numeric|min:0',
             'ket_transaksi' => 'nullable|string|max:255',
+            'tanggal_transaksi' => 'required|date',
         ]);
 
-        $saldoAwalNonKas = SaldoAwalNonKas::create([
+        $transaksi = Transaksi::create([
             'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
             'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
-            'id_user' => auth()->user()->id ?? null,
+            // 'id_user' => Auth::user()->id_user, // sementara dimatikan
             'type_transaksi' => 'SANK',
-            'kode_transaksi' => 'SANK-' . uniqid(),
+            'kode_transaksi' => '',
             'ket_transaksi' => $request->ket_transaksi,
-            'jumlah_transaksi' => $request->jumlah_transaksi,
+            'jumlah_transaksi' => $request->jumlah_transaksi
         ]);
 
-        $saldoAwalNonKas->update([
-            'kode_transaksi' => 'SANK-' . $saldoAwalNonKas->id_transaksi,
-        ]);
 
-        return redirect()->route('saldo-awal-non-kas.index')->with('success', 'Saldo awal non kas berhasil ditambahkan');
+        $transaksi->kode_transaksi = 'SANK' . str_pad($transaksi->id_transaksi, 5, '0', STR_PAD_LEFT);
+        $transaksi->save();
+
+        return redirect()->route('saldo-awal-non-kas.index')
+            ->with('success', 'Data Saldo Awal Non Kas berhasil ditambahkan.');
     }
 
     public function edit($id)
     {
-        $saldoAwalNonKas = SaldoAwalNonKas::findOrFail($id);
-         return view('admin.master_data.tambah-data-saldo-awal-non-kas', compact('saldoAwalNonKas'));
+        $saldoAwalNonKas = Transaksi::findOrFail($id);
+        return view('admin.master_data.tambah-data-saldo-awal-non-kas', compact('saldoAwalNonKas'));
     }
 
     public function update(Request $request, $id)
@@ -59,20 +63,24 @@ class SaldoAwalNonKasController extends Controller
             'ket_transaksi' => 'nullable|string|max:255',
         ]);
 
-        $saldoAwalNonKas = saldoAwalNonKas::findOrFail($id);
-        $saldoAwalNonKas->update([
+        $transaksi = Transaksi::findOrFail($id);
+        $transaksi->update([
             'jumlah_transaksi' => $request->jumlah_transaksi,
             'ket_transaksi' => $request->ket_transaksi,
+            'tanggal_transaksi' => $request->tanggal_transaksi,
+            'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
         ]);
 
-        return redirect()->route('saldo-awal-non-kas.index')->with('success', 'Saldo awal non kas berhasil diperbarui');
+        return redirect()->route('saldo-awal-non-kas.index')
+            ->with('success', 'Data Saldo Awal Non Kas berhasil diperbarui.');
     }
 
     public function destroy($id)
     {
-        $saldoAwalNonKas = saldoAwalNonKas::findOrFail($id);
-        $saldoAwalNonKas->delete();
+        $transaksi = Transaksi::findOrFail($id);
+        $transaksi->delete();
 
-        return redirect()->route('saldo-awal-non-kas.index')->with('success', 'Saldo awal non kas berhasil dihapus');
+        return redirect()->route('saldo-awal-non-kas.index')
+            ->with('success', 'Data Saldo Awal Non Kas berhasil dihapus.');
     }
 }

@@ -1,14 +1,22 @@
+@props([
+  'searchPlaceholder' => 'Cari Kode Transaksi',
+  'searchName' => 'transactionId',
+  'downloadRoute' => null,
+  'filterRoute' => null
+])
+
 <div class="toolbar">
   <div class="date-filter">
     <button id="tanggalButton" class="filter-button">
         <span class="df-ic" aria-hidden="true">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <rect x="3" y="4" width="18" height="17" rx="3" stroke="#0ea5e9" stroke-width="2"/>
-          <path d="M8 2v4M16 2v4M3 10h18" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
-        </svg>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+            <rect x="3" y="4" width="18" height="17" rx="3" stroke="#0ea5e9" stroke-width="2"/>
+            <path d="M8 2v4M16 2v4M3 10h18" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
+          </svg>
         </span>
         Tanggal
     </button>
+
     <div id="tanggalDropdown" class="dropdown-content">
       <div class="range">
         <label for="startDate">Tanggal Mulai:</label>
@@ -19,7 +27,7 @@
         <input type="date" id="endDate" name="endDate" class="input-date">
       </div>
       <div class="dropdown-buttons">
-        <button class="btn save" onclick="saveDateRange()">Simpan</button>
+        <button class="btn save" onclick="applyDateFilter()">Simpan</button>
         <button class="btn cancel" onclick="cancelDateRange()">Batal</button>
       </div>
     </div>
@@ -27,38 +35,43 @@
 
   <div class="search-filter">
     Cari :
-    <input type="text" id="transactionId" placeholder="Kode Transaksi" class="search-input">
-    <button class="filter-button" onclick="searchTransaction()">
-    <span class="df-ic" aria-hidden="true">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-      <path d="M21 21l-6-6m2.5-4.5A7.5 7.5 0 1 1 12 4.5a7.5 7.5 0 0 1 7.5 7.5z" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-    </span>
+    <input 
+      type="text" 
+      id="{{ $searchName }}" 
+      name="{{ $searchName }}" 
+      placeholder="{{ $searchPlaceholder }}" 
+      class="search-input">
+    <button id="searchButton" class="filter-button" onclick="applySearch('{{ $searchName }}')">
+      <span class="df-ic" aria-hidden="true">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <path d="M21 21l-6-6m2.5-4.5A7.5 7.5 0 1 1 12 4.5a7.5 7.5 0 0 1 7.5 7.5z" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
     </button>
   </div>
 
-    <button class="filter-button" onclick="clearFilter()">
-        <span class="df-ic" aria-hidden="true">
-        {{-- X (SVG) --}}
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-          <path d="M6 6l12 12M18 6L6 18" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-        </span>
-        Hapus filter
-    </button>
-
-    <div class="download-wrap">
-      <a href="# {{-- {{ $filePath }} --}}" download class="df-btn df-download">
-      <span class="df-ic" aria-hidden="true">
+  <button class="filter-button" onclick="clearFilter('{{ $searchName }}')">
+    <span class="df-ic" aria-hidden="true">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-        <path d="M12 16v-4m0 0l-4 4m4-4l4 4" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
-        <path d="M4 4h16v12H4V4z" stroke="##0ea5e9" stroke-width="2" stroke-linecap="round"/>
+        <path d="M6 6l12 12M18 6L6 18" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
       </svg>
-      </span>
-      Unduh{{-- {{ $buttonText }}- --}}
+    </span>
+    Hapus filter
+  </button>
+
+  @if($downloadRoute)
+    <div class="download-wrap">
+      <a href="{{ $downloadRoute }}" class="df-btn df-download">
+        <span class="df-ic" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+            <path d="M12 16v-4m0 0l-4 4m4-4l4 4" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
+            <path d="M4 4h16v12H4V4z" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </span>
+        Unduh
       </a>
     </div>
-
+  @endif
 </div>
 
 <style>
@@ -209,40 +222,95 @@
 
 
 <script>
+
   document.getElementById('tanggalButton').addEventListener('click', function() {
     const dropdown = document.getElementById('tanggalDropdown');
     dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
   });
 
-  function saveDateRange() {
-    const startDate = document.getElementById('startDate').value;
-    const endDate = document.getElementById('endDate').value;
-    if (startDate && endDate) {
-      alert('Tanggal dari ' + startDate + ' hingga ' + endDate + ' telah disimpan.');
-      // Anda bisa menambahkan kode untuk mengirimkan rentang tanggal ke backend
-    } else {
-      alert('Silakan pilih tanggal yang valid.');
-    }
-    document.getElementById('tanggalDropdown').style.display = 'none';
+function applyDateFilter() {
+  const startDate = document.getElementById('startDate').value;
+  const endDate = document.getElementById('endDate').value;
+  if (startDate && endDate) {
+
+    const button = document.getElementById('tanggalButton');
+    button.innerHTML = `
+      <span class="df-ic" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <rect x="3" y="4" width="18" height="17" rx="3" stroke="#0ea5e9" stroke-width="2"/>
+          <path d="M8 2v4M16 2v4M3 10h18" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+      ${formatDate(startDate)} - ${formatDate(endDate)}
+    `;
+    
+    const params = new URLSearchParams(window.location.search);
+    params.set('start_date', startDate);
+    params.set('end_date', endDate);
+    window.location.search = params.toString();
+  } else {
+    alert('Pilih tanggal mulai dan akhir!');
   }
+}
+
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+
+
+function applySearch(inputId) {
+  const val = document.getElementById(inputId).value;
+  const params = new URLSearchParams(window.location.search);
+
+  if (val) {
+    params.set('search', val);
+  } else {
+    params.delete('search');
+  }
+
+  window.location.search = params.toString();
+}
+
+  function clearFilter(inputId) {
+    document.getElementById(inputId).value = '';
+    const params = new URLSearchParams(window.location.search);
+    params.delete('start_date');
+    params.delete('end_date');
+    params.delete('search');
+    window.location.search = params.toString();
+  }
+
 
   function cancelDateRange() {
     document.getElementById('tanggalDropdown').style.display = 'none';
   }
 
-  function searchTransaction() {
-    const transactionId = document.getElementById('transactionId').value;
-    if (transactionId) {
-      alert('Mencari ID Transaksi: ' + transactionId);
-
-    } else {
-      alert('Silakan masukkan ID Transaksi.');
-    }
+  window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+  const start = params.get('start_date');
+  const end = params.get('end_date');
+  if (start && end) {
+    const button = document.getElementById('tanggalButton');
+    button.innerHTML = `
+      <span class="df-ic" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <rect x="3" y="4" width="18" height="17" rx="3" stroke="#0ea5e9" stroke-width="2"/>
+          <path d="M8 2v4M16 2v4M3 10h18" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+      ${formatDate(start)} - ${formatDate(end)}
+    `;
   }
 
+const searchVal = params.get('search');
+if (searchVal) {
+  document.getElementById('{{ $searchName }}').value = searchVal;
+}
+});
 
-  function clearFilter() {
-    document.getElementById('transactionId').value = '';
-    alert('Filter dihapus.');
-  }
 </script>

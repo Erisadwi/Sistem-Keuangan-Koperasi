@@ -9,28 +9,28 @@
 @section('content')
 
 <div class="form-container">
-    <form action="# {{-- {{ route('edit-pemasukan-kas.update', $transaksi->id) }} --}}" method="POST">
+    <form action="{{ route('transaksi-pemasukan.update', $TransaksiPemasukan->id_transaksi) }}" method="POST">
         @csrf
         @method('PUT')
 
         <label for="tanggal_transaksi">Tanggal Transaksi</label>
         <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi" 
-                value="{{ isset($transaksi) ? \Carbon\Carbon::parse($transaksi->tanggal_transaksi)->format('Y-m-d\TH:i') : '' }}">
+                value="{{ old('tanggal_transaksi', $TransaksiPemasukan->tanggal_transaksi ?? '') }}">
 
         <label for="jumlah_transaksi">Jumlah</label>
-        <input type="number" id="jumlah_transaksi" name="jumlah_transaksi" value=" {{-- {{ isset($transaksi) ? number_format($transaksi->jumlah_transaksi, 0, ',', '.') : '' }} --}}">
+        <input type="number" id="jumlah_transaksi" name="jumlah_transaksi" value="{{ isset($TransaksiPemasukan) ? number_format($TransaksiPemasukan->jumlah_transaksi, 0, ',', '.') : '' }}">
 
         <label for="keterangan">Keterangan</label>
-        <input type="text" id="keterangan" name="keterangan" value="{{-- {{ $transaksi->keterangan }} --}}">
+        <input type="text" id="keterangan" name="keterangan" value="{{ old('keterangan', $TransaksiPemasukan->ket_transaksi ?? '') }}">
 
-        <label for="akun_kredit">Dari Akun</label>
-            <select name="akun_kredit" id="akun_kredit">
-                <option value="" disabled selected>Pilih Akun</option>
-                <option value="A5">A5-Persediaan Barang</option>
-                <option value="A6">A6-Pinjaman Karyawan</option>
-                <option value="A7">A7-Pinjaman</option>
-                <option value="A8">A8-Darmawisata</option>
-                <option value="A10">A10-Barang dalam Perjalanan</option>
+        <label for="id_jenisAkunTransaksi_sumber">Dari Akun</label>
+            <select name="id_jenisAkunTransaksi_sumber" id="id_jenisAkunTransaksi_sumber">
+                <option value="" disabled {{ !$TransaksiPemasukan->id_jenisAkunTransaksi_sumber ? 'selected' : '' }}>Pilih Akun</option>
+                <option value="6"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_sumber == '6' ? 'selected' : '' }}>A5-Persediaan Barang</option>
+                <option value="7"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_sumber == '7' ? 'selected' : '' }}>A6-Pinjaman Karyawan</option>
+                <option value="8"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_sumber == '8' ? 'selected' : '' }}>A7-Pinjaman</option>
+                <option value="9"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_sumber == '9' ? 'selected' : '' }}>A8-Darmawisata</option>
+                <option value="11">A10-Barang dalam Perjalanan</option>
                 <option value="C">C-Aktiva Tetap Berwujud</option>
                 <option value="C01.01">C01.01-Nilai Perolehan Aktiva Tetap(Kendaraan)</option>
                 <option value="F">F-Utang</option>
@@ -51,7 +51,7 @@
                 <option value="K4">K4-Biaya Transportasi</option>
                 <option value="K10">K10-Biaya Lainnya</option>
                 <option value="TRF">TRF-Transfer Antar Kas</option>
-                <option value="B01.01">B01.01-Logam Mulia</option>
+                <option value="13">B01.01-Logam Mulia</option>
                 <option value="B03.05">B03.05-Persediaan Konsinyasi / Barang Titipan</option>
                 <option value="B03.06">B03.06-Persediaan Alat Olah Raga</option>
                 <option value="B03.08">B03.08-Persediaan Pulsa</option>
@@ -106,7 +106,7 @@
                 <option value="J01.08">J01.08-Pendapatan Lain - lain</option>
                 <option value="J01.09">J01.09-Pendapatan Jasa Giro</option>
                 <option value="K6">K6-Biaya Administrasi Bank Lainnya</option>
-                <option value="A11">A11-Pinjaman Perusahaan</option>
+                <option value="12">A11-Pinjaman Perusahaan</option>
                 <option value="K7">K7-Pemeliharaan Bangunan</option>
                 <option value="K01.02">K01.02-Tunjangan Karyawan</option>
                 <option value="H3">H3-Hutang Modal Pinjaman</option>
@@ -122,19 +122,19 @@
                 <option value="J01.10">J01.10-Pendapatan Sewa Lahan Koperasi</option>
             </select>
 
-        <label for="akun_debit">Untuk Kas</label>
-            <select name="akun_debit" id="akun_debit">
-                <option value="" disabled selected>Pilih Kas</option>
-                <option value="/">Kas Besar</option>
-                <option value="/">Bank Mandiri</option>
-                <option value="/">Kas Kecil</option>
-                <option value="/">Kas Niaga</option>
-                <option value="/">Bank BNI</option>
+        <label for="id_jenisAkunTransaksi_tujuan">Untuk Kas</label>
+            <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan">
+                <option value="" disabled {{ !$TransaksiPemasukan->id_jenisAkunTransaksi_tujuan ? 'selected' : '' }}>Pilih Kas</option>
+                <option value="1"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_tujuan == '1' ? 'selected' : '' }}>Kas Besar</option>
+                <option value="3"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_tujuan == '3' ? 'selected' : '' }}>Bank Mandiri</option>
+                <option value="4"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_tujuan == '4' ? 'selected' : '' }}>Kas Kecil</option>
+                <option value="5"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_tujuan == '5' ? 'selected' : '' }}>Kas Niaga</option>
+                <option value="2"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_tujuan == '2' ? 'selected' : '' }}>Bank BNI</option>
             </select>
 
         <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>
-            <a href="# {{-- {{ route('transaksi.index') }} --}}" class="btn btn-batal">Batal</a>
+            <a href="{{ route('transaksi-pemasukan.index') }}" class="btn btn-batal">Batal</a>
         </div>
 
     </form>

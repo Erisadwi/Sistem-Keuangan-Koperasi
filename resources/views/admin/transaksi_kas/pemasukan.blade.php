@@ -5,10 +5,17 @@
 @section('sub-title', 'Pemasukan')  
 
 @section('content')
-<x-menu.tambah-edit-hapus/>
-<x-menu.toolbar-right :downloadFile="'data-pengajuan.pdf'"/>
-
-
+<x-menu.tambah-edit-hapus
+    :tambah="route('transaksi-pemasukan.create')" 
+    :edit="'#'" 
+    :hapus="'#'"
+    id="action-buttons"
+/>
+<x-menu.toolbar-right 
+  searchPlaceholder="Cari Kode Transaksi"
+  searchName="kode_transaksi"
+  :downloadRoute="route('transaksi-pemasukan.download', request()->query())"
+/>
 
 
 <div class="pemasukan-table-wrap">
@@ -26,13 +33,13 @@
     </thead>
 
     <tbody>
-      @forelse(($transaksi ?? collect()) as $idx => $row)
-        <tr>
-          <td>{{ $row->id_transaksi ?? '' }}</td>
+      @forelse(($TransaksiPemasukan ?? collect()) as $idx => $row)
+        <tr class="selectable-row" data-id="{{ $row->id_transaksi }}">
+          <td>{{ $row->kode_transaksi ?? '' }}</td>
           <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y') ?? '' }}</td>
-          <td>{{ $row->ket_transaksi ?? 'Nama tidak tersedia' }}</td>
-          <td>{{ $row->akun_debit ?? '' }}</td>
-          <td>{{ $row->akun_kredit ?? '' }}</td>
+          <td>{{ $row->ket_transaksi ?? '-' }}</td>
+          <td>{{ $row->tujuan->nama_AkunTransaksi ?? '' }}</td>
+          <td>{{ $row->sumber->nama_AkunTransaksi ?? '' }}</td>
           <td>{{ number_format($row->jumlah_transaksi ?? 0, 0, ',', '.') }}</td>
           <td>{{ $row->data_user->nama_lengkap ?? '' }}</td>
       @empty
@@ -43,6 +50,10 @@
     </tbody>
   </table>
 </div>
+
+    <div class="pagination-container">
+      <x-menu.pagination :data="$TransaksiPemasukan" />
+    </div>
 
 
 
@@ -74,6 +85,7 @@
     table-layout: fixed;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     font-size: 13px;
+    text-align: center;
     color: #222;
   }
 
@@ -168,6 +180,25 @@
     }
   }
 
+  .pagination-container {
+  margin-top: auto;        
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 16px;
+}
+
+.selectable-row.selected td {
+  background-color: #b6d8ff !important; 
+  color: #000;
+}
+
+
+  .selectable-row:hover {
+    background-color: #eaf3ff;
+    cursor: pointer;
+  }
+
   @media (max-width: 768px) {
     .pemasukan-table thead .head-group th:nth-child(3),
     .pemasukan-table tbody td:nth-child(3),
@@ -177,6 +208,57 @@
     }
   }
 </style>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const editButton = document.querySelector('.df-edit');
+    const hapusButton = document.querySelector('.df-hapus');
+    let selectedId = null;
+
+    // saat baris diklik
+    document.querySelectorAll('.selectable-row').forEach(row => {
+        row.addEventListener('click', function() {
+            // hapus highlight dari semua baris
+            document.querySelectorAll('.selectable-row').forEach(r => r.classList.remove('selected'));
+
+            // tambahkan highlight ke baris ini
+            this.classList.add('selected');
+            selectedId = this.dataset.id;
+
+            // ubah tombol edit & hapus agar aktif ke id terpilih
+            if (editButton) editButton.href = `/admin/transaksi-pemasukan/${selectedId}/edit`;
+            if (hapusButton) hapusButton.dataset.id = selectedId;
+        });
+    });
+
+    // aksi hapus
+    if (hapusButton) {
+        hapusButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            const id = this.dataset.id;
+            if (!id) {
+                alert('Pilih data terlebih dahulu');
+                return;
+            }
+
+            if (confirm('Yakin ingin menghapus data ini?')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/admin/transaksi-pemasukan/${id}`;
+                form.innerHTML = `
+                    @csrf
+                    @method('DELETE')
+                `;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    }
+});
+</script>
+@endpush
+
 
 
 @endsection
