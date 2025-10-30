@@ -92,6 +92,9 @@ Route::get('/test-logo', [App\Http\Controllers\Admin\setting\identitasKoperasiCo
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::resource('transaksi-pemasukan', TransaksiPemasukanController::class);
 });
+Route::get('admin/transaksi_kas/pemasukan/download', [TransaksiPemasukanController::class, 'download'])
+    ->name('transaksi-pemasukan.download');
+
 
 //Route::get('/', function () {
 //    return view('welcome');

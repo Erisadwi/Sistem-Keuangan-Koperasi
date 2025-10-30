@@ -26,11 +26,11 @@
         <label for="id_jenisAkunTransaksi_sumber">Dari Akun</label>
             <select name="id_jenisAkunTransaksi_sumber" id="id_jenisAkunTransaksi_sumber">
                 <option value="" disabled {{ !$TransaksiPemasukan->id_jenisAkunTransaksi_sumber ? 'selected' : '' }}>Pilih Akun</option>
-                <option value="A5"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_sumber == 'A5' ? 'selected' : '' }}>A5-Persediaan Barang</option>
-                <option value="A6"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_sumber == 'A6' ? 'selected' : '' }}>A6-Pinjaman Karyawan</option>
-                <option value="A7"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_sumber == 'A7' ? 'selected' : '' }}>A7-Pinjaman</option>
-                <option value="A8"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_sumber == 'A8' ? 'selected' : '' }}>A8-Darmawisata</option>
-                <option value="A10">A10-Barang dalam Perjalanan</option>
+                <option value="6"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_sumber == '6' ? 'selected' : '' }}>A5-Persediaan Barang</option>
+                <option value="7"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_sumber == '7' ? 'selected' : '' }}>A6-Pinjaman Karyawan</option>
+                <option value="8"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_sumber == '8' ? 'selected' : '' }}>A7-Pinjaman</option>
+                <option value="9"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_sumber == '9' ? 'selected' : '' }}>A8-Darmawisata</option>
+                <option value="11">A10-Barang dalam Perjalanan</option>
                 <option value="C">C-Aktiva Tetap Berwujud</option>
                 <option value="C01.01">C01.01-Nilai Perolehan Aktiva Tetap(Kendaraan)</option>
                 <option value="F">F-Utang</option>
@@ -51,7 +51,7 @@
                 <option value="K4">K4-Biaya Transportasi</option>
                 <option value="K10">K10-Biaya Lainnya</option>
                 <option value="TRF">TRF-Transfer Antar Kas</option>
-                <option value="B01.01">B01.01-Logam Mulia</option>
+                <option value="13">B01.01-Logam Mulia</option>
                 <option value="B03.05">B03.05-Persediaan Konsinyasi / Barang Titipan</option>
                 <option value="B03.06">B03.06-Persediaan Alat Olah Raga</option>
                 <option value="B03.08">B03.08-Persediaan Pulsa</option>
@@ -106,7 +106,7 @@
                 <option value="J01.08">J01.08-Pendapatan Lain - lain</option>
                 <option value="J01.09">J01.09-Pendapatan Jasa Giro</option>
                 <option value="K6">K6-Biaya Administrasi Bank Lainnya</option>
-                <option value="A11">A11-Pinjaman Perusahaan</option>
+                <option value="12">A11-Pinjaman Perusahaan</option>
                 <option value="K7">K7-Pemeliharaan Bangunan</option>
                 <option value="K01.02">K01.02-Tunjangan Karyawan</option>
                 <option value="H3">H3-Hutang Modal Pinjaman</option>
@@ -125,11 +125,11 @@
         <label for="id_jenisAkunTransaksi_tujuan">Untuk Kas</label>
             <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan">
                 <option value="" disabled {{ !$TransaksiPemasukan->id_jenisAkunTransaksi_tujuan ? 'selected' : '' }}>Pilih Kas</option>
-                <option value="1"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_tujuan == 'Kas Besar' ? 'selected' : '' }}>Kas Besar</option>
-                <option value="3"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_tujuan == 'Bank Mandiri' ? 'selected' : '' }}>Bank Mandiri</option>
-                <option value="4"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_tujuan == 'Kas Kecil' ? 'selected' : '' }}>Kas Kecil</option>
-                <option value="5"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_tujuan == 'Kas Niaga' ? 'selected' : '' }}>Kas Niaga</option>
-                <option value="2"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_tujuan == 'Bank BNI' ? 'selected' : '' }}>Bank BNI</option>
+                <option value="1"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_tujuan == '1' ? 'selected' : '' }}>Kas Besar</option>
+                <option value="3"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_tujuan == '3' ? 'selected' : '' }}>Bank Mandiri</option>
+                <option value="4"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_tujuan == '4' ? 'selected' : '' }}>Kas Kecil</option>
+                <option value="5"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_tujuan == '5' ? 'selected' : '' }}>Kas Niaga</option>
+                <option value="2"{{ $TransaksiPemasukan->id_jenisAkunTransaksi_tujuan == '2' ? 'selected' : '' }}>Bank BNI</option>
             </select>
 
         <div class="form-buttons">
