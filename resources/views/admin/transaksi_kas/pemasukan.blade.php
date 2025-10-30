@@ -11,9 +11,11 @@
     :hapus="'#'"
     id="action-buttons"
 />
-<x-menu.toolbar-right :downloadFile="'data-pengajuan.pdf'"/>
-
-
+<x-menu.toolbar-right 
+  searchPlaceholder="Cari Kode Transaksi"
+  searchName="kode_transaksi"
+  :downloadRoute="route('transaksi-pemasukan.download', request()->query())"
+/>
 
 
 <div class="pemasukan-table-wrap">
@@ -36,8 +38,8 @@
           <td>{{ $row->kode_transaksi ?? '' }}</td>
           <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y') ?? '' }}</td>
           <td>{{ $row->ket_transaksi ?? '-' }}</td>
-          <td>{{ $row->id_jenisAkunTransaksi_tujuan ?? '' }}</td>
-          <td>{{ $row->id_jenisAkunTransaksi_sumber ?? '' }}</td>
+          <td>{{ $row->tujuan->nama_AkunTransaksi ?? '' }}</td>
+          <td>{{ $row->sumber->nama_AkunTransaksi ?? '' }}</td>
           <td>{{ number_format($row->jumlah_transaksi ?? 0, 0, ',', '.') }}</td>
           <td>{{ $row->data_user->nama_lengkap ?? '' }}</td>
       @empty
@@ -48,6 +50,10 @@
     </tbody>
   </table>
 </div>
+
+    <div class="pagination-container">
+      <x-menu.pagination :data="$TransaksiPemasukan" />
+    </div>
 
 
 
@@ -174,14 +180,22 @@
     }
   }
 
+  .pagination-container {
+  margin-top: auto;        
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 16px;
+}
+
 .selectable-row.selected td {
-  background-color: #b6d8ff !important; /* biru muda */
+  background-color: #b6d8ff !important; 
   color: #000;
 }
 
 
   .selectable-row:hover {
-    background-color: #eaf3ff; /* efek hover */
+    background-color: #eaf3ff;
     cursor: pointer;
   }
 

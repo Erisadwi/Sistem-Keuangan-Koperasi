@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Default Title')</title>  
     @vite(['resources/css/app3.css'])
+    @vite(['resources/js/toolbar.js'])
     @stack('styles')
     @yield('styles')
     @stack('scripts')
