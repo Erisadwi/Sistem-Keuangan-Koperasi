@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 
@@ -43,7 +44,7 @@ class TransaksiPemasukanController extends Controller
 
     public function store(Request $request) 
     {
-
+        Log::info('➡️ MASUK store TransaksiPemasukanController');
         $request->validate([
             'id_jenisAkunTransaksi_sumber' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
             'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
