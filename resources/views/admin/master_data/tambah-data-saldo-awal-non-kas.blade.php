@@ -1,6 +1,6 @@
 @extends('layouts.app-admin-add')
 
-@section('title', 'Saldo Awal NonKas')  
+@section('title', 'Saldo Awal Non Kas')  
 @section('back-url', url('admin/master_data/saldo-awal-non-kas'))
 @section('back-title', 'Master Data >')
 @section('title-1', 'Saldo Awal Non Kas')  
@@ -8,8 +8,16 @@
 
 @section('content')
 
+@if ($errors->any())
+    <ul>
+        @foreach ($errors->all() as $error)
+            <li style="color:red">{{ $error }}</li>
+        @endforeach
+    </ul>
+@endif
+
 <div class="form-container">
-    <form id="saldoAwalNonKasForm"  action="{{--{{ route('saldo-awal-non-kas.store') }}--}}" method="POST">
+    <form id="saldoAwalNonKasForm"  action="{{ route('saldo-awal-non-kas.store') }}" method="POST">
         @csrf
 
         <div class="form-group">

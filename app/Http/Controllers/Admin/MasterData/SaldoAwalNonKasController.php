@@ -12,12 +12,12 @@ class SaldoAwalNonKasController extends Controller
     public function index()
     {
         $saldoAwal = SaldoAwalNonKas::all();
-        return view('admin.master_data.saldo-awal-non-kas', compact('saldoAwalNonKas'));
+        return view('admin.master_data.tambah-data-saldo-awal-non-kas', compact('saldoAwalNonKas'));
     }
 
     public function create()
     {
-        return view('admin.master_data.saldo-awal-non-kas');
+        return view('admin.master_data.tambah-data-saldo-awal-non-kas');
     }
 
     public function store(Request $request)
@@ -29,7 +29,7 @@ class SaldoAwalNonKasController extends Controller
             'ket_transaksi' => 'nullable|string|max:255',
         ]);
 
-        $saldoAwalMonKas = SaldoAwalNonKas::create([
+        $saldoAwalNonKas = SaldoAwalNonKas::create([
             'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
             'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
             'id_user' => auth()->user()->id ?? null,
@@ -49,7 +49,7 @@ class SaldoAwalNonKasController extends Controller
     public function edit($id)
     {
         $saldoAwalNonKas = SaldoAwalNonKas::findOrFail($id);
-         return view('admin.master_data.saldo-awal-non-kas', compact('saldoAwalNonKas'));
+         return view('admin.master_data.tambah-data-saldo-awal-non-kas', compact('saldoAwalNonKas'));
     }
 
     public function update(Request $request, $id)
