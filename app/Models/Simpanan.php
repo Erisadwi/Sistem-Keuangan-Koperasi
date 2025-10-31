@@ -55,4 +55,5 @@ class Simpanan extends Model
     {
         return $this->belongsTo(JenisAkunTransaksi::class, 'id_jenisAkunTransaksi_sumber', 'id_jenisAkunTransaksi');
     }
+
 }

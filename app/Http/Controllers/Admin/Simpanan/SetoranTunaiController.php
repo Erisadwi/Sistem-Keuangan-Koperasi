@@ -9,6 +9,8 @@ use App\Models\JenisAkunTransaksi;
 use App\Models\JenisSimpanan;
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Exports\SetoranTunaiExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SetoranTunaiController extends Controller
 {
@@ -21,19 +23,23 @@ class SetoranTunaiController extends Controller
         return view('admin.simpanan.setoran-tunai', compact('setoranTunai'));
     }
 
-
     public function create()
-     {
+    {
     $anggota = Anggota::all();
     $jenisSimpanan = JenisSimpanan::all(['id_jenis_simpanan', 'jenis_simpanan', 'jumlah_simpanan']);
-    $akunTransaksi = JenisAkunTransaksi::all();
+    $akunTransaksi = JenisAkunTransaksi::whereIn('nama_AkunTransaksi', [
+        'Kas Besar',
+        'Bank BNI',
+        'Bank Mandiri',
+        'Kas Niaga',
+        'Kas Kecil'
+    ])->get();
 
     return view('admin.simpanan.tambah-setoran-tunai', compact('anggota', 'jenisSimpanan', 'akunTransaksi'));
     }
 
-
-    public function store(Request $request)
-{
+   public function store(Request $request)
+    {
     $request->validate([
         'id_anggota' => 'required|exists:anggota,id_anggota',
         'id_jenis_simpanan' => 'required|exists:jenis_simpanan,id_jenis_simpanan',
@@ -53,33 +59,33 @@ class SetoranTunaiController extends Controller
         'keterangan'
     ]);
 
-    // 🔹 Cari id_user berdasarkan anggota yang dipilih
-    $anggota = \App\Models\Anggota::find($request->id_anggota);
+    $anggota = Anggota::find($request->id_anggota);
     if ($anggota && $anggota->id_user) {
         $data['id_user'] = $anggota->id_user;
     }
 
-    // 🔹 Set field tambahan otomatis
-    $data['type_simpanan'] = 'TRD';
-    $data['kode_simpanan'] = 'ST' . str_pad(rand(1, 99999), 5, '0', STR_PAD_LEFT);
+    $lastSimpanan = Simpanan::where('type_simpanan', 'TRD')
+        ->orderBy('id_simpanan', 'desc')
+        ->first();
 
-    // 🔹 Otomatis set akun sumber ke akun Piutang Anggota (jika ada di tabel)
+    $nextNumber = $lastSimpanan ? ((int) substr($lastSimpanan->kode_simpanan, 3)) + 1 : 1;
+    $data['kode_simpanan'] = 'TRD' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
+
     $akunPiutang = JenisAkunTransaksi::where('nama_AkunTransaksi', 'like', '%Piutang Anggota%')->first();
     $data['id_jenisAkunTransaksi_sumber'] = $akunPiutang ? $akunPiutang->id_jenisAkunTransaksi : null;
 
-    // 🔹 Upload bukti setoran
     if ($request->hasFile('bukti_setoran')) {
         $file = $request->file('bukti_setoran');
         $filename = time() . '_' . $file->getClientOriginalName();
         $data['bukti_setoran'] = $file->storeAs('bukti_setoran', $filename, 'public');
     }
 
-    // 🔹 Simpan data
+    $data['type_simpanan'] = 'TRD';
+
     Simpanan::create($data);
 
     return redirect()->route('setoran-tunai.index')->with('success', '✅ Data setoran tunai berhasil ditambahkan.');
-}
-
+    }
 
     public function edit($id)
     {
@@ -129,6 +135,15 @@ class SetoranTunaiController extends Controller
 
     public function export()
     {
-        return 'Export data setoran tunai...';
+        return Excel::download(new SetoranTunaiExport, 'Data_Setoran_Tunai.xlsx');
     }
+
+    public function cetak($id)
+    {
+    $setoran = Simpanan::with(['anggota', 'jenisSimpanan', 'tujuan', 'user'])
+        ->findOrFail($id);
+
+    return view('admin.simpanan.cetak-nota-setoran-tunai', compact('setoran'));
+    }
+
 }

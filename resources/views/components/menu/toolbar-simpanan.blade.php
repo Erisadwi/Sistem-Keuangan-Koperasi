@@ -130,23 +130,19 @@
     width: 130px;
   }
 
-  /* Hilangkan underline dari link */
 a.filter-button {
   text-decoration: none !important;
   color: black; /* warna teks hitam */
 }
 
-/* Warna teks hitam pada semua tombol */
 .filter-button {
   color: black !important; /* teks hitam */
 }
 
-/* Warna ikon tetap biru */
 .filter-button svg {
   color: #2563eb; /* ikon biru */
 }
 
-/* Saat hover: background biru, teks dan ikon putih */
 .filter-button:hover {
   background-color: #2563eb !important;
   color: white !important;

@@ -45,8 +45,8 @@
             <td>{{ isset($simpanan->jumlah_simpanan) ? number_format($simpanan->jumlah_simpanan, 0, ',', '.') : '-' }}</td>
             <td>{{ $simpanan->data_user->nama_lengkap ?? '-' }}</td>
             <td>
-              <a href="{{ route('simpanan.cetak', $simpanan->id_simpanan ?? 0) }}" 
-                 class="btn-nota">🧾 Nota</a>
+              <a href="{{ route('setoran-tunai.cetak', $simpanan->id_simpanan ?? 0) }}" 
+                 class="btn-nota">🧾</a>
             </td>
           </tr>   
         @empty
