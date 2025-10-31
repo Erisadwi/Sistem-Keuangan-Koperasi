@@ -5,6 +5,8 @@ namespace App\Models;
 use Illuminate\Foundation\Auth\User as Authenticatable; 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use App\Models\Simpanan;
 
 class Anggota extends Authenticatable
 {
@@ -12,7 +14,6 @@ class Anggota extends Authenticatable
 
     protected $table = 'anggota';
     protected $primaryKey = 'id_anggota';
-
     public $incrementing = false;
     protected $keyType = 'string';
 
@@ -47,6 +48,10 @@ class Anggota extends Authenticatable
     public function getAuthPassword()
     {
         return $this->password_anggota;
+    }
+    public function simpanan()
+    {
+        return $this->hasMany(Simpanan::class, 'id_anggota', 'id_anggota');
     }
 
     public static function generateId()

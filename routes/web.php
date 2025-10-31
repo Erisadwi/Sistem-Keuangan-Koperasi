@@ -19,6 +19,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\MasterData\SaldoAwalNonKasController;
 use App\Http\Controllers\Admin\MasterData\SaldoAwalKasController;
 use App\Http\Controllers\DashboardControllerAnggota;
+use App\Http\Controllers\Admin\Simpanan\SetoranTunaiController;
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
@@ -74,11 +75,11 @@ Route::prefix('admin/master_data')->group(function () {
     Route::put('users/{id}', [UserController::class, 'update'])->name('data-user.update');
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('data-user.destroy');
 
-    Route::get('saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'index'])->name('saldo-awal-non-kas.index');
-    Route::get('saldo-awal-non-kas/create', [SaldoAwalNonKasController::class, 'create'])->name('saldo-awal-non-kas.create');
-    Route::post('saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'store'])->name('saldo-awal-non-kas.store');
-    Route::get('saldo-awal-non-kas/{id}/edit', [SaldoAwalNonKasController::class, 'edit'])->name('saldo-awal-non-kas.edit');
-    Route::put('saldo-awal-non-kas/{id}', [SaldoAwalNonKasController::class, 'update'])->name('saldo-awal-non-kas.update');
+    Route::get('/saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'index'])->name('saldo-awal-non-kas.index');
+    Route::get('/saldo-awal-non-kas/create', [SaldoAwalNonKasController::class, 'create'])->name('saldo-awal-non-kas.create');
+    Route::post('/saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'store'])->name('saldo-awal-non-kas.store');
+    Route::get('/saldo-awal-non-kas/{id}/edit', [SaldoAwalNonKasController::class, 'edit'])->name('saldo-awal-non-kas.edit');
+    Route::put('/saldo-awal-non-kas/{id}', [SaldoAwalNonKasController::class, 'update'])->name('saldo-awal-non-kas.update');
 
     Route::get('saldo-awal-kas', [SaldoAwalKasController::class, 'index'])->name('saldo-awal-kas.index');
     Route::get('saldo-awal-kas/create', [SaldoAwalKasController::class, 'create'])->name('saldo-awal-kas.create');
@@ -103,7 +104,6 @@ Route::prefix('admin/setting')->group(function () {
 Route::get('/test-logo', [App\Http\Controllers\Admin\setting\identitasKoperasiController::class, 'testBlob']);
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
-
     Route::get('transaksi_kas/pemasukan/download', [TransaksiPemasukanController::class, 'download'])
         ->name('transaksi-pemasukan.download');
     Route::resource('transaksi-pemasukan', TransaksiPemasukanController::class)
@@ -114,6 +114,20 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 
     Route::resource('transaksi-non-kas', TransaksiNonKasController::class)
         ->except(['show']);
+});
+
+Route::prefix('admin/simpanan')->group(function () { 
+    Route::get('setoran-tunai', [SetoranTunaiController::class, 'index'])->name('setoran-tunai.index');
+    Route::get('setoran-tunai/create', [SetoranTunaiController::class, 'create'])->name('setoran-tunai.create');
+    Route::post('setoran-tunai', [SetoranTunaiController::class, 'store'])->name('setoran-tunai.store');
+    Route::get('setoran-tunai/{id}/edit', [SetoranTunaiController::class, 'edit'])->name('setoran-tunai.edit');
+    Route::put('setoran-tunai/{id}', [SetoranTunaiController::class, 'update'])->name('setoran-tunai.update');
+    Route::delete('setoran-tunai/{id}', [SetoranTunaiController::class, 'destroy'])->name('setoran-tunai.destroy');
+    Route::get('setoran-tunai/export', [SetoranTunaiController::class, 'export'])->name('setoran-tunai.export');
+});
+Route::middleware(['auth'])->prefix('admin')->group(function () {
+    Route::resource('transaksi-non-kas', TransaksiNonKasController::class);
+
 });
 
 
@@ -263,7 +277,6 @@ Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
     return view('admin.master_data.edit-data-saldo-awal-non-kas');
 })->name('admin.master_data.edit-data-saldo-awal-non-kas');
 
-
 Route::get('/admin/simpanan/setoran-tunai', function () {
     return view('admin.simpanan.setoran-tunai');
 })->name('admin.simpanan.setoran-tunai');
@@ -332,4 +345,3 @@ Route::get('/anggota/tambah-data-pengajuan', function () {
 Route::get('/anggota/data-pengajuan-coba', function () {
     return view('anggota.data-pengajuan-coba');
 })->name('anggota.data-pengajuan-coba');
-

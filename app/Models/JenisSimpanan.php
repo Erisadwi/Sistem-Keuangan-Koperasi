@@ -4,19 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Simpanan;
 
 class JenisSimpanan extends Model
 {
     use HasFactory;
+
     protected $table = 'jenis_simpanan';
     protected $primaryKey = 'id_jenis_simpanan';
-
+    public $incrementing = true; // Karena PK-nya int unsigned
+    protected $keyType = 'int';
+    public $timestamps = false;
 
     protected $fillable = [
         'jenis_simpanan',
         'jumlah_simpanan',
         'tampil_simpanan',
     ];
-
-    public $timestamps = false;
+    
+    public function simpanan()
+    {
+        return $this->hasMany(Simpanan::class, 'id_jenis_simpanan', 'id_jenis_simpanan');
+    }
 }

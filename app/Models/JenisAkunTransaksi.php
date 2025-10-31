@@ -29,4 +29,13 @@ class JenisAkunTransaksi extends Model
     ];
 
     public $timestamps = false;
+    public function simpananSumber()
+    {
+        return $this->hasMany(Simpanan::class, 'id_jenisAkunTransaksi_sumber', 'id_jenisAkunTransaksi');
+    }
+
+    public function simpananTujuan()
+    {
+        return $this->hasMany(Simpanan::class, 'id_jenisAkunTransaksi_tujuan', 'id_jenisAkunTransaksi');
+    }
 }
