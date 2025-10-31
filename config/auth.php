@@ -45,6 +45,12 @@ return [
         'driver' => 'session',
         'provider' => 'users',
     ],
+
+    'anggota' => [
+    'driver' => 'session',
+    'provider' => 'anggota',
+    ],
+
 ],
 
     /*
@@ -68,6 +74,11 @@ return [
     'users' => [
         'driver' => 'eloquent',
         'model' => App\Models\User::class, // <-- MODEL INI
+    ],
+
+    'anggota' => [
+    'driver' => 'eloquent',
+    'model' => App\Models\Anggota::class,
     ],
 ],
 

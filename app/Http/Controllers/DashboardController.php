@@ -9,7 +9,7 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $user = Auth::user();
+        $user = Auth::guard('user')->user();
 
         switch ($user->id_role) {
             case 'R04':

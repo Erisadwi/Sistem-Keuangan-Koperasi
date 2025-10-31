@@ -18,13 +18,18 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Admin\MasterData\SaldoAwalNonKasController;
 use App\Http\Controllers\Admin\MasterData\SaldoAwalKasController;
-
+use App\Http\Controllers\DashboardControllerAnggota;
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
-Route::middleware(['auth'])->get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::middleware(['auth:user'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+});
+Route::middleware(['auth:anggota'])->group(function () {
+    Route::get('/anggota/beranda', [DashboardControllerAnggota::class, 'index'])->name('anggota.beranda');
+});
 
 
 Route::prefix('admin/master_data')->group(function () {
@@ -98,16 +103,19 @@ Route::prefix('admin/setting')->group(function () {
 Route::get('/test-logo', [App\Http\Controllers\Admin\setting\identitasKoperasiController::class, 'testBlob']);
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
-    Route::resource('transaksi-pemasukan', TransaksiPemasukanController::class);
-});
-Route::get('admin/transaksi_kas/pemasukan/download', [TransaksiPemasukanController::class, 'download'])
-    ->name('transaksi-pemasukan.download');
 
-Route::middleware(['auth'])->prefix('admin')->group(function () {
-    Route::resource('transaksi-non-kas', TransaksiNonKasController::class);
+    Route::get('transaksi_kas/pemasukan/download', [TransaksiPemasukanController::class, 'download'])
+        ->name('transaksi-pemasukan.download');
+    Route::resource('transaksi-pemasukan', TransaksiPemasukanController::class)
+        ->except(['show']);
+
+    Route::get('transaksi-non-kas/download', [TransaksiNonKasController::class, 'download'])
+        ->name('transaksi-non-kas.download');
+
+    Route::resource('transaksi-non-kas', TransaksiNonKasController::class)
+        ->except(['show']);
 });
-Route::get('admin/transaksi-non-kas/download', [TransaksiNonKasController::class, 'download'])
-    ->name('transaksi-non-kas.download');
+
 
 //Route::get('/', function () {
 //    return view('welcome');
@@ -118,10 +126,6 @@ Route::get('admin/transaksi-non-kas/download', [TransaksiNonKasController::class
 Route::get('/', function () {
     return view('login');
 });
-
-Route::get('/anggota/beranda', function () {
-    return view('anggota.beranda');
-})->name('anggota.beranda');
 
 Route::get('/anggota/laporan-simpanan', function () {
     return view('anggota.laporan-simpanan');

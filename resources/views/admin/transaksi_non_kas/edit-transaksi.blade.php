@@ -9,27 +9,28 @@
 @section('content')
 
 <div class="form-container">
-    <form action="# {{-- {{ route('tambah-transaksi-nonkas.update', $transaksi->id) }} --}}" method="POST">
+    <form action="{{ route('transaksi-non-kas.update', $TransaksiNonKas->id_transaksi) }}" method="POST">
         @csrf
         @method('PUT')
 
         <label for="tanggal_transaksi">Tanggal Transaksi</label>
         <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi" 
-                value="{{ isset($transaksi) ? \Carbon\Carbon::parse($transaksi->tanggal_transaksi)->format('Y-m-d\TH:i') : '' }}">
+                value="{{ old('tanggal_transaksi', isset($TransaksiNonKas->tanggal_transaksi) ? \Carbon\Carbon::parse($TransaksiNonKas->tanggal_transaksi)->format('Y-m-d\TH:i') : '') }}">
+
 
         <label for="jumlah_transaksi">Jumlah</label>
-        <input type="text" id="jumlah_transaksi" name="jumlah_transaksi" value=" {{-- {{ isset($transaksi) ? number_format($transaksi->jumlah_transaksi, 0, ',', '.') : '' }} --}}">
+        <input type="text" id="jumlah_transaksi" name="jumlah_transaksi" value="{{ $TransaksiNonKas->jumlah_transaksi }}">
 
         <label for="keterangan">Keterangan</label>
-        <input type="text" id="keterangan" name="keterangan" value="{{-- {{ $transaksi->keterangan }} --}}">
+        <input type="text" id="keterangan" name="ket_transaksi" value="{{ old('keterangan', $TransaksiPemasukan->ket_transaksi ?? '') }}">
 
-        <label for="akun_debit">Akun Debit</label>
-            <select name="akun_debit" id="akun_debit">
-                <option value="" disabled selected>Pilih Akun Debit</option>
-                <option value="A5">A5-Persediaan Barang</option>
-                <option value="A6">A6-Pinjaman Karyawan</option>
-                <option value="A7">A7-Pinjaman</option>
-                <option value="A8">A8-Darmawisata</option>
+        <label for="id_jenisAkunTransaksi_tujuan">Akun Debit</label>
+            <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan">
+                <option value="" disabled {{ !$TransaksiNonKas->id_jenisAkunTransaksi_tujuan ? 'selected' : '' }}>Pilih Akun</option>
+                <option value="6"{{ $TransaksiNonKas->id_jenisAkunTransaksi_tujuan == '6' ? 'selected' : '' }}>A5-Persediaan Barang</option>
+                <option value="7"{{ $TransaksiNonKas->id_jenisAkunTransaksi_tujuan == '7' ? 'selected' : '' }}>A6-Pinjaman Karyawan</option>
+                <option value="8"{{ $TransaksiNonKas->id_jenisAkunTransaksi_tujuan == '8' ? 'selected' : '' }}>A7-Pinjaman</option>
+                <option value="9"{{ $TransaksiNonKas->id_jenisAkunTransaksi_tujuan == '9' ? 'selected' : '' }}>A8-Darmawisata</option>
                 <option value="A10">A10-Barang dalam Perjalanan</option>
                 <option value="C">C-Aktiva Tetap Berwujud</option>
                 <option value="C01.01">C01.01-Nilai Perolehan Aktiva Tetap(Kendaraan)</option>
@@ -123,13 +124,13 @@
                 <option value="J01.10">J01.10-Pendapatan Sewa Lahan Koperasi</option>
             </select>
 
-        <label for="akun_kredit">Akun Kredit</label>
-            <select name="akun_kredit" id="akun_kredit">
-                <option value="" disabled selected>Pilih Akun Kredit</option>
-                <option value="A5">A5-Persediaan Barang</option>
-                <option value="A6">A6-Pinjaman Karyawan</option>
-                <option value="A7">A7-Pinjaman</option>
-                <option value="A8">A8-Darmawisata</option>
+        <label for="id_jenisAkunTransaksi_sumber">Akun Kredit</label>
+            <select name="id_jenisAkunTransaksi_sumber" id="id_jenisAkunTransaksi_sumber">
+                <option value="" disabled {{ !$TransaksiNonKas->id_jenisAkunTransaksi_sumber ? 'selected' : '' }}>Pilih Akun</option>
+                <option value="6"{{ $TransaksiNonKas->id_jenisAkunTransaksi_sumber == '6' ? 'selected' : '' }}>A5-Persediaan Barang</option>
+                <option value="7"{{ $TransaksiNonKas->id_jenisAkunTransaksi_sumber == '7' ? 'selected' : '' }}>A6-Pinjaman Karyawan</option>
+                <option value="8"{{ $TransaksiNonKas->id_jenisAkunTransaksi_sumber == '8' ? 'selected' : '' }}>A7-Pinjaman</option>
+                <option value="9"{{ $TransaksiNonKas->id_jenisAkunTransaksi_sumber == '9' ? 'selected' : '' }}>A8-Darmawisata</option>
                 <option value="A10">A10-Barang dalam Perjalanan</option>
                 <option value="C">C-Aktiva Tetap Berwujud</option>
                 <option value="C01.01">C01.01-Nilai Perolehan Aktiva Tetap(Kendaraan)</option>

@@ -12,7 +12,7 @@
     </header>
 
 @php
-    $user = Auth::user(); 
+    $user = Auth::guard('user')->user();
 @endphp
 
 

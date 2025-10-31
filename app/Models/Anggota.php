@@ -2,17 +2,21 @@
 
 namespace App\Models;
 
+use Illuminate\Foundation\Auth\User as Authenticatable; 
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 
-class Anggota extends Model
+class Anggota extends Authenticatable
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
+
     protected $table = 'anggota';
     protected $primaryKey = 'id_anggota';
 
     public $incrementing = false;
     protected $keyType = 'string';
+
+    public $timestamps = false;
 
     protected $fillable = [
         'id_anggota',
@@ -36,16 +40,23 @@ class Anggota extends Model
         'foto',
     ];
 
-    public $timestamps = false;
+    protected $hidden = [
+        'password_anggota',
+    ];
 
-public static function generateId()
-{
-    $prefix = 'AG';
-    $last = self::where('id_anggota', 'like', $prefix.'%')
-        ->orderBy('id_anggota', 'desc')
-        ->first();
+    public function getAuthPassword()
+    {
+        return $this->password_anggota;
+    }
 
-    $number = $last ? (int) substr($last->id_anggota, strlen($prefix)) + 1 : 1;
-    return $prefix . str_pad($number, 4, '0', STR_PAD_LEFT);
-}
+    public static function generateId()
+    {
+        $prefix = 'AG';
+        $last = self::where('id_anggota', 'like', $prefix.'%')
+            ->orderBy('id_anggota', 'desc')
+            ->first();
+
+        $number = $last ? (int) substr($last->id_anggota, strlen($prefix)) + 1 : 1;
+        return $prefix . str_pad($number, 4, '0', STR_PAD_LEFT);
+    }
 }

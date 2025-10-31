@@ -15,7 +15,8 @@
 
         <label for="tanggal_transaksi">Tanggal Transaksi</label>
         <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi" 
-                value="{{ old('tanggal_transaksi', $TransaksiPemasukan->tanggal_transaksi ?? '') }}">
+                value="{{ old('tanggal_transaksi', isset($TransaksiPemasukan->tanggal_transaksi) ? \Carbon\Carbon::parse($TransaksiPemasukan->tanggal_transaksi)->format('Y-m-d\TH:i') : '') }}">
+
 
         <label for="jumlah_transaksi">Jumlah</label>
         <input type="number" id="jumlah_transaksi" name="jumlah_transaksi" value="{{ isset($TransaksiPemasukan) ? number_format($TransaksiPemasukan->jumlah_transaksi, 0, ',', '.') : '' }}">

@@ -13,7 +13,7 @@ class TransaksiPemasukanController extends Controller
 {
     public function index(Request $request)
 {
-    $perPage = 10;
+    $perPage = $request->input('per_page', 10);
 
     $query = Transaksi::with(['sumber', 'tujuan', 'data_user'])
         ->where('type_transaksi', 'TKD');
@@ -31,7 +31,8 @@ class TransaksiPemasukanController extends Controller
 
     $TransaksiPemasukan = $query
         ->orderBy('id_transaksi', 'asc')
-        ->paginate($perPage);
+        ->paginate($perPage)
+        ->appends($request->except('page'));
 
     return view('admin.transaksi_kas.pemasukan', compact('TransaksiPemasukan'));
 }
@@ -77,12 +78,16 @@ class TransaksiPemasukanController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
+            'id_jenisAkunTransaksi_sumber' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
+            'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
             'jumlah_transaksi' => 'required|numeric|min:0',
             'ket_transaksi' => 'nullable|string|max:255',
         ]);
 
         $TransaksiPemasukan = Transaksi::findOrFail($id);
         $TransaksiPemasukan->update([
+            'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
+            'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
             'jumlah_transaksi' => $request->jumlah_transaksi,
             'ket_transaksi' => $request->ket_transaksi,
         ]);
@@ -101,6 +106,7 @@ class TransaksiPemasukanController extends Controller
     public function download(Request $request)
     {
     $query = \App\Models\Transaksi::query();
+    $query->where('kode_transaksi', 'like', 'TKD%');
 
     if ($request->has('search')) {
         $query->where('kode_transaksi', 'like', "%{$request->search}%");
