@@ -36,7 +36,7 @@
           <div class="profile-name">{{ $user->nama_anggota ?? 'Nama Tidak Ditemukan' }}</div>
           <div class="profile-role">Anggota</div>
         </div>
-        <a href="{{ route('anggota.profil.profilAnggota') }}" class="btn-profil push-right" aria-label="Buka Profil">
+        <a href="{{ route('anggota.profil') }}" class="btn-profil push-right" aria-label="Buka Profil">
           <img src="{{ asset('icons/arrow-profil.png') }}" alt="">
         </a>
       </div>
@@ -50,8 +50,8 @@
         </x-menu.section>
 
         <x-menu.section title="Pengajuan Pinjaman" :open="false" :has-sub="true">
-          <a href="#" class="submenu-row">Data Pengajuan</a>
-          <a href="#" class="submenu-row">Tambah Pengajuan Baru</a>
+          <a href="{{ route('anggota.data-pengajuan') }}" class="submenu-row">Data Pengajuan</a>
+          <a href="{{ route('anggota.tambah-data-pengajuan') }}" class="submenu-row">Tambah Pengajuan Baru</a>
         </x-menu.section>
       </ul>
     </aside>

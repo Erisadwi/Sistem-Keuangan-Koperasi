@@ -23,8 +23,8 @@ body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,"Helv
   border-radius:20px;
   box-shadow:0 4px 4px rgba(0,0,0,.25);
   height:auto;
-  width: 100%;
-  max-width: 1150px; 
+  min-height: 550px;
+  width: 90%;
   padding:28px 30px 32px;
   display:grid;
   grid-template-columns: 400px 1fr; 
@@ -100,81 +100,62 @@ body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,"Helv
 .btn-upload:disabled { opacity:.6; cursor:not-allowed; filter:none; }
 
 .form {
-  display:grid; 
-  grid-template-columns: 1fr; 
-  row-gap:12px; 
-  column-gap:24px; 
-  align-items:center;
+  display: grid;
+  grid-template-columns: 180px 1fr;
+  row-gap: 16px;
+  column-gap: 24px;
+  align-items: center;
+  justify-content: start;
+  width: 100%;
+  margin: 0 auto;   
 }
 
 .field {
-  display:contents; 
-}
-.field > label {
-  font-weight:600; 
-  font-size:18px; 
-  color:#000; 
-  text-align:left;
-}
-.field input,
-.field textarea {
-  width:450px; 
-  max-width:100%; 
-  background:#fff; 
-  color:#111;
-  border:1px solid var(--input-border);
-  border-radius:15px; 
-  padding:6px 14px; 
-  font-size:16px; 
-  box-shadow:0 4px 4px rgba(0,0,0,.10);
-  outline:none;
-}
-.field input { height:40px;}
-.field textarea { 
-  min-height:80px; 
-  resize:vertical; 
-  box-shadow:none; 
-  font-family: var(--font-sans, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif);
+  display: contents;
 }
 
-.field select { 
-  width: 450px;
-  max-width: 100%;
+.field > label {
+  font-weight: 600;
+  font-size: 18px;
+  color: #000;
+  text-align: left;
+}
+
+.field input,
+.field textarea,
+.field select {
+  width: 95%;            
   background: #fff;
   color: #111;
-  border: 1px solid var(--input-border);
+  border: 1px solid var(--input-border, #ccc);
   border-radius: 15px;
-  padding: 6px 14px;
+  padding: 8px 14px;
   font-size: 16px;
   box-shadow: 0 4px 4px rgba(0, 0, 0, .10);
   outline: none;
+  justify-self: start;     
+}
+
+.field input {
   height: 40px;
-  appearance: none;
-  background-image: url("data:image/svg+xml;utf8,<svg fill='black' height='14' width='14' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5-5H2z'/></svg>");
-  background-repeat: no-repeat;
-  background-position: right 14px center;
-  background-size: 14px;
-  cursor: pointer;
-  transition: border-color 0.2s, color 0.2s;
 }
 
-.field select:focus {
-  border-color: var(--blue-800);
+.field textarea {
+  min-height: 80px;
+  resize: vertical;
+  padding-top: 24px;
+  font-family: var(--font-sans, system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif);
 }
 
-.field select option:checked {
-  background-color: #c4dae5;
-  color: #fff;
-}
-
+/* Tombol */
 .actions {
-  grid-column: 1 / span 2;  
-  display: grid;
-  grid-template-columns: auto 1fr;  
-  gap: 0px;  
-  width: 67%;
-  margin-top: 50px;
-  margin-left:215px;
+  grid-column: 2 / 3;  
+  display: flex;
+  justify-content: flex-end; 
+  gap: 12px;
+  margin-top: 30px;
+  width: 100%;
+  padding-right:35px;
 }
 
 .btn {
@@ -182,29 +163,34 @@ body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,"Helv
   align-items: center;
   justify-content: center;
   height: 35px;
-  width: 210px;  
+  width: 210px;
   border: none;
   cursor: pointer;
   border-radius: 15px;
   font-size: 16px;
   font-weight: 700;
-  text-decoration: none;
   color: #fff;
+  text-decoration: none;
   box-shadow: 0 4px 4px rgba(0, 0, 0, .25);
 }
 
 .btn-save {
   background: #25e11b;
 }
+
 .btn-cancel {
   background: #ea2828;
-  justify-self: end; 
 }
 
 .btn:hover,
-.btn:focus-visible { filter: brightness(0.9); }
-.btn:active { filter: brightness(0.82); transform: translateY(1px); }
-.btn:disabled { opacity:.6; cursor:not-allowed; filter:none; }
+.btn:focus-visible {
+  filter: brightness(0.9);
+}
+
+.btn:active {
+  filter: brightness(0.82);
+  transform: translateY(1px);
+}
 
 @media (max-width: 980px){
   .panel-inner{ 

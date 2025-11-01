@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\MasterData\SaldoAwalNonKasController;
 use App\Http\Controllers\Admin\MasterData\SaldoAwalKasController;
 use App\Http\Controllers\DashboardControllerAnggota;
 use App\Http\Controllers\Admin\Simpanan\SetoranTunaiController;
+use App\Http\Controllers\Anggota\ProfileController;
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
@@ -30,6 +31,11 @@ Route::middleware(['auth:user'])->group(function () {
 });
 Route::middleware(['auth:anggota'])->group(function () {
     Route::get('/anggota/beranda', [DashboardControllerAnggota::class, 'index'])->name('anggota.beranda');
+
+    Route::get('/profil', [ProfileController::class, 'index'])->name('anggota.profil');
+    Route::get('/profil/edit', [ProfileController::class, 'edit'])->name('anggota.profil.edit');
+    Route::put('/profil/{id}', [ProfileController::class, 'update'])->name('anggota.profil.update');
+
 });
 
 
@@ -103,7 +109,7 @@ Route::prefix('admin/setting')->group(function () {
 
 Route::get('/test-logo', [App\Http\Controllers\Admin\setting\identitasKoperasiController::class, 'testBlob']);
 
-Route::middleware(['auth'])->prefix('admin')->group(function () {
+Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('transaksi_kas/pemasukan/download', [TransaksiPemasukanController::class, 'download'])
         ->name('transaksi-pemasukan.download');
     Route::resource('transaksi-pemasukan', TransaksiPemasukanController::class)
