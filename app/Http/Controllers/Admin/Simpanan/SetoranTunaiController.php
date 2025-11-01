@@ -9,8 +9,10 @@ use App\Models\JenisAkunTransaksi;
 use App\Models\JenisSimpanan;
 use Illuminate\Http\Request;
 use App\Models\User;
-use App\Exports\SetoranTunaiExport;
-use Maatwebsite\Excel\Facades\Excel;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Support\Facades\Auth;
+
+
 
 class SetoranTunaiController extends Controller
 {
@@ -45,7 +47,6 @@ class SetoranTunaiController extends Controller
 
     $setoranTunai = $query->orderBy('tanggal_transaksi', 'desc')->get();
 
-    // 🔹 Pesan jika hasil kosong (hanya bila pakai filter)
     if ($setoranTunai->isEmpty() && $request->hasAny(['start', 'end', 'tanggal', 'kode', 'nama', 'jenis'])) {
         session()->flash('warning', '⚠️ Tidak ditemukan data dengan filter yang diterapkan.');
     }
@@ -54,7 +55,7 @@ class SetoranTunaiController extends Controller
         'addUrl'    => route('setoran-tunai.create'),
         'editUrl'   => route('setoran-tunai.edit', '__ID__'),
         'deleteUrl' => route('setoran-tunai.destroy', '__ID__'),
-        'exportUrl' => route('setoran-tunai.export'),
+        'exportUrl' => route('setoran-tunai.exportPdf'),
     ];
 
     return view('admin.simpanan.setoran-tunai', compact('setoranTunai', 'toolbar'));
@@ -91,6 +92,8 @@ class SetoranTunaiController extends Controller
             'tanggal_transaksi',
             'keterangan'
         ]);
+
+        $data['id_user'] = Auth::id();
 
         $anggota = Anggota::find($request->id_anggota);
         if ($anggota && $anggota->id_user) {
@@ -174,10 +177,19 @@ class SetoranTunaiController extends Controller
         return redirect()->route('setoran-tunai.index')->with('success', '🗑️ Data setoran tunai berhasil dihapus.');
     }
 
-    public function export()
-    {
-        return Excel::download(new SetoranTunaiExport, 'Data_Setoran_Tunai.xlsx');
-    }
+    public function exportPdf()
+{
+    $data = Simpanan::with(['anggota', 'jenisSimpanan', 'user'])
+        ->where('type_simpanan', 'TRD')
+        ->orderBy('tanggal_transaksi', 'desc')
+        ->get();
+
+    $pdf = Pdf::loadView('admin.simpanan.setoran-tunai.pdf', compact('data'))
+              ->setPaper('a4', 'portrait');
+
+    return $pdf->download('Laporan_Setoran_Tunai.pdf');
+}
+
 
     public function cetak($id)
     {

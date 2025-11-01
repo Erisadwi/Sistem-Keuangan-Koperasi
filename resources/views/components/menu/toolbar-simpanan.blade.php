@@ -38,7 +38,7 @@
     gap: 6px;
     border: 1px solid #2563eb;
     background-color: white;
-    color: #2563eb;
+    color: #000; /* teks hitam */
     border-radius: 6px;
     padding: 6px 10px;
     cursor: pointer;
@@ -46,19 +46,27 @@
     transition: all 0.2s ease;
   }
 
+  .filter-button svg {
+    color: #2563eb; /* semua ikon biru */
+  }
+
   .filter-button:hover {
     background-color: #2563eb;
     color: white;
   }
 
+  .filter-button:hover svg {
+    color: white !important;
+  }
+
   /* === Tombol Hapus (warna merah) === */
   .filter-button.danger {
     border-color: #ef4444;
-    color: #ef4444 !important;
+    color: #000 !important; /* tetap teks hitam */
   }
 
   .filter-button.danger svg {
-    color: #ef4444 !important;
+    color: #ef4444 !important; /* ikon merah */
   }
 
   .filter-button.danger:hover {
@@ -97,6 +105,7 @@
     flex-direction: column;
     margin-bottom: 8px;
     font-size: 13px;
+    color: #000; /* teks label tanggal tetap hitam */
   }
 
   .input-date {
@@ -128,11 +137,13 @@
     color: white;
   }
 
+  /* Input cari */
   .search-input {
     border: 1px solid #ccc;
     border-radius: 6px;
     padding: 4px 8px;
     font-size: 13px;
+    color: gray; /* biarkan abu-abu */
   }
 
   .search-input.small {
@@ -141,15 +152,7 @@
 
   a.filter-button {
     text-decoration: none !important;
-    color: black;
-  }
-
-  .filter-button svg {
-    color: #2563eb;
-  }
-
-  .filter-button:hover svg {
-    color: white !important;
+    color: #000; /* teks tombol link tetap hitam */
   }
 
   /* Tombol disable visual */
@@ -161,7 +164,14 @@
   .table-active {
     background-color: #e0f2fe !important;
   }
+
+  /* Label "Cari:" tetap hitam */
+  .search-filter span {
+    color: #000;
+    font-weight: 500;
+  }
 </style>
+
 
 <div class="toolbar-wrapper">
 

@@ -11,7 +11,7 @@
     addUrl="{{ route('setoran-tunai.create') }}"
     editUrl="{{ route('setoran-tunai.edit', '__ID__') }}"
     deleteUrl="{{ route('setoran-tunai.destroy', '__ID__') }}"
-    exportUrl="{{ route('setoran-tunai.export') }}"
+    exportUrl="{{ route('setoran-tunai.exportPdf') }}"
 />
 
 
@@ -61,6 +61,10 @@
     </table>
   </div>
 </div>
+
+{{-- <div class="pagination-container">
+      <x-menu.pagination :data="$setoranTunai" />
+ </div> 
 
 {{-- STYLE --}}
 <style>
