@@ -31,7 +31,8 @@
             @php $nom = $row->jumlah_ajuan ?? null; @endphp
             {{ $nom !== null ? number_format($nom, 0, ',', '.') : '' }}
           </td>
-
+          <td>{{ $row->keterangan ?? '' }}</td>
+          <td>{{ $row->tanggal_update ?? '' }}</td>
           <td>
             @php
               $status_ajuan = trim((string)($row->status_ajuan ?? ''));

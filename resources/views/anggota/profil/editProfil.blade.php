@@ -20,26 +20,21 @@
       <div class="panel-inner">
         <div class="left">
           <div class="avatar-wrap">
-            <img src="{{ {{-- $anggota->foto ? asset('storage/' . $anggota->foto) : --}} asset('images/default.jpeg') }}" alt="Foto Profil" class="avatar">
+            <img src="{{ $anggota->foto ? asset($anggota->foto) : asset('images/default.jpeg') }}" alt="Foto Profil" class="avatar">
             <button type="button" id="btnCamera" class="btn-camera">
               <img src="{{ asset('icons/camera.png') }}" alt="" class="btn-icon" />
             </button>
           </div>
-          
-          <input type="file" name="foto" id="fotoInput" accept="image/*" style="display: none;">
-
-          <button type="button" id="btnUpload" class="btn-upload">
-            Ubah Foto
-          </button>
+          <button type="button" id="btnUpload" class="btn-upload">Ubah Foto</button>
         </div>
 
-        <form class="form" method="post" action="#" {{-- {{ route('profile.update', $anggota->id_anggota) }} --}} enctype="multipart/form-data">
+        <form id="formProfil" class="form" method="post" action="{{ route('anggota.profil.update', $anggota->id_anggota) }}" enctype="multipart/form-data">
           @csrf
           @method('PUT')
 
           <div class="field">
             <label>Username</label>
-            <input type="text" name="username_anggota" value="angga" {{-- {{ $anggota->username_anggota }} --}}>
+            <input type="text" name="username_anggota" value="{{ $anggota->username_anggota }}">
           </div>
 
           <div class="field">
@@ -54,18 +49,21 @@
 
           <div class="field">
             <label>Nama Lengkap</label>
-            <input type="text" name="nama_anggota" value="angga aldi yunanda" {{-- {{ $anggota->nama_anggota }} --}}>
+            <input type="text" name="nama_anggota" value="{{ $anggota->nama_anggota }}">
           </div>
 
           <div class="field">
             <label>Alamat</label>
-            <textarea name="alamat_anggota" rows="3">Perum Griya Sejahtera, Blok J No. 20 jl. Medayu Utara 30A, Medokan Ayu, Rungkut Surabaya {{-- {{ $anggota->alamat_anggota }} --}}</textarea>
+            <textarea name="alamat_anggota" rows="3">{{ $anggota->alamat_anggota }}</textarea>
           </div>
 
           <div class="field">
             <label>Jabatan</label>
-            <input type="text" name="jabatan" value="anggota" {{-- {{ $anggota->jabatan }} --}}>
+            <input type="text" name="jabatan" value="{{ $anggota->jabatan }}">
           </div>
+
+          <input type="file" name="foto" id="fotoInput" accept="image/*" style="display: none;">
+                      
 
           <div class="actions">
             <button type="submit" class="btn btn-save">Simpan Perubahan</button>

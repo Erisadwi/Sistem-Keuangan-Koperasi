@@ -136,11 +136,12 @@ a.btn-profil:focus-visible, btn-profil:focus-visible{ outline: 2px solid #1d4ed8
   background:#d9e7ef;
   border-radius:var(--radius);
   box-shadow:var(--card-shadow);
-  padding:24px;
+  padding: 70px 10px;
   text-align:center;
+
 }
 .profile-photo{
-  width:120px;height:120px;
+  width:130px;height:130px;
   border-radius:50%;
   object-fit:cover;
   margin:0 auto 12px;
@@ -225,22 +226,26 @@ input,textarea{
   border:1px solid #ccc;
   border-radius:8px;
   padding:8px 10px;
-  font-size:15px;
   resize:none;
+  font-family: inherit;     
+  font-size: 1rem; 
 }
 .btn-primary {
   background: var(--blue-brand);
   color: #fff;
   padding: 8px 80px;
-  font-size: 14px;
-  font-weight: 600;
+  font-size: 15px;
+  font-weight: 650;
   border: none;
   border-radius: 8px;
   cursor: pointer;
   transition: 0.2s all;
   width: auto;          
   display: block;       
-  margin-left: auto;    
+  margin-left: auto; 
+  text-align: center;
+  text-decoration: none;
+   
 }
 
 .btn-primary:hover {

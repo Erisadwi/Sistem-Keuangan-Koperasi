@@ -15,37 +15,41 @@
         <x-menu.nav-top/>
     </header>
 
-      {{-- @php
+      @php
         $user = Auth::guard('anggota')->user();
-        @endphp --}}
+      @endphp
 
     <div class="layout">
         <aside class="sidebar">
         <div class="profile-card">
         <div class="profile-left">
-          <img src="{{ asset('images/profilAnggota.jpg') }}{{-- {{ $user && $user->foto ? asset('storage/' . $user->foto) : asset('images/profilAnggota.jpg') }} --}}"
-          alt="Foto {{-- {{ $user->nama_lengkap ?? 'Pengguna' }} --}}" class="avatar-70">
+        <img 
+          src="{{ $user && $user->foto 
+            ? asset('storage/' . $user->foto) 
+            : asset('images/default.jpeg') }}" 
+          alt="Foto {{ $user->nama_anggota ?? 'Pengguna' }}" 
+        class="avatar-70">
         </div>
         <div class="profile-right">
-          <div class="profile-name">angga{{-- {{ $user->nama_lengkap ?? 'Nama Tidak Ditemukan' }} --}}</div>
+          <div class="profile-name">{{ $user->nama_anggota ?? 'Nama Tidak Ditemukan' }}</div>
           <div class="profile-role">Anggota</div>
         </div>
-        <a href="#{{-- {{ route('anggota.profil') }} --}}" class="btn-profil push-right" aria-label="Buka Profil">
+        <a href="{{ route('anggota.profil.profilAnggota') }}" class="btn-profil push-right" aria-label="Buka Profil">
           <img src="{{ asset('icons/arrow-profil.png') }}" alt="">
         </a>
       </div>
 
       <ul class="menu-list">
-        <x-menu.section title="Laporan" :open="false">
+        <x-menu.section title="Laporan" :open="false"  :has-sub="true">
           <a href="#" class="submenu-row">Simpanan</a>
           <a href="#" class="submenu-row">Pinjaman</a>
           <a href="#" class="submenu-row">Pembayaran</a>
           <a href="#" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
         </x-menu.section>
 
-        <x-menu.section title="Pengajuan Pinjaman" :open="false">
-          <a href="#" class="submenu-row">Data Pengajuan</a>
-          <a href="#" class="submenu-row">Tambah Pengajuan Baru</a>
+        <x-menu.section title="Pengajuan Pinjaman" :open="false" :has-sub="true">
+          <a href="{{ route('anggota.data-pengajuan') }}" class="submenu-row">Data Pengajuan</a>
+          <a href="{{ route('anggota.tambah-data-pengajuan') }}" class="submenu-row">Tambah Pengajuan Baru</a>
         </x-menu.section>
       </ul>
     </aside>

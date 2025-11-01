@@ -58,8 +58,7 @@
   </table>
 </section>
 
-{{-- Komponen pagination --}}
-<x-menu.pagination />
+
 
 @endsection
 

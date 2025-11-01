@@ -105,6 +105,7 @@ a.btn-profil:focus-visible, btn-profil:focus-visible{ outline: 2px solid #1d4ed8
   margin-top: 135px;
   margin-left: 300px;
   inset: 0;
+  
 }
 .title-container {
   background: #6e9eb6;
@@ -143,7 +144,6 @@ a.btn-profil:focus-visible, btn-profil:focus-visible{ outline: 2px solid #1d4ed8
 /* FORM */
 .form {
   width: 100%;
-  max-width: 1100px;
   display: flex;
   flex-direction: column;
   margin-top: 60px;
