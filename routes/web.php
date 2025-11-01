@@ -109,7 +109,7 @@ Route::prefix('admin/setting')->group(function () {
 
 Route::get('/test-logo', [App\Http\Controllers\Admin\setting\identitasKoperasiController::class, 'testBlob']);
 
-Route::middleware(['auth'])->prefix('admin')->group(function () {
+Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('transaksi_kas/pemasukan/download', [TransaksiPemasukanController::class, 'download'])
         ->name('transaksi-pemasukan.download');
     Route::resource('transaksi-pemasukan', TransaksiPemasukanController::class)
