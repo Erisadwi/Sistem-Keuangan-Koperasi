@@ -12,7 +12,7 @@ class SetoranTunaiExport implements FromCollection, WithHeadings, WithMapping
 {
     public function collection()
     {
-        return Simpanan::with(['anggota', 'jenisSimpanan', 'data_user'])
+        return Simpanan::with(['anggota', 'jenisSimpanan', 'user'])
             ->where('type_simpanan', 'TRD')
             ->get();
     }

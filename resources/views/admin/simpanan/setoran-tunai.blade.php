@@ -9,7 +9,8 @@
 {{-- Komponen --}}
 <x-menu.toolbar-simpanan 
     addUrl="{{ route('setoran-tunai.create') }}"
-    editUrl="{{ route('setoran-tunai.edit', ['id' => '__ID__']) }}"
+    editUrl="{{ route('setoran-tunai.edit', '__ID__') }}"
+    deleteUrl="{{ route('setoran-tunai.destroy', '__ID__') }}"
     exportUrl="{{ route('setoran-tunai.export') }}"
 />
 
@@ -35,7 +36,7 @@
 
       <tbody>
         @forelse($setoranTunai ?? collect() as $index => $simpanan)
-          <tr class="text-center">
+          <tr class="text-center selectable-row" data-id="{{ $simpanan->id_simpanan }}">
             <td>{{ $index + 1 }}</td>
             <td>{{ $simpanan->kode_simpanan ?? '-' }}</td>
             <td>{{ $simpanan->tanggal_transaksi ? \Carbon\Carbon::parse($simpanan->tanggal_transaksi)->format('d-m-Y H:i') : '-' }}</td>
@@ -43,10 +44,10 @@
             <td>{{ $simpanan->anggota->nama_anggota ?? '-' }}</td>
             <td>{{ $simpanan->jenisSimpanan->jenis_simpanan ?? '-' }}</td>
             <td>{{ isset($simpanan->jumlah_simpanan) ? number_format($simpanan->jumlah_simpanan, 0, ',', '.') : '-' }}</td>
-            <td>{{ $simpanan->data_user->nama_lengkap ?? '-' }}</td>
+            <td>{{ $simpanan->user->nama_lengkap ?? '-' }}</td>
             <td>
               <a href="{{ route('setoran-tunai.cetak', $simpanan->id_simpanan ?? 0) }}" 
-                 class="btn-nota">🧾</a>
+                 class="btn-nota"> 🖨️</a>
             </td>
           </tr>   
         @empty
@@ -167,6 +168,78 @@
     padding: 8px;
   }
 }
+
+.selected-row {
+  background-color: #cce8ff !important;
+}
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const rows = document.querySelectorAll('.selectable-row');
+  const editBtn = document.querySelector('.btn-edit');
+  const deleteBtn = document.querySelector('.btn-delete');
+
+  let selectedId = null;
+
+  rows.forEach(row => {
+    row.addEventListener('click', () => {
+      // Hapus highlight dari baris lain
+      rows.forEach(r => r.classList.remove('selected-row'));
+      
+      // Tambahkan highlight ke baris yang diklik
+      row.classList.add('selected-row');
+      
+      // Simpan ID dari baris yang dipilih
+      selectedId = row.dataset.id;
+      
+      // Aktifkan tombol Edit & Hapus
+      editBtn.classList.remove('disabled');
+      deleteBtn.classList.remove('disabled');
+
+      // Update URL tombol edit & hapus (gantikan __ID__)
+      editBtn.setAttribute('data-url', editBtn.dataset.base.replace('__ID__', selectedId));
+      deleteBtn.setAttribute('data-url', deleteBtn.dataset.base.replace('__ID__', selectedId));
+    });
+  });
+
+  // Aksi ketika tombol Edit diklik
+  editBtn.addEventListener('click', function () {
+    const url = this.getAttribute('data-url');
+    if (!url || this.classList.contains('disabled')) return;
+    window.location.href = url;
+  });
+
+  // Aksi ketika tombol Hapus diklik
+  deleteBtn.addEventListener('click', function () {
+    const url = this.getAttribute('data-url');
+    if (!url || this.classList.contains('disabled')) return;
+
+    if (confirm('Yakin ingin menghapus data ini?')) {
+      fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+      })
+      .then(res => {
+        if (res.ok) {
+          alert('Data berhasil dihapus');
+          location.reload();
+        } else {
+          alert('Gagal menghapus data');
+        }
+      });
+    }
+  });
+});
+</script>
+
+
 
 @endsection

@@ -51,14 +51,23 @@
     color: white;
   }
 
+  /* === Tombol Hapus (warna merah) === */
   .filter-button.danger {
-    border-color: #2563eb;
-    color: #ef4444;
+    border-color: #ef4444;
+    color: #ef4444 !important;
+  }
+
+  .filter-button.danger svg {
+    color: #ef4444 !important;
   }
 
   .filter-button.danger:hover {
-    background-color: #ef4444;
-    color: white;
+    background-color: #ef4444 !important;
+    color: white !important;
+  }
+
+  .filter-button.danger:hover svg {
+    color: white !important;
   }
 
   /* === Dropdown tanggal === */
@@ -110,7 +119,7 @@
   }
 
   .btn.save {
-    background-color: #25E11B;;
+    background-color: #25E11B;
     color: white;
   }
 
@@ -130,28 +139,28 @@
     width: 130px;
   }
 
-a.filter-button {
-  text-decoration: none !important;
-  color: black; /* warna teks hitam */
-}
+  a.filter-button {
+    text-decoration: none !important;
+    color: black;
+  }
 
-.filter-button {
-  color: black !important; /* teks hitam */
-}
+  .filter-button svg {
+    color: #2563eb;
+  }
 
-.filter-button svg {
-  color: #2563eb; /* ikon biru */
-}
+  .filter-button:hover svg {
+    color: white !important;
+  }
 
-.filter-button:hover {
-  background-color: #2563eb !important;
-  color: white !important;
-}
+  /* Tombol disable visual */
+  .filter-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
 
-.filter-button:hover svg {
-  color: white !important;
-}
-
+  .table-active {
+    background-color: #e0f2fe !important;
+  }
 </style>
 
 <div class="toolbar-wrapper">
@@ -159,7 +168,7 @@ a.filter-button {
   <!-- BARIS 1 -->
   <div class="toolbar-row-1">
     <div class="toolbar-actions">
-      <!-- arahkan ke halaman tambah -->
+
       <a href="{{ $addUrl ?? '#' }}" class="filter-button">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
           <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -167,16 +176,18 @@ a.filter-button {
         Tambah
       </a>
 
-      <button class="filter-button" onclick="handleEdit()">
+      <button class="filter-button" data-action="edit" data-url="{{ $editUrl ?? '#' }}" disabled>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
           <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         Edit
       </button>
 
-      <button class="filter-button danger" onclick="handleHapus()">
+      <button class="filter-button danger" data-action="delete" data-url="{{ $deleteUrl ?? '#' }}" disabled>
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-          <path d="M6 7h12M9 7V5h6v2M10 11v6M14 11v6M5 7h14l-1 14H6L5 7z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M6 7h12M9 7V5h6v2M10 11v6M14 11v6M5 7h14l-1 14H6L5 7z" 
+                stroke="currentColor" stroke-width="2" 
+                stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         Hapus
       </button>
@@ -190,13 +201,13 @@ a.filter-button {
         Hapus Filter
       </button>
 
-      <button class="filter-button">
+      <a href="{{ $exportUrl ?? '#' }}" class="filter-button" data-action="export">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
           <path d="M12 16v-4m0 0l-4 4m4-4l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
           <path d="M4 4h16v12H4V4z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
         </svg>
         Unduh
-      </button>
+      </a>
     </div>
   </div>
 
@@ -242,57 +253,84 @@ a.filter-button {
 </div>
 
 <script>
-document.addEventListener("DOMContentLoaded", () => {
+document.addEventListener("DOMContentLoaded", function() {
+  let selectedId = null;
+  const editBtn = document.querySelector('[data-action="edit"]');
+  const deleteBtn = document.querySelector('[data-action="delete"]');
+
+  const rows = document.querySelectorAll(".selectable-row");
+  if (rows.length > 0) {
+    rows.forEach(row => {
+      row.addEventListener("click", function() {
+        rows.forEach(r => r.classList.remove("table-active"));
+        this.classList.add("table-active");
+        selectedId = this.dataset.id;
+        editBtn.disabled = false;
+        deleteBtn.disabled = false;
+      });
+    });
+  }
+
+  editBtn?.addEventListener("click", function() {
+    if (!selectedId) return alert("Pilih data terlebih dahulu!");
+    const url = this.dataset.url.replace("__ID__", selectedId);
+    window.location.href = url;
+  });
+
+  deleteBtn?.addEventListener("click", function() {
+    if (!selectedId) return alert("Pilih data terlebih dahulu!");
+    if (!confirm("Yakin ingin menghapus data ini?")) return;
+    const url = this.dataset.url.replace("__ID__", selectedId);
+    fetch(url, {
+      method: "DELETE",
+      headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" }
+    }).then(() => location.reload());
+  });
+
+  const transactionInput = document.getElementById("transactionId");
+  const memberInput = document.getElementById("memberName");
+  const jenisSelect = document.getElementById("jenisSimpanan");
+  const startInput = document.getElementById("startDate");
+  const endInput = document.getElementById("endDate");
+
+  function applyFilter() {
+    const params = new URLSearchParams();
+    if (startInput.value) params.append("start", startInput.value);
+    if (endInput.value) params.append("end", endInput.value);
+    if (transactionInput.value) params.append("kode", transactionInput.value);
+    if (memberInput.value) params.append("nama", memberInput.value);
+    if (jenisSelect.value) params.append("jenis", jenisSelect.value);
+    window.location.href = "{{ url()->current() }}?" + params.toString();
+  }
+
+  [transactionInput, memberInput].forEach(el => {
+    el?.addEventListener("keypress", e => {
+      if (e.key === "Enter") applyFilter();
+    });
+  });
+  jenisSelect?.addEventListener("change", applyFilter);
+
   const tanggalButton = document.getElementById("tanggalButton");
   const dropdown = document.getElementById("tanggalDropdown");
-
-  tanggalButton.addEventListener("click", (e) => {
+  tanggalButton?.addEventListener("click", e => {
     e.stopPropagation();
     dropdown.classList.toggle("hidden");
   });
-
-  document.addEventListener("click", (e) => {
+  document.addEventListener("click", e => {
     if (!dropdown.contains(e.target) && !tanggalButton.contains(e.target)) {
       dropdown.classList.add("hidden");
     }
   });
+
+  window.saveDateRange = function() { applyFilter(); };
+  window.cancelDateRange = function() {
+    document.getElementById("startDate").value = "";
+    document.getElementById("endDate").value = "";
+    dropdown.classList.add("hidden");
+  };
+
+  window.clearFilter = function() {
+    window.location.href = "{{ url()->current() }}";
+  };
 });
-
-function saveDateRange() {
-  const start = document.getElementById("startDate").value;
-  const end = document.getElementById("endDate").value;
-  const btn = document.getElementById("tanggalButton");
-  if (start && end) {
-    btn.innerHTML = `
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-        <rect x="3" y="4" width="18" height="17" rx="3" stroke="currentColor" stroke-width="2"/>
-        <path d="M8 2v4M16 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-      ${start} → ${end}
-    `;
-  }
-  document.getElementById("tanggalDropdown").classList.add("hidden");
-}
-
-function cancelDateRange() {
-  document.getElementById("tanggalDropdown").classList.add("hidden");
-}
-
-function clearFilter() {
-  document.getElementById("transactionId").value = "";
-  document.getElementById("memberName").value = "";
-  document.getElementById("startDate").value = "";
-  document.getElementById("endDate").value = "";
-  document.getElementById("jenisSimpanan").selectedIndex = 0;
-  document.getElementById("tanggalButton").innerHTML = `
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-      <rect x="3" y="4" width="18" height="17" rx="3" stroke="currentColor" stroke-width="2"/>
-      <path d="M8 2v4M16 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-    </svg>
-    Tanggal
-  `;
-}
-
-function handleEdit() { alert("klik data terlebih dahulu!"); }
-function handleHapus() { alert("klik data terlebih dahulu!"); }
 </script>

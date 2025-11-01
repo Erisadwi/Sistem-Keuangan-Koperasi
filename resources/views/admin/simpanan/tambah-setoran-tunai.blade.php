@@ -227,6 +227,8 @@ document.getElementById('formSetoranTunai').addEventListener('submit', function(
         alert('❌ Pengisian data dibatalkan.');
         return;
     }
+    
+    alert('✅ Data barang berhasil disimpan!');
 });
 </script>
 
