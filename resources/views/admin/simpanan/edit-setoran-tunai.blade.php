@@ -4,187 +4,175 @@
 @section('back-url', url('admin/simpanan/setoran-tunai')) 
 @section('back-title', 'Transaksi Simpanan >')
 @section('title-1', 'Setoran Tunai')  
-@section('sub-title', 'Edit simpanan Setoran Tunai')  
+@section('sub-title', 'Edit Setoran Tunai')  
 
 @section('content')
 
+@if ($errors->any())
+    <ul>
+        @foreach ($errors->all() as $error)
+            <li style="color:red">{{ $error }}</li>
+        @endforeach
+    </ul>
+@endif
+
 <div class="form-container">
     <form id="formEditSetoranTunai"
-          action="#" {{-- nanti diganti route('simpanan.update', $simpanan->id) --}}
-          method="POST" enctype="multipart/form-simpanan">
+          action="{{ route('setoran-tunai.update', $setoranTunai->id_simpanan) }}"
+          method="POST" enctype="multipart/form-data">
         @csrf
-        {{-- @method('PUT') --}}
+        @method('PUT')
 
-        {{-- Bagian Tanggal Transaksi --}}
+        {{-- Tanggal Transaksi --}}
         <label for="tanggal_transaksi">Tanggal Transaksi</label>
         <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi"
-            value="{{ isset($simpanan->tanggal_transaksi) ? \Carbon\Carbon::parse($simpanan->tanggal_transaksi)->format('Y-m-d\TH:i') : '' }}" required>
+               value="{{ \Carbon\Carbon::parse($setoranTunai->tanggal_transaksi)->format('Y-m-d\TH:i') }}" required>
 
-        <hr style="margin:20px 0; border:1px solid #ccc;">
+        {{-- Identitas Penyetor --}}
+        <h4 style="font-size:14px; margin-bottom:10px;">Identitas Penyetor</h4>
 
-        {{-- Identitas Penerima --}}
-        <h4 style="font-size:14px; margin-bottom:10px;">Identitas Penerima</h4>
-
-        <label for="nama_penyetor">Nama Penerima</label>
-        <input type="text" id="nama_lengkap" name="nama_lengkap" placeholder="Masukkan nama penerima" 
-            value="{{ $simpanan->nama_lengkap ?? '' }}" required>
-
-        <label for="nomor_identitas">Nomor Identitas</label>
-        <input type="text" id="id_user" name="id_user" placeholder="Masukkan nomor identitas" 
-            value="{{ $simpanan->id_user ?? '' }}" required>
-
-        <label for="alamat">Alamat</label>
-        <textarea id="alamat" name="alamat" rows="2" required
-            style="width:100%; padding:8px; border:1px solid #565656; border-radius:5px;
-                   font-size:13px; background-color:#fff; margin-bottom:15px;">{{ $simpanan->alamat ?? '' }}</textarea>
-
-        <hr style="margin:20px 0; border:1px solid #ccc;">
-
-        {{-- Identitas Penerima --}}
-        <h4 style="font-size:14px; margin-bottom:10px;">Identitas Penerima</h4>
-
+        <input type="hidden" id="id_anggota" name="id_anggota" value="{{ $setoranTunai->id_anggota }}">
         <label for="nama_anggota">Nama Anggota</label>
         <input type="text" id="nama_anggota" name="nama_anggota"
-            value="{{ $simpanan->nama_anggota ?? '' }}" required>
+                value="{{ $setoranTunai->anggota->nama_anggota ?? '' }}"
+                readonly
+                style="background-color:#f5f5f5; cursor:not-allowed;">
 
-        <label for="jenis_simpanan">Jenis Simpanan</label>
-        <select name="jenis_simpanan" id="jenis_simpanan" required>
-            <option value="" disabled {{ !isset($simpanan->jenis_simpanan) ? 'selected' : '' }}>-- Pilih Jenis Simpanan --</option>
-            <option value="wajib" {{ (isset($simpanan->jenis_simpanan) && $simpanan->jenis_simpanan == 'wajib') ? 'selected' : '' }}>Simpanan Wajib</option>
-            <option value="pokok" {{ (isset($simpanan->jenis_simpanan) && $simpanan->jenis_simpanan == 'pokok') ? 'selected' : '' }}>Simpanan Pokok</option>
-            <option value="sukarela" {{ (isset($simpanan->jenis_simpanan) && $simpanan->jenis_simpanan == 'sukarela') ? 'selected' : '' }}>Simpanan Sukarela</option>
+        {{-- Jenis Simpanan --}}
+        <label for="id_jenis_simpanan">Jenis Simpanan</label>
+        <select name="id_jenis_simpanan" id="id_jenis_simpanan" required>
+            <option value="">-- Pilih Jenis Simpanan --</option>
+            @foreach ($jenisSimpanan as $jenis)
+                <option value="{{ $jenis->id_jenis_simpanan }}"
+                        data-jumlah="{{ $jenis->jumlah_simpanan ?? 0 }}"
+                        {{ $setoranTunai->id_jenis_simpanan == $jenis->id_jenis_simpanan ? 'selected' : '' }}>
+                    {{ $jenis->jenis_simpanan }}
+                </option>
+            @endforeach
         </select>
 
+        {{-- Jumlah Simpanan --}}
         <label for="jumlah_simpanan">Jumlah Simpanan</label>
         <input type="number" id="jumlah_simpanan" name="jumlah_simpanan"
-            value="{{ $simpanan->jumlah_simpanan ?? '' }}" required>
+               value="{{ $setoranTunai->jumlah_simpanan }}" required>
 
+        {{-- Keterangan --}}
         <label for="keterangan">Keterangan</label>
         <input type="text" id="keterangan" name="keterangan"
-            value="{{ $simpanan->keterangan ?? '' }}" placeholder="Opsional...">
+               value="{{ $setoranTunai->keterangan ?? '' }}" placeholder="Opsional...">
 
-        <label for="jenisAkunTransaksi_tujuan">Simpan Ke Kas</label>
-        <select name="jenisAkunTransaksi_tujuan" id="jenisAkunTransaksi_tujuan" required>
-            <option value="" disabled {{ !isset($simpanan->jenisAkunTransaksi_tujuan) ? 'selected' : '' }}>-- Pilih Kas --</option>
-            <option value="kas_besar" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'kas_besar') ? 'selected' : '' }}>Kas Besar</option>
-            <option value="bank_mandiri" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'bank_mandiri') ? 'selected' : '' }}>Bank Mandiri</option>
-            <option value="kas_kecil" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'kas_kecil') ? 'selected' : '' }}>Kas Kecil</option>
-            <option value="kas_niaga" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'kas_niaga') ? 'selected' : '' }}>Kas Niaga</option>
-            <option value="bank_bri" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'bank_bri') ? 'selected' : '' }}>Bank BRI</option>
+        {{-- Simpan ke Kas --}}
+        <label for="id_jenisAkunTransaksi_tujuan">Simpan Ke Kas</label>
+        <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan" required>
+            <option value="">-- Pilih Kas --</option>
+            @foreach ($akunTransaksi as $akun)
+                <option value="{{ $akun->id_jenisAkunTransaksi }}"
+                    {{ $setoranTunai->id_jenisAkunTransaksi_tujuan == $akun->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                    {{ $akun->nama_AkunTransaksi }}
+                </option>
+            @endforeach
         </select>
 
-        <label for="photo">Photo</label>
-        <input type="file" id="photo" name="photo" accept="image/*"
-               style="border:1px solid #565656; border-radius:5px; padding:6px; width:100%; font-size:13px; margin-bottom:20px;">
+        {{-- Bukti Setoran --}}
+        <label for="bukti_setoran">Bukti Setoran</label>
+        <input type="file" id="bukti_setoran" name="bukti_setoran" accept="image/*,application/pdf"
+               class="form-control">
 
-        {{-- tampilkan jika photo sudah ada --}}
-        @if(isset($simpanan->photo) && $simpanan->photo)
+        @if($setoranTunai->bukti_setoran)
             <div style="margin-bottom:10px;">
-                <img src="{{ asset('storage/' . $simpanan->photo) }}" alt="Foto Bukti" width="100" style="border-radius:5px;">
+                <img src="{{ asset('storage/' . $setoranTunai->bukti_setoran) }}" alt="Bukti Setoran" width="100" style="border-radius:5px;">
             </div>
         @endif
 
-        {{-- Tombol Simpan & Batal --}}
+        {{-- Tombol --}}
         <div class="form-buttons">
-            <button type="submit" id="btnSimpan" class="btn btn-simpan">Simpan</button>
+            <button type="submit" class="btn btn-simpan">Simpan</button>
             <button type="button" id="btnBatal" class="btn btn-batal">Batal</button>
         </div>
     </form>
 </div>
 
+{{-- STYLE --}}
 <style>
-.form-container {
-    background-color: transparent;
-    padding: 20px;
-    border-radius: 10px;
-    width: 98%;
-    margin-left: 10px;
-    margin-top: 40px;
-}
-
-label {
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 5px;
-    display: block;
-    color: #000000;
-}
-
+.form-container { background-color: transparent; padding:20px; border-radius:10px; width:98%; margin-left:10px; margin-top:40px; }
+label { font-size:13px; font-weight:600; margin-bottom:5px; display:block; color:#000; }
 input[type="text"],
 input[type="datetime-local"],
 input[type="number"],
 input[type="file"],
 select,
-textarea {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 15px;
-    border: 1px solid #565656;
-    border-radius: 5px;
-    font-size: 13px;
-    background-color: #fff;
+textarea,
+.form-control {   /* input anggota ikut form-control */
+    width:100%;
+    padding:8px;
+    margin-bottom:15px;
+    border:1px solid #565656;
+    border-radius:5px;
+    font-size:13px;
+    background-color:#fff;
 }
-
-.form-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 40px;
-}
-
-.btn {
-    padding: 8px 0;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 7px;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    width: 120px;
-    text-align: center;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.293);
-}
-
-.btn-simpan {
-    background-color: #25E11B;
-    color: #fff;
-}
-.btn-simpan:hover {
-    background-color: #45a049;
-}
-
-.btn-batal {
-    background-color: #EA2828;
-    color: #fff;
-}
-.btn-batal:hover {
-    background-color: #d73833;
-}
+.form-buttons { display:flex; justify-content:flex-end; gap:10px; margin-top:40px; }
+.btn { padding:8px 0; font-size:16px; font-weight:bold; border-radius:7px; border:none; cursor:pointer; text-align:center; width:120px; box-shadow:0 4px 4px rgba(0,0,0,0.293); }
+.btn-simpan { background-color:#25E11B; color:#fff; }
+.btn-simpan:hover { background-color:#45a049; }
+.btn-batal { background-color:#EA2828; color:#fff; }
+.btn-batal:hover { background-color:#d73833; }
 </style>
 
+{{-- SCRIPT --}}
 <script>
-document.getElementById('formEditSetoranTunai').addEventListener('submit', function(e) {
-    const wajib = ['nama_anggota', 'jenis_simpanan', 'jumlah_simpanan', 'jenisAkunTransaksi_tujuan'];
+// Autofill anggota tanpa dropdown browser
+(function(){
+    const anggota = @json($anggota); 
+    const input = document.getElementById('nama_anggota');
+    const hidden = document.getElementById('id_anggota');
 
+    input.addEventListener('input', function(){
+        const found = anggota.find(a => a.nama_anggota.toLowerCase() === this.value.trim().toLowerCase());
+        hidden.value = found ? found.id_anggota : '';
+    });
+})();
+
+// Auto isi jumlah simpanan
+document.addEventListener('DOMContentLoaded', function() {
+    const jenisSelect = document.getElementById('id_jenis_simpanan');
+    const jumlahInput = document.getElementById('jumlah_simpanan');
+    if (jenisSelect && jumlahInput) {
+        const setJumlah = () => {
+            const selectedOption = jenisSelect.options[jenisSelect.selectedIndex];
+            const jumlah = selectedOption.getAttribute('data-jumlah');
+            if (jumlah && parseInt(jumlah) > 0) {
+                jumlahInput.value = jumlah;
+                jumlahInput.readOnly = true;
+            } else {
+                jumlahInput.readOnly = false;
+            }
+        };
+        jenisSelect.addEventListener('change', setJumlah);
+        setJumlah();
+    }
+});
+
+// Validasi form
+document.getElementById('formEditSetoranTunai').addEventListener('submit', function(e) {
+    const wajib = ['id_anggota','id_jenis_simpanan','jumlah_simpanan','id_jenisAkunTransaksi_tujuan'];
     for (let id of wajib) {
         const el = document.getElementById(id);
         if (!el || !el.value.trim()) {
             alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
-            e.preventDefault(); 
-            return;
+            e.preventDefault(); return;
         }
     }
-
-    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
-
-    if (!yakin) {
-        e.preventDefault(); 
-        alert('❌ Pengisian data dibatalkan.');
+    if(!confirm('Apakah data sudah benar dan ingin disimpan?')){
+        e.preventDefault(); alert('❌ Pengisian data dibatalkan.');
         return;
     }
-
     alert('✅ Data barang berhasil disimpan!');
+});
+
+// Tombol batal
+document.getElementById('btnBatal').addEventListener('click', function(){
+    window.location.href = "{{ route('setoran-tunai.index') }}";
 });
 </script>
 

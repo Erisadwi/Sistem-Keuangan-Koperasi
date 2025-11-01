@@ -130,7 +130,9 @@ Route::prefix('admin/simpanan')->group(function () {
     Route::put('setoran-tunai/{id}', [SetoranTunaiController::class, 'update'])->name('setoran-tunai.update');
     Route::delete('setoran-tunai/{id}', [SetoranTunaiController::class, 'destroy'])->name('setoran-tunai.destroy');
     Route::get('setoran-tunai/export', [SetoranTunaiController::class, 'export'])->name('setoran-tunai.export');
+    Route::get('setoran-tunai/{id}/cetak', [SetoranTunaiController::class, 'cetak'])->name('setoran-tunai.cetak');
 });
+
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::resource('transaksi-non-kas', TransaksiNonKasController::class);
 
@@ -282,18 +284,6 @@ Route::get('/admin/master_data/tambah-data-saldo-awal-non-kas', function () {
 Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
     return view('admin.master_data.edit-data-saldo-awal-non-kas');
 })->name('admin.master_data.edit-data-saldo-awal-non-kas');
-
-Route::get('/admin/simpanan/setoran-tunai', function () {
-    return view('admin.simpanan.setoran-tunai');
-})->name('admin.simpanan.setoran-tunai');
-
-Route::get('/admin/simpanan/tambah-setoran-tunai', function () {
-    return view('admin.simpanan.tambah-setoran-tunai');
-})->name('admin.simpanan.tambah-setoran-tunai');
-
-Route::get('/admin/simpanan/edit-setoran-tunai', function () {
-    return view('admin.simpanan.edit-setoran-tunai');
-})->name('admin.simpanan.edit-setoran-tunai');
 
 Route::get('/admin/pinjaman/angsuran', function () {
     return view('admin.pinjaman.angsuran');

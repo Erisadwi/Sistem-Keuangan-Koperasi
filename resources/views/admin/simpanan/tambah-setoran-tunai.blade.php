@@ -27,7 +27,6 @@
         <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi"
             value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}" required>
 
-        <hr style="margin:20px 0; border:1px solid #ccc;">
 
         {{-- =======================
              IDENTITAS PENYETOR
@@ -35,7 +34,6 @@
         <h4 style="font-size:14px; margin-bottom:10px;">Identitas Penyetor</h4>
 
         <label for="nama_anggota">Nama Anggota</label>
-        <small style="display:block;margin-bottom:5px;color:#555;">Ketik sebagian nama untuk memunculkan daftar.</small>
         <input list="daftar_anggota" id="nama_anggota" name="nama_anggota" placeholder="Ketik nama anggota..." required>
         <input type="hidden" id="id_anggota" name="id_anggota" value="{{ old('id_anggota') }}">
         <datalist id="daftar_anggota">
@@ -46,20 +44,22 @@
 
         <label for="id_jenis_simpanan">Jenis Simpanan</label>
         <select name="id_jenis_simpanan" id="id_jenis_simpanan" required>
-            <option value="">-- Pilih Jenis Simpanan --</option>
-            @foreach ($jenisSimpanan as $jenis)
-                <option value="{{ $jenis->id_jenis_simpanan }}"
-                    data-jumlah="{{ $jenis->jumlah_simpanan ?? 0 }}"
-                    {{ old('id_jenis_simpanan') == $jenis->id_jenis_simpanan ? 'selected' : '' }}>
-                    {{ $jenis->nama_simpanan }}
-                </option>
-            @endforeach
+        <option value="">-- Pilih Jenis Simpanan --</option>
+        @if(isset($jenisSimpanan) && $jenisSimpanan->count())
+        @foreach ($jenisSimpanan as $jenis)
+            <option value="{{ $jenis->id_jenis_simpanan }}"
+                data-jumlah="{{ $jenis->jumlah_simpanan ?? 0 }}"
+                {{ old('id_jenis_simpanan') == $jenis->id_jenis_simpanan ? 'selected' : '' }}>
+                {{ $jenis->jenis_simpanan }}
+            </option>
+        @endforeach
+            @else
+             <option value="" disabled>Tidak ada data jenis simpanan</option>
+            @endif
         </select>
 
         <label for="jumlah_simpanan">Jumlah Simpanan</label>
-        <small style="display:block;margin-bottom:5px;color:#555;">Akan otomatis terisi jika jenis simpanan Pokok/Wajib.</small>
-        <input type="number" id="jumlah_simpanan" name="jumlah_simpanan" placeholder="Masukkan jumlah setoran"
-            value="{{ old('jumlah_simpanan') }}" required>
+        <input type="number" name="jumlah_simpanan" id="jumlah_simpanan" placeholder="Masukkan jumlah simpanan" required>
 
         <label for="keterangan">Keterangan</label>
         <input type="text" id="keterangan" name="keterangan" value="{{ old('keterangan') }}" placeholder="Opsional...">
@@ -113,7 +113,8 @@ input[type="datetime-local"],
 input[type="number"],
 input[type="file"],
 select,
-textarea {
+textarea,
+input[list] {
     width: 100%;
     padding: 8px;
     margin-bottom: 15px;
@@ -189,31 +190,25 @@ input[list]::-webkit-calendar-picker-indicator {
     });
 })();
 
-document.addEventListener('DOMContentLoaded', function () {
-    const jenisSelect = document.querySelector('#id_jenis_simpanan');
-    const jumlahInput = document.querySelector('#jumlah_simpanan');
-    const jenisData = @json($jenisSimpanan);
+document.addEventListener('DOMContentLoaded', function() {
+    const jenisSelect = document.getElementById('id_jenis_simpanan');
+    const jumlahInput = document.getElementById('jumlah_simpanan');
 
-    jenisSelect.addEventListener('change', function () {
-        const selectedId = this.value;
-        const jenis = jenisData.find(j => j.id_jenis_simpanan == selectedId);
+    if (jenisSelect && jumlahInput) {
+        jenisSelect.addEventListener('change', function() {
+            // Ambil jumlah dari atribut data-jumlah pada option yang dipilih
+            const selectedOption = jenisSelect.options[jenisSelect.selectedIndex];
+            const jumlah = selectedOption.getAttribute('data-jumlah');
 
-        if (!jenis) {
-            jumlahInput.value = '';
-            jumlahInput.removeAttribute('readonly');
-            return;
-        }
-
-        const nama = jenis.nama_simpanan.toLowerCase();
-
-        if (nama.includes('wajib') || nama.includes('pokok')) {
-            jumlahInput.value = jenis.jumlah_simpanan;
-            jumlahInput.setAttribute('readonly', true);
-        } else {
-            jumlahInput.value = '';
-            jumlahInput.removeAttribute('readonly');
-        }
-    });
+            if (jumlah && parseInt(jumlah) > 0) {
+                jumlahInput.value = jumlah;
+                jumlahInput.readOnly = true; 
+            } else {
+                jumlahInput.value = '';
+                jumlahInput.readOnly = false;
+            }
+        });
+    }
 });
 
 document.getElementById('formSetoranTunai').addEventListener('submit', function(e) {
@@ -232,6 +227,8 @@ document.getElementById('formSetoranTunai').addEventListener('submit', function(
         alert('❌ Pengisian data dibatalkan.');
         return;
     }
+    
+    alert('✅ Data barang berhasil disimpan!');
 });
 </script>
 
