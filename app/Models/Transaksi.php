@@ -34,7 +34,7 @@ class Transaksi extends Model
         return $this->belongsTo(JenisAkunTransaksi::class, 'id_jenisAkunTransaksi_tujuan', 'id_jenisAkunTransaksi');
     }
 
-        public function data_user()
+        public function user()
     {
         return $this->belongsTo(User::class, 'id_user', 'id_user');
     }

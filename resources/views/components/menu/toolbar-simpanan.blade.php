@@ -249,9 +249,9 @@
 
     <select id="jenisSimpanan" class="filter-button">
       <option value="" selected disabled>Pilih Jenis Simpanan</option>
-      <option value="wajib">Simpanan Wajib</option>
-      <option value="pokok">Simpanan Pokok</option>
-      <option value="sukarela">Simpanan Sukarela</option>
+      <option value="Simpanan Wajib">Simpanan Wajib</option>
+      <option value="Simpanan Pokok">Simpanan Pokok</option>
+      <option value="Simpanan Sukarela">Simpanan Sukarela</option>
     </select>
 
     <div class="search-filter">
@@ -342,5 +342,13 @@ document.addEventListener("DOMContentLoaded", function() {
   window.clearFilter = function() {
     window.location.href = "{{ url()->current() }}";
   };
+
+  const params = new URLSearchParams(window.location.search);
+const jenis = params.get('jenis');
+if (jenis) {
+  const jenisSelect = document.getElementById('jenisSimpanan');
+  jenisSelect.value = jenis;
+}
+
 });
 </script>

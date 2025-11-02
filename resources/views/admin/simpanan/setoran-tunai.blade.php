@@ -181,6 +181,13 @@
   pointer-events: none;
 }
 
+.pagination-container {
+  margin-top: auto;        
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 16px;
+}
 </style>
 
 <script>

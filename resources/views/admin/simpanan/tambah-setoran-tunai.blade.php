@@ -9,11 +9,11 @@
 @section('content')
 
 @if ($errors->any())
-    <ul>
-        @foreach ($errors->all() as $error)
-            <li style="color:red">{{ $error }}</li>
-        @endforeach
-    </ul>
+<ul>
+    @foreach ($errors->all() as $error)
+    <li style="color:red">{{ $error }}</li>
+    @endforeach
+</ul>
 @endif
 
 <div class="form-container">
@@ -38,23 +38,23 @@
         <input type="hidden" id="id_anggota" name="id_anggota" value="{{ old('id_anggota') }}">
         <datalist id="daftar_anggota">
             @foreach ($anggota as $a)
-                <option data-id="{{ $a->id_anggota }}" value="{{ $a->nama_anggota }}"></option>
+            <option data-id="{{ $a->id_anggota }}" value="{{ $a->nama_anggota }}"></option>
             @endforeach
         </datalist>
 
         <label for="id_jenis_simpanan">Jenis Simpanan</label>
         <select name="id_jenis_simpanan" id="id_jenis_simpanan" required>
-        <option value="">-- Pilih Jenis Simpanan --</option>
-        @if(isset($jenisSimpanan) && $jenisSimpanan->count())
-        @foreach ($jenisSimpanan as $jenis)
+            <option value="">-- Pilih Jenis Simpanan --</option>
+            @if(isset($jenisSimpanan) && $jenisSimpanan->count())
+            @foreach ($jenisSimpanan as $jenis)
             <option value="{{ $jenis->id_jenis_simpanan }}"
                 data-jumlah="{{ $jenis->jumlah_simpanan ?? 0 }}"
                 {{ old('id_jenis_simpanan') == $jenis->id_jenis_simpanan ? 'selected' : '' }}>
                 {{ $jenis->jenis_simpanan }}
             </option>
-        @endforeach
+            @endforeach
             @else
-             <option value="" disabled>Tidak ada data jenis simpanan</option>
+            <option value="" disabled>Tidak ada data jenis simpanan</option>
             @endif
         </select>
 
@@ -68,9 +68,9 @@
         <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan" required>
             <option value="">-- Pilih Kas --</option>
             @foreach ($akunTransaksi as $akun)
-                <option value="{{ $akun->id_jenisAkunTransaksi }}">
-                    {{ $akun->nama_AkunTransaksi }}
-                </option>
+            <option value="{{ $akun->id_jenisAkunTransaksi }}">
+                {{ $akun->nama_AkunTransaksi }}
+            </option>
             @endforeach
         </select>
 
@@ -91,145 +91,155 @@
      STYLE
 ======================= --}}
 <style>
-.form-container {
-    background-color: transparent;
-    padding: 20px;
-    border-radius: 10px;
-    width: 98%;
-    margin-left: 10px;
-    margin-top: 40px;
-}
+    .form-container {
+        background-color: transparent;
+        padding: 20px;
+        border-radius: 10px;
+        width: 98%;
+        margin-left: 10px;
+        margin-top: 40px;
+    }
 
-label {
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 5px;
-    display: block;
-    color: #000000;
-}
+    label {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 5px;
+        display: block;
+        color: #000000;
+    }
 
-input[type="text"],
-input[type="datetime-local"],
-input[type="number"],
-input[type="file"],
-select,
-textarea,
-input[list] {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 15px;
-    border: 1px solid #565656;
-    border-radius: 5px;
-    font-size: 13px;
-    background-color: #fff;
-}
+    input[type="text"],
+    input[type="datetime-local"],
+    input[type="number"],
+    input[type="file"],
+    select,
+    textarea,
+    input[list] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #565656;
+        border-radius: 5px;
+        font-size: 13px;
+        background-color: #fff;
+    }
 
-input:focus,
-select:focus,
-textarea:focus {
-    border-color: #565656;
-    outline: none;
-}
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #565656;
+        outline: none;
+    }
 
-.form-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 40px;
-}
+    .form-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 40px;
+    }
 
-.btn {
-    padding: 8px 0;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 7px;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    width: 120px;
-    text-align: center;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.293);
-}
+    .btn {
+        padding: 8px 0;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 7px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        width: 120px;
+        text-align: center;
+        box-shadow: 0 4px 4px rgba(0, 0, 0, 0.293);
+    }
 
-.btn-simpan {
-    background-color: #25E11B;
-    color: #fff;
-}
-.btn-simpan:hover {
-    background-color: #45a049;
-}
-.btn-batal {
-    background-color: #EA2828;
-    color: #fff;
-}
-.btn-batal:hover {
-    background-color: #d73833;
-}
+    .btn-simpan {
+        background-color: #25E11B;
+        color: #fff;
+    }
 
-/* Hilangkan icon dropdown di datalist */
-input[list]::-webkit-calendar-picker-indicator {
-    display: none !important;
-    -webkit-appearance: none;
-}
+    .btn-simpan:hover {
+        background-color: #45a049;
+    }
+
+    .btn-batal {
+        background-color: #EA2828;
+        color: #fff;
+    }
+
+    .btn-batal:hover {
+        background-color: #d73833;
+    }
+
+    /* Hilangkan icon dropdown di datalist */
+    input[list]::-webkit-calendar-picker-indicator {
+        display: none !important;
+        -webkit-appearance: none;
+    }
 </style>
 
 {{-- =======================
      SCRIPT
 ======================= --}}
 <script>
-(function(){
-    const optEls = document.querySelectorAll('#daftar_anggota option');
-    const list = Array.from(optEls).map(o => ({name: o.value, id: o.dataset.id}));
-    const input = document.getElementById('nama_anggota');
-    const hidden = document.getElementById('id_anggota');
+    (function() {
+        const optEls = document.querySelectorAll('#daftar_anggota option');
+        const list = Array.from(optEls).map(o => ({
+            name: o.value,
+            id: o.dataset.id
+        }));
+        const input = document.getElementById('nama_anggota');
+        const hidden = document.getElementById('id_anggota');
 
-    input.addEventListener('input', function() {
-        const found = list.find(x => x.name === this.value.trim());
-        hidden.value = found ? found.id : '';
+        function updateHidden() {
+            const found = list.find(x => x.name === input.value.trim());
+            hidden.value = found ? found.id : '';
+            console.log('✅ ID Anggota:', hidden.value);
+        }
+
+        input.addEventListener('input', updateHidden);
+        input.addEventListener('change', updateHidden);
+    })();
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const jenisSelect = document.getElementById('id_jenis_simpanan');
+        const jumlahInput = document.getElementById('jumlah_simpanan');
+
+        if (jenisSelect && jumlahInput) {
+            jenisSelect.addEventListener('change', function() {
+                // Ambil jumlah dari atribut data-jumlah pada option yang dipilih
+                const selectedOption = jenisSelect.options[jenisSelect.selectedIndex];
+                const jumlah = selectedOption.getAttribute('data-jumlah');
+
+                if (jumlah && parseInt(jumlah) > 0) {
+                    jumlahInput.value = jumlah;
+                    jumlahInput.readOnly = true;
+                } else {
+                    jumlahInput.value = '';
+                    jumlahInput.readOnly = false;
+                }
+            });
+        }
     });
-})();
 
-document.addEventListener('DOMContentLoaded', function() {
-    const jenisSelect = document.getElementById('id_jenis_simpanan');
-    const jumlahInput = document.getElementById('jumlah_simpanan');
-
-    if (jenisSelect && jumlahInput) {
-        jenisSelect.addEventListener('change', function() {
-            // Ambil jumlah dari atribut data-jumlah pada option yang dipilih
-            const selectedOption = jenisSelect.options[jenisSelect.selectedIndex];
-            const jumlah = selectedOption.getAttribute('data-jumlah');
-
-            if (jumlah && parseInt(jumlah) > 0) {
-                jumlahInput.value = jumlah;
-                jumlahInput.readOnly = true; 
-            } else {
-                jumlahInput.value = '';
-                jumlahInput.readOnly = false;
+    document.getElementById('formSetoranTunai').addEventListener('submit', function(e) {
+        const wajib = ['id_anggota', 'id_jenis_simpanan', 'jumlah_simpanan', 'id_jenisAkunTransaksi_tujuan'];
+        for (let id of wajib) {
+            const el = document.getElementById(id);
+            if (!el || !el.value.trim()) {
+                alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+                e.preventDefault();
+                return;
             }
-        });
-    }
-});
+        }
 
-document.getElementById('formSetoranTunai').addEventListener('submit', function(e) {
-    const wajib = ['id_anggota', 'id_jenis_simpanan', 'jumlah_simpanan', 'id_jenisAkunTransaksi_tujuan'];
-    for (let id of wajib) {
-        const el = document.getElementById(id);
-        if (!el || !el.value.trim()) {
-            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+        if (!confirm('Apakah data sudah benar dan ingin disimpan?')) {
             e.preventDefault();
+            alert('❌ Pengisian data dibatalkan.');
             return;
         }
-    }
 
-    if (!confirm('Apakah data sudah benar dan ingin disimpan?')) {
-        e.preventDefault();
-        alert('❌ Pengisian data dibatalkan.');
-        return;
-    }
-    
-    alert('✅ Data barang berhasil disimpan!');
-});
+        alert('✅ Data barang berhasil disimpan!');
+    });
 </script>
 
 @endsection

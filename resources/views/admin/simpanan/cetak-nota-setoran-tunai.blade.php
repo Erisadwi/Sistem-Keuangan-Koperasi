@@ -150,7 +150,7 @@
       <div class="kiri">
         <table>
           <tr><td>Tanggal Transaksi</td><td>: {{ \Carbon\Carbon::parse($setoran->tanggal_transaksi)->format('d F Y / H:i') }}</td></tr>
-          <tr><td>Nomor Transaksi</td><td>: {{ $setoran->kode_simpanan }}</td></tr>
+          <tr><td>Kode Transaksi</td><td>: {{ $setoran->kode_simpanan }}</td></tr>
           <tr><td>ID Anggota</td><td>: {{ $setoran->anggota->id_anggota ?? '-' }}</td></tr>
           <tr><td>Nama Anggota</td><td>: {{ $setoran->anggota->nama_anggota ?? '-' }}</td></tr>
           <tr><td>Dept</td><td>: {{ $setoran->anggota->departemen ?? '-' }}</td></tr>

@@ -93,12 +93,7 @@ class SetoranTunaiController extends Controller
             'keterangan'
         ]);
 
-        $data['id_user'] = Auth::id();
-
-        $anggota = Anggota::find($request->id_anggota);
-        if ($anggota && $anggota->id_user) {
-            $data['id_user'] = $anggota->id_user;
-        }
+        $data['id_user'] = Auth::user()->id_user;
 
         $lastNumber = Simpanan::where('type_simpanan', 'TRD')
                 ->selectRaw('MAX(CAST(SUBSTRING(kode_simpanan, 4) AS UNSIGNED)) as max_number')
@@ -154,6 +149,7 @@ class SetoranTunaiController extends Controller
         'id_jenis_simpanan',
         'id_jenisAkunTransaksi_tujuan',
         'jumlah_simpanan',
+        'tanggal_transaksi',
         'keterangan'
     ]);
 

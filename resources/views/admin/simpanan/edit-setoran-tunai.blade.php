@@ -33,7 +33,7 @@
 
         <input type="hidden" id="id_anggota" name="id_anggota" value="{{ $setoranTunai->id_anggota }}">
         <label for="nama_anggota">Nama Anggota</label>
-        <input type="text" id="nama_anggota" name="nama_anggota"
+        <input type="text" id="nama_anggota" name="id_anggota"
                 value="{{ $setoranTunai->anggota->nama_anggota ?? '' }}"
                 readonly
                 style="background-color:#f5f5f5; cursor:not-allowed;">

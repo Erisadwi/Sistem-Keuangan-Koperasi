@@ -6,55 +6,63 @@
 
 @section('content')
 
-{{-- Komponen tombol tambah & unduh --}}
 <x-menu.tambah-edit-hapus
-    addUrl="#" {{-- nanti bisa diganti route('pengeluaran.create') --}}
+    :tambah="route('pengeluaran.create')" 
+    :edit="route('pengeluaran.edit', 1)" 
+    :hapus="route('pengeluaran.destroy', 1)" 
 />
-<x-menu.toolbar-right/>
 
-{{-- Wrapper konten tabel --}}
+<x-menu.toolbar-right 
+    :downloadRoute="route('pengeluaran.download')" 
+    :filterRoute="route('pengeluaran.index')" 
+    searchPlaceholder="Cari Kode Transaksi"
+/>
+
+
 <div class="content-inner">
   <div class="table-scroll-wrapper">
     <table class="table table-bordered table-striped pengeluaran-table">
       <thead class="table-primary text-center">
-        <tr>
-          <th>No</th>
-          <th>Kode Transaksi</th>
-          <th>Tanggal Transaksi</th>
-          <th>Uraian</th>
-          <th>Dari Kas</th>
-          <th>Untuk Akun</th>
-          <th>Jumlah</th>
-          <th>User</th>
-        </tr>
-      </thead>
+  <tr>
+    <th><input type="checkbox" id="selectAll"></th>
+    <th>No</th>
+    <th>Kode Transaksi</th>
+    <th>Tanggal Transaksi</th>
+    <th>Uraian</th>
+    <th>Dari Kas</th>
+    <th>Untuk Akun</th>
+    <th>Jumlah</th>
+    <th>User</th>
+  </tr>
+</thead>
 
-      <tbody>
-        {{-- Loop data transaksi, aman walau belum ada controller/database --}}
-        @forelse(($transaksi ?? collect()) as $index => $transaksi)
-          <tr class="text-center">
-            <td>{{ $index + 1 }}</td>
-            <td>{{ $transaksi->kode_transaksi ?? '-' }}</td>
-            <td>{{ $transaksi->tanggal_transaksi ?? '-' }}</td>
-            <td>{{ $transaksi->ket_transaksi ?? '-' }}</td>
-            <td>{{ $transaksi->jenisAkunTransaksi_sumber ?? '-' }}</td>
-            <td>{{ $transaksi->jenisAkunTransaksi_tujuan ?? '-' }}</td>
-            <td>{{ isset($transaksi->jumlah_transaksi) ? number_format($transaksi->jumlah, 0, ',', '.') : '-' }}</td>
-            <td>{{ $transaksi->user ?? '-' }}</td>
-          </tr>
-        @empty
-          <tr>
-            <td colspan="8" class="empty-cell"> 
-              Belum ada data transaksi pengeluaran kas.
-            </td>
-          </tr>
-        @endforelse
-      </tbody>
+<tbody>
+  @forelse(($TransaksiPengeluaran ?? collect()) as $index => $row)
+    <tr class="text-center">
+      <td><input type="checkbox" class="row-check" value="{{ $row->id_transaksi }}"></td>
+      <td>{{ $index + 1 }}</td>
+      <td>{{ $row->kode_transaksi ?? '-' }}</td>
+      <td>{{ $row->tanggal_transaksi ?? '-' }}</td>
+      <td>{{ $row->ket_transaksi ?? '-' }}</td>
+      <td>{{ $row->jenisAkunTransaksi_sumber ?? '-' }}</td>
+      <td>{{ $row->jenisAkunTransaksi_tujuan ?? '-' }}</td>
+      <td>{{ number_format($row->jumlah_transaksi, 0, ',', '.') }}</td>
+      <td>{{ $row->user ?? '-' }}</td>
+    </tr>
+  @empty
+    <tr>
+      <td colspan="9" class="empty-cell">Belum ada data transaksi pengeluaran kas.</td>
+    </tr>
+  @endforelse
+</tbody>
+
     </table>
   </div>
 </div>
 
-
+ <div class="pagination-container">
+      <x-menu.pagination :data="$TransaksiPengeluaran" />
+    </div>
 
 {{-- STYLE --}}
 <style>
@@ -144,8 +152,14 @@
     font-style: italic;
   }
 
+.pagination-container {
+  margin-top: auto;        
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 16px;
+}
 
-/* Responsif */
 @media (max-width: 640px) {
   .pengeluaran-table {
     font-size: 12px;
@@ -156,5 +170,34 @@
   }
 }
 </style>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+  const checkboxes = document.querySelectorAll(".row-check");
+  const btnEdit = document.querySelector(".df-edit");
+  const btnHapus = document.querySelector(".df-hapus");
+
+  checkboxes.forEach(chk => {
+    chk.addEventListener("change", function() {
+      const selected = Array.from(checkboxes).filter(c => c.checked);
+      if (selected.length === 1) {
+        const id = selected[0].value;
+        btnEdit.href = `/pengeluaran/${id}/edit`;
+        document.querySelector(".df-hapus").closest("form").action = `/pengeluaran/${id}`;
+        btnEdit.removeAttribute("disabled");
+        btnHapus.removeAttribute("disabled");
+      } else {
+        btnEdit.setAttribute("disabled", "true");
+        btnHapus.setAttribute("disabled", "true");
+      }
+    });
+  });
+
+  // select all
+  document.getElementById("selectAll").addEventListener("change", function(e) {
+    checkboxes.forEach(c => c.checked = e.target.checked);
+  });
+});
+</script>
 
 @endsection
