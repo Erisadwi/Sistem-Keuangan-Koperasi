@@ -40,6 +40,7 @@ Route::middleware(['auth:anggota'])->group(function () {
     Route::get('/profil/edit', [ProfileController::class, 'edit'])->name('anggota.profil.edit');
     Route::put('/profil/{id}', [ProfileController::class, 'update'])->name('anggota.profil.update');
 
+    Route::get('/pengajuan', [TambahPengajuanController::class, 'index'])->name('anggota.pengajuan.index');
     Route::get('/pengajuan/create', [TambahPengajuanController::class, 'create'])->name('anggota.pengajuan.create');
     Route::post('/pengajuan', [TambahPengajuanController::class, 'store'])->name('anggota.pengajuan.store');
     Route::post('/pengajuan/simulasi', [TambahPengajuanController::class, 'simulasi'])->name('anggota.pengajuan.simulasi');
@@ -188,9 +189,6 @@ Route::get('/anggota/lap-SHU', function () {
     return view('anggota.lap-SHU');
 })->name('anggota.lap-SHU');
 
-Route::get('/anggota/data-pengajuan', function () {
-    return view('anggota.data-pengajuan');
-})->name('anggota.data-pengajuan');
 
 Route::get('/anggota/test', function () {
     return view('anggota.test');

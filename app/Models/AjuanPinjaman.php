@@ -16,12 +16,15 @@ class AjuanPinjaman extends Model
 
     protected $fillable = [
         'id_ajuanPinjaman',
+        'id_anggota',
         'tanggal_pengajuan',
         'tanggal_update',
         'jenis_ajuan',
         'jumlah_ajuan',
         'keterangan',
         'status_ajuan',
+        'id_lamaAngsuran',
+        'id_biayaAdministrasi'
     ];
 
     public $timestamps = false;
