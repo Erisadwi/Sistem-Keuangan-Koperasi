@@ -51,7 +51,7 @@
 
         <x-menu.section title="Pengajuan Pinjaman" :open="false" :has-sub="true">
           <a href="{{ route('anggota.data-pengajuan') }}" class="submenu-row">Data Pengajuan</a>
-          <a href="{{ route('anggota.tambah-data-pengajuan') }}" class="submenu-row">Tambah Pengajuan Baru</a>
+          <a href="{{ route('anggota.pengajuan.create') }}" class="submenu-row">Tambah Pengajuan Baru</a>
         </x-menu.section>
       </ul>
     </aside>

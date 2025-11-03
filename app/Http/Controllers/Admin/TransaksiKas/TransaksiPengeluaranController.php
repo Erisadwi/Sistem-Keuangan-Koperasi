@@ -1,179 +1,126 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin\TransaksiKas;
 
+use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
-use App\Models\DetailTransaksi;
-use App\Models\JenisAkunTransaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class TransaksiPengeluaranController extends Controller
 {
-    /**
-     * Tampilkan daftar transaksi pengeluaran
-     */
     public function index(Request $request)
     {
-        $query = Transaksi::with(['akunSumber', 'akunTujuan'])
-            ->where('type_transaksi', 'TKK')
-            ->orderBy('tanggal_transaksi', 'desc');
+        $perPage = $request->input('per_page', 10);
 
-        // Filter tanggal
+        $query = Transaksi::with(['sumber', 'tujuan', 'data_user'])
+            ->where('type_transaksi', 'TKK'); 
+
         if ($request->filled('start_date') && $request->filled('end_date')) {
             $query->whereBetween('tanggal_transaksi', [$request->start_date, $request->end_date]);
         }
 
-        // Pencarian berdasarkan kode transaksi
         if ($request->filled('search')) {
-            $query->where('kode_transaksi', 'like', '%' . $request->search . '%');
+            $query->where('kode_transaksi', 'LIKE', "%{$request->search}%");
         }
 
-        $TransaksiPengeluaran = $query->paginate(10);
+        $TransaksiPengeluaran = $query
+            ->orderBy('id_transaksi', 'desc')
+            ->paginate($perPage)
+            ->appends($request->except('page'));
 
-        return view('admin.transaksi_kas.pengeluaran.index', compact('TransaksiPengeluaran'));
+        return view('admin.transaksi_kas.pengeluaran', compact('TransaksiPengeluaran'));
     }
 
-    /**
-     * Form tambah pengeluaran
-     */
     public function create()
     {
-        $akun = JenisAkunTransaksi::where('pengeluaran', 'Y')
-            ->where('status_akun', 'Y')
-            ->get();
-
-        return view('admin.transaksi_kas.pengeluaran.create', compact('akun'));
+        return view('admin.transaksi_kas.tambah-pengeluaran');
     }
 
-    /**
-     * Simpan transaksi pengeluaran baru
-     */
     public function store(Request $request)
     {
         $request->validate([
-            'kode_transaksi' => 'required|unique:transaksi,kode_transaksi',
-            'tanggal_transaksi' => 'required|date',
-            'id_jenisAkunTransaksi_sumber' => 'required',
-            'id_jenisAkunTransaksi_tujuan' => 'required|different:id_jenisAkunTransaksi_sumber',
+            'id_jenisAkunTransaksi_sumber' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
+            'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
             'jumlah_transaksi' => 'required|numeric|min:0',
-            'ket_transaksi' => 'nullable|string',
+            'ket_transaksi' => 'nullable|string|max:255',
         ]);
 
-        DB::beginTransaction();
-        try {
-            $transaksi = Transaksi::create([
-                'kode_transaksi' => $request->kode_transaksi,
-                'tanggal_transaksi' => $request->tanggal_transaksi,
-                'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
-                'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
-                'id_user' => Auth::id(),
-                'type_transaksi' => 'TKK',
-                'jumlah_transaksi' => $request->jumlah_transaksi,
-                'ket_transaksi' => $request->ket_transaksi,
-            ]);
+        $TransaksiPengeluaran = Transaksi::create([
+            'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
+            'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
+            'id_user' => Auth::user()->id_user,
+            'type_transaksi' => 'TKK', 
+            'kode_transaksi' => '',
+            'ket_transaksi' => $request->ket_transaksi,
+            'jumlah_transaksi' => $request->jumlah_transaksi,
+        ]);
 
-            // Catat detail debit & kredit (double-entry)
-            DetailTransaksi::insert([
-                [
-                    'id_transaksi' => $transaksi->id_transaksi,
-                    'id_jenisAkunTransaksi' => $request->id_jenisAkunTransaksi_sumber,
-                    'kredit' => $request->jumlah_transaksi,
-                    'debit' => 0,
-                ],
-                [
-                    'id_transaksi' => $transaksi->id_transaksi,
-                    'id_jenisAkunTransaksi' => $request->id_jenisAkunTransaksi_tujuan,
-                    'kredit' => 0,
-                    'debit' => $request->jumlah_transaksi,
-                ],
-            ]);
+        $TransaksiPengeluaran->kode_transaksi = 'TKK' . str_pad($TransaksiPengeluaran->id_transaksi, 5, '0', STR_PAD_LEFT);
+        $TransaksiPengeluaran->save();
 
-            DB::commit();
-            return redirect()->route('pengeluaran.index')->with('success', 'Transaksi pengeluaran berhasil disimpan.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
-        }
+        return redirect()->route('pengeluaran.index')
+            ->with('success', 'Transaksi Pengeluaran berhasil ditambahkan');
     }
 
-    /**
-     * Form edit pengeluaran
-     */
     public function edit($id)
     {
-        $transaksi = Transaksi::findOrFail($id);
-        $akun = JenisAkunTransaksi::where('status_akun', 'Y')->get();
-
-        return view('admin.transaksi_kas.pengeluaran.edit', compact('transaksi', 'akun'));
+        $TransaksiPengeluaran = Transaksi::findOrFail($id);
+        return view('admin.transaksi_kas.edit-pengeluaran', compact('TransaksiPengeluaran'));
     }
 
-    /**
-     * Update data pengeluaran
-     */
     public function update(Request $request, $id)
     {
         $request->validate([
-            'tanggal_transaksi' => 'required|date',
-            'id_jenisAkunTransaksi_sumber' => 'required',
-            'id_jenisAkunTransaksi_tujuan' => 'required|different:id_jenisAkunTransaksi_sumber',
+            'id_jenisAkunTransaksi_sumber' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
+            'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
             'jumlah_transaksi' => 'required|numeric|min:0',
-            'ket_transaksi' => 'nullable|string',
+            'ket_transaksi' => 'nullable|string|max:255',
         ]);
 
-        DB::beginTransaction();
-        try {
-            $transaksi = Transaksi::findOrFail($id);
-            $transaksi->update([
-                'tanggal_transaksi' => $request->tanggal_transaksi,
-                'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
-                'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
-                'jumlah_transaksi' => $request->jumlah_transaksi,
-                'ket_transaksi' => $request->ket_transaksi,
-            ]);
+        $TransaksiPengeluaran = Transaksi::findOrFail($id);
+        $TransaksiPengeluaran->update([
+            'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
+            'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
+            'jumlah_transaksi' => $request->jumlah_transaksi,
+            'ket_transaksi' => $request->ket_transaksi,
+        ]);
 
-            // Hapus detail lama dan buat baru
-            DetailTransaksi::where('id_transaksi', $id)->delete();
-
-            DetailTransaksi::insert([
-                [
-                    'id_transaksi' => $id,
-                    'id_jenisAkunTransaksi' => $request->id_jenisAkunTransaksi_sumber,
-                    'kredit' => $request->jumlah_transaksi,
-                    'debit' => 0,
-                ],
-                [
-                    'id_transaksi' => $id,
-                    'id_jenisAkunTransaksi' => $request->id_jenisAkunTransaksi_tujuan,
-                    'kredit' => 0,
-                    'debit' => $request->jumlah_transaksi,
-                ],
-            ]);
-
-            DB::commit();
-            return redirect()->route('pengeluaran.index')->with('success', 'Data transaksi pengeluaran berhasil diperbarui.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
-        }
+        return redirect()->route('pengeluaran.index')
+            ->with('success', 'Data berhasil diperbarui');
     }
 
-    /**
-     * Hapus transaksi pengeluaran
-     */
     public function destroy($id)
     {
-        DB::beginTransaction();
-        try {
-            DetailTransaksi::where('id_transaksi', $id)->delete();
-            Transaksi::findOrFail($id)->delete();
+        $TransaksiPengeluaran = Transaksi::findOrFail($id);
+        $TransaksiPengeluaran->delete();
 
-            DB::commit();
-            return redirect()->route('pengeluaran.index')->with('success', 'Data transaksi pengeluaran berhasil dihapus.');
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors(['error' => 'Terjadi kesalahan: ' . $e->getMessage()]);
-        }
+        return redirect()->route('pengeluaran.index')
+            ->with('success', 'Data berhasil dihapus');
     }
+
+    public function exportPdf(Request $request)
+    {
+
+    $query = Transaksi::with(['sumber', 'tujuan', 'data_user'])
+        ->where('type_transaksi', 'TKK'); 
+
+    if ($request->filled('start_date') && $request->filled('end_date')) {
+        $query->whereBetween('tanggal_transaksi', [$request->start_date, $request->end_date]);
+    }
+
+    if ($request->filled('search')) {
+        $query->where('kode_transaksi', 'LIKE', "%{$request->search}%");
+    }
+
+    $data = $query->orderBy('id_transaksi', 'desc')->get();
+
+    $pdf = Pdf::loadView('admin.transaksi_kas.pengeluaran-export-pdf', [
+        'data' => $data
+    ])->setPaper('A4', 'portrait');
+
+    return $pdf->download('transaksi_pengeluaran_kas.pdf');
+    }
+
 }
