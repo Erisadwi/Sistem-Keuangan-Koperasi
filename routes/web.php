@@ -96,16 +96,6 @@ Route::prefix('admin/master_data')->group(function () {
 
 });
 
-Route::prefix('admin/setting')->group(function () {
-    Route::get('identitas-koperasi/edit', [identitasKoperasiController::class, 'edit'])->name('identitas-koperasi.editSingle');
-    Route::put('identitas-koperasi/', [identitasKoperasiController::class, 'update'])->name('identitas-koperasi.updateSingle');
-    
-    Route::get('identitas/logo/{nama_koperasi}', [IdentitasKoperasiController::class, 'showLogo'])
-    ->name('identitas.logo');
-
-    Route::get('suku-bunga/edit', [SukuBungaController::class, 'edit'])->name('suku-bunga.editSingle');
-    Route::put('suku-bunga/', [SukuBungaController::class, 'update'])->name('suku-bunga.updateSingle');
-});
 
 Route::get('/test-logo', [App\Http\Controllers\Admin\setting\identitasKoperasiController::class, 'testBlob']);
 
@@ -120,6 +110,15 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
 
     Route::resource('transaksi-non-kas', TransaksiNonKasController::class)
         ->except(['show']);
+
+    Route::get('identitas-koperasi/edit', [identitasKoperasiController::class, 'edit'])->name('identitas-koperasi.editSingle');
+    Route::put('identitas-koperasi/', [identitasKoperasiController::class, 'update'])->name('identitas-koperasi.updateSingle');
+    
+    Route::get('identitas/logo/{nama_koperasi}', [IdentitasKoperasiController::class, 'showLogo'])
+    ->name('identitas.logo');
+
+    Route::get('suku-bunga/edit', [SukuBungaController::class, 'edit'])->name('suku-bunga.editSingle');
+    Route::put('suku-bunga/', [SukuBungaController::class, 'update'])->name('suku-bunga.updateSingle');
 });
 
 
