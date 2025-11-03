@@ -13,8 +13,11 @@
 />
 
 <x-menu.toolbar-right 
-   
+  searchPlaceholder="Cari Kode Transaksi"
+  searchName="kode_transaksi"
+  :downloadRoute="route('pengeluaran.export-pdf')"
 />
+
 
 
 <div class="content-inner">
@@ -43,7 +46,7 @@
           <td>{{ $row->sumber->nama_AkunTransaksi ?? '' }}</td>
           <td>{{ $row->tujuan->nama_AkunTransaksi ?? '' }}</td>
           <td>{{ number_format($row->jumlah_transaksi ?? 0, 0, ',', '.') }}</td>
-          <td>{{ optional($row->user)->name ?? '-' }}</td>
+          <td>{{ $row->data_user->nama_lengkap ?? '-' }}</td>
         </tr>
         @empty
         <tr>

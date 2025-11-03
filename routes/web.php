@@ -140,10 +140,12 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 });
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
-    Route::resource('pengeluaran', TransaksiPengeluaranController::class);
-    Route::get('/pengeluaran/{id}/export-pdf', [TransaksiPengeluaranController::class, 'exportPdf'])
+    Route::resource('pengeluaran', TransaksiPengeluaranController::class)->except(['show']);
+    Route::get('/pengeluaran/export-pdf', [TransaksiPengeluaranController::class, 'exportPdf'])
         ->name('pengeluaran.export-pdf');
 });
+
+
 
 
 

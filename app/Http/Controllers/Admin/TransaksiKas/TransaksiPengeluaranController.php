@@ -15,7 +15,7 @@ class TransaksiPengeluaranController extends Controller
         $perPage = $request->input('per_page', 10);
 
         $query = Transaksi::with(['sumber', 'tujuan', 'data_user'])
-            ->where('type_transaksi', 'TKK'); // Kode untuk pengeluaran
+            ->where('type_transaksi', 'TKK'); 
 
         if ($request->filled('start_date') && $request->filled('end_date')) {
             $query->whereBetween('tanggal_transaksi', [$request->start_date, $request->end_date]);
@@ -99,4 +99,28 @@ class TransaksiPengeluaranController extends Controller
         return redirect()->route('pengeluaran.index')
             ->with('success', 'Data berhasil dihapus');
     }
+
+    public function exportPdf(Request $request)
+    {
+
+    $query = Transaksi::with(['sumber', 'tujuan', 'data_user'])
+        ->where('type_transaksi', 'TKK'); 
+
+    if ($request->filled('start_date') && $request->filled('end_date')) {
+        $query->whereBetween('tanggal_transaksi', [$request->start_date, $request->end_date]);
+    }
+
+    if ($request->filled('search')) {
+        $query->where('kode_transaksi', 'LIKE', "%{$request->search}%");
+    }
+
+    $data = $query->orderBy('id_transaksi', 'desc')->get();
+
+    $pdf = Pdf::loadView('admin.transaksi_kas.pengeluaran-export-pdf', [
+        'data' => $data
+    ])->setPaper('A4', 'portrait');
+
+    return $pdf->download('transaksi_pengeluaran_kas.pdf');
+    }
+
 }
