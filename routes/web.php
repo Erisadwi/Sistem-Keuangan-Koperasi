@@ -122,18 +122,8 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
         ->except(['show']);
 });
 
-Route::prefix('admin/simpanan')->group(function () {
-    Route::get('/setoran-tunai', [SetoranTunaiController::class, 'index'])->name('setoran-tunai.index');
-    Route::get('/setoran-tunai/create', [SetoranTunaiController::class, 'create'])->name('setoran-tunai.create');
-    Route::post('/setoran-tunai', [SetoranTunaiController::class, 'store'])->name('setoran-tunai.store');
-    Route::get('/setoran-tunai/{id}/edit', [SetoranTunaiController::class, 'edit'])->name('setoran-tunai.edit');
-    Route::put('/setoran-tunai/{id}', [SetoranTunaiController::class, 'update'])->name('setoran-tunai.update');
-    Route::delete('/setoran-tunai/{id}', [SetoranTunaiController::class, 'destroy'])->name('setoran-tunai.destroy');
-    Route::get('/setoran-tunai/export-pdf', [SetoranTunaiController::class, 'exportPdf'])->name('setoran-tunai.exportPdf');
-    Route::get('/setoran-tunai/{id}/cetak', [SetoranTunaiController::class, 'cetak'])->name('setoran-tunai.cetak');
-});
 
-Route::middleware(['auth:user'])->prefix('admin/simpanan')->group(function () {
+Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/setoran-tunai', [SetoranTunaiController::class, 'index'])->name('setoran-tunai.index');
     Route::get('/setoran-tunai/create', [SetoranTunaiController::class, 'create'])->name('setoran-tunai.create');
     Route::post('/setoran-tunai', [SetoranTunaiController::class, 'store'])->name('setoran-tunai.store');

@@ -51,7 +51,7 @@
         </x-menu.section>
 
         <x-menu.section title="Simpanan" :open="false" :has-sub="true">
-          <a href="#" class="submenu-row">Setoran Tunai</a>
+          <a href="{{ route('setoran-tunai.index') }}" class="submenu-row">Setoran Tunai</a>
           <a href="#" class="submenu-row">Penarikan Tunai</a>
         </x-menu.section>
 
