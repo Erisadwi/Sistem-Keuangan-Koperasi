@@ -6,9 +6,8 @@
 
 @section('content')
 
-<form id="formPengajuan" class="form" method="post" action="#" enctype="multipart/form-data">
+<form id="formPengajuan" class="form" method="post" action="{{ route('pengajuan.store') }}" enctype="multipart/form-data">
   @csrf
-  @method('PUT')
 
   <div class="form-group">
     <label for="jenis">Jenis Pinjaman*</label>
@@ -64,7 +63,6 @@
 
 @push('scripts')
 <script>
-  const jenis = document.getElementById('jenis');
   const nominal = document.getElementById('nominal');
   const lama = document.getElementById('lama_angsuran');
   const simulasiSection = document.getElementById('simulasiSection');
@@ -78,62 +76,40 @@
     return parseFloat(str.replace(/\./g, '').replace(/,/g, '')) || 0;
   }
 
-  function generateSimulasi() {
-    const jenisVal = jenis.value.trim();
+  async function generateSimulasi() {
     const nominalVal = parseNominal(nominal.value);
     const lamaVal = parseInt(lama.value);
 
-    // Jika belum lengkap, sembunyikan tabel
-    if (!jenisVal || nominalVal <= 0 || !lamaVal) {
+    if (nominalVal <= 0 || !lamaVal) {
       simulasiSection.style.display = 'none';
       return;
     }
 
-    // Hitung simulasi pinjaman
-    const bunga = 0.02; // bunga 2%
-    const admin = 0;
-    const angsuranPokok = nominalVal / lamaVal;
+    // panggil controller via AJAX
+    const res = await fetch(`{{ route('pengajuan.simulasi') }}?nominal=${nominalVal}&lama=${lamaVal}`);
+    const data = await res.json();
+
     simulasiBody.innerHTML = '';
-
-    const today = new Date();
-    for (let i = 1; i <= lamaVal; i++) {
-      const tempo = new Date(today);
-      tempo.setMonth(today.getMonth() + i);
-      const bungaBulanan = nominalVal * bunga;
-      const totalTagihan = angsuranPokok + bungaBulanan + admin;
-
+    data.forEach(row => {
       simulasiBody.insertAdjacentHTML('beforeend', `
         <tr>
-          <td>${i}</td>
-          <td>${tempo.toLocaleDateString('id-ID', { day:'2-digit', month:'long', year:'numeric' })}</td>
-          <td>${formatNumber(angsuranPokok)}</td>
-          <td>${formatNumber(bungaBulanan)}</td>
-          <td>${formatNumber(admin)}</td>
-          <td>${formatNumber(totalTagihan)}</td>
+          <td>${row.angsuran_ke}</td>
+          <td>${row.jatuh_tempo}</td>
+          <td>${formatNumber(row.pokok)}</td>
+          <td>${formatNumber(row.bunga)}</td>
+          <td>${formatNumber(row.admin)}</td>
+          <td>${formatNumber(row.total)}</td>
         </tr>
       `);
-    }
-
+    });
     simulasiSection.style.display = 'block';
   }
 
-  // Event agar tabel muncul otomatis saat input berubah
-  [jenis, nominal, lama].forEach(el => {
-    el.addEventListener('input', generateSimulasi);
-  });
+  [nominal, lama].forEach(el => el.addEventListener('input', generateSimulasi));
 
-  // Format nominal agar tetap ribuan saat diketik
   nominal.addEventListener('input', (e) => {
     let val = e.target.value.replace(/\D/g, '');
     e.target.value = val.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-    generateSimulasi();
-  });
-
-  // Hentikan reload form agar tidak hilang tabel
-  const form = document.getElementById('formPengajuan');
-  form.addEventListener('submit', function(e) {
-    e.preventDefault();
-    alert('✅ Data pengajuan disimpan (simulasi muncul otomatis di bawah)');
   });
 </script>
 @endpush
