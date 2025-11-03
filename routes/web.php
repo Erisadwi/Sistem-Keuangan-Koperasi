@@ -21,6 +21,8 @@ use App\Http\Controllers\Admin\MasterData\SaldoAwalKasController;
 use App\Http\Controllers\DashboardControllerAnggota;
 use App\Http\Controllers\Admin\Simpanan\SetoranTunaiController;
 use App\Http\Controllers\Anggota\ProfileController;
+use App\Http\Controllers\Admin\Simpanan\PenarikanTunaiController;
+use App\Http\Controllers\Anggota\TambahPengajuanController;
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
@@ -35,6 +37,10 @@ Route::middleware(['auth:anggota'])->group(function () {
     Route::get('/profil', [ProfileController::class, 'index'])->name('anggota.profil');
     Route::get('/profil/edit', [ProfileController::class, 'edit'])->name('anggota.profil.edit');
     Route::put('/profil/{id}', [ProfileController::class, 'update'])->name('anggota.profil.update');
+
+    Route::get('/pengajuan/create', [TambahPengajuanController::class, 'create'])->name('anggota.pengajuan.create');
+    Route::post('/pengajuan', [TambahPengajuanController::class, 'store'])->name('anggota.pengajuan.store');
+    Route::post('/pengajuan/simulasi', [TambahPengajuanController::class, 'simulasi'])->name('anggota.pengajuan.simulasi');
 
 });
 
@@ -132,6 +138,17 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::delete('/setoran-tunai/{id}', [SetoranTunaiController::class, 'destroy'])->name('setoran-tunai.destroy');
     Route::get('/setoran-tunai/export-pdf', [SetoranTunaiController::class, 'exportPdf'])->name('setoran-tunai.exportPdf');
     Route::get('/setoran-tunai/{id}/cetak', [SetoranTunaiController::class, 'cetak'])->name('setoran-tunai.cetak');
+});
+
+Route::middleware(['auth:user'])->prefix('admin')->group(function () {
+    Route::get('/penarikan-tunai', [PenarikanTunaiController::class, 'index'])->name('penarikan-tunai.index');
+    Route::get('/penarikan-tunai/create', [PenarikanTunaiController::class, 'create'])->name('penarikan-tunai.create');
+    Route::post('penarikan-tunai', [PenarikanTunaiController::class, 'store'])->name('penarikan-tunai.store');
+    Route::get('/penarikan-tunai/{id}/edit', [PenarikanTunaiController::class, 'edit'])->name('penarikan-tunai.edit');
+    Route::put('/penarikan-tunai/{id}', [PenarikanTunaiController::class, 'update'])->name('penarikan-tunai.update');
+    Route::delete('/penarikan-tunai/{id}', [PenarikanTunaiController::class, 'destroy'])->name('penarikan-tunai.destroy');
+    Route::get('/penarikan-tunai/export-pdf', [PenarikanTunaiController::class, 'exportPdf'])->name('penarikan-tunai.exportPdf');
+    Route::get('/penarikan-tunai/{id}/cetak', [PenarikanTunaiController::class, 'cetak'])->name('penarikan-tunai.cetak');
 });
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
@@ -324,10 +341,6 @@ Route::get('/admin/pinjaman/bayar-angsuran', function () {
 Route::get('/admin/pinjaman/detail-peminjaman', function () {
     return view('admin.pinjaman.detail-peminjaman');
 })->name('admin.pinjaman.detail-peminjaman');
-
-Route::get('/anggota/tambah-data-pengajuan', function () {
-    return view('anggota.tambah-data-pengajuan');
-})->name('anggota.tambah-data-pengajuan');
 
 Route::get('/anggota/data-pengajuan-coba', function () {
     return view('anggota.data-pengajuan-coba');

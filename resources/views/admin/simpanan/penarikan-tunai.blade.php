@@ -6,8 +6,11 @@
 
 @section('content')
 
-<x-menu.toolbar-simpanan
-    addUrl="#" {{-- nanti bisa diganti route('penarikan.create') --}}
+<x-menu.toolbar-simpanan 
+    addUrl="{{ route('setoran-tunai.create') }}"
+    editUrl="{{ route('setoran-tunai.edit', '__ID__') }}"
+    deleteUrl="{{ route('setoran-tunai.destroy', '__ID__') }}"
+    exportUrl="{{ route('setoran-tunai.exportPdf') }}"
 />
 
 <div class="penarikan-wrap">
@@ -27,21 +30,21 @@
         </tr>
       </thead>
       <tbody>
-        @forelse(($transaksi ?? collect()) as $index => $row)
-          <tr>
+        @forelse($penarikanTunai ?? collect() as $index => $simpanan)
+          <tr class="text-center selectable-row" data-id="{{ $simpanan->id_simpanan }}">
             <td>{{ $index + 1 }}</td>
-            <td>{{ $row->kode_transaksi ?? '-' }}</td>
-            <td>{{ $row->tanggal_transaksi ?? '-' }}</td>
-            <td>{{ $row->id_anggota ?? '-' }}</td>
-            <td>{{ $row->nama_anggota ?? '-' }}</td>
-            <td>{{ $row->jenis_penarikan ?? '-' }}</td>
-            <td>{{ isset($row->jumlah) ? number_format($row->jumlah, 0, ',', '.') : '-' }}</td>
-            <td>{{ $row->user ?? '-' }}</td>
+            <td>{{ $simpanan->kode_simpanan ?? '-' }}</td>
+            <td>{{ $simpanan->tanggal_transaksi ? \Carbon\Carbon::parse($simpanan->tanggal_transaksi)->format('d-m-Y H:i') : '-' }}</td>
+            <td>{{ $simpanan->anggota->id_anggota ?? '-' }}</td>
+            <td>{{ $simpanan->anggota->nama_anggota ?? '-' }}</td>
+            <td>{{ $simpanan->jenisSimpanan->jenis_simpanan ?? '-' }}</td>
+            <td>{{ isset($simpanan->jumlah_simpanan) ? number_format($simpanan->jumlah_simpanan, 0, ',', '.') : '-' }}</td>
+            <td>{{ $simpanan->user->nama_lengkap ?? '-' }}</td>
             <td>
-              <a href="{{ route('simpanan.cetak', $row->id ?? '#') }}" 
-                 class="btn-nota">🧾 Nota</a>
+              <a href="{{ route('penarikan-tunai.cetak', $simpanan->id_simpanan ?? 0) }}" 
+                 class="btn-nota"> 🖨️</a>
             </td>
-          </tr>
+          </tr>  
         @empty
           <tr>
             <td colspan="9" class="empty-cell">Belum ada data penarikan tunai.</td>

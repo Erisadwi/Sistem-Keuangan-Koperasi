@@ -8,22 +8,28 @@
 
 @section('content')
 
-<div class="form-container">
-    <form id="formEditSetoranTunai"
-          action="#" {{-- nanti diganti route('simpanan.update', $simpanan->id) --}}
-          method="POST" enctype="multipart/form-simpanan">
-        @csrf
-        {{-- @method('PUT') --}}
+@if ($errors->any())
+    <ul>
+        @foreach ($errors->all() as $error)
+            <li style="color:red">{{ $error }}</li>
+        @endforeach
+    </ul>
+@endif
 
-        {{-- Bagian Tanggal Transaksi --}}
+<div class="form-container">
+    <form id="formEditPenarikanTunai"
+          action="{{ route('penarikan-tunai.update', $penarikanTunai->id_simpanan) }}"
+          method="POST" enctype="multipart/form-data">
+        @csrf
+        @method('PUT')
+
         <label for="tanggal_transaksi">Tanggal Transaksi</label>
         <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi"
             value="{{ isset($simpanan->tanggal_transaksi) ? \Carbon\Carbon::parse($simpanan->tanggal_transaksi)->format('Y-m-d\TH:i') : '' }}" required>
 
         <hr style="margin:20px 0; border:1px solid #ccc;">
 
-        {{-- Identitas Anggota --}}
-        <h4 style="font-size:14px; margin-bottom:10px;">Identitas Anggota</h4>
+        <h4 style="font-size:14px; margin-bottom:10px;">Identitas Penarikan</h4>
 
         <label for="nama_anggota">Nama Anggota</label>
         <input type="text" id="nama_anggota" name="nama_anggota"
@@ -55,32 +61,13 @@
             <option value="bank_bri" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'bank_bni') ? 'selected' : '' }}>Bank BRI</option>
         </select>
 
-        <hr style="margin:20px 0; border:1px solid #ccc;">
+        <label for="bukti_setoran">Bukti Setoran</label>
+        <input type="file" id="bukti_setoran" name="bukti_setoran" accept="image/*,application/pdf"
+               class="form-control">
 
-        {{-- Identitas Penerima --}}
-        <h4 style="font-size:14px; margin-bottom:10px;">Identitas Penerima</h4>
-
-        <label for="nama_penyetor">Nama Kuasa</label>
-        <input type="text" id="nama_penyetor" name="nama_penyetor"
-            value="{{ $simpanan->nama_anggota ?? '' }}" required>
-
-        <label for="nomor_identitas">Nomor ID Kuasa</label>
-        <input type="text" id="nomor_identitas" name="nomor_identitas"
-            value="{{ $simpanan->nomor_identitas ?? '' }}" required>
-
-        <label for="alamat">Alamat</label>
-        <textarea id="alamat" name="alamat" rows="2" required
-            style="width:100%; padding:8px; border:1px solid #565656; border-radius:5px;
-                   font-size:13px; background-color:#fff; margin-bottom:15px;"></textarea>
-
-        <label for="photo">Photo</label>
-        <input type="file" id="photo" name="photo" accept="image/*"
-            style="border:1px solid #565656; border-radius:5px; padding:6px; width:100%; font-size:13px; margin-bottom:20px;">
-
-        {{-- tampilkan jika photo sudah ada --}}
-        @if(isset($simpanan->photo) && $simpanan->photo)
+        @if($penarikanTunai->bukti_setoran)
             <div style="margin-bottom:10px;">
-                <img src="{{ asset('storage/' . $simpanan->photo) }}" alt="Foto Bukti" width="100" style="border-radius:5px;">
+                <img src="{{ asset('storage/' . $penarikanTunai->bukti_setoran) }}" alt="Bukti Setoran" width="100" style="border-radius:5px;">
             </div>
         @endif
 
@@ -173,7 +160,7 @@ textarea:focus {
 </style>
 
 <script>
-document.getElementById('formPenarikanTunai').addEventListener('submit', function(e) {
+document.getElementById('formEditPenarikanTunai').addEventListener('submit', function(e) {
     const wajib = [''];
 
     for (let id of wajib) {
