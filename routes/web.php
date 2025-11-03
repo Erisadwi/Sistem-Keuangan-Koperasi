@@ -310,18 +310,6 @@ Route::get('/admin/pinjaman/detail-pelunasan', function () {
     return view('admin.pinjaman.detail-pelunasan');
 })->name('admin.pinjaman.detail-pelunasan');
 
-Route::get('/admin/simpanan/penarikan-tunai', function () {
-    return view('admin.simpanan.penarikan-tunai');
-})->name('admin.simpanan.penarikan-tunai');
-
-Route::get('/admin/simpanan/tambah-penarikan-tunai', function () {
-    return view('admin.simpanan.tambah-penarikan-tunai');
-})->name('admin.simpanan.tambah-penarikan-tunai');
-
-Route::get('/admin/simpanan/edit-penarikan-tunai', function () {
-    return view('admin.simpanan.edit-penarikan-tunai');
-})->name('admin.simpanan.edit-penarikan-tunai');
-
 
 Route::get('/admin/pinjaman/data-pinjaman', function () {
     return view('admin.pinjaman.data-pinjaman');
