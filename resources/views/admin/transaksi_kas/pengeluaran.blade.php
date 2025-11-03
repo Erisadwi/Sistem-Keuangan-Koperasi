@@ -7,15 +7,15 @@
 @section('content')
 
 <x-menu.tambah-edit-hapus
-    :tambah="route('pengeluaran.create')" 
-    :edit="route('pengeluaran.edit', 1)" 
-    :hapus="route('pengeluaran.destroy', 1)" 
+    :tambah="'#'" 
+    :edit="'#'" 
+    :hapus="'#'"
+    id="action-buttons"
+
 />
 
 <x-menu.toolbar-right 
-    :downloadRoute="route('pengeluaran.download')" 
-    :filterRoute="route('pengeluaran.index')" 
-    searchPlaceholder="Cari Kode Transaksi"
+   
 />
 
 
@@ -23,8 +23,7 @@
   <div class="table-scroll-wrapper">
     <table class="table table-bordered table-striped pengeluaran-table">
       <thead class="table-primary text-center">
-  <tr>
-    <th><input type="checkbox" id="selectAll"></th>
+  <tr class="text-center">
     <th>No</th>
     <th>Kode Transaksi</th>
     <th>Tanggal Transaksi</th>
@@ -38,7 +37,7 @@
 
 <tbody>
   @forelse(($TransaksiPengeluaran ?? collect()) as $index => $row)
-    <tr class="text-center">
+    <tr class="selectable-row" data-id="{{ $row->id_transaski }}">
       <td><input type="checkbox" class="row-check" value="{{ $row->id_transaksi }}"></td>
       <td>{{ $index + 1 }}</td>
       <td>{{ $row->kode_transaksi ?? '-' }}</td>
@@ -60,9 +59,9 @@
   </div>
 </div>
 
- <div class="pagination-container">
+ {{-- <div class="pagination-container">
       <x-menu.pagination :data="$TransaksiPengeluaran" />
-    </div>
+    </div> --}}
 
 {{-- STYLE --}}
 <style>
@@ -168,6 +167,11 @@
   .pengeluaran-table td {
     padding: 8px;
   }
+}
+
+.selectable-row.selected td{
+  background-color: #b6d8ff !important;
+  color: #000;
 }
 </style>
 
