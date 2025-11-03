@@ -8,14 +8,12 @@
 
 <x-menu.tambah-edit-hapus
     :tambah="route('pengeluaran.create')" 
-    :edit="route('pengeluaran.edit', 1)" 
-    :hapus="route('pengeluaran.destroy', 1)" 
+    :edit="'#'" 
+    :hapus="'#'"
 />
 
 <x-menu.toolbar-right 
-    :downloadRoute="route('pengeluaran.download')" 
-    :filterRoute="route('pengeluaran.index')" 
-    searchPlaceholder="Cari Kode Transaksi"
+   
 />
 
 
@@ -23,46 +21,43 @@
   <div class="table-scroll-wrapper">
     <table class="table table-bordered table-striped pengeluaran-table">
       <thead class="table-primary text-center">
-  <tr>
-    <th><input type="checkbox" id="selectAll"></th>
-    <th>No</th>
-    <th>Kode Transaksi</th>
-    <th>Tanggal Transaksi</th>
-    <th>Uraian</th>
-    <th>Dari Kas</th>
-    <th>Untuk Akun</th>
-    <th>Jumlah</th>
-    <th>User</th>
-  </tr>
-</thead>
+        <tr>
+          <th>No</th>
+          <th>Kode Transaksi</th>
+          <th>Tanggal Transaksi</th>
+          <th>Uraian</th>
+          <th>Dari Kas</th>
+          <th>Untuk Akun</th>
+          <th>Jumlah</th>
+          <th>User</th>
+        </tr>
+      </thead>
 
-<tbody>
-  @forelse(($TransaksiPengeluaran ?? collect()) as $index => $row)
-    <tr class="text-center">
-      <td><input type="checkbox" class="row-check" value="{{ $row->id_transaksi }}"></td>
-      <td>{{ $index + 1 }}</td>
-      <td>{{ $row->kode_transaksi ?? '-' }}</td>
-      <td>{{ $row->tanggal_transaksi ?? '-' }}</td>
-      <td>{{ $row->ket_transaksi ?? '-' }}</td>
-      <td>{{ $row->jenisAkunTransaksi_sumber ?? '-' }}</td>
-      <td>{{ $row->jenisAkunTransaksi_tujuan ?? '-' }}</td>
-      <td>{{ number_format($row->jumlah_transaksi, 0, ',', '.') }}</td>
-      <td>{{ $row->user ?? '-' }}</td>
-    </tr>
-  @empty
-    <tr>
-      <td colspan="9" class="empty-cell">Belum ada data transaksi pengeluaran kas.</td>
-    </tr>
-  @endforelse
-</tbody>
-
+      <tbody>
+        @forelse(($TransaksiPengeluaran ?? collect()) as $index => $row)
+        <tr class="selectable-row" data-id="{{ $row->id_transaksi }}">
+          <td>{{ $index + 1 }}</td>
+          <td>{{ $row->kode_transaksi ?? '-' }}</td>
+          <td>{{ $row->tanggal_transaksi ?? '-' }}</td>
+          <td>{{ $row->ket_transaksi ?? '-' }}</td>
+          <td>{{ $row->sumber->nama_AkunTransaksi ?? '' }}</td>
+          <td>{{ $row->tujuan->nama_AkunTransaksi ?? '' }}</td>
+          <td>{{ number_format($row->jumlah_transaksi ?? 0, 0, ',', '.') }}</td>
+          <td>{{ optional($row->user)->name ?? '-' }}</td>
+        </tr>
+        @empty
+        <tr>
+          <td colspan="8" class="empty-cell">Belum ada data transaksi pengeluaran kas.</td>
+        </tr>
+        @endforelse
+      </tbody>
     </table>
   </div>
 </div>
 
- <div class="pagination-container">
+ {{-- <div class="pagination-container">
       <x-menu.pagination :data="$TransaksiPengeluaran" />
-    </div>
+    </div> --}}
 
 {{-- STYLE --}}
 <style>
@@ -169,34 +164,36 @@
     padding: 8px;
   }
 }
+
+.selectable-row.selected td{
+  background-color: #b6d8ff !important;
+  color: #000;
+}
 </style>
 
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  const checkboxes = document.querySelectorAll(".row-check");
-  const btnEdit = document.querySelector(".df-edit");
-  const btnHapus = document.querySelector(".df-hapus");
+document.addEventListener("DOMContentLoaded", function () {
+    const rows = document.querySelectorAll(".selectable-row");
+    const btnEdit = document.querySelector(".df-edit");
+    const btnHapus = document.querySelector(".df-hapus");
 
-  checkboxes.forEach(chk => {
-    chk.addEventListener("change", function() {
-      const selected = Array.from(checkboxes).filter(c => c.checked);
-      if (selected.length === 1) {
-        const id = selected[0].value;
-        btnEdit.href = `/pengeluaran/${id}/edit`;
-        document.querySelector(".df-hapus").closest("form").action = `/pengeluaran/${id}`;
-        btnEdit.removeAttribute("disabled");
-        btnHapus.removeAttribute("disabled");
-      } else {
-        btnEdit.setAttribute("disabled", "true");
-        btnHapus.setAttribute("disabled", "true");
-      }
+    rows.forEach(row => {
+        row.addEventListener("click", function () {
+            rows.forEach(r => r.classList.remove("selected"));
+            this.classList.add("selected");
+
+            const id = this.getAttribute("data-id");
+
+            if (btnEdit) {
+                btnEdit.href = `/admin/pengeluaran/${id}/edit`;
+                btnEdit.removeAttribute("disabled");
+            }
+            if (btnHapus) {
+                btnHapus.closest("form").action = `/admin/pengeluaran/${id}`;
+                btnHapus.removeAttribute("disabled");
+            }
+        });
     });
-  });
-
-  // select all
-  document.getElementById("selectAll").addEventListener("change", function(e) {
-    checkboxes.forEach(c => c.checked = e.target.checked);
-  });
 });
 </script>
 

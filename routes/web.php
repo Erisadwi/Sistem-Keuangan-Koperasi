@@ -23,6 +23,8 @@ use App\Http\Controllers\Admin\Simpanan\SetoranTunaiController;
 use App\Http\Controllers\Anggota\ProfileController;
 use App\Http\Controllers\Admin\Simpanan\PenarikanTunaiController;
 use App\Http\Controllers\Anggota\TambahPengajuanController;
+use App\Http\Controllers\Admin\TransaksiKas\TransaksiPengeluaranController;
+
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
@@ -128,7 +130,6 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
         ->except(['show']);
 });
 
-
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/setoran-tunai', [SetoranTunaiController::class, 'index'])->name('setoran-tunai.index');
     Route::get('/setoran-tunai/create', [SetoranTunaiController::class, 'create'])->name('setoran-tunai.create');
@@ -156,6 +157,11 @@ Route::middleware(['auth'])->prefix('admin')->group(function () {
 
 });
 
+Route::middleware(['auth:user'])->prefix('admin')->group(function () {
+    Route::resource('pengeluaran', TransaksiPengeluaranController::class);
+    Route::get('/pengeluaran/{id}/export-pdf', [TransaksiPengeluaranController::class, 'exportPdf'])
+        ->name('pengeluaran.export-pdf');
+});
 
 
 
