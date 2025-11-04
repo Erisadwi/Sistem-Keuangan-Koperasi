@@ -9,7 +9,7 @@ use App\Models\sukuBunga;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class TambahPengajuanController extends Controller
+class AjuanPinjamanController extends Controller
 {
 public function index()
 {

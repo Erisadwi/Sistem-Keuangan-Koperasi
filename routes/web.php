@@ -22,7 +22,7 @@ use App\Http\Controllers\DashboardControllerAnggota;
 use App\Http\Controllers\Admin\Simpanan\SetoranTunaiController;
 use App\Http\Controllers\Anggota\ProfileController;
 use App\Http\Controllers\Admin\Simpanan\PenarikanTunaiController;
-use App\Http\Controllers\Anggota\TambahPengajuanController;
+use App\Http\Controllers\Anggota\AjuanPinjamanController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiPengeluaranController;
 
 
@@ -40,10 +40,10 @@ Route::middleware(['auth:anggota'])->group(function () {
     Route::get('/profil/edit', [ProfileController::class, 'edit'])->name('anggota.profil.edit');
     Route::put('/profil/{id}', [ProfileController::class, 'update'])->name('anggota.profil.update');
 
-    Route::get('/pengajuan', [TambahPengajuanController::class, 'index'])->name('anggota.pengajuan.index');
-    Route::get('/pengajuan/create', [TambahPengajuanController::class, 'create'])->name('anggota.pengajuan.create');
-    Route::post('/pengajuan', [TambahPengajuanController::class, 'store'])->name('anggota.pengajuan.store');
-    Route::post('/pengajuan/simulasi', [TambahPengajuanController::class, 'simulasi'])->name('anggota.pengajuan.simulasi');
+    Route::get('/pengajuan', [AjuanPinjamanController::class, 'index'])->name('anggota.pengajuan.index');
+    Route::get('/pengajuan/create', [AjuanPinjamanController::class, 'create'])->name('anggota.pengajuan.create');
+    Route::post('/pengajuan', [AjuanPinjamanController::class, 'store'])->name('anggota.pengajuan.store');
+    Route::post('/pengajuan/simulasi', [AjuanPinjamanController::class, 'simulasi'])->name('anggota.pengajuan.simulasi');
 
 });
 
