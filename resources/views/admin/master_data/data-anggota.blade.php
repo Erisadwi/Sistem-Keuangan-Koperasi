@@ -8,7 +8,7 @@
 
 <x-menu.tambah-unduh-cari
     addUrl="{{ route('anggota.create') }}" 
-    downloadFile="data-anggota.pdf" 
+    unduh="{{ route('anggota.export') }}"
 />
 
 <div class="content-inner">
