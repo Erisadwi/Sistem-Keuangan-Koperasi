@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\SaldoAwalKasExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SaldoAwalKasController extends Controller
 {
@@ -21,6 +23,11 @@ class SaldoAwalKasController extends Controller
     public function create()
     {
         return view('admin.master_data.tambah-data-saldo-awal-kas');
+    }
+
+    public function export()
+    {
+    return Excel::download(new SaldoAwalKasExport, 'saldo-awal-kas.xlsx');
     }
 
     public function store(Request $request)

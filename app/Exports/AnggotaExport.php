@@ -2,54 +2,50 @@
 
 namespace App\Exports;
 
-use App\Models\JenisAkunTransaksi;
+use App\Models\Anggota;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithStyles;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-class JenisAkunTransaksiExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize
+class AnggotaExport implements FromCollection, WithHeadings, WithStyles, ShouldAutoSize
 {
     public function collection()
     {
-        return JenisAkunTransaksi::select(
-            'kode_aktiva',
-            'nama_AkunTransaksi',
-            'type_akun',
-            'pemasukan',
-            'penarikan',
-            'transfer',
-            'pengeluaran',
-            'status_akun',
-            'labarugi',
-            'nonkas',
-            'simpanan',
-            'pinjaman',
-            'angsuran',
+        return Anggota::select(
+            'id_anggota',
+            'username_anggota',
+            'nama_anggota',
+            'jenis_kelamin',
+            'alamat_anggota',
+            'kota_anggota',
+            'jabatan',
+            'tanggal_registrasi',
+            'tanggal_keluar',
+            'status_anggota'
         )->get();
     }
 
     public function headings(): array
     {
         return [
-            'Kode Aktiva',
-            'Jenis Transaksi',
-            'Akun',
-            'Pemasukan',
-            'Penarikan',
-            'Transfer',
-            'Pengeluaran',
-            'Aktif',
-            'Laba Rugi',
-            'Non Kas',
-            'Simpanan',
-            'Pinjaman',
-            'Angsuran',
+            'ID Anggota',
+            'Username',
+            'Nama Lengkap',
+            'Jenis Kelamin',
+            'Alamat',
+            'Kota',
+            'Jabatan',
+            'Tanggal Registrasi',
+            'Tanggal Keluar',
+            'Keanggotaan'
         ];
     }
 
-    public function styles(Worksheet $sheet)
+     public function styles(Worksheet $sheet)
     {
 
         $highestColumn = $sheet->getHighestColumn(); 
@@ -68,5 +64,4 @@ class JenisAkunTransaksiExport implements FromCollection, WithHeadings, WithStyl
 
     return [];
     }
-
 }

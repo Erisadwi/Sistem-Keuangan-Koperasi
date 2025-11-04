@@ -19,7 +19,7 @@
   </a>
 
  <form action="{{ $cari ?? '#' }}" method="GET" class="df-search-form">
-    <input type="text" name="search" class="df-input" placeholder="Cari kode Aktiva...">
+    <input type="text" name="search" class="df-input" placeholder="Cari kode aktiva...">
   </form>
 </div>
 
