@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\AjuanPinjaman;
 use App\Models\Pinjaman;
+use App\Models\sukuBunga;
 use Illuminate\Support\Facades\Auth;
 
 class PengajuanPinjamanController extends Controller
@@ -24,14 +25,17 @@ class PengajuanPinjamanController extends Controller
     public function disetujui($id)
     {   
         $ajuanPinjaman = AjuanPinjaman::with('anggota', 'lama_angsuran')->findOrFail($id);
-        $ajuanPinjaman = AjuanPinjaman::findOrFail($id);
         $ajuanPinjaman->status_ajuan = 'Disetujui';
         $ajuanPinjaman->save();
 
-        $biayaAdmin = BiayaAdministrasi::first(); // sesuaikan query jika ada tipe pinjaman tertentu
+        $biayaAdmin   = SukuBunga::firstOrFail();
+        $ratePinjaman = (float) $biayaAdmin->suku_bunga_pinjaman; 
+        $rateAdmin    = (float) $biayaAdmin->biaya_administrasi;  
+        $jumlah       = (float) $ajuanPinjaman->jumlah_ajuan;
 
-        $bunga = ($biayaAdmin->bunga / 100) * $ajuanPinjaman->jumlah_ajuan;
-        $biaya_admin = ($biayaAdmin->biaya_admin / 100) * $ajuanPinjaman->jumlah_ajuan;
+        // rate disimpan sebagai 10.00 = 10%
+        $bunga       = round(($ratePinjaman / 100) * $jumlah, 2);
+        $biaya_admin = round(($rateAdmin    / 100) * $jumlah, 2);
 
         Pinjaman::create([
         'id_pinjaman' => Pinjaman::generateId(),

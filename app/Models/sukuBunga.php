@@ -62,4 +62,8 @@ class sukuBunga extends Model
         return $this->belongsTo(LamaAngsuran::class, 'id_lamaAngsuran', 'id_lamaAngsuran');
         }
 
+        protected $casts = [
+        'suku_bunga_pinjaman' => 'decimal:2',   
+        'biaya_administrasi'  => 'decimal:2',   
+];
 }

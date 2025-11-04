@@ -44,7 +44,7 @@ class Pinjaman extends Model
     }
     protected $with = ['ajuanPinjaman','user', 'anggota', 'lamaAngsuran', 'tujuan', 'sumber'];
 
-    public function ajuan_pinjaman()
+    public function ajuanPinjaman()
     {
         return $this->belongsTo(AjuanPinjaman::class, 'id_ajuanPinjaman', 'id_ajuanPinjaman');
     }
@@ -59,7 +59,7 @@ class Pinjaman extends Model
         return $this->belongsTo(Anggota::class, 'id_anggota', 'id_anggota');
     }
 
-    public function lama_angsuran()
+    public function lamaAngsuran()
     {
         return $this->belongsTo(LamaAngsuran::class, 'id_lamaAngsuran', 'id_lamaAngsuran');
     }
