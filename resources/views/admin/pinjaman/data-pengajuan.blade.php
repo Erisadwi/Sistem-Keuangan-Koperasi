@@ -58,7 +58,9 @@
   </table>
 </div>
 
-
+    <div class="pagination-container">
+      <x-menu.pagination :data="$ajuanPinjaman" />
+    </div>
 
 <style>
   :root {
@@ -171,6 +173,14 @@
   .ditolak:hover {
     background-color: #f12f2f;
   }
+
+  .pagination-container {
+  margin-top: auto;        
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 16px;
+}
 
   @media (max-width: 640px) {
     .pengajuan-pinjaman-table {

@@ -12,11 +12,16 @@ use Illuminate\Support\Facades\Auth;
 class PengajuanPinjamanController extends Controller
 {
 
-    public function index()
+     public function index(Request $request)
     {
+
         $ajuanPinjaman = AjuanPinjaman::with(['anggota', 'lama_angsuran'])
             ->where('status_ajuan', '!=', 'Ditolak')
             ->get();
+
+        $perPage = (int) $request->query('per_page', 10);
+        $query = AjuanPinjaman::query();
+        $ajuanPinjaman = $query->orderBy('id_ajuanPinjaman', 'asc')->paginate($perPage);
 
         return view('admin.pinjaman.data-pengajuan', compact('ajuanPinjaman'));
     }
