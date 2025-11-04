@@ -24,6 +24,7 @@ use App\Http\Controllers\Anggota\ProfileController;
 use App\Http\Controllers\Admin\Simpanan\PenarikanTunaiController;
 use App\Http\Controllers\Anggota\AjuanPinjamanController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiPengeluaranController;
+use App\Http\Controllers\Admin\Pinjaman\PengajuanPinjamanController;
 
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -129,6 +130,10 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
 
     Route::get('suku-bunga/edit', [SukuBungaController::class, 'edit'])->name('suku-bunga.editSingle');
     Route::put('suku-bunga/', [SukuBungaController::class, 'update'])->name('suku-bunga.updateSingle');
+
+    Route::get('/admin/pengajuan-pinjaman', [PengajuanPinjamanController::class, 'index'])->name('pengajuan-pinjaman.index');
+    Route::get('/admin/pengajuan-pinjaman/{id}/disetujui', [PengajuanPinjamanController::class, 'disetujui'])->name('pengajuan-pinjaman.disetujui');
+    Route::patch('/admin/pengajuan-pinjaman/{id}/tolak', [PengajuanPinjamanController::class, 'tolak'])->name('pengajuan-pinjaman.tolak');
 });
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {

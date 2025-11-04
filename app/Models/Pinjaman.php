@@ -11,8 +11,8 @@ class Pinjaman extends Model
 
     protected $table = 'pinjaman';
     protected $primaryKey = 'id_pinjaman';
-    public $incrementing = true;
-    protected $keyType = 'int';
+    public $incrementing = false;
+    protected $keyType = 'string';
     public $timestamps = false;
 
     protected $fillable = [
@@ -32,6 +32,16 @@ class Pinjaman extends Model
         'biaya_admin',
     ];
 
+    public static function generateId()
+    {
+    $prefix = 'PJ';
+    $last = self::where('id_pinjaman', 'like', $prefix.'%')
+        ->orderBy('id_pinjaman', 'desc')
+        ->first();
+
+    $number = $last ? (int) substr($last->id_pinjaman, strlen($prefix)) + 1 : 1;
+    return $prefix . str_pad($number, 4, '0', STR_PAD_LEFT);
+    }
     protected $with = ['ajuanPinjaman','user', 'anggota', 'lamaAngsuran', 'tujuan', 'sumber'];
 
     public function ajuan_pinjaman()
