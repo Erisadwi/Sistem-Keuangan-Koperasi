@@ -86,8 +86,8 @@
         </x-menu.section>
 
         <x-menu.section title="Setting" :open="false" :has-sub="true">
-          <a href="#" class="submenu-row">Identitas Koperasi</a>
-          <a href="#" class="submenu-row">Suku Bunga</a>
+          <a href="{{ route('identitas-koperasi.editSingle') }}" class="submenu-row">Identitas Koperasi</a>
+          <a href="{{ route('suku-bunga.editSingle') }}" class="submenu-row">Suku Bunga</a>
         </x-menu.section>
       </ul>
     </aside>

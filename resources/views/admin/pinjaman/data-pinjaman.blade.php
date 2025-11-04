@@ -48,8 +48,6 @@
   </table>
 </div>
 
-<x-menu.pagination />
-
 <style>
   :root {
     --outer-border: #838383;

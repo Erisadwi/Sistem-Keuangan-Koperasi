@@ -22,7 +22,7 @@
     </thead>
 
     <tbody>
-      @forelse(($ajuan_pinjaman ?? collect()) as $idx => $row)
+      @forelse(($ajuanPinjaman ?? collect()) as $idx => $row)
         <tr>
           <td>{{ $row->tanggal_pengajuan ?? '' }}</td>
           <td>{{ $row->jenis_ajuan ?? '' }}</td>
@@ -31,7 +31,8 @@
             @php $nom = $row->jumlah_ajuan ?? null; @endphp
             {{ $nom !== null ? number_format($nom, 0, ',', '.') : '' }}
           </td>
-          <td>{{ $row->keterangan ?? '' }}</td>
+          <td>{{ $row->lama_angsuran->lama_angsuran ?? '-' }} bulan</td>
+          <td>{{ $row->keterangan ?? '-' }}</td>
           <td>{{ $row->tanggal_update ?? '' }}</td>
           <td>
             @php
@@ -92,6 +93,7 @@
   padding: 10px;
   border-bottom: 1px solid var(--grid);
   white-space: nowrap;
+  text-align: center;
 }
 
 .pengajuan-table td{
@@ -99,6 +101,7 @@
   border-bottom: 1px solid var(--grid)!important;
   border-right: 1px solid var(--grid)!important;
   background: #fff;
+  text-align: center;
 }
 
 .pengajuan-table tbody td:last-child{

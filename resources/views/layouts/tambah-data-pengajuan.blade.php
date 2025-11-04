@@ -23,7 +23,7 @@
         <div class="profile-left">
         <img 
           src="{{ $user && $user->foto 
-            ? asset('storage/' . $user->foto) 
+            ? asset('' . $user->foto) 
             : asset('images/default.jpeg') }}" 
           alt="Foto {{ $user->nama_anggota ?? 'Pengguna' }}" 
         class="avatar-70">
@@ -46,8 +46,8 @@
         </x-menu.section>
 
         <x-menu.section title="Pengajuan Pinjaman" :open="false" :has-sub="true">
-          <a href="{{ route('anggota.data-pengajuan') }}" class="submenu-row">Data Pengajuan</a>
-          <a href="{{ route('anggota.tambah-data-pengajuan') }}" class="submenu-row">Tambah Pengajuan Baru</a>
+          <a href="{{ route('anggota.pengajuan.index') }}" class="submenu-row">Data Pengajuan</a>
+          <a href="{{ route('anggota.pengajuan.create') }}" class="submenu-row">Tambah Pengajuan Baru</a>
         </x-menu.section>
       </ul>
     </aside>

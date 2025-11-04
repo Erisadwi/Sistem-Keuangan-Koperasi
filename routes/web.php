@@ -22,7 +22,7 @@ use App\Http\Controllers\DashboardControllerAnggota;
 use App\Http\Controllers\Admin\Simpanan\SetoranTunaiController;
 use App\Http\Controllers\Anggota\ProfileController;
 use App\Http\Controllers\Admin\Simpanan\PenarikanTunaiController;
-use App\Http\Controllers\Anggota\TambahPengajuanController;
+use App\Http\Controllers\Anggota\AjuanPinjamanController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiPengeluaranController;
 
 
@@ -40,9 +40,10 @@ Route::middleware(['auth:anggota'])->group(function () {
     Route::get('/profil/edit', [ProfileController::class, 'edit'])->name('anggota.profil.edit');
     Route::put('/profil/{id}', [ProfileController::class, 'update'])->name('anggota.profil.update');
 
-    Route::get('/pengajuan/create', [TambahPengajuanController::class, 'create'])->name('anggota.pengajuan.create');
-    Route::post('/pengajuan', [TambahPengajuanController::class, 'store'])->name('anggota.pengajuan.store');
-    Route::post('/pengajuan/simulasi', [TambahPengajuanController::class, 'simulasi'])->name('anggota.pengajuan.simulasi');
+    Route::get('/pengajuan', [AjuanPinjamanController::class, 'index'])->name('anggota.pengajuan.index');
+    Route::get('/pengajuan/create', [AjuanPinjamanController::class, 'create'])->name('anggota.pengajuan.create');
+    Route::post('/pengajuan', [AjuanPinjamanController::class, 'store'])->name('anggota.pengajuan.store');
+    Route::post('/pengajuan/simulasi', [AjuanPinjamanController::class, 'simulasi'])->name('anggota.pengajuan.simulasi');
 
 });
 
@@ -104,16 +105,6 @@ Route::prefix('admin/master_data')->group(function () {
 
 });
 
-Route::prefix('admin/setting')->group(function () {
-    Route::get('identitas-koperasi/edit', [identitasKoperasiController::class, 'edit'])->name('identitas-koperasi.editSingle');
-    Route::put('identitas-koperasi/', [identitasKoperasiController::class, 'update'])->name('identitas-koperasi.updateSingle');
-    
-    Route::get('identitas/logo/{nama_koperasi}', [IdentitasKoperasiController::class, 'showLogo'])
-    ->name('identitas.logo');
-
-    Route::get('suku-bunga/edit', [SukuBungaController::class, 'edit'])->name('suku-bunga.editSingle');
-    Route::put('suku-bunga/', [SukuBungaController::class, 'update'])->name('suku-bunga.updateSingle');
-});
 
 Route::get('/test-logo', [App\Http\Controllers\Admin\setting\identitasKoperasiController::class, 'testBlob']);
 
@@ -128,6 +119,15 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
 
     Route::resource('transaksi-non-kas', TransaksiNonKasController::class)
         ->except(['show']);
+
+    Route::get('identitas-koperasi/edit', [identitasKoperasiController::class, 'edit'])->name('identitas-koperasi.editSingle');
+    Route::put('identitas-koperasi/', [identitasKoperasiController::class, 'update'])->name('identitas-koperasi.updateSingle');
+    
+    Route::get('identitas/logo/{nama_koperasi}', [IdentitasKoperasiController::class, 'showLogo'])
+    ->name('identitas.logo');
+
+    Route::get('suku-bunga/edit', [SukuBungaController::class, 'edit'])->name('suku-bunga.editSingle');
+    Route::put('suku-bunga/', [SukuBungaController::class, 'update'])->name('suku-bunga.updateSingle');
 });
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
@@ -189,9 +189,6 @@ Route::get('/anggota/lap-SHU', function () {
     return view('anggota.lap-SHU');
 })->name('anggota.lap-SHU');
 
-Route::get('/anggota/data-pengajuan', function () {
-    return view('anggota.data-pengajuan');
-})->name('anggota.data-pengajuan');
 
 Route::get('/anggota/test', function () {
     return view('anggota.test');
