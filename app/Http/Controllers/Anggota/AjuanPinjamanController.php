@@ -105,5 +105,6 @@ public function index()
     }
 
     return response()->json($simulasi);
-}
+    }
+
 }
