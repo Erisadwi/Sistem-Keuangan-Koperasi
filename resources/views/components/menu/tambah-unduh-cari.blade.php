@@ -18,15 +18,9 @@
     Unduh
   </a>
 
-  <a href="{{ $cari ?? '#' }}" class="df-btn df-cari">
-    <span class="df-ic" aria-hidden="true">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-        <circle cx="11" cy="11" r="7" stroke="#0ea5e9" stroke-width="2"/>
-        <line x1="16.5" y1="16.5" x2="21" y2="21" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-    </span>
-    Cari
-  </a>
+ <form action="{{ $cari ?? '#' }}" method="GET" class="df-search-form">
+    <input type="text" name="search" class="df-input" placeholder="Cari kode Aktiva...">
+  </form>
 </div>
 
 <style>
@@ -52,11 +46,11 @@
   color: #111827;
   display: inline-flex;
   align-items: center;
-  justify-content: center; /* isi tombol dirata tengah */
+  justify-content: center; 
   gap: 6px;
   box-shadow: 0 2px 4px rgba(107, 105, 105, 0.647);
   transition: 0.2s;
-  width: 85px; /* ✅ lebar tombol seragam */
+  width: 85px;
 }
 
 .df-btn:hover {
@@ -69,12 +63,6 @@
   vertical-align: middle;
 }
 
-/* Tombol Cari tetap bisa disesuaikan sedikit */
-.df-cari {
-  justify-content: flex-start; /* isi agak ke kiri */
-  padding-left: 10px;
-}
-
 .df-tambah svg path,
 .df-unduh svg path,
 .df-cari svg path,
@@ -82,4 +70,26 @@
 .df-cari svg line {
   stroke: #0ea5e9;
 }
+
+.df-search-form {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.df-input {
+  padding: 6px 10px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 12px;
+  box-shadow: 0 2px 4px rgba(107, 105, 105, 0.647);
+  width: 150px;
+}
+
+.df-input:focus {
+  outline: none;
+  border-color: #0ea5e9;
+  box-shadow: 0px 4px 8px rgba(14, 165, 233, 0.35);
+}
+
 </style>
