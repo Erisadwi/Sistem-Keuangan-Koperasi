@@ -26,6 +26,7 @@ use App\Http\Controllers\Anggota\AjuanPinjamanController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiPengeluaranController;
 use App\Http\Controllers\Admin\Pinjaman\DataPinjamanController;
 use App\Http\Controllers\Admin\Pinjaman\PengajuanPinjamanController;
+use App\Http\Controllers\Admin\AngsuranController;
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
@@ -194,6 +195,13 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
         ->name('pengeluaran.export-pdf');
 });
 
+Route::middleware(['auth:user'])->prefix('admin')->group(function () {
+    Route::get('/angsuran', [AngsuranController::class, 'index'])->name('angsuran.index');
+    Route::get('/angsuran/bayar/{id}', [AngsuranController::class, 'bayar'])->name('bayar.angsuran');
+});
+
+
+
 //Route::get('/', function () {
 //    return view('welcome');
 //});
@@ -324,10 +332,6 @@ Route::get('/admin/master_data/tambah-data-saldo-awal-non-kas', function () {
 Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
     return view('admin.master_data.edit-data-saldo-awal-non-kas');
 })->name('admin.master_data.edit-data-saldo-awal-non-kas');
-
-Route::get('/admin/pinjaman/angsuran', function () {
-    return view('admin.pinjaman.angsuran');
-})->name('admin.pinjaman.angsuran');
 
 Route::get('/admin/pinjaman/pinjaman-lunas', function () {
     return view('admin.pinjaman.pinjaman-lunas');
