@@ -24,7 +24,9 @@ use App\Http\Controllers\Anggota\ProfileController;
 use App\Http\Controllers\Admin\Simpanan\PenarikanTunaiController;
 use App\Http\Controllers\Anggota\AjuanPinjamanController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiPengeluaranController;
+use App\Http\Controllers\Admin\Pinjaman\DataPinjamanController;
 use App\Http\Controllers\Admin\Pinjaman\PengajuanPinjamanController;
+
 
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -139,6 +141,10 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/admin/pengajuan-pinjaman', [PengajuanPinjamanController::class, 'index'])->name('pengajuan-pinjaman.index');
     Route::get('/admin/pengajuan-pinjaman/{id}/disetujui', [PengajuanPinjamanController::class, 'disetujui'])->name('pengajuan-pinjaman.disetujui');
     Route::patch('/admin/pengajuan-pinjaman/{id}/tolak', [PengajuanPinjamanController::class, 'tolak'])->name('pengajuan-pinjaman.tolak');
+    Route::get('/admin/pengajuan-pinjaman/download', [PengajuanPinjamanController::class, 'download'])
+        ->name('pengajuan-pinjaman.download');
+
+    Route::resource('transaksi-non-kas', TransaksiNonKasController::class);
 });
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
@@ -163,6 +169,16 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/penarikan-tunai/{id}/cetak', [PenarikanTunaiController::class, 'cetak'])->name('penarikan-tunai.cetak');
 });
 
+Route::middleware(['auth:user'])->prefix('admin')->group(function () {
+    Route::get('/pinjaman', [DataPinjamanController::class, 'index'])->name('pinjaman.index');
+    Route::get('/pinjaman/create', [DataPinjamanController::class, 'create'])->name('pinjaman.create');
+    Route::post('/pinjaman', [DataPinjamanController::class, 'store'])->name('pinjaman.store');
+    Route::get('/pinjaman/{id}', [DataPinjamanController::class, 'show'])->name('pinjaman.show');
+    Route::get('/pinjaman/{id}/edit', [DataPinjamanController::class, 'edit'])->name('pinjaman.edit');
+    Route::put('/pinjaman/{id}', [DataPinjamanController::class, 'update'])->name('pinjaman.update');
+    Route::delete('/pinjaman/{id}', [DataPinjamanController::class, 'destroy'])->name('pinjaman.destroy');
+});
+
 Route::middleware(['auth'])->prefix('admin')->group(function () {
     Route::resource('transaksi-non-kas', TransaksiNonKasController::class);
 
@@ -173,9 +189,6 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/pengeluaran/export-pdf', [TransaksiPengeluaranController::class, 'exportPdf'])
         ->name('pengeluaran.export-pdf');
 });
-
-
-
 
 
 //Route::get('/', function () {
@@ -332,19 +345,6 @@ Route::get('/admin/pinjaman/pinjaman-lunas', function () {
 Route::get('/admin/pinjaman/detail-pelunasan', function () {
     return view('admin.pinjaman.detail-pelunasan');
 })->name('admin.pinjaman.detail-pelunasan');
-
-
-Route::get('/admin/pinjaman/data-pinjaman', function () {
-    return view('admin.pinjaman.data-pinjaman');
-})->name('admin.pinjaman.data-pinjaman');
-
-Route::get('/admin/pinjaman/tambah-data-pinjaman', function () {
-    return view('admin.pinjaman.tambah-data-pinjaman');
-})->name('admin.pinjaman.tambah-data-pinjaman');
-
-Route::get('/admin/pinjaman/edit-data-pinjaman', function () {
-    return view('admin.pinjaman.edit-data-pinjaman');
-})->name('admin.pinjaman.edit-data-pinjaman');
 
 Route::get('/admin/profil/edit-profil', function () {
     return view('admin.profil.edit-profil');

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin\TransaksiNonKas;
 use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
+use App\Models\JenisAkunTransaksi;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Validation\Rule; 
 
 
 class TransaksiNonKasController extends Controller
@@ -39,15 +41,34 @@ class TransaksiNonKasController extends Controller
 
     public function create()
     {
-        return view('admin.transaksi_non_kas.tambah-transaksi');
+
+        $akunSumber = JenisAkunTransaksi::where('nonkas','Y')
+            ->where('is_kas', 0)
+            ->orderBy('nama_AkunTransaksi')->get();
+
+        $akunTujuan = JenisAkunTransaksi::where('nonkas','Y')
+            ->where('is_kas', 0)
+            ->orderBy('nama_AkunTransaksi')->get();
+
+        return view('admin.transaksi_non_kas.tambah-transaksi', compact('akunSumber','akunTujuan'));
     }
 
     public function store(Request $request)
     {
         
         $request->validate([
-            'id_jenisAkunTransaksi_sumber' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
-            'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
+        'id_jenisAkunTransaksi_sumber' => [
+            'required',
+            Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
+                ->where(fn ($q) => $q->where('nonkas', 'Y')),
+        ],
+        'id_jenisAkunTransaksi_tujuan' => [
+            'required',
+            Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
+                ->where(function ($q) {
+                    $q->where('nonkas', 'Y');
+                }),
+            ],
             'jumlah_transaksi' => 'required|numeric|min:0',
             'ket_transaksi' => 'nullable|string|max:255',
         ]);
@@ -71,14 +92,33 @@ class TransaksiNonKasController extends Controller
     public function edit($id)
     {
         $TransaksiNonKas = Transaksi::findOrFail($id);
-        return view('admin.transaksi_non_kas.edit-transaksi', compact('TransaksiNonKas'));
+
+        $akunSumber = JenisAkunTransaksi::where('nonkas','Y')
+            ->where('is_kas', 0)
+            ->orderBy('nama_AkunTransaksi')->get();
+
+        $akunTujuan = JenisAkunTransaksi::where('nonkas','Y')
+            ->where('is_kas', 0)
+            ->orderBy('nama_AkunTransaksi')->get();
+
+        return view('admin.transaksi_non_kas.edit-transaksi', compact('TransaksiNonKas','akunSumber','akunTujuan'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'id_jenisAkunTransaksi_sumber' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
-            'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
+        'id_jenisAkunTransaksi_sumber' => [
+            'required',
+            Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
+                ->where(fn ($q) => $q->where('nonkas', 'Y')),
+        ],
+        'id_jenisAkunTransaksi_tujuan' => [
+            'required',
+            Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
+                ->where(function ($q) {
+                    $q->where('nonkas', 'Y');
+                }),
+            ],
             'jumlah_transaksi' => 'required|numeric|min:0',
             'ket_transaksi' => 'nullable|string|max:255',
         ]);

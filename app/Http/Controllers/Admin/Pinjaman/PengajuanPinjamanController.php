@@ -8,17 +8,47 @@ use App\Models\AjuanPinjaman;
 use App\Models\Pinjaman;
 use App\Models\sukuBunga;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class PengajuanPinjamanController extends Controller
 {
 
-    public function index()
+     public function index(Request $request)
     {
-        $ajuanPinjaman = AjuanPinjaman::with(['anggota', 'lama_angsuran'])
-            ->where('status_ajuan', '!=', 'Ditolak')
-            ->get();
 
-        return view('admin.pinjaman.data-pengajuan', compact('ajuanPinjaman'));
+    $perPage = (int) $request->query('per_page', 10);
+    
+    $query = AjuanPinjaman::with(['anggota', 'lama_angsuran'])
+        ->where('status_ajuan', '!=', 'Ditolak');
+
+    if ($request->filled('startDate') && $request->filled('endDate')) {
+        $query->whereBetween('tanggal_pengajuan', [
+            $request->startDate,
+            $request->endDate
+        ]);
+    }
+
+
+    if ($request->filled('jenis')) {
+        $query->where('jenis_ajuan', $request->jenis);
+    }
+
+    if ($request->filled('status')) {
+        $query->where('status_ajuan', $request->status);
+    }
+
+    $ajuanPinjaman = $query->orderBy('id_ajuanPinjaman', 'asc')
+        ->paginate($perPage)
+        ->appends($request->except('page'));
+
+    $filters = [
+        'startDate' => $request->startDate,
+        'endDate'   => $request->endDate,
+        'jenis'     => $request->jenis,
+        'status'    => $request->status,
+    ];
+
+        return view('admin.pinjaman.data-pengajuan', compact('ajuanPinjaman', 'filters'));
     }
 
 
@@ -67,6 +97,56 @@ class PengajuanPinjamanController extends Controller
         return redirect()->route('pengajuan-pinjaman.index')->with('success', 'Pengajuan pinjaman ditolak.');
     }
 
-    
+    public function download()
+{
+    $data = AjuanPinjaman::with(['anggota','lama_angsuran'])->get();
+$html = '
+    <html>
+    <head>
+        <style>
+            body { font-family: DejaVu Sans, sans-serif; font-size: 12px; }
+            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+            th, td { border: 1px solid #999; padding: 6px; text-align: left; }
+            th { background-color: #f3f4f6; }
+            h2 { text-align: center; margin-bottom: 10px; }
+        </style>
+    </head>
+    <body>
+        <h2>Laporan Pengajuan Pinjaman</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>No</th>
+                    <th>Nama Anggota</th>
+                    <th>Jenis Ajuan</th>
+                    <th>Jumlah Ajuan</th>
+                    <th>Tanggal Pengajuan</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>';
+
+    foreach ($data as $i => $row) {
+        $html .= '
+            <tr>
+                <td>' . ($i + 1) . '</td>
+                <td>' . ($row->anggota->nama_anggota ?? '-') . '</td>
+                <td>' . $row->jenis_ajuan . '</td>
+                <td>Rp' . number_format($row->jumlah_ajuan, 0, ',', '.') . '</td>
+                <td>' . $row->tanggal_pengajuan . '</td>
+                <td>' . $row->status_ajuan . '</td>
+            </tr>';
+    }
+
+    $html .= '
+            </tbody>
+        </table>
+    </body>
+    </html>';
+
+    $pdf = Pdf::loadHTML($html)->setPaper('a4', 'portrait');
+
+    return $pdf->download('laporan-pengajuan-pinjaman.pdf');
+}
 
 }
