@@ -19,8 +19,13 @@
         </div>
 
         <div class="form-group">
-            <label for="nama_anggota">Nama Anggota*</label>
-            <input type="text" id="nama_anggota" name="nama_anggota">
+            <label for="id_anggota">Nama Anggota*</label>
+            <select id="id_anggota" name="id_anggota" class="form-input" required>
+                <option value="">-- Pilih Anggota --</option>
+                @foreach ($anggota as $item)
+                    <option value="{{ $item->id_anggota }}">{{ $item->nama_anggota }}</option>
+                @endforeach
+            </select>
         </div>
 
         <div class="form-group">
@@ -37,6 +42,12 @@
                 @endforeach
             </select>
         </div>
+
+        <div class="form-group">
+            <label for="pokok_angsuran">Pokok Angsuran (Rp)</label>
+            <input type="text" id="pokok_angsuran" name="pokok_angsuran" readonly>
+        </div>
+
 
         <div class="form-group">
             <label for="suku_bunga_pinjaman">Bunga (Rp)*</label>
@@ -173,19 +184,26 @@ document.addEventListener('DOMContentLoaded', function() {
     const lamaSelect = document.getElementById('id_lamaAngsuran');
     const bungaInput = document.getElementById('suku_bunga_pinjaman');
     const adminInput = document.getElementById('biaya_administrasi');
+    const pokokInput = document.getElementById('pokok_angsuran');
 
-    // Ambil nilai bunga & admin dari database
+    // Ambil suku bunga & biaya admin dari database (model SukuBunga)
     const bungaRate = parseFloat(@json(\App\Models\SukuBunga::first()->suku_bunga_pinjaman ?? 0));
     const adminRate = parseFloat(@json(\App\Models\SukuBunga::first()->biaya_administrasi ?? 0));
 
     function hitungOtomatis() {
         const jumlah = parseFloat(jumlahInput.value) || 0;
-        if (jumlah > 0 && lamaSelect.value !== "") {
+        const lamaValue = parseFloat(lamaSelect.options[lamaSelect.selectedIndex]?.text.replace('bulan', '').trim()) || 0;
+
+        if (jumlah > 0 && lamaValue > 0) {
+            const pokok = jumlah / lamaValue;
             const bunga = (bungaRate / 100) * jumlah;
             const admin = (adminRate / 100) * jumlah;
+
+            pokokInput.value = pokok.toFixed(2);
             bungaInput.value = bunga.toFixed(2);
             adminInput.value = admin.toFixed(2);
         } else {
+            pokokInput.value = '';
             bungaInput.value = '';
             adminInput.value = '';
         }
