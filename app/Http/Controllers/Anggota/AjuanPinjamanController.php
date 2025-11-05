@@ -11,16 +11,19 @@ use Illuminate\Support\Facades\Auth;
 
 class AjuanPinjamanController extends Controller
 {
-public function index()
+public function index(Request $request)
 {
-    // Ambil data anggota yang sedang login
+
     $anggota = Auth::user();
 
-    // Ambil semua data pengajuan milik anggota tersebut
     $ajuanPinjaman = AjuanPinjaman::where('id_anggota', $anggota->id_anggota)
         ->with(['lama_angsuran', 'biaya_administrasi']) // relasi opsional jika sudah ada
         ->orderBy('tanggal_pengajuan', 'desc')
         ->get();
+    
+    $perPage = (int) $request->query('per_page', 10);
+    $query = AjuanPinjaman::query();
+    $ajuanPinjaman = $query->orderBy('id_ajuanPinjaman', 'asc')->paginate($perPage);
 
     return view('anggota.data-pengajuan', [
         'ajuanPinjaman' => $ajuanPinjaman
@@ -105,5 +108,6 @@ public function index()
     }
 
     return response()->json($simulasi);
-}
+    }
+
 }

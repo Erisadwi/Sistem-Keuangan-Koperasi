@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Admin\TransaksiKas;
 use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
+use App\Models\JenisAkunTransaksi;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule; 
 use Barryvdh\DomPDF\Facade\Pdf;
 
 
@@ -40,15 +42,34 @@ class TransaksiPemasukanController extends Controller
 
     public function create()
     {
-        return view('admin.transaksi_kas.tambah-pemasukan');
+        $akunSumber = JenisAkunTransaksi::where('pemasukan','Y')
+            ->where('is_kas', 0)
+            ->orderBy('nama_AkunTransaksi')->get();
+
+        $akunTujuan = JenisAkunTransaksi::where('pemasukan','Y')
+            ->where('is_kas', 1)
+            ->orderBy('nama_AkunTransaksi')->get();
+
+        return view('admin.transaksi_kas.tambah-pemasukan',compact('akunSumber','akunTujuan'));
     }
 
     public function store(Request $request) 
     {
         Log::info('➡️ MASUK store TransaksiPemasukanController');
-        $request->validate([
-            'id_jenisAkunTransaksi_sumber' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
-            'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
+        $request->validate(rules: [
+        'id_jenisAkunTransaksi_sumber' => [
+            'required',
+            Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
+                ->where(fn ($q) => $q->where('pemasukan', 'Y')),
+        ],
+        'id_jenisAkunTransaksi_tujuan' => [
+            'required',
+            Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
+                ->where(function ($q) {
+                    $q->where('pemasukan', 'Y');
+                    $q->where('is_kas', 1);
+                }),
+            ],
             'jumlah_transaksi' => 'required|numeric|min:0',
             'ket_transaksi' => 'nullable|string|max:255',
         ]);
@@ -71,15 +92,36 @@ class TransaksiPemasukanController extends Controller
 
     public function edit($id)
     {
+
         $TransaksiPemasukan = Transaksi::findOrFail($id);
-        return view('admin.transaksi_kas.edit-pemasukan', compact('TransaksiPemasukan'));
+
+        $akunSumber = JenisAkunTransaksi::where('pemasukan','Y')
+            ->where('is_kas', 0)
+            ->orderBy('nama_AkunTransaksi')->get();
+
+        $akunTujuan = JenisAkunTransaksi::where('pemasukan','Y')
+            ->where('is_kas', 1)
+            ->orderBy('nama_AkunTransaksi')->get();
+
+        return view('admin.transaksi_kas.edit-pemasukan', compact('TransaksiPemasukan','akunSumber','akunTujuan'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'id_jenisAkunTransaksi_sumber' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
-            'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
+        'id_jenisAkunTransaksi_sumber' => [
+            'required',
+            Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
+                ->where(fn ($q) => $q->where('pemasukan', 'Y')),
+        ],
+        'id_jenisAkunTransaksi_tujuan' => [
+            'required',
+            Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
+                ->where(function ($q) {
+                    $q->where('pemasukan', 'Y');
+                    $q->where('is_kas', 1);
+                }),
+            ],
             'jumlah_transaksi' => 'required|numeric|min:0',
             'ket_transaksi' => 'nullable|string|max:255',
         ]);

@@ -8,7 +8,7 @@
 
 <x-menu.tambah-unduh 
     addUrl="{{ route('saldo-awal-kas.create') }}" 
-    downloadFile="saldo-awal-kas.pdf" 
+    downloadFile="{{ route('saldo-awal-kas.export') }}" 
 />
 
 <div class="saldo-awal-kas-table-wrap">

@@ -7,12 +7,13 @@ use App\Models\Anggota;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use App\Exports\AnggotaExport;
+use Maatwebsite\Excel\Facades\Excel; 
 
 class AnggotaController extends Controller
 {
     public function index(Request $request)
     {   
-        $anggota = \App\Models\Anggota::all();
         $perPage = (int) $request->query('per_page', 10);
         $query = Anggota::query();
         $anggota = $query->orderBy('id_anggota', 'asc')->paginate($perPage);
@@ -24,6 +25,11 @@ class AnggotaController extends Controller
         return view('admin.master_data.tambah-data-anggota', [
             'anggota' => null
         ]);
+    }
+
+    public function export()
+    {
+    return Excel::download(new AnggotaExport, 'data_anggota.xlsx');
     }
 
     public function store(Request $request)
@@ -63,15 +69,14 @@ class AnggotaController extends Controller
         return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil ditambahkan!');
     }
 
-
     public function edit($id)
-{
+    {
     $anggota = Anggota::findOrFail($id);
     return view('admin.master_data.edit-data-anggota', compact('anggota'));
-}
+    }
 
-public function update(Request $request, $id)
-{
+    public function update(Request $request, $id)
+    {
     $anggota = Anggota::findOrFail($id);
 
     $validated = $request->validate([
@@ -113,7 +118,7 @@ public function update(Request $request, $id)
     $anggota->update($validated);
 
     return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil diperbarui!');
-}
+    }
 
 
     public function destroy($id)

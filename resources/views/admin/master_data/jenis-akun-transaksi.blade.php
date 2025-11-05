@@ -8,8 +8,9 @@
 
 <x-menu.tambah-unduh-cari
     addUrl="{{ route('jenis-akun-transaksi.create') }}"
-    downloadFile="jenis-akun-transaksi.pdf"
+    unduh="{{ route('jenis-akun-transaksi.export') }}"
 />
+
 
 <div class="content-inner">
   <div class="table-scroll-wrapper">

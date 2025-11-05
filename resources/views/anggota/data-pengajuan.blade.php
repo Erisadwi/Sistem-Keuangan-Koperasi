@@ -54,6 +54,10 @@
   </table>
 </div>
 
+    <div class="pagination-container">
+      <x-menu.pagination :data="$ajuanPinjaman" />
+    </div>
+
 <style>
   :root{
   --outer-border: #838383;      
@@ -134,9 +138,17 @@
   color: #222;
   background: #f6f6f6;
 }
-.badge.disetujui{ background: #efefef; }
-.badge.ditolak  { background: #f3f3f3; }
-.badge.menunggu { background: #f9f9f9; }
+.badge.disetujui{ background: #3cdb71; }
+.badge.ditolak  { background: #e25e5e; }
+.badge.menunggu { background: #3fade4; }
+
+  .pagination-container {
+  margin-top: auto;        
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 16px;
+}
 
 @media (max-width: 640px){
   .pengajuan-table{ font-size: 13px; }

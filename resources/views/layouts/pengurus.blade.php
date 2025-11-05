@@ -39,7 +39,7 @@
       <ul class="menu-list">
         <x-menu.section title="Transaksi Kas" :open="false" :has-sub="true">
           <a href="{{ route('transaksi-pemasukan.index') }}" class="submenu-row">Pemasukan</a>
-          <a href="#" class="submenu-row">Pengeluaran</a>
+          <a href="{{ route('transaksi-pengeluaran.index') }}" class="submenu-row">Pengeluaran</a>
           <a href="#" class="submenu-row">Transfer</a>
         </x-menu.section>
 
@@ -56,8 +56,13 @@
         </x-menu.section>
 
         <x-menu.section title="Pinjaman" :open="false" :has-sub="true">
+<<<<<<< HEAD
           <a href="#" class="submenu-row">Data Pengajuan</a>
           <a href="{{ route('pinjaman.index') }}" class="submenu-row">Data Pinjaman</a>
+=======
+          <a href="{{ route('pengajuan-pinjaman.index') }}" class="submenu-row">Data Pengajuan</a>
+          <a href="#" class="submenu-row">Data Pinjaman</a>
+>>>>>>> bd79f4369077f3136afa86c36786e75a48fc22a7
           <a href="#" class="submenu-row">Angsuran</a>
           <a href="#" class="submenu-row">Pinjaman Lunas</a>
         </x-menu.section>

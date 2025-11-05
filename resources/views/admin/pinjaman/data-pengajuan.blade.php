@@ -29,23 +29,23 @@
     </thead>
 
     <tbody>
-      @forelse(($ajuan_pinjaman ?? collect()) as $idx => $row)
+      @forelse(($ajuanPinjaman ?? collect()) as $idx => $row)
         <tr>
           <td>{{ $row->id_ajuanPinjaman ?? '' }}</td>
-          <td>{{ $row->tanggal ?? '' }}</td>
+          <td>{{ $row->tanggal_pengajuan ?? '' }}</td>
           <td>{{ $row->anggota->nama_anggota ?? 'Nama tidak tersedia' }}</td>
           <td>{{ $row->jenis_ajuan ?? '' }}</td>
           <td>{{ number_format($row->jumlah_ajuan ?? 0, 0, ',', '.') }}</td>
           <td>{{ $row->lama_angsuran->lama_angsuran ?? '' }}</td>
           <td>{{ $row->keterangan ?? '' }}</td>
           <td>{{ $row->status_ajuan ?? '' }}</td>
-          <td>{{ $row->sisa_pinjaman }}</td>
+          {{-- {{ $row->sisa_pinjaman }}</td> --}}<td>
           <td class="actions">
-            <a href="{{ route('pengajuan-pinjaman.disetujui', ['id' => $row->id]) }}" class="disetujui">✅ disetujui</a>
-            <form action="{{ route('pengajuan-pinjaman.destroy', ['id' => $row->id]) }}" method="POST" style="display: inline;">
+            <a href="{{ route('pengajuan-pinjaman.disetujui', ['id' => $row->id_ajuanPinjaman]) }}" class="disetujui">✅</a>
+            <form action="{{ route('pengajuan-pinjaman.tolak', ['id' => $row->id_ajuanPinjaman]) }}" method="POST" style="display: inline;">
               @csrf
               @method('PATCH')
-              <button type="submit" class="ditolak">❌ Hapus</button>
+              <button type="submit" class="ditolak">❌</button>
             </form>
           </td> 
 
@@ -58,7 +58,9 @@
   </table>
 </div>
 
-
+    <div class="pagination-container">
+      <x-menu.pagination :data="$ajuanPinjaman" />
+    </div>
 
 <style>
   :root {
@@ -102,6 +104,7 @@
   }
 
   .pengajuan-pinjaman-table td {
+    text-align: center;
     padding: 10px;
     border-bottom: 1px solid var(--grid)!important;
     border-right: 1px solid var(--grid)!important;
@@ -170,6 +173,14 @@
   .ditolak:hover {
     background-color: #f12f2f;
   }
+
+  .pagination-container {
+  margin-top: auto;        
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 16px;
+}
 
   @media (max-width: 640px) {
     .pengajuan-pinjaman-table {

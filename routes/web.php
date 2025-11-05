@@ -24,7 +24,11 @@ use App\Http\Controllers\Anggota\ProfileController;
 use App\Http\Controllers\Admin\Simpanan\PenarikanTunaiController;
 use App\Http\Controllers\Anggota\AjuanPinjamanController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiPengeluaranController;
+<<<<<<< HEAD
 use App\Http\Controllers\Admin\Pinjaman\DataPinjamanController;
+=======
+use App\Http\Controllers\Admin\Pinjaman\PengajuanPinjamanController;
+>>>>>>> bd79f4369077f3136afa86c36786e75a48fc22a7
 
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -67,8 +71,10 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('jenis-akun-transaksi', [JenisAkunTransaksiController::class, 'index'])->name('jenis-akun-transaksi.index');
     Route::get('jenis-akun-transaksi/create', [JenisAkunTransaksiController::class, 'create'])->name('jenis-akun-transaksi.create');
     Route::post('jenis-akun-transaksi', [JenisAkunTransaksiController::class, 'store'])->name('jenis-akun-transaksi.store');
+    Route::get('jenis-akun-transaksi/export', [JenisAkunTransaksiController::class, 'export'])->name('jenis-akun-transaksi.export');
     Route::get('jenis-akun-transaksi/{id}/edit', [JenisAkunTransaksiController::class, 'edit'])->name('jenis-akun-transaksi.edit');
     Route::put('jenis-akun-transaksi/{id}', [JenisAkunTransaksiController::class, 'update'])->name('jenis-akun-transaksi.update');
+    
 
     Route::get('lama-angsuran', [LamaAngsuranController::class, 'index'])->name('lama-angsuran.index');
     Route::get('lama-angsuran/create', [LamaAngsuranController::class, 'create'])->name('lama-angsuran.create');
@@ -80,9 +86,12 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('anggota', [AnggotaController::class, 'index'])->name('anggota.index');
     Route::get('anggota/create', [AnggotaController::class, 'create'])->name('anggota.create');
     Route::post('anggota', [AnggotaController::class, 'store'])->name('anggota.store');
+    Route::get('anggota/export', [AnggotaController::class, 'export'])->name('anggota.export');
     Route::get('anggota/{id}/edit', [AnggotaController::class, 'edit'])->name('anggota.edit');
     Route::put('anggota/{id}', [AnggotaController::class, 'update'])->name('anggota.update');
     Route::delete('anggota/{id}', [AnggotaController::class, 'destroy'])->name('anggota.destroy');
+    
+
 
     Route::get('users', [UserController::class, 'index'])->name('data-user.index');
     Route::get('users/create', [UserController::class, 'create'])->name('data-user.create');
@@ -100,6 +109,7 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('saldo-awal-kas', [SaldoAwalKasController::class, 'index'])->name('saldo-awal-kas.index');
     Route::get('saldo-awal-kas/create', [SaldoAwalKasController::class, 'create'])->name('saldo-awal-kas.create');
     Route::post('saldo-awal-kas', [SaldoAwalKasController::class, 'store'])->name('saldo-awal-kas.store');
+    Route::get('saldo-awal-kas/export', [SaldoAwalKasController::class, 'export'])->name('saldo-awal-kas.export');
     Route::get('saldo-awal-kas/{id}/edit', [SaldoAwalKasController::class, 'edit'])->name('saldo-awal-kas.edit');
     Route::put('saldo-awal-kas/{id}', [SaldoAwalKasController::class, 'update'])->name('saldo-awal-kas.update');
 
@@ -129,6 +139,16 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
 
     Route::get('suku-bunga/edit', [SukuBungaController::class, 'edit'])->name('suku-bunga.editSingle');
     Route::put('suku-bunga/', [SukuBungaController::class, 'update'])->name('suku-bunga.updateSingle');
+
+    Route::get('/admin/pengajuan-pinjaman', [PengajuanPinjamanController::class, 'index'])->name('pengajuan-pinjaman.index');
+    Route::get('/admin/pengajuan-pinjaman/{id}/disetujui', [PengajuanPinjamanController::class, 'disetujui'])->name('pengajuan-pinjaman.disetujui');
+    Route::patch('/admin/pengajuan-pinjaman/{id}/tolak', [PengajuanPinjamanController::class, 'tolak'])->name('pengajuan-pinjaman.tolak');
+
+    Route::resource('pengeluaran', TransaksiPengeluaranController::class)->except(['show']);
+    Route::get('/pengeluaran/export-pdf', [TransaksiPengeluaranController::class, 'exportPdf'])
+        ->name('pengeluaran.export-pdf');
+
+    Route::resource('transaksi-non-kas', TransaksiNonKasController::class);
 });
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
@@ -153,6 +173,7 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/penarikan-tunai/{id}/cetak', [PenarikanTunaiController::class, 'cetak'])->name('penarikan-tunai.cetak');
 });
 
+<<<<<<< HEAD
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/pinjaman', [DataPinjamanController::class, 'index'])->name('pinjaman.index');
     Route::get('/pinjaman/create', [DataPinjamanController::class, 'create'])->name('pinjaman.create');
@@ -177,6 +198,8 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
 
 
 
+=======
+>>>>>>> bd79f4369077f3136afa86c36786e75a48fc22a7
 
 //Route::get('/', function () {
 //    return view('welcome');
