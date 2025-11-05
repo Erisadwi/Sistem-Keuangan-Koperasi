@@ -5,7 +5,12 @@
 @section('sub-title', 'Data Pinjaman')
 
 @section('content')
-<x-menu.date-filter/>
+<x-menu.toolbar-pinjaman
+    addUrl="{{ route('pinjaman.create') }}"
+    editUrl="{{ route('pinjaman.edit', '__ID__') }}"
+    deleteUrl="{{ route('pinjaman.destroy', '__ID__') }}"
+    exportUrl="#"
+/>
 
 <div class="data-pinjaman-table-wrap">
   <table class="data-pinjaman-table">
@@ -23,6 +28,7 @@
         <th>Aksi</th>
       </tr>
     </thead>
+    <tbody>
       @if(isset($pinjaman) && count($pinjaman) > 0)
         @foreach ($pinjaman as $index => $row)
         <tr>
@@ -30,13 +36,36 @@
           <td>{{ $row->kode }}</td>
           <td>{{ \Carbon\Carbon::parse($row->tanggal_pinjaman)->format('d-m-Y') }}</td>
           <td>{{ $row->nama_anggota }}</td>
-          <td>{{ number_format($row->hitungan, 0, ',', '.') }}</td>
-          <td>{{ number_format($row->total_tagihan, 0, ',', '.') }}</td>
+
+          <!-- === Kolom HITUNGAN === -->
+          <td>
+            <table class="sub-table">
+              <tr><td>Nama Barang</td><td>{{ $row->nama_barang ?? '-' }}</td></tr>
+              <tr><td>Harga Barang</td><td>{{ number_format($row->harga_barang ?? 0, 0, ',', '.') }}</td></tr>
+              <tr><td>Lama Angsuran</td><td>{{ $row->lama_angsuran ?? '-' }}</td></tr>
+              <tr><td>Pokok Angsuran</td><td>{{ number_format($row->pokok_angsuran ?? 0, 0, ',', '.') }}</td></tr>
+              <tr><td>Bunga Pinjaman</td><td>{{ number_format($row->bunga_pinjaman ?? 0, 0, ',', '.') }}</td></tr>
+              <tr><td>Biaya Admin</td><td>{{ number_format($row->biaya_admin ?? 0, 0, ',', '.') }}</td></tr>
+            </table>
+          </td>
+
+          <!-- === Kolom TOTAL TAGIHAN === -->
+          <td>
+            <table class="sub-table">
+              <tr><td>Jumlah Angsuran</td><td>{{ number_format($row->jumlah_angsuran ?? 0, 0, ',', '.') }}</td></tr>
+              <tr><td>Jumlah Denda</td><td>{{ number_format($row->jumlah_denda ?? 0, 0, ',', '.') }}</td></tr>
+              <tr><td>Total Tagihan</td><td>{{ number_format($row->total_tagihan ?? 0, 0, ',', '.') }}</td></tr>
+              <tr><td>Sudah Dibayar</td><td>{{ number_format($row->sudah_dibayar ?? 0, 0, ',', '.') }}</td></tr>
+              <tr><td>Sisa Angsuran</td><td>{{ $row->sisa_angsuran ?? '-' }}</td></tr>
+              <tr><td>Sisa Tagihan</td><td>{{ number_format($row->sisa_tagihan ?? 0, 0, ',', '.') }}</td></tr>
+            </table>
+          </td>
+
           <td>{{ $row->keterangan }}</td>
           <td>{{ $row->lunas }}</td>
           <td>{{ $row->user }}</td>
           <td><button class="btn-aksi">Detail</button></td>
-          <td><button class="btn-nota">🧾 Nota</a>
+          <td><button class="btn-nota">🧾 Nota</button></td>
         </tr>
         @endforeach
       @else
@@ -52,28 +81,21 @@
   :root {
     --outer-border: #838383;
     --head-dark: #4a4a4a;
-    --head-mid: #9a9a9a;
-    --line: #fffafa;
     --grid: #fffcfc;
     --bg: #ffffff;
   }
 
   .data-pinjaman-table-wrap {
     border: 1.5px solid var(--outer-border);
-    border-radius: 0;
     background: var(--bg);
     width: 95%;
     margin-left: 25px;
     margin-top: 30px;
-    padding: 0;
-    box-shadow: none;
-    overflow-x: visible;
   }
 
   .data-pinjaman-table {
     width: 100%;
     border-collapse: collapse;
-    table-layout: fixed;
     font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
     font-size: 13px;
     color: #222;
@@ -86,62 +108,55 @@
     font-weight: 600;
     padding: 10px;
     border-bottom: 1px solid var(--grid);
-    white-space: nowrap;
   }
 
   .data-pinjaman-table td {
-    padding: 10px;
-    border-bottom: 1px solid var(--grid)!important;
-    border-right: 1px solid var(--grid)!important;
-    background: #fff;
+    padding: 8px;
+    border: 1px solid #e6e6e6;
+    vertical-align: top;
   }
 
-  .data-pinjaman-table tbody td:last-child {
-    border-right: 2px solid var(--grid)!important;
+  /* === Subtable styling agar persis seperti contoh === */
+  .sub-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 12px;
   }
 
-  .data-pinjaman-table tbody tr td:nth-child(1) {
-    border-right: 1.5px solid var(--line) !important;
+  .sub-table td {
+    border: 1px solid #d1d1d1;
+    padding: 4px 6px;
   }
 
-  .data-pinjaman-table tbody tr {
-    background: #fff;
+  .sub-table tr td:first-child {
+    width: 60%;
+    background: #f8f8f8;
+    font-weight: 500;
   }
 
-  .data-pinjaman-table tbody tr:nth-child(even) {
-    background: #fff;
+  .sub-table tr td:last-child {
+    text-align: right;
+    font-weight: 500;
   }
 
-  .data-pinjaman-table tbody tr:hover {
-    background: #fff;
+  .btn-aksi, .btn-nota {
+    background: #1976d2;
+    color: #fff;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
   }
 
-  .data-pinjaman-table .empty-cell {
+  .btn-aksi:hover, .btn-nota:hover {
+    background: #125ea3;
+  }
+
+  .empty-cell {
     text-align: center;
     padding: 8px 10px;
     color: #6b7280;
     font-style: italic;
-  }
-
-.btn-aksi {
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-}
-.btn-aksi:hover {
-  background: var(--primary-dark);
-}
-
-  @media (max-width: 768px) {
-    .pengajuan-pinjaman-table thead .head-group th:nth-child(3),
-    .pengajuan-pinjaman-table tbody td:nth-child(3),
-    .pengajuan-pinjaman-table thead .head-group th:nth-child(4),
-    .pengajuan-pinjaman-table tbody td:nth-child(4) {
-      display: none;
-    }
   }
 </style>
 
