@@ -14,11 +14,26 @@ class AnggotaController extends Controller
 {
     public function index(Request $request)
     {   
-        $perPage = (int) $request->query('per_page', 10);
-        $query = Anggota::query();
-        $anggota = $query->orderBy('id_anggota', 'asc')->paginate($perPage);
-        return view('admin.master_data.data-anggota', compact('anggota'));
+    $perPage = (int) $request->query('per_page', 10);
+    $search = $request->input('search'); 
+
+    $query = Anggota::query();
+
+    if (!empty($search)) {
+        $query->where('nama_anggota', 'like', '%' . $search . '%')
+              ->orWhere('id_anggota', 'like', '%' . $search . '%')
+              ->orWhere('username_anggota', 'like', '%' . $search . '%');
     }
+
+    $anggota = $query->orderBy('id_anggota', 'asc')->paginate($perPage);
+
+    if ($search) {
+        $anggota->appends(['search' => $search]);
+    }
+
+    return view('admin.master_data.data-anggota', compact('anggota', 'search'));
+    }
+
 
     public function create()
     {

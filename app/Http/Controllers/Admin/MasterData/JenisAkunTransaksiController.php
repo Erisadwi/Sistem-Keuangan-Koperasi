@@ -18,8 +18,11 @@ class JenisAkunTransaksiController extends Controller
         $query = JenisAkunTransaksi::query();
 
         if (!empty($search)) {
-            $query->where('kode_aktiva', 'LIKE', "%{$search}%");
+            $query->where('kode_aktiva', 'like', '%' . $search . '%')
+                  ->orWhere('nama_AkunTransaksi', 'like', '%' . $search . '%')
+                  ->orWhere('type_akun', 'like', '%' . $search . '%');
         }
+
 
         $jenis_akun_transaksi = $query->orderBy('id_jenisAkunTransaksi', 'asc')
             ->paginate($perPage)

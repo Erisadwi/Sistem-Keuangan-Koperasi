@@ -5,8 +5,17 @@
 @section('sub-title', 'Transfer')  
 
 @section('content')
-<x-menu.tambah-edit-hapus/>
-<x-menu.toolbar-right :downloadFile="'data-pengajuan.pdf'"/>
+<x-menu.tambah-edit-hapus
+    :tambah="route('transaksi-transfer.create')" 
+    :edit="'#'" 
+    :hapus="'#'"
+    id="action-buttons"
+/>
+<x-menu.toolbar-right 
+  searchPlaceholder="Cari Kode Transaksi"
+  searchName="kode_transaksi"
+  :downloadRoute="route('transaksi-transfer.download', request()->query())"
+/>
 
 <div class="transfer-table-wrap">
   <table class="transfer-table">
@@ -23,14 +32,14 @@
     </thead>
 
     <tbody>
-      @forelse(($transaksi ?? collect()) as $idx => $row)
-        <tr>
-          <td>{{ $row->id_transaksi ?? '' }}</td>
+      @forelse(($TransaksiTransfer ?? collect()) as $idx => $row)
+        <tr class="selectable-row" data-id="{{ $row->id_transaksi }}">
+          <td>{{ $row->kode_transaksi ?? '' }}</td>
           <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y') ?? '' }}</td>
-          <td>{{ $row->ket_transaksi ?? 'Nama tidak tersedia' }}</td>
-          <td>{{ $row->dari_kas ?? '' }}</td>
-          <td>{{ $row->untuk_kas ?? '' }}</td>
+          <td>{{ $row->ket_transaksi ?? '-' }}</td>
           <td>{{ number_format($row->jumlah_transaksi ?? 0, 0, ',', '.') }}</td>
+          <td>{{ $row->sumber->nama_AkunTransaksi ?? '' }}</td>
+          <td>{{ $row->tujuan->nama_AkunTransaksi ?? '' }}</td>
           <td>{{ $row->data_user->nama_lengkap ?? '' }}</td>
       @empty
         <tr>
@@ -41,6 +50,9 @@
   </table>
 </div>
 
+<div class="pagination-container">
+      <x-menu.pagination :data="$TransaksiTransfer" />
+    </div>
 
 
 <style>
@@ -154,7 +166,7 @@
   }
 
   @media (max-width: 640px) {
-    .pemasukan-table {
+    .transfer-table {
       font-size: 13px;
     }
 
@@ -163,6 +175,26 @@
       padding: 10px;
     }
   }
+
+  .pagination-container {
+  margin-top: auto;        
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 16px;
+}
+
+.selectable-row.selected td {
+  background-color: #b6d8ff !important; 
+  color: #000;
+}
+
+
+  .selectable-row:hover {
+    background-color: #eaf3ff;
+    cursor: pointer;
+  }
+
 
   @media (max-width: 768px) {
     .transfer-table thead .head-group th:nth-child(3),

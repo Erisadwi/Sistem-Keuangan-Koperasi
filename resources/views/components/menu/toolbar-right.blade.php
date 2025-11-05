@@ -1,4 +1,4 @@
-@props([
+ @props([
   'searchPlaceholder' => 'Cari Kode Transaksi',
   'searchName' => 'transactionId',
   'downloadRoute' => null,

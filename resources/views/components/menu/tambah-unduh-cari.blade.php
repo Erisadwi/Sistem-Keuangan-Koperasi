@@ -18,8 +18,23 @@
     Unduh
   </a>
 
- <form action="{{ $cari ?? '#' }}" method="GET" class="df-search-form">
-    <input type="text" name="search" class="df-input" placeholder="Cari kode aktiva...">
+  <form action="{{ $cari ?? '#' }}" method="GET" class="df-search-form" id="searchForm">
+    <input 
+      type="text" 
+      name="search" 
+      class="df-input" 
+      id="searchInput"
+      placeholder="Cari..." 
+      value="{{ request('search') }}">
+
+    <button type="button" class="df-btn" onclick="clearFilter()" style="width:auto; padding:6px 12px;">
+      <span class="df-ic">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+          <path d="M6 6l12 12M18 6L6 18" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+      Hapus Filter
+    </button>
   </form>
 </div>
 
@@ -50,7 +65,8 @@
   gap: 6px;
   box-shadow: 0 2px 4px rgba(107, 105, 105, 0.647);
   transition: 0.2s;
-  width: 85px;
+  width: auto; /* Supaya panjang tombol otomatis mengikuti teks */
+  min-width: 85px; /* Biar tetap seragam jika teks pendek */
 }
 
 .df-btn:hover {
@@ -58,17 +74,13 @@
   border-color: #0ea5e9;
 }
 
-.df-btn .df-ic svg {
-  display: block;
-  vertical-align: middle;
+.df-btn:active {
+  transform: scale(0.97);
+  box-shadow: 0 1px 2px rgba(0,0,0,0.2);
 }
 
-.df-tambah svg path,
-.df-unduh svg path,
-.df-cari svg path,
-.df-cari svg circle,
-.df-cari svg line {
-  stroke: #0ea5e9;
+.df-btn .df-ic svg {
+  display: block;
 }
 
 .df-search-form {
@@ -91,5 +103,11 @@
   border-color: #0ea5e9;
   box-shadow: 0px 4px 8px rgba(14, 165, 233, 0.35);
 }
-
 </style>
+
+<script>
+function clearFilter() {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchForm').submit();
+}
+</script>
