@@ -9,38 +9,41 @@
 @section('content')
 
 <div class="form-container">
-    <form action="# {{-- {{ route('tambah-transfer-kas.store', $transaksi->id) }} --}}" method="POST">
+    <form action="{{ route('transaksi-transfer.update', $TransaksiTransfer->id_transaksi) }}" method="POST">
         @csrf
+        @method('PUT')
 
-        <label for="tanggal_transaksi">Tanggal Transaksi</label>
+        <label for="tanggal_transaksi">Tanggal Transaksi*</label>
         <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi" 
-                value="{{ isset($transaksi) ? \Carbon\Carbon::parse($transaksi->tanggal_transaksi)->format('Y-m-d\TH:i') : '' }}">
+                value="{{ old('tanggal_transaksi') }}">
 
-        <label for="jumlah_transaksi">Jumlah</label>
-        <input type="number" id="jumlah_transaksi" name="jumlah_transaksi" value=" {{-- {{ isset($transaksi) ? number_format($transaksi->jumlah_transaksi, 0, ',', '.') : '' }} --}}">
+        <label for="jumlah_transaksi">Jumlah*</label>
+        <input type="number" id="jumlah_transaksi" name="jumlah_transaksi" value=" {{ old('jumlah_transaksi') }}">
 
-        <label for="ket_transaksi">Keterangan</label>
-        <input type="text" id="ket_transaksi" name="ket_transaksi" value="{{-- {{ $transaksi->ket_transaksi }} --}}">
+        <label for="keterangan">Keterangan</label>
+        <input type="text" id="keterangan" name="ket_transaksi" value="{{ old('ket_transaksi') }}">
 
-        <label for="id_jenisAkunTransaksi_sumber">Dari Kas</label>
+        <label for="id_jenisAkunTransaksi_sumber">Dari Kas*</label>
             <select name="id_jenisAkunTransaksi_sumber" id="id_jenisAkunTransaksi_sumber">
-                <option value="" disabled {{ empty($transaksi->id_jenisAkunTransaksi_sumber) ? 'selected' : '' }}>Pilih Jenis Kas</option>
-                <option value="kas_besar" {{ ($transaksi->id_jenisAkunTransaksi_sumber ?? '') == 'kas_besar' ? 'selected' : '' }}>Kas Besar</option>
-                <option value="bank_mandiri" {{ ($transaksi->id_jenisAkunTransaksi_sumber ?? '') == 'bank_mandiri' ? 'selected' : '' }}>Bank Mandiri</option>
-                <option value="kas_kecil" {{ ($transaksi->id_jenisAkunTransaksi_sumber ?? '') == 'kas_kecil' ? 'selected' : '' }}>Kas Kecil</option>
-                <option value="kas_niaga" {{ ($transaksi->id_jenisAkunTransaksi_sumber ?? '') == 'kas_niaga' ? 'selected' : '' }}>Kas Niaga</option>
-                <option value="bank_bni" {{ ($transaksi->id_jenisAkunTransaksi_sumber ?? '') == 'bank_bni' ? 'selected' : '' }}>Bank BNI</option>
+            <option value="" disabled {{ old('id_jenisAkunTransaksi_sumber') ? '' : 'selected' }}>Pilih Kas</option>
+            @foreach ($akunSumber as $a)
+                <option value="{{ $a->id_jenisAkunTransaksi }}"
+                {{ (string)old('id_jenisAkunTransaksi_sumber', $TransaksiTransfer->id_jenisAkunTransaksi_sumber ?? '') === (string)$a->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
+                </option>
+            @endforeach
             </select>
 
 
-        <label for="id_jenisAkunTransaksi_tujuan">Untuk Kas</label>
+        <label for="id_jenisAkunTransaksi_tujuan">Untuk Kas*</label>
             <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan">
-                <option value="" disabled {{ empty($transaksi->id_jenisAkunTransaksi_tujuan) ? 'selected' : '' }}>Pilih Jenis Kas</option>
-                <option value="kas_besar"{{ ($transaksi->id_jenisAkunTransaksi_tujuan ?? '') == 'kas_besar' ? 'selected' : '' }}>Kas Besar</option>
-                <option value="bank_mandiri"{{ ($transaksi->id_jenisAkunTransaksi_tujuan ?? '') == 'bank_mandiri' ? 'selected' : '' }}>Bank Mandiri</option>
-                <option value="kas_kecil"{{ ($transaksi->id_jenisAkunTransaksi_tujuan ?? '') == 'kas_kecil' ? 'selected' : '' }}>Kas Kecil</option>
-                <option value="kas_niaga"{{ ($transaksi->id_jenisAkunTransaksi_tujuan ?? '') == 'kas_niaga' ? 'selected' : '' }}>Kas Niaga</option>
-                <option value="bank_bni"{{ ($transaksi->id_jenisAkunTransaksi_tujuan ?? '') == 'bank_bni' ? 'selected' : '' }}>Bank BNI</option>
+            <option value="" disabled {{ old('id_jenisAkunTransaksi_tujuan') ? '' : 'selected' }}>Pilih Kas</option>
+            @foreach ($akunTujuan as $a)
+                <option value="{{ $a->id_jenisAkunTransaksi }}"
+                {{ (string)old('id_jenisAkunTransaksi_tujuan', $TransaksiTransfer->id_jenisAkunTransaksi_tujuan ?? '') === (string)$a->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
+                </option>
+            @endforeach
             </select>
 
         <div class="form-buttons">

@@ -24,12 +24,9 @@ use App\Http\Controllers\Anggota\ProfileController;
 use App\Http\Controllers\Admin\Simpanan\PenarikanTunaiController;
 use App\Http\Controllers\Anggota\AjuanPinjamanController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiPengeluaranController;
-<<<<<<< HEAD
 use App\Http\Controllers\Admin\Pinjaman\DataPinjamanController;
-=======
 use App\Http\Controllers\Admin\Pinjaman\PengajuanPinjamanController;
->>>>>>> bd79f4369077f3136afa86c36786e75a48fc22a7
-
+use App\Http\Controllers\Admin\TransaksiKas\TransaksiTransferController;
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
@@ -149,6 +146,12 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
         ->name('pengeluaran.export-pdf');
 
     Route::resource('transaksi-non-kas', TransaksiNonKasController::class);
+
+    Route::middleware(['auth:user'])->prefix('admin')->group(function () {
+    Route::get('transaksi_kas/transfer/download', [TransaksiTransferController::class, 'download'])
+        ->name('transaksi-transfer.download');
+    Route::resource('transaksi-transfer', TransaksiTransferController::class)
+        ->except(['show']);
 });
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
@@ -173,7 +176,6 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/penarikan-tunai/{id}/cetak', [PenarikanTunaiController::class, 'cetak'])->name('penarikan-tunai.cetak');
 });
 
-<<<<<<< HEAD
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/pinjaman', [DataPinjamanController::class, 'index'])->name('pinjaman.index');
     Route::get('/pinjaman/create', [DataPinjamanController::class, 'create'])->name('pinjaman.create');
@@ -196,10 +198,6 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
 });
 
 
-
-
-=======
->>>>>>> bd79f4369077f3136afa86c36786e75a48fc22a7
 
 //Route::get('/', function () {
 //    return view('welcome');
@@ -308,18 +306,6 @@ Route::get('/admin/profil/beranda-profil', function () {
     return view('admin.profil.beranda-profil');
 })->name('admin.profil.beranda-profil');
 
-Route::get('/admin/transaksi_kas/tambah-transfer', function () {
-    return view('admin.transaksi_kas.tambah-transfer');
-})->name('admin.transaksi_kas.tambah-transfer');
-
-Route::get('/admin/transaksi_kas/transfer', function () {
-    return view('admin.transaksi_kas.transfer');
-})->name('admin.transaksi_kas.transfer');
-
-Route::get('/admin/transaksi_kas/edit-transfer', function () {
-    return view('admin.transaksi_kas.edit-transfer');
-})->name('admin.transaksi_kas.edit-transfer');
-
 Route::get('/admin/laporan/laporan-neraca', function () {
     return view('admin.laporan.laporan-neraca');
 })->name('admin.laporan.laporan-neraca');
@@ -371,3 +357,5 @@ Route::get('/admin/pinjaman/detail-peminjaman', function () {
 Route::get('/anggota/data-pengajuan-coba', function () {
     return view('anggota.data-pengajuan-coba');
 })->name('anggota.data-pengajuan-coba');
+
+});
