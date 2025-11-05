@@ -15,12 +15,38 @@ use Illuminate\Support\Facades\Auth;
 
 class DataPinjamanController extends Controller
 {
+public function index()
+{
+    $pinjaman = Pinjaman::with(['ajuanPinjaman', 'user', 'anggota', 'lamaAngsuran', 'tujuan', 'sumber'])->get();
 
-    public function index()
-    {
-        $pinjaman = Pinjaman::with(['ajuan_pinjaman', 'user', 'anggota', 'lama_angsuran', 'tujuan', 'sumber'])->get();
-        return view('admin.pinjaman.data-pinjaman', compact('pinjaman'));
+    // === Perhitungan otomatis ===
+    foreach ($pinjaman as $item) {
+        $jumlah = $item->jumlah_pinjaman ?? 0;
+        $lama   = $item->lamaAngsuran->lama_angsuran ?? 0;
+
+        // Hitung pokok angsuran
+        $item->pokok_angsuran = $lama > 0 ? round($jumlah / $lama, 2) : 0;
+        $item->lama_angsuran_text = $lama > 0 ? $lama . ' Bulan' : '-';
+
+        $bunga = $item->bunga_pinjaman ?? 0;
+        $item->jumlah_angsuran_otomatis = $item->pokok_angsuran + $bunga;
+
+        // ===== Tambahan baru: hitung sisa angsuran & sisa tagihan =====
+        $sudahDibayar = $item->sudah_dibayar ?? 0;
+        $totalTagihan = $item->total_tagihan ?? 0;
+        $jumlahAngsuran = $item->jumlah_angsuran_otomatis ?? 0;
+
+        // Jika sudah dibayar 0, maka seluruhnya masih tersisa
+        $item->sisa_tagihan = max($totalTagihan - $sudahDibayar, 0);
+
+        // Estimasi berapa kali angsuran tersisa (dibulatkan ke atas)
+        $item->sisa_angsuran = $jumlahAngsuran > 0
+            ? ceil($item->sisa_tagihan / $jumlahAngsuran)
+            : '-';
     }
+
+    return view('admin.pinjaman.data-pinjaman', compact('pinjaman'));
+}
 
     public function create()
     {
@@ -38,9 +64,10 @@ class DataPinjamanController extends Controller
 
     public function store(Request $request)
     {
+
+
+        
         $request->validate([
-            'id_ajuanPinjaman' => 'required|exists:ajuan_pinjaman,id_ajuanPinjaman',
-            'id_user' => 'required|exists:users,id_user',
             'id_anggota' => 'required|exists:anggota,id_anggota',
             'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
             'id_jenisAkunTransaksi_sumber' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
@@ -50,6 +77,8 @@ class DataPinjamanController extends Controller
             'keterangan' => 'nullable|string|max:255',
         ]);
 
+        $jumlah = $request->jumlah_pinjaman;
+
         $biayaAdmin   = SukuBunga::firstOrFail();
         $ratePinjaman = (float) $biayaAdmin->suku_bunga_pinjaman; 
         $rateAdmin    = (float) $biayaAdmin->biaya_administrasi;  
@@ -58,11 +87,14 @@ class DataPinjamanController extends Controller
         $bunga_pinjaman    = round(($ratePinjaman / 100) * $jumlah, 2);
         $biaya_admin = round(($rateAdmin    / 100) * $jumlah, 2);
 
-        $totalTagihan = $request->jumlah_pinjaman + ($request->jumlah_pinjaman * $request->bunga_pinjaman / 100);
+        $totalTagihan   = $jumlah + $bunga_pinjaman;
+
+        $idPinjaman = Pinjaman::generateId();
+
 
         Pinjaman::create([
-            'id_ajuanPinjaman' => $request->id_ajuanPinjaman,
-            'id_user' => $request->id_user,
+            'id_pinjaman' => $idPinjaman,
+            'id_user' => Auth::user()->id_user,
             'id_anggota' => $request->id_anggota,
             'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
             'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
@@ -81,7 +113,7 @@ class DataPinjamanController extends Controller
 
     public function show($id)
     {
-        $pinjaman = Pinjaman::with(['ajuan_pinjaman', 'user', 'anggota', 'lama_angsuran', 'tujuan', 'sumber'])
+        $pinjaman = Pinjaman::with(['ajuan_pinjaman', 'user', 'anggota', 'lamaAngsuran', 'tujuan', 'sumber'])
             ->findOrFail($id);
         return view('admin.transaksi.pinjaman.show', compact('pinjaman'));
     }
