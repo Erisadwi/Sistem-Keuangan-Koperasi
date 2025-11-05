@@ -56,13 +56,9 @@
         </x-menu.section>
 
         <x-menu.section title="Pinjaman" :open="false" :has-sub="true">
-<<<<<<< HEAD
-          <a href="#" class="submenu-row">Data Pengajuan</a>
-          <a href="{{ route('pinjaman.index') }}" class="submenu-row">Data Pinjaman</a>
-=======
           <a href="{{ route('pengajuan-pinjaman.index') }}" class="submenu-row">Data Pengajuan</a>
-          <a href="#" class="submenu-row">Data Pinjaman</a>
->>>>>>> bd79f4369077f3136afa86c36786e75a48fc22a7
+          <a href="{{ route('pinjaman.index') }}" class="submenu-row">Data Pinjaman</a>
+
           <a href="#" class="submenu-row">Angsuran</a>
           <a href="#" class="submenu-row">Pinjaman Lunas</a>
         </x-menu.section>
