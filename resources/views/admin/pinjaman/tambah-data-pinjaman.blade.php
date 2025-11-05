@@ -9,9 +9,9 @@
 @section('content')
 
 <div class="form-container">
-    <div class="form-wrapper">
-    <form id="formDataPinjaman" action="#" method="POST">
-        @csrf
+    <div class="form-wrapper"> 
+    <form id="formDataPinjaman" action="{{ route('pinjaman.store') }}" method="POST" enctype="multipart/form-data">
+    @csrf
 
         <div class="form-group">
             <label for="tanggal_pinjaman">Tanggal Pinjaman</label>
@@ -24,95 +24,55 @@
         </div>
 
         <div class="form-group">
-            <label for="nama_barang">Nama Barang*</label>
-            <select id="nama_barang" name="nama_barang" required>
-                <option value="" disabled selected>-- Pilih Barang --</option>
-                <option value="Air Minum Axo">Air Minum Axo, stok :9999, harga beli Rp 1,500</option>
-                <option value="Air Minum Club">Air Minum Club, stok :9990, harga beli Rp 1,500</option>
-                <option value="Air Minum Pocari Sweet">Air Minum Pocari Sweet, stok :9996, harga beli Rp 5,025</option>
-                <option value="IKLAN JAWA POS">IKLAN JAWA POS, stok :997, harga beli Rp 37,879</option>
-                <option value="IKLAN MEMORANDUM">IKLAN MEMORANDUM, stok :972, harga beli Rp 15,000</option>
-                <option value="Kebutuhan Rumah Tangga">Kebutuhan Rumah Tangga, stok :9818, harga beli Rp 1</option>
-                <option value="MILTON">MILTON, stok :999, harga beli Rp 3,500</option>
-                <option value="Roko GAJAH BARU">Roko GAJAH BARU, stok :989, harga beli Rp 17,800</option>
-                <option value="Rokok">Rokok, stok :9990, harga beli Rp 1</option>
-                <option value="Rokok (stok 0)">Rokok, stok :0, harga beli Rp 76,256</option>
-                <option value="ROKOK CLASS MILD">ROKOK CLASS MILD, stok :907, harga beli Rp 27,450</option>
-                <option value="ROKOK GAJAH BARU">ROKOK GAJAH BARU, stok :0, harga beli Rp 15,900</option>
-                <option value="ROKOK MILD 16">ROKOK MILD 16, stok :9947, harga beli Rp 32,600</option>
-                <option value="ROKOK PRIMA">ROKOK PRIMA, stok :996, harga beli Rp 14,500</option>
-                <option value="ROKOK SURYA 12">ROKOK SURYA 12, stok :9862, harga beli Rp 24,200</option>
-                <option value="Voucher">Voucher, stok :9999719, harga beli Rp 13,750</option>
+            <label for="jumlah_pinjaman">Jumlah Pinjaman*</label>
+            <input type="number" id="jumlah_pinjaman" name="jumlah_pinjaman">
+        </div>
+
+        <div class="form-group">
+            <label for="lama_angsuran">Lama Angsuran (Bulan)*</label>
+            <select id="id_lamaAngsuran" name="id_lamaAngsuran" class="form-input" required>
+                <option value="">Pilih Lama Angsuran</option>
+                @foreach ($lamaAngsuran as $item)
+                    <option value="{{ $item->id_lamaAngsuran }}">{{ $item->lama_angsuran }} bulan</option>
+                @endforeach
             </select>
         </div>
 
         <div class="form-group">
-            <label for="harga_satuan">Harga Satuan*</label>
-            <input type="text" id="harga_satuan" name="harga_satuan">
+            <label for="suku_bunga_pinjaman">Bunga (Rp)*</label>
+            <input type="text" id="suku_bunga_pinjaman" name="suku_bunga_pinjaman" readonly>
         </div>
 
         <div class="form-group">
-            <label for="jumlah_barang">Jumlah Barang*</label>
-            <input type="text" id="jumlah_barang" name="jumlah_barang">
+            <label for="biaya_administrasi">Biaya Admin (Rp)*</label>
+            <input type="text" id="biaya_administrasi" name="biaya_administrasi" readonly>
         </div>
 
         <div class="form-group">
-            <label for="harga_barang">Harga Barang*</label>
-            <input type="text" id="harga_barang" name="harga_barang">
-        </div>
-
-    <div class="form-group">
-    <label for="lama_angsuran">Lama Angsuran (Bulan)*</label>
-    <input 
-        type="number" 
-        id="lama_angsuran" 
-        name="lama_angsuran" 
-        class="form-control" 
-        placeholder="Masukkan lama angsuran dalam bulan" 
-        min="1" 
-        required>
-    </div>
-
-        <div class="form-group">
-            <label for="bunga">Bunga*</label>
-            <input type="text" id="bunga" name="bunga">
-        </div>
-
-        <div class="form-group">
-            <label for="biaya_admin">Biaya Admin*</label>
-            <input type="text" id="biaya_admin" name="biaya_admin">
-        </div>
-
-        <div class="form-group">
-            <label for="pilih_akun">Pilih Akun</label>
-            <select name="pilih_akun" id="pilih_akun" required>
+            <label for="id_jenisAkunTransaksi_tujuan">Pilih Akun</label>
+            <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan" required>
                 <option value="" disabled selected>-- Pilih Akun --</option>
-                <option value="karyawan">Pinjaman Karyawan</option>
-                <option value="pinjaman">Pinjaman</option>
-                <option value="perusahaan">Pinjaman Perusahaan</option>
+                <option value="7">Pinjaman Karyawan</option>
+                <option value="8">Pinjaman</option>
+                <option value="12">Pinjaman Perusahaan</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label for="ambil_dari_kas">Ambil Dari Kas</label>
-            <select name="ambil_dari_kas" id="ambil_dari_kas" required>
+            <label for="id_jenisAkunTransaksi_sumber">Ambil Dari Kas</label>
+            <select name="id_jenisAkunTransaksi_sumber" id="id_jenisAkunTransaksi_sumber" required>
                 <option value="" disabled selected>-- Pilih Kas --</option>
-                <option value="kas_besar">Kas Besar</option>
-                <option value="bank_mandiri">Bank Mandiri</option>
-                <option value="kas_kecil">Kas Kecil</option>
-                <option value="kas_niaga">Kas Niaga</option>
-                <option value="bank_bri">Bank BRI</option>
+                <option value="1">Kas Besar</option>
+                <option value="3">Bank Mandiri</option>
+                <option value="4">Kas Kecil</option>
+                <option value="5">Kas Niaga</option>
+                <option value="2">Bank BNI</option>
             </select>
         </div>
 
         <div class="form-group">
             <label for="keterangan">Keterangan</label>
             <input type="text" id="keterangan" name="keterangan">
-        </div>
-
-        <div class="form-group">
-            <label for="foto">Foto</label>
-            <input type="file" id="foto" name="foto" accept="image/*">
         </div>
 
         <div class="form-buttons">
@@ -205,41 +165,34 @@ input:focus, select:focus {
 .btn-batal:hover {
     background-color: #c71e1e;
 }
-
-.form-wrapper::-webkit-scrollbar {
-    width: 8px;
-}
-.form-wrapper::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 5px;
-}
-.form-wrapper::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
 </style>
 
 <script>
-document.getElementById('form-container').addEventListener('submit', function(e) {
-    const wajib = [''];
+document.addEventListener('DOMContentLoaded', function() {
+    const jumlahInput = document.getElementById('jumlah_pinjaman');
+    const lamaSelect = document.getElementById('id_lamaAngsuran');
+    const bungaInput = document.getElementById('suku_bunga_pinjaman');
+    const adminInput = document.getElementById('biaya_administrasi');
 
-    for (let id of wajib) {
-        const el = document.getElementById(id);
-        if (!el || !el.value.trim()) {
-            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
-            e.preventDefault(); 
-            return;
+    // Ambil nilai bunga & admin dari database
+    const bungaRate = parseFloat(@json(\App\Models\SukuBunga::first()->suku_bunga_pinjaman ?? 0));
+    const adminRate = parseFloat(@json(\App\Models\SukuBunga::first()->biaya_administrasi ?? 0));
+
+    function hitungOtomatis() {
+        const jumlah = parseFloat(jumlahInput.value) || 0;
+        if (jumlah > 0 && lamaSelect.value !== "") {
+            const bunga = (bungaRate / 100) * jumlah;
+            const admin = (adminRate / 100) * jumlah;
+            bungaInput.value = bunga.toFixed(2);
+            adminInput.value = admin.toFixed(2);
+        } else {
+            bungaInput.value = '';
+            adminInput.value = '';
         }
     }
 
-    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
-
-    if (!yakin) {
-        e.preventDefault(); 
-        alert('❌ Pengisian data dibatalkan.');
-        return;
-    }
-
-    alert('✅ Data barang berhasil disimpan!');
+    jumlahInput.addEventListener('input', hitungOtomatis);
+    lamaSelect.addEventListener('change', hitungOtomatis);
 });
 </script>
 
