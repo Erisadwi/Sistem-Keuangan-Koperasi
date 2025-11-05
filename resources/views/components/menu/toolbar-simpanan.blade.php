@@ -233,11 +233,11 @@
       </button>
       <div id="tanggalDropdown" class="dropdown-content hidden">
         <div class="range">
-          <label for="startDate">Mulai:</label>
+          <label for="startDate">Tanggal Mulai:</label>
           <input type="date" id="startDate" class="input-date">
         </div>
         <div class="range">
-          <label for="endDate">Selesai:</label>
+          <label for="endDate">Tanggal Akhir:</label>
           <input type="date" id="endDate" class="input-date">
         </div>
         <div class="dropdown-buttons">
