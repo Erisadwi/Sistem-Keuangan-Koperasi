@@ -139,10 +139,8 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/admin/pengajuan-pinjaman', [PengajuanPinjamanController::class, 'index'])->name('pengajuan-pinjaman.index');
     Route::get('/admin/pengajuan-pinjaman/{id}/disetujui', [PengajuanPinjamanController::class, 'disetujui'])->name('pengajuan-pinjaman.disetujui');
     Route::patch('/admin/pengajuan-pinjaman/{id}/tolak', [PengajuanPinjamanController::class, 'tolak'])->name('pengajuan-pinjaman.tolak');
-
-    Route::resource('pengeluaran', TransaksiPengeluaranController::class)->except(['show']);
-    Route::get('/pengeluaran/export-pdf', [TransaksiPengeluaranController::class, 'exportPdf'])
-        ->name('pengeluaran.export-pdf');
+    Route::get('/admin/pengajuan-pinjaman/download', [PengajuanPinjamanController::class, 'download'])
+        ->name('pengajuan-pinjaman.download');
 
     Route::resource('transaksi-non-kas', TransaksiNonKasController::class);
 });
@@ -169,6 +167,11 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/penarikan-tunai/{id}/cetak', [PenarikanTunaiController::class, 'cetak'])->name('penarikan-tunai.cetak');
 });
 
+Route::middleware(['auth:user'])->prefix('admin')->group(function () {
+    Route::resource('pengeluaran', TransaksiPengeluaranController::class)->except(['show']);
+    Route::get('/pengeluaran/export-pdf', [TransaksiPengeluaranController::class, 'exportPdf'])
+        ->name('pengeluaran.export-pdf');
+});
 
 //Route::get('/', function () {
 //    return view('welcome');

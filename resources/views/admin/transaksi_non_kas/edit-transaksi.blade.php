@@ -48,7 +48,7 @@
 
         <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>
-            <a href="# {{-- {{ route('transaksi.index') }} --}}" class="btn btn-batal">Batal</a>
+            <a href="{{ route('transaksi-non-kas.index') }}" class="btn btn-batal">Batal</a>
         </div>
 
     </form>
