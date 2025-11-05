@@ -1,10 +1,14 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Admin\Pinjaman;
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class AngsuranController extends Controller
 {
-    //
+    public function index()
+    {
+        return view('admin.pinjaman.angsuran');
+    }
 }
+

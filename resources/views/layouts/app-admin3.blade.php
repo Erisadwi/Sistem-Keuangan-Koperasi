@@ -67,8 +67,8 @@
 
       @if($user && in_array($user->id_role, ['R05', 'R07']))
         <x-menu.section title="Pinjaman" :open="false" :has-sub="true">
-          <a href="#" class="submenu-row">Data Pengajuan</a>
-          <a href="#" class="submenu-row">Data Pinjaman</a>
+          <a href="{{ route('pengajuan-pinjaman.index') }}" class="submenu-row">Data Pengajuan</a>
+          <a href="{{ route('pinjaman.index') }}" class="submenu-row">Data Pinjaman</a>
           <a href="#" class="submenu-row">Angsuran</a>
           <a href="#" class="submenu-row">Pinjaman Lunas</a>
         </x-menu.section>
