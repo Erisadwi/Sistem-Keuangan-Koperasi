@@ -7,7 +7,9 @@
 @section('content')
 
 <x-menu.toolbar-search-ajuan/>
-<x-menu.unduh-right/>
+<x-menu.unduh-right
+    filePath="{{ route('pengajuan-pinjaman.download') }}" 
+/>
 
 
 
@@ -203,5 +205,28 @@
   }
 </style>
 
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
 
+  const filters = @json($filters ?? []);
+
+  if (filters.startDate) $('#startDate').value = filters.startDate;
+  if (filters.endDate) $('#endDate').value = filters.endDate;
+  if (filters.jenis) $('#jenisSelect').value = filters.jenis;
+  if (filters.status) $('#statusSelect').value = filters.status;
+
+  if (filters.startDate && filters.endDate) {
+    setBadge($('#tanggalButton .btn-label'), `${filters.startDate} → ${filters.endDate}`);
+  }
+  if (filters.jenis) {
+    const textJenis = $('#jenisSelect').selectedOptions[0]?.text || filters.jenis;
+    setBadge($('#jenisLabel'), textJenis);
+  }
+  if (filters.status) {
+    const textStatus = $('#statusSelect').selectedOptions[0]?.text || filters.status;
+    setBadge($('#statusLabel'), textStatus);
+  }
+});
+
+</script>
 @endsection

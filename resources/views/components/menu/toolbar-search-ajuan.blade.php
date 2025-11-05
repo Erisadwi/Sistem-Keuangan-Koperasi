@@ -40,9 +40,9 @@
       <label class="dd-label" for="jenisSelect">Pilih jenis pinjaman</label>
       <select id="jenisSelect" class="input-select">
         <option value="">Semua</option>
-        <option value="deposit">Pinjaman Biasa</option>
-        <option value="withdrawal">Pinjaman Darurat</option>
-        <option value="transfer">Pinjaman Barang</option>
+        <option value="PINJAMAN BIASA">Pinjaman Biasa</option>
+        <option value="PINJAMAN DARURAT">Pinjaman Darurat</option>
+        <option value="PINJAMAN BARANG">Pinjaman Barang</option>
       </select>
       <div class="dropdown-buttons">
         <button class="btn save" id="btnSaveJenis">Simpan</button>
@@ -65,9 +65,9 @@
       <label class="dd-label" for="statusSelect">Pilih status</label>
       <select id="statusSelect" class="input-select">
         <option value="">Semua</option>
-        <option value="pending">Menunggu Konfirmasi</option>
-        <option value="success">Disetujui</option>
-        <option value="cancelled">Ditolak</option>
+        <option value="MENUNGGU KONFIRMASI">Menunggu Konfirmasi</option>
+        <option value="DISETUJUI">Disetujui</option>
+        <option value="DITOLAK">Ditolak</option>
       </select>
       <div class="dropdown-buttons">
         <button class="btn save" id="btnSaveStatus">Simpan</button>
@@ -193,7 +193,6 @@
 .btn.save { border:1px solid #25E11B; background:#25E11B; color:#fff; }
 .btn.cancel { border:1px solid #EA2828; background:#EA2828; color:#fff; }
 
-.filter-button.apply { border-color:#16a34a; }
 
 @media (max-width: 768px) {
   .toolbar { margin-right: 0; justify-content:flex-start; }
@@ -249,7 +248,7 @@ $('#btnSaveDate').addEventListener('click', () => {
 
 $('#btnCancelDate').addEventListener('click', () => hide($('#tanggalDropdown')));
 
-/* --- Jenis Dropdown --- */
+
 $('#jenisButton').addEventListener('click', (e) => {
   e.stopPropagation();
   const id = e.currentTarget.getAttribute('data-dropdown');
@@ -283,7 +282,7 @@ $('#btnSaveStatus').addEventListener('click', () => {
   hide($('#statusDropdown'));
 });
 
-/* --- Cancel buttons (generic) --- */
+
 document.querySelectorAll('.btn.cancel[data-cancel]').forEach(btn => {
   btn.addEventListener('click', (e) => {
     const id = e.currentTarget.getAttribute('data-cancel');
@@ -291,38 +290,32 @@ document.querySelectorAll('.btn.cancel[data-cancel]').forEach(btn => {
   });
 });
 
-/* --- Terapkan --- */
 $('#applyFilters').addEventListener('click', () => {
-  const payload = {
-    startDate: $('#startDate').value || null,
-    endDate: $('#endDate').value || null,
-    jenis: $('#jenisSelect').value || null,
-    status: $('#statusSelect').value || null,
-  };
-  // Di sini ganti alert dengan fetch/axios ke backend kalian.
-  alert('Menerapkan filter:\n' + JSON.stringify(payload, null, 2));
-  // Contoh:
-  // fetch('/transactions/filter', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) })
-  //   .then(r => r.json()).then(console.log);
+  const query = new URLSearchParams({
+    startDate: $('#startDate').value || '',
+    endDate: $('#endDate').value || '',
+    jenis: $('#jenisSelect').value || '',
+    status: $('#statusSelect').value || '',
+  }).toString();
+
+  window.location.href = `?${query}`;
 });
 
-/* --- Hapus filter --- */
 $('#clearFilter').addEventListener('click', () => {
-  // reset inputs
   $('#startDate').value = '';
   $('#endDate').value = '';
   $('#jenisSelect').value = '';
   $('#statusSelect').value = '';
 
-  // reset badges
   setBadge($('#tanggalButton .btn-label'), '');
   setBadge($('#jenisLabel'), '');
   setBadge($('#statusLabel'), '');
 
-  alert('Filter dihapus.');
+  window.location.href = window.location.pathname;
 });
 
-/* --- Close dropdown saat klik di luar / ESC --- */
+
+
 document.addEventListener('click', (e) => {
   if (!e.target.closest('.date-filter') && !e.target.closest('.select-filter')) {
     closeAllDropdowns();
@@ -331,4 +324,6 @@ document.addEventListener('click', (e) => {
 document.addEventListener('keydown', (e) => {
   if (e.key === 'Escape') closeAllDropdowns();
 });
+
+
 </script>

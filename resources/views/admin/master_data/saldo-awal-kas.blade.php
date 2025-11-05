@@ -81,12 +81,12 @@
     color: #fff;
     font-weight: 600;
     padding: 10px;
-    border-bottom: 1px solid var(--grid);
+    border: 1px solid var(--grid);
   }
 
   .saldo-awal-kas-table td {
     padding: 10px;
-    border-bottom: 1px solid var(--grid);
+    border: 1px solid var(--grid);
   }
 
   .saldo-awal-kas-table .empty-cell {
