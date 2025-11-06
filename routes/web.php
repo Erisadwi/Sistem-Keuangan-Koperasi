@@ -26,7 +26,7 @@ use App\Http\Controllers\Anggota\AjuanPinjamanController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiPengeluaranController;
 use App\Http\Controllers\Admin\Pinjaman\DataPinjamanController;
 use App\Http\Controllers\Admin\Pinjaman\PengajuanPinjamanController;
-use App\Http\Controllers\Admin\AngsuranController;
+use App\Http\Controllers\Admin\Pinjaman\AngsuranController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiTransferController;
 
 

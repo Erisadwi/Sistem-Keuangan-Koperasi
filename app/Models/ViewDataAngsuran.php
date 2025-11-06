@@ -4,13 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class ViewAngsuran extends Model
+class ViewDataAngsuran extends Model
 {
-    protected $table = 'view_data_angsuran'; 
+    protected $table = 'view_data_angsuran';
 
-    public $incrementing = false; 
-    public $timestamps = false;   
-
-    protected $primaryKey = null; 
-    protected $guarded = [];     
+    public $incrementing = false;
+    public $timestamps = false;
+    protected $primaryKey = null;
+    protected $guarded = [];
 }
