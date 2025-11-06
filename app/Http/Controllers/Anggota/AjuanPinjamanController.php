@@ -33,7 +33,7 @@ public function index(Request $request)
     public function create()
     {
         $lamaAngsuran = LamaAngsuran::all();
-        $biayaAdministrasi = sukuBunga::all();
+        $biayaAdministrasi = sukuBunga::first();
 
         return view('anggota.tambah-data-pengajuan', [
             'ajuan_pinjaman' => null,
@@ -44,6 +44,7 @@ public function index(Request $request)
 
     public function store(Request $request)
     {
+
         $validated = $request->validate([
             'tanggal_pengajuan' => 'required|date',
             'tanggal_update' => 'required|date',
@@ -55,10 +56,13 @@ public function index(Request $request)
             'id_biayaAdministrasi' => 'required|exists:biaya_administrasi,id_biayaAdministrasi',
         ]);
 
+
+        
         $anggota = Auth::user();
 
         $validated['id_ajuanPinjaman'] = AjuanPinjaman::generateId();
         $validated['id_anggota'] = $anggota->id_anggota;
+        $validated['jumlah_ajuan'] = str_replace('.', '', $validated['jumlah_ajuan']);
 
         AjuanPinjaman::create($validated);
 
@@ -66,41 +70,40 @@ public function index(Request $request)
             ->with('success', 'Data pengajuan berhasil disimpan!');
     }
 
-    public function simulasi(Request $request)
+public function simulasi(Request $request)
 {
-    $jumlah = $request->jumlah_ajuan;
-    $idLama = $request->id_lamaAngsuran;
-    $idBiaya = $request->id_biayaAdministrasi;
+    $jumlah = str_replace('.', '', $request->jumlah_ajuan);
+    $lamaAngsuran = LamaAngsuran::find($request->id_lamaAngsuran);
+    $biaya = sukuBunga::find($request->id_biayaAdministrasi);
 
-    if (!$jumlah || !$idLama || !$idBiaya) {
-        return response()->json(['error' => 'Data tidak lengkap'], 400);
-    }
-
-    $lamaAngsuran = LamaAngsuran::find($idLama);
-    $biaya = sukuBunga::find($idBiaya);
-
-    if (!$lamaAngsuran || !$biaya) {
-        return response()->json(['error' => 'Data tidak ditemukan'], 404);
+    if (!$jumlah || !$lamaAngsuran || !$biaya) {
+        return response()->json(['error' => 'Data tidak lengkap'], 422);
     }
 
     $lamaBulan = $lamaAngsuran->lama_angsuran;
-    $bunga = $biaya->suku_bunga_pinjaman / 100;
-    $biayaAdmin = $biaya->biaya_administrasi;
+    $bungaPersen = $biaya->suku_bunga_pinjaman / 100;
+    $biayaAdmin = (float) $biaya->biaya_administrasi;
 
-    $pokok = $jumlah;
-    $angsuranPokok = $pokok / $lamaBulan;
-    $angsuranBunga = $pokok * $bunga;
-    $totalAngsuran = $angsuranPokok + $angsuranBunga + $biayaAdmin;
+    $angsuranPokok = $jumlah / $lamaBulan;
 
+
+    $totalBunga = $jumlah * $bungaPersen;
+    $angsuranBungaPerBulan = $totalBunga / $lamaBulan;
+
+    $tanggalPengajuan = now();
     $simulasi = [];
-    $sisa = $pokok;
+    $sisa = $jumlah;
 
     for ($i = 1; $i <= $lamaBulan; $i++) {
+        $totalAngsuran = $angsuranPokok + $angsuranBungaPerBulan + $biayaAdmin;
         $sisa -= $angsuranPokok;
+
+        $jatuhTempo = $tanggalPengajuan->copy()->addMonth($i)->day(30)->toDateString();
         $simulasi[] = [
             'bulan_ke' => $i,
+            'jatuh_tempo' => $jatuhTempo,
             'angsuran_pokok' => number_format($angsuranPokok, 0, ',', '.'),
-            'angsuran_bunga' => number_format($angsuranBunga, 0, ',', '.'),
+            'angsuran_bunga' => number_format($angsuranBungaPerBulan, 0, ',', '.'),
             'biaya_admin' => number_format($biayaAdmin, 0, ',', '.'),
             'total_angsuran' => number_format($totalAngsuran, 0, ',', '.'),
             'sisa_pinjaman' => number_format(max($sisa, 0), 0, ',', '.'),
@@ -108,6 +111,7 @@ public function index(Request $request)
     }
 
     return response()->json($simulasi);
-    }
+}
+
 
 }
