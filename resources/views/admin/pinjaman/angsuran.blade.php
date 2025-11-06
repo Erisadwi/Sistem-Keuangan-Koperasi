@@ -139,7 +139,7 @@
 }
 
 .row-late {
-background-color: #ffcccc !important; /* Merah muda/pink */
+background-color: #ffcccc !important;
 }
 
 </style>

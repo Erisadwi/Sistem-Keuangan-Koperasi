@@ -184,60 +184,46 @@ document.getElementById('tanggalButton').addEventListener('click', function() {
   dropdown.style.display = (dropdown.style.display === 'block') ? 'none' : 'block';
 });
 
+// Simpan rentang tanggal dan langsung filter
 function applyDateFilter() {
   const startDate = document.getElementById('startDate').value;
   const endDate = document.getElementById('endDate').value;
+  
   if (startDate && endDate) {
-    const button = document.getElementById('tanggalButton');
-    button.innerHTML = `
-      <span class="df-ic" aria-hidden="true">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-          <rect x="3" y="4" width="18" height="17" rx="3" stroke="#0ea5e9" stroke-width="2"/>
-          <path d="M8 2v4M16 2v4M3 10h18" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </span>
-      ${formatDate(startDate)} - ${formatDate(endDate)}
-    `;
-    document.getElementById('tanggalDropdown').style.display = 'none';
+    const params = new URLSearchParams(window.location.search);
+    params.set('start_date', startDate);
+    params.set('end_date', endDate);
+    window.location.search = params.toString(); // reload halaman dengan filter
   } else {
     alert('Pilih tanggal mulai dan akhir!');
   }
-}
-
-function formatDate(dateStr) {
-  const d = new Date(dateStr);
-  const day = String(d.getDate()).padStart(2, '0');
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const year = d.getFullYear();
-  return `${day}/${month}/${year}`;
 }
 
 function applySearch() {
   const kode = document.getElementById('kodeTransaksi').value;
   const nama = document.getElementById('namaAnggota').value;
   const params = new URLSearchParams(window.location.search);
-  if (kode) params.set('kode', kode); else params.delete('kode');
-  if (nama) params.set('nama', nama); else params.delete('nama');
-  window.location.search = params.toString();
+
+  // Gunakan nama sesuai dengan controller
+  if (kode) params.set('kode_transaksi', kode); else params.delete('kode_transaksi');
+  if (nama) params.set('nama_anggota', nama); else params.delete('nama_anggota');
+  
+  window.location.search = params.toString(); // reload halaman untuk apply filter
 }
 
 function clearFilter() {
+  // Reset semua input
   document.getElementById('kodeTransaksi').value = '';
   document.getElementById('namaAnggota').value = '';
   document.getElementById('startDate').value = '';
   document.getElementById('endDate').value = '';
-  document.getElementById('tanggalButton').innerHTML = `
-    <span class="df-ic" aria-hidden="true">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-        <rect x="3" y="4" width="18" height="17" rx="3" stroke="#0ea5e9" stroke-width="2"/>
-        <path d="M8 2v4M16 2v4M3 10h18" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
-      </svg>
-    </span>
-    Tanggal
-  `;
+
+  // Hapus semua parameter di URL
+  window.location.href = window.location.pathname;
 }
 
 function cancelDateRange() {
   document.getElementById('tanggalDropdown').style.display = 'none';
 }
 </script>
+
