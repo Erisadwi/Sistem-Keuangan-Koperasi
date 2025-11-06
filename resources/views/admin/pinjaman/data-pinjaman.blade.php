@@ -65,21 +65,21 @@
           <td>{{ $row->user->nama_lengkap ?? '' }}</td>
           <td class="text-center">
             <div class="aksi-btn-container">
-              <button class="aksi-btn detail-btn" title="Lihat Detail">
+              <a href="{{ route('pinjaman.show', $row->id_pinjaman) }}" class="aksi-btn detail-btn" title="Lihat Detail">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <circle cx="11" cy="11" r="8" stroke-width="2"/>
                   <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"/>
                 </svg>
               </button>
 
-              <button class="aksi-btn nota-btn" title="Cetak Nota">
+              <a href="{{ route('pinjaman.cetak-nota', $row->id_pinjaman) }}" class="aksi-btn nota-btn" title="Cetak Nota">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <rect x="6" y="9" width="12" height="11" stroke-width="2"/>
                   <path d="M6 9V4h12v5" stroke-width="2"/>
                   <line x1="8" y1="13" x2="16" y2="13" stroke-width="2"/>
                   <line x1="8" y1="17" x2="12" y2="17" stroke-width="2"/>
                 </svg>
-              </button>
+              </a>
             </div>
           </td>
         </tr>

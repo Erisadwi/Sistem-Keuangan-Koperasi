@@ -180,10 +180,10 @@ class PenarikanTunaiController extends Controller
         ->orderBy('tanggal_transaksi', 'desc')
         ->get();
 
-    $pdf = Pdf::loadView('admin.simpanan.penarikan-tunai.pdf', compact('data'))
+    $pdf = Pdf::loadView('admin.simpanan.penarikan-tunai.pdfPenarikan', compact('data'))
               ->setPaper('a4', 'portrait');
 
-    return $pdf->download('Laporan_Penarikan_Tunai.pdf');
+    return $pdf->download('Laporan_Penarikan_Tunai.pdfPenarikan');
 }
 
 
@@ -192,6 +192,6 @@ class PenarikanTunaiController extends Controller
         $penarikan = Simpanan::with(['anggota', 'jenisSimpanan', 'tujuan', 'user'])
             ->findOrFail($id);
 
-        return view('admin.simpanan.cetak-nota-penarikan-tunai', compact('penarika '));
+        return view('admin.simpanan.cetak-nota-penarikan-tunai', compact('penarikan'));
     }
 }
