@@ -27,6 +27,9 @@ use App\Http\Controllers\Admin\TransaksiKas\TransaksiPengeluaranController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiTransferController;
 use App\Http\Controllers\Admin\Pinjaman\DataPinjamanController;
 use App\Http\Controllers\Admin\Pinjaman\PengajuanPinjamanController;
+use App\Http\Controllers\Admin\Pinjaman\AngsuranController;
+
+
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
@@ -138,8 +141,11 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
 
     Route::resource('transaksi-non-kas', TransaksiNonKasController::class);
 
-    Route::get('transaksi_kas/transfer/download', [TransaksiTransferController::class, 'download'])->name('transaksi-transfer.download');
-    Route::resource('transaksi-transfer', controller: TransaksiTransferController::class)->except(['show']);
+    Route::get('transaksi_kas/transfer/download', [TransaksiTransferController::class, 'download'])
+        ->name('transaksi-transfer.download');
+    Route::resource('transaksi-transfer', TransaksiTransferController::class)
+        ->except(['show']);
+
 });
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
@@ -183,6 +189,11 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::resource('pengeluaran', TransaksiPengeluaranController::class)->except(['show']);
     Route::get('/pengeluaran/export-pdf', [TransaksiPengeluaranController::class, 'exportPdf'])
         ->name('pengeluaran.export-pdf');
+});
+
+Route::middleware(['auth:user'])->prefix('admin')->group(function () {
+    Route::get('/angsuran', [AngsuranController::class, 'index'])->name('angsuran.index');
+    Route::get('/angsuran/bayar/{id}', [AngsuranController::class, 'bayar'])->name('bayar.angsuran');
 });
 
 //Route::get('/', function () {
@@ -315,10 +326,6 @@ Route::get('/admin/master_data/tambah-data-saldo-awal-non-kas', function () {
 Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
     return view('admin.master_data.edit-data-saldo-awal-non-kas');
 })->name('admin.master_data.edit-data-saldo-awal-non-kas');
-
-Route::get('/admin/pinjaman/angsuran', function () {
-    return view('admin.pinjaman.angsuran');
-})->name('admin.pinjaman.angsuran');
 
 Route::get('/admin/pinjaman/pinjaman-lunas', function () {
     return view('admin.pinjaman.pinjaman-lunas');
