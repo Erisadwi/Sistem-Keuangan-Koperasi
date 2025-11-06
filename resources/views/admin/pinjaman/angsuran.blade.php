@@ -30,20 +30,24 @@
 
     <tbody>
       @forelse(($dataAngsuran ?? collect()) as $idx => $angsuran)
+      @php
+        $jatuhTempo = \Carbon\Carbon::parse($angsuran->tanggal_pinjaman)->addMonth();
+        $isLate = now()->gt($jatuhTempo); 
+      @endphp
         <tr>
           <td>{{ $loop->iteration }}</td>
-          <td>{{ $angsuran->kode ?? '' }}</td>
-          <td>{{ $angsuran->tanggal_pinjam ?? '' }}</td>
-          <td>{{ $angsuran->id_anggota ?? '' }}</td>
+          <td>{{ $angsuran->kode_transaksi ?? '' }}</td>
+          <td>{{ $angsuran->tanggal_pinjaman ?? '' }}</td>
+          <td>{{ $angsuran->username_anggota ?? '' }}</td>
           <td>{{ $angsuran->nama_anggota ?? '' }}</td>
-          <td>{{ number_format($angsuran->pokok_pinjaman ?? 0, 0, ',', '.') }}</td>
-          <td>{{ $angsuran->lama_pinjam ?? '' }}</td>
+          <td>{{ number_format($angsuran->jumlah_pinjaman ?? 0, 0, ',', '.') }}</td>
+          <td>{{ $angsuran->lama_angsuran ?? '' }}</td>
           <td>{{ number_format($angsuran->angsuran_pokok ?? 0, 0, ',', '.') }}</td>
           <td>{{ number_format($angsuran->bunga_angsuran ?? 0, 0, ',', '.') }}</td>
           <td>{{ number_format($angsuran->biaya_admin ?? 0, 0, ',', '.') }}</td>
           <td>{{ number_format($angsuran->angsuran_per_bulan ?? 0, 0, ',', '.') }}</td>
           <td class="actions">
-            <a href="{{ route('bayar.angsuran', ['id' => $angsuran->id]) }}" class="btn-bayar">
+            <a href="{{ route('bayar.angsuran', ['id' => $angsuran->id_pinjaman]) }}" class="btn-bayar">
               💳 Bayar
             </a>
           </td>
@@ -133,6 +137,11 @@
  color: #6b7280;
  font-style: italic;
 }
+
+.row-late {
+background-color: #ffcccc !important;
+}
+
 </style>
 
 @endsection

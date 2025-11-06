@@ -36,8 +36,7 @@
           <td>{{ $row->anggota->id_anggota }}</td>
           <td>{{ \Carbon\Carbon::parse($row->tanggal_pinjaman)->format('d-m-Y') }}</td>
           <td>{{ $row->anggota->nama_anggota }}</td>
-
-          <!-- === Kolom HITUNGAN === -->
+ 
           <td>
             <table class="sub-table">
               <tr><td>Jumlah Pinjaman</td><td>{{ number_format($row->jumlah_pinjaman ?? 0, 0, ',', '.') }}</td></tr>
@@ -48,7 +47,6 @@
             </table>
           </td>
 
-          <!-- === Kolom TOTAL TAGIHAN === -->
           <td>
             <table class="sub-table">
               <tr><td>Jumlah Angsuran</td><td>{{ number_format($row->jumlah_angsuran_otomatis, 0, ',', '.') }}</td></tr>

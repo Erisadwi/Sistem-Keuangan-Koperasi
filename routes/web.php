@@ -24,9 +24,12 @@ use App\Http\Controllers\Anggota\ProfileController;
 use App\Http\Controllers\Admin\Simpanan\PenarikanTunaiController;
 use App\Http\Controllers\Anggota\AjuanPinjamanController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiPengeluaranController;
+use App\Http\Controllers\Admin\TransaksiKas\TransaksiTransferController;
 use App\Http\Controllers\Admin\Pinjaman\DataPinjamanController;
 use App\Http\Controllers\Admin\Pinjaman\PengajuanPinjamanController;
-use App\Http\Controllers\Admin\TransaksiKas\TransaksiTransferController;
+use App\Http\Controllers\Admin\Pinjaman\AngsuranController;
+
+
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
@@ -35,6 +38,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware(['auth:user'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 });
+
 Route::middleware(['auth:anggota'])->group(function () {
     Route::get('/anggota/beranda', [DashboardControllerAnggota::class, 'index'])->name('anggota.beranda');
 
@@ -109,39 +113,31 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('saldo-awal-kas/export', [SaldoAwalKasController::class, 'export'])->name('saldo-awal-kas.export');
     Route::get('saldo-awal-kas/{id}/edit', [SaldoAwalKasController::class, 'edit'])->name('saldo-awal-kas.edit');
     Route::put('saldo-awal-kas/{id}', [SaldoAwalKasController::class, 'update'])->name('saldo-awal-kas.update');
-
-
 });
 
 
 Route::get('/test-logo', [App\Http\Controllers\Admin\setting\identitasKoperasiController::class, 'testBlob']);
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
-    Route::get('transaksi_kas/pemasukan/download', [TransaksiPemasukanController::class, 'download'])
-        ->name('transaksi-pemasukan.download');
-    Route::resource('transaksi-pemasukan', TransaksiPemasukanController::class)
-        ->except(['show']);
+    Route::get('transaksi_kas/pemasukan/download', [TransaksiPemasukanController::class, 'download'])->name('transaksi-pemasukan.download');
+    Route::resource('transaksi-pemasukan', TransaksiPemasukanController::class)->except(['show']);
 
-    Route::get('transaksi-non-kas/download', [TransaksiNonKasController::class, 'download'])
-        ->name('transaksi-non-kas.download');
+    Route::get('transaksi-non-kas/download', [TransaksiNonKasController::class, 'download'])->name('transaksi-non-kas.download');
 
-    Route::resource('transaksi-non-kas', TransaksiNonKasController::class)
-        ->except(['show']);
+    Route::resource('transaksi-non-kas', TransaksiNonKasController::class)->except(['show']);
 
     Route::get('identitas-koperasi/edit', [identitasKoperasiController::class, 'edit'])->name('identitas-koperasi.editSingle');
     Route::put('identitas-koperasi/', [identitasKoperasiController::class, 'update'])->name('identitas-koperasi.updateSingle');
     
-    Route::get('identitas/logo/{nama_koperasi}', [IdentitasKoperasiController::class, 'showLogo'])
-    ->name('identitas.logo');
+    Route::get('identitas/logo/{nama_koperasi}', [IdentitasKoperasiController::class, 'showLogo'])->name('identitas.logo');
 
     Route::get('suku-bunga/edit', [SukuBungaController::class, 'edit'])->name('suku-bunga.editSingle');
     Route::put('suku-bunga/', [SukuBungaController::class, 'update'])->name('suku-bunga.updateSingle');
 
-    Route::get('/admin/pengajuan-pinjaman', [PengajuanPinjamanController::class, 'index'])->name('pengajuan-pinjaman.index');
-    Route::get('/admin/pengajuan-pinjaman/{id}/disetujui', [PengajuanPinjamanController::class, 'disetujui'])->name('pengajuan-pinjaman.disetujui');
-    Route::patch('/admin/pengajuan-pinjaman/{id}/tolak', [PengajuanPinjamanController::class, 'tolak'])->name('pengajuan-pinjaman.tolak');
-    Route::get('/admin/pengajuan-pinjaman/download', [PengajuanPinjamanController::class, 'download'])
-        ->name('pengajuan-pinjaman.download');
+    Route::get('pengajuan-pinjaman', [PengajuanPinjamanController::class, 'index'])->name('pengajuan-pinjaman.index');
+    Route::get('pengajuan-pinjaman/{id}/disetujui', [PengajuanPinjamanController::class, 'disetujui'])->name('pengajuan-pinjaman.disetujui');
+    Route::patch('pengajuan-pinjaman/{id}/tolak', [PengajuanPinjamanController::class, 'tolak'])->name('pengajuan-pinjaman.tolak');
+    Route::get('pengajuan-pinjaman/download', [PengajuanPinjamanController::class, 'download'])->name('pengajuan-pinjaman.download');
 
     Route::resource('transaksi-non-kas', TransaksiNonKasController::class);
 
@@ -149,6 +145,7 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
         ->name('transaksi-transfer.download');
     Route::resource('transaksi-transfer', TransaksiTransferController::class)
         ->except(['show']);
+
 });
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
@@ -195,6 +192,10 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
         ->name('pengeluaran.export-pdf');
 });
 
+Route::middleware(['auth:user'])->prefix('admin')->group(function () {
+    Route::get('/angsuran', [AngsuranController::class, 'index'])->name('angsuran.index');
+    Route::get('/angsuran/bayar/{id}', [AngsuranController::class, 'bayar'])->name('bayar.angsuran');
+});
 
 //Route::get('/', function () {
 //    return view('welcome');
@@ -327,10 +328,6 @@ Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
     return view('admin.master_data.edit-data-saldo-awal-non-kas');
 })->name('admin.master_data.edit-data-saldo-awal-non-kas');
 
-Route::get('/admin/pinjaman/angsuran', function () {
-    return view('admin.pinjaman.angsuran');
-})->name('admin.pinjaman.angsuran');
-
 Route::get('/admin/pinjaman/pinjaman-lunas', function () {
     return view('admin.pinjaman.pinjaman-lunas');
 })->name('admin.pinjaman.pinjaman-lunas');
@@ -354,3 +351,4 @@ Route::get('/admin/pinjaman/detail-peminjaman', function () {
 Route::get('/anggota/data-pengajuan-coba', function () {
     return view('anggota.data-pengajuan-coba');
 })->name('anggota.data-pengajuan-coba');
+

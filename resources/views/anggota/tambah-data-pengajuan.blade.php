@@ -29,13 +29,13 @@
     <select id="id_lamaAngsuran" name="id_lamaAngsuran" class="form-input" required>
       <option value="">Pilih Lama Angsuran</option>
       @foreach ($lamaAngsuran as $item)
-        <option value="{{ $item->id_lamaAngsuran }}">{{ $item->lama_angsuran }} bulan</option>
+        <option value="{{ $item->id_lamaAngsuran }}">{{ $item->lama_angsuran }}</option>
       @endforeach
     </select>
   </div>
 
+<input type="hidden" id="id_biayaAdministrasi" name="id_biayaAdministrasi" value="{{ $biayaAdministrasi->id_biayaAdministrasi }}">
 
-  <input type="hidden" id="id_biayaAdministrasi" name="id_biayaAdministrasi" value="{{ $biayaAdministrasi->first()->id_biayaAdministrasi }}">
   <input type="hidden" name="tanggal_pengajuan" value="{{ now()->toDateString() }}">
   <input type="hidden" name="tanggal_update" value="{{ now()->toDateString() }}">
   <input type="hidden" name="status_ajuan" value="MENUNGGU KONFIRMASI">
@@ -69,81 +69,141 @@
   </table>
 </section>
 
+<style>
 
+.table-simulasi {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+}
+
+.table-simulasi thead {
+  background-color: #6e9eb6; 
+  color: #ffffff;
+}
+
+.table-simulasi th,
+.table-simulasi td {
+  border: 1px solid #f9f9f9;
+  padding: 8px;
+  text-align: center;
+}
+
+.table-simulasi tbody tr {
+  background-color: #ffffff; 
+  color: #000000; 
+}
+
+.table-simulasi tbody tr:nth-child(even),
+.table-simulasi tbody tr:hover {
+  background-color: #ffffff;
+  color: #000000;
+}
+
+.table-simulasi th {
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-weight: bold;
+}
+
+#simulasiSection h3 {
+  font-family: Arial, sans-serif;
+  color: #333;
+}
+
+
+</style>
 
 @endsection
 
 @push('scripts')
 <script>
+document.addEventListener('DOMContentLoaded', function () {
   const nominal = document.getElementById('nominal');
-  const lama = document.getElementById('lama_angsuran');
+  const lama = document.getElementById('id_lamaAngsuran');
   const simulasiSection = document.getElementById('simulasiSection');
   const simulasiBody = document.getElementById('simulasiBody');
-
-  function formatNumber(num) {
-    return num.toLocaleString('id-ID');
-  }
 
   function parseNominal(str) {
     return parseFloat(str.replace(/\./g, '').replace(/,/g, '')) || 0;
   }
-  console.log('Nominal:', nominalVal, 'Lama:', lamaVal);
 
   async function generateSimulasi() {
     const nominalVal = parseNominal(nominal.value);
-    const lamaVal = parseInt(lama.value);
+    const lamaOption = lama.options[lama.selectedIndex];
+    const lamaVal = lama.value; 
+    if (nominalVal <= 0 || !lamaVal) {
+    simulasiSection.style.display = 'none';
+    return;
+  }
+
+
+    console.log('🔹 generateSimulasi() terpanggil');
+    console.log('Nominal:', nominalVal, 'Lama:', lamaVal);
 
     if (nominalVal <= 0 || !lamaVal) {
       simulasiSection.style.display = 'none';
       return;
     }
-
-    // panggil controller via AJAX
-    const res = await fetch(`{{ route('anggota.pengajuan.simulasi') }}`, {
-  method: 'POST',
-  headers: {
-    'Content-Type': 'application/json',
-    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-  },
-  body: JSON.stringify({
-    jumlah_ajuan: nominalVal,
-    id_lamaAngsuran: lamaVal,
+    console.log('Payload simulasi:', {
+    jumlah_ajuan: parseNominal(nominal.value),
+    id_lamaAngsuran: lama.value,
     id_biayaAdministrasi: document.getElementById('id_biayaAdministrasi').value
-  })
-
 });
-    const data = await res.json();
 
-    if (!res.ok) {
-  const errText = await res.text();
-  console.error('Gagal ambil simulasi:', errText);
-  simulasiSection.style.display = 'none';
-  return;
-}
+    try {
+      const res = await fetch(`{{ route('anggota.pengajuan.simulasi') }}`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': '{{ csrf_token() }}'
+        },
+        body: JSON.stringify({
+          jumlah_ajuan: nominalVal,
+          id_lamaAngsuran: lamaVal,
+          id_biayaAdministrasi: document.getElementById('id_biayaAdministrasi').value
+        })
+      });
 
+      const data = await res.json();
+      console.log('Response simulasi:', data);
 
-    simulasiBody.innerHTML = '';
-    data.forEach(row => {
-      simulasiBody.insertAdjacentHTML('beforeend', `
-      <tr>
-        <td>${row.bulan_ke}</td>
-        <td>-</td>
-        <td>${row.angsuran_pokok}</td>
-        <td>${row.angsuran_bunga}</td>
-        <td>${row.biaya_admin}</td>
-        <td>${row.total_angsuran}</td>
-      </tr>
-    `);
-    });
-    simulasiSection.style.display = 'block';
+      if (!res.ok) {
+        console.error('Gagal ambil simulasi:', data);
+        simulasiSection.style.display = 'none';
+        return;
+      }
+
+      simulasiBody.innerHTML = '';
+      data.forEach(row => {
+        simulasiBody.insertAdjacentHTML('beforeend', `
+          <tr>
+            <td>${row.bulan_ke}</td>
+            <td>${row.jatuh_tempo}</td>
+            <td>${row.angsuran_pokok}</td>
+            <td>${row.angsuran_bunga}</td>
+            <td>${row.biaya_admin}</td>
+            <td>${row.total_angsuran}</td>
+          </tr>
+        `);
+      });
+
+      simulasiSection.style.display = 'block';
+    } catch (error) {
+      console.error('Error:', error);
+    }
   }
 
-  nominal.addEventListener('input', generateSimulasi);
-  lama.addEventListener('change', generateSimulasi);
 
   nominal.addEventListener('input', (e) => {
     let val = e.target.value.replace(/\D/g, '');
     e.target.value = val.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+    generateSimulasi();
   });
+
+  lama.addEventListener('change', generateSimulasi);
+});
 </script>
 @endpush

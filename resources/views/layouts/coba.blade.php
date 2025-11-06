@@ -11,55 +11,45 @@
         <x-menu.nav-top/>
     </header>
 
-@php
-    $user = Auth::guard('user')->user();
-@endphp
-
+      {{-- @php
+        $user = Auth::guard('user')->user();
+        @endphp --}}
 
     <div class="layout">
         <aside class="sidebar">
         <div class="profile-card">
         <div class="profile-left">
-          @php
-          $fotoPath = $user && $user->foto_user
-          ? asset('storage/foto_user/' . $user->foto_user)
-          : asset('images/default.jpeg');
-          @endphp
-          <img src="{{ $fotoPath }}" alt="Foto {{ $user->nama_lengkap ?? '' }}" class="avatar-70">
+          <img src="{{ asset('images/profil-admin.jpg') }}"
+          alt="Foto {{-- {{ $user->nama_lengkap ?? 'Pengguna' }} --}}" class="avatar-70">
         </div>
         <div class="profile-right">
-          <div class="profile-name">{{ $user->nama_lengkap ?? 'Nama Tidak Ditemukan' }}</div>
-          <div class="profile-role">{{ $user->role->nama_role ?? 'Role Tidak Ditemukan' }}</div>
+          <div class="profile-name">Iqbal{{-- {{ $user->nama_lengkap ?? 'Nama Tidak Ditemukan' }} --}}</div>
+          <div class="profile-role">Admin Simpanan</div>
         </div>
-        <a href="{{ route('admin.profil.beranda-profil') }}" class="btn-profil push-right" aria-label="Buka Profil">
+        <a href="#{{-- {{ route('anggota.profil') }} --}}" class="btn-profil push-right" aria-label="Buka Profil">
           <img src="{{ asset('icons/arrow-profil.png') }}" alt="">
         </a>
       </div>
 
       <ul class="menu-list">
         <x-menu.section title="Transaksi Kas" :open="false" :has-sub="true">
-          <a href="{{ route('transaksi-pemasukan.index') }}" class="submenu-row">Pemasukan</a>
-          <a href="{{ route('pengeluaran.index') }}" class="submenu-row">Pengeluaran</a>
+          <a href="#" class="submenu-row">Pemasukan</a>
+          <a href="#" class="submenu-row">Pengeluaran</a>
           <a href="#" class="submenu-row">Transfer</a>
         </x-menu.section>
 
-        <x-menu.section 
-        title="Transaksi Non Kas" 
-        :open="false" 
-        :has-sub="false" 
-        :link="route('transaksi-non-kas.index')">
+        <x-menu.section title="Transaksi Non Kas" :open="false" :has-sub="false">
         </x-menu.section>
 
         <x-menu.section title="Simpanan" :open="false" :has-sub="true">
-          <a href="{{ route('setoran-tunai.index') }}" class="submenu-row">Setoran Tunai</a>
-          <a href="{{ route('penarikan-tunai.index') }}" class="submenu-row">Penarikan Tunai</a>
+          <a href="#" class="submenu-row">Setoran Tunai</a>
+          <a href="#" class="submenu-row">Penarikan Tunai</a>
         </x-menu.section>
 
         <x-menu.section title="Pinjaman" :open="false" :has-sub="true">
-          <a href="{{ route('pengajuan-pinjaman.index') }}" class="submenu-row">Data Pengajuan</a>
-          <a href="{{ route('pinjaman.index') }}" class="submenu-row">Data Pinjaman</a>
-
-          <a href="{{ route('angsuran.index') }}" class="submenu-row">Angsuran</a>
+          <a href="#" class="submenu-row">Data Pengajuan</a>
+          <a href="#" class="submenu-row">Data Pinjaman</a>
+          <a href="#" class="submenu-row">Angsuran</a>
           <a href="#" class="submenu-row">Pinjaman Lunas</a>
         </x-menu.section>
 
@@ -87,8 +77,8 @@
         </x-menu.section>
 
         <x-menu.section title="Setting" :open="false" :has-sub="true">
-          <a href="{{ route('identitas-koperasi.editSingle') }}" class="submenu-row">Identitas Koperasi</a>
-          <a href="{{ route('suku-bunga.editSingle') }}" class="submenu-row">Suku Bunga</a>
+          <a href="#" class="submenu-row">Identitas Koperasi</a>
+          <a href="#" class="submenu-row">Suku Bunga</a>
         </x-menu.section>
       </ul>
     </aside>
