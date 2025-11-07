@@ -19,13 +19,18 @@
         </div>
 
         <div class="form-group">
-            <label for="id_anggota">Nama Anggota*</label>
-            <select id="id_anggota" name="id_anggota" class="form-input" required>
-                <option value="">-- Pilih Anggota --</option>
-                @foreach ($anggota as $item)
-                    <option value="{{ $item->id_anggota }}">{{ $item->nama_anggota }}</option>
-                @endforeach
-            </select>
+            <label for="nama_anggota">Nama Anggota</label>
+            <div class="anggota-input-wrapper">
+                <input list="daftar_anggota" id="nama_anggota" name="nama_anggota" 
+                       placeholder="" required>
+                <input type="hidden" id="id_anggota" name="id_anggota" value="{{ old('id_anggota') }}">
+                <datalist id="daftar_anggota">
+                    @foreach ($anggota as $a)
+                    <option data-id="{{ $a->id_anggota }}" value="{{ $a->nama_anggota }}"></option>
+                    @endforeach
+                </datalist>
+                <span class="anggota-icon"><i class="fa fa-user"></i></span>
+            </div>
         </div>
 
         <div class="form-group">
@@ -47,7 +52,6 @@
             <label for="pokok_angsuran">Pokok Angsuran (Rp)</label>
             <input type="text" id="pokok_angsuran" name="pokok_angsuran" readonly>
         </div>
-
 
         <div class="form-group">
             <label for="suku_bunga_pinjaman">Bunga (Rp)*</label>
@@ -141,6 +145,30 @@ input:focus, select:focus {
     box-shadow: 0 0 2px rgba(25, 118, 210, 0.5);
 }
 
+/* === Revisi Khusus Nama Anggota === */
+.anggota-input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+#nama_anggota {
+    width: 100%;
+    padding: 8px 35px 8px 10px;
+    border: 1px solid #565656;
+    border-radius: 5px;
+    font-size: 13px;
+    background-color: #fff;
+    box-sizing: border-box;
+}
+
+.anggota-icon {
+    position: absolute;
+    right: 10px;
+    color: #1976d2;
+    font-size: 15px;
+}
+
 .form-buttons {
     display: flex;
     justify-content: flex-end; 
@@ -186,7 +214,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const adminInput = document.getElementById('biaya_administrasi');
     const pokokInput = document.getElementById('pokok_angsuran');
 
-    // Ambil suku bunga & biaya admin dari database (model SukuBunga)
     const bungaRate = parseFloat(@json(\App\Models\SukuBunga::first()->suku_bunga_pinjaman ?? 0));
     const adminRate = parseFloat(@json(\App\Models\SukuBunga::first()->biaya_administrasi ?? 0));
 
@@ -196,7 +223,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (jumlah > 0 && lamaValue > 0) {
             const pokok = jumlah / lamaValue;
-            const bunga = (bungaRate / 100) * jumlah;
+            const bunga = ((bungaRate / 100) * jumlah) / lamaValue; 
             const admin = (adminRate / 100) * jumlah;
 
             pokokInput.value = pokok.toFixed(2);
@@ -211,6 +238,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     jumlahInput.addEventListener('input', hitungOtomatis);
     lamaSelect.addEventListener('change', hitungOtomatis);
+
+    // === Script untuk otomatis set ID anggota ===
+    const namaInput = document.getElementById('nama_anggota');
+    const idHidden = document.getElementById('id_anggota');
+    const dataList = document.getElementById('daftar_anggota').options;
+
+    namaInput.addEventListener('input', function() {
+        const val = this.value;
+        idHidden.value = '';
+        for (let i = 0; i < dataList.length; i++) {
+            if (dataList[i].value === val) {
+                idHidden.value = dataList[i].dataset.id;
+                break;
+            }
+        }
+    });
 });
 </script>
 

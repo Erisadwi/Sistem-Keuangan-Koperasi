@@ -10,6 +10,7 @@ use App\Models\sukuBunga;
 use App\Models\Anggota;
 use App\Models\LamaAngsuran;
 use App\Models\JenisAkunTransaksi;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -62,60 +63,67 @@ public function index()
     }
 
 
-    public function store(Request $request)
-    {
+   public function store(Request $request)
+{
+    $request->validate([
+        'id_anggota' => 'required|exists:anggota,id_anggota',
+        'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
+        'id_jenisAkunTransaksi_sumber' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
+        'id_lamaAngsuran' => 'required|exists:lama_angsuran,id_lamaAngsuran',
+        'tanggal_pinjaman' => 'required|date',
+        'jumlah_pinjaman' => 'required|numeric|min:0',
+        'keterangan' => 'nullable|string|max:255',
+    ]);
 
+    $jumlah = $request->jumlah_pinjaman;
 
-        
-        $request->validate([
-            'id_anggota' => 'required|exists:anggota,id_anggota',
-            'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
-            'id_jenisAkunTransaksi_sumber' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
-            'id_lamaAngsuran' => 'required|exists:lama_angsuran,id_lamaAngsuran',
-            'tanggal_pinjaman' => 'required|date',
-            'jumlah_pinjaman' => 'required|numeric|min:0',
-            'keterangan' => 'nullable|string|max:255',
-        ]);
+    // Ambil data suku bunga & admin dari tabel
+    $biayaAdmin   = SukuBunga::firstOrFail();
+    $ratePinjaman = (float) $biayaAdmin->suku_bunga_pinjaman; 
+    $rateAdmin    = (float) $biayaAdmin->biaya_administrasi;  
 
-        $jumlah = $request->jumlah_pinjaman;
+    // Ambil lama angsuran dari tabel LamaAngsuran
+    $lamaAngsuran = LamaAngsuran::findOrFail($request->id_lamaAngsuran);
+    $lama = (int) $lamaAngsuran->lama_angsuran;
 
-        $biayaAdmin   = SukuBunga::firstOrFail();
-        $ratePinjaman = (float) $biayaAdmin->suku_bunga_pinjaman; 
-        $rateAdmin    = (float) $biayaAdmin->biaya_administrasi;  
+    // === PERHITUNGAN BARU ===
+    // Bunga dibagi dengan lama angsuran
+    $bunga_pinjaman = $lama > 0 
+        ? round((($ratePinjaman / 100) * $jumlah) / $lama, 2)
+        : 0;
 
-        // rate disimpan sebagai 10.00 = 10%
-        $bunga_pinjaman    = round(($ratePinjaman / 100) * $jumlah, 2);
-        $biaya_admin = round(($rateAdmin    / 100) * $jumlah, 2);
+    $biaya_admin = round(($rateAdmin / 100) * $jumlah, 2);
 
-        $totalTagihan   = $jumlah + $bunga_pinjaman;
+    // Total tagihan = jumlah pokok + total bunga (bunga per bulan × lama angsuran)
+    $totalTagihan = $jumlah + ($bunga_pinjaman * $lama);
 
-        $idPinjaman = Pinjaman::generateId();
+    // Generate ID pinjaman otomatis
+    $idPinjaman = Pinjaman::generateId();
 
+    Pinjaman::create([
+        'id_pinjaman' => $idPinjaman,
+        'id_user' => Auth::user()->id_user,
+        'id_anggota' => $request->id_anggota,
+        'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
+        'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
+        'id_lamaAngsuran' => $request->id_lamaAngsuran,
+        'tanggal_pinjaman' => $request->tanggal_pinjaman,
+        'bunga_pinjaman' => $bunga_pinjaman,
+        'jumlah_pinjaman' => $request->jumlah_pinjaman,
+        'total_tagihan' => $totalTagihan,
+        'keterangan' => $request->keterangan,
+        'status_lunas' => 'BELUM LUNAS',
+        'biaya_admin' => $biaya_admin,
+    ]);
 
-        Pinjaman::create([
-            'id_pinjaman' => $idPinjaman,
-            'id_user' => Auth::user()->id_user,
-            'id_anggota' => $request->id_anggota,
-            'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
-            'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
-            'id_lamaAngsuran' => $request->id_lamaAngsuran,
-            'tanggal_pinjaman' => $request->tanggal_pinjaman,
-            'bunga_pinjaman' => $bunga_pinjaman,
-            'jumlah_pinjaman' => $request->jumlah_pinjaman,
-            'total_tagihan' => $totalTagihan,
-            'keterangan' => $request->keterangan,
-            'status_lunas' => 'BELUM LUNAS',
-            'biaya_admin' => $biaya_admin,
-        ]);
-
-        return redirect()->route('pinjaman.index')->with('success', 'Data pinjaman berhasil disimpan!');
-    }
+    return redirect()->route('pinjaman.index')->with('success', 'Data pinjaman berhasil disimpan!');
+}
 
     public function show($id)
     {
-        $pinjaman = Pinjaman::with(['ajuan_pinjaman', 'user', 'anggota', 'lamaAngsuran', 'tujuan', 'sumber'])
+        $pinjaman = Pinjaman::with(['ajuanPinjaman', 'user', 'anggota', 'lamaAngsuran', 'tujuan', 'sumber'])
             ->findOrFail($id);
-        return view('admin.transaksi.pinjaman.show', compact('pinjaman'));
+        return view('admin.pinjaman.detail-peminjaman', compact('pinjaman'));
     }
 
     public function edit($id)
@@ -127,37 +135,9 @@ public function index()
         $lamaAngsuran = LamaAngsuran::all();
         $akunTransaksi = JenisAkunTransaksi::all();
 
-        return view('admin.transaksi.pinjaman.edit', compact(
+        return view('admin.pinjaman.edit-data-pinjaman', compact(
             'pinjaman', 'ajuanPinjaman', 'users', 'anggota', 'lamaAngsuran', 'akunTransaksi'
         ));
-    }
-
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'tanggal_pinjaman' => 'required|date',
-            'bunga_pinjaman' => 'required|numeric|min:0',
-            'jumlah_pinjaman' => 'required|numeric|min:0',
-            'biaya_admin' => 'nullable|numeric|min:0',
-            'keterangan' => 'nullable|string|max:255',
-            'status_lunas' => 'required|boolean',
-        ]);
-
-        $pinjaman = Pinjaman::findOrFail($id);
-
-        $totalTagihan = $request->jumlah_pinjaman + ($request->jumlah_pinjaman * $request->bunga_pinjaman / 100);
-
-        $pinjaman->update([
-            'tanggal_pinjaman' => $request->tanggal_pinjaman,
-            'bunga_pinjaman' => $request->bunga_pinjaman,
-            'jumlah_pinjaman' => $request->jumlah_pinjaman,
-            'total_tagihan' => $totalTagihan,
-            'biaya_admin' => $request->biaya_admin ?? 0,
-            'keterangan' => $request->keterangan,
-            'status_lunas' => $request->status_lunas,
-        ]);
-
-        return redirect()->route('pinjaman.index')->with('success', 'Data pinjaman berhasil diperbarui!');
     }
 
     public function destroy($id)
@@ -167,4 +147,25 @@ public function index()
 
         return redirect()->route('pinjaman.index')->with('success', 'Data pinjaman berhasil dihapus!');
     }
+
+    public function cetakNota($id)
+{
+    $pinjaman = Pinjaman::with(['anggota', 'lamaAngsuran'])->findOrFail($id);
+
+    // Perhitungan sesuai format nota
+    $pokok_pinjaman = $pinjaman->jumlah_pinjaman;
+    $lama = $pinjaman->lamaAngsuran->lama_angsuran ?? 0;
+    $angsuran_pokok = $lama > 0 ? $pokok_pinjaman / $lama : 0;
+    $angsuran_bunga = $pinjaman->bunga_pinjaman ?? 0;
+    $jumlah_angsuran = $angsuran_pokok + $angsuran_bunga;
+
+    return view('admin.pinjaman.cetak-nota-dataPinjaman', compact(
+        'pinjaman',
+        'pokok_pinjaman',
+        'angsuran_pokok',
+        'angsuran_bunga',
+        'jumlah_angsuran'
+    ));
+}
+
 }

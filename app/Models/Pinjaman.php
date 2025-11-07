@@ -32,6 +32,10 @@ class Pinjaman extends Model
         'biaya_admin',
     ];
 
+    protected $casts = [
+    'tanggal_pinjaman' => 'date',
+];
+
     public static function generateId()
     {
     $prefix = 'PJ';
