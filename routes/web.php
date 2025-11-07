@@ -178,6 +178,7 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/pinjaman/{id}/edit', [DataPinjamanController::class, 'edit'])->name('pinjaman.edit');
     Route::put('/pinjaman/{id}', [DataPinjamanController::class, 'update'])->name('pinjaman.update');
     Route::delete('/pinjaman/{id}', [DataPinjamanController::class, 'destroy'])->name('pinjaman.destroy');
+    Route::get('pinjaman/cetak-nota/{id}', [DataPinjamanController::class, 'cetakNota'])->name('pinjaman.cetak-nota');
 });
 
 Route::middleware(['auth'])->prefix('admin')->group(function () {
