@@ -64,4 +64,5 @@ class Anggota extends Authenticatable
         $number = $last ? (int) substr($last->id_anggota, strlen($prefix)) + 1 : 1;
         return $prefix . str_pad($number, 4, '0', STR_PAD_LEFT);
     }
+
 }

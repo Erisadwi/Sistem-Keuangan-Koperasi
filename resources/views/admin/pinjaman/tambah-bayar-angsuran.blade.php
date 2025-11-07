@@ -9,56 +9,61 @@
 @section('content')
 
 <div class="form-container">
-    <form id="formBayarAngsuran" action="# {{-- {{ route('tambah-bayar-angsuran.storage', $angsuran->id_angsuran) }} --}}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('angsuran.store', ['id_pinjaman' => $pinjaman->id_pinjaman]) }}" id="formbayar-angsuran" method="POST" enctype="multipart/form-data">
         @csrf
 
         <label for="tanggal_bayar">Tanggal Transaksi*</label>
-        <input type="datetime-local" id="tanggal_bayar" name="tanggal_transaksi" 
+        <input type="datetime-local" id="tanggal_bayar" name="tanggal_bayar" 
         value="{{ isset($angsuran) ? \Carbon\Carbon::parse($angsuran->tanggal_bayar)->format('Y-m-d\TH:i') : '' }}">
 
 
         <label for="id_pinjaman">Nomor Pinjaman*</label>
-        <input type="text" id="type_barang" name="id_pinjaman" value="{{-- {{ $pinjaman->id_pinjaman }} --}}">
+        <input type="text" id="type_barang" name="id_pinjaman" value="{{ $pinjaman->id_pinjaman }}"readonly>
 
         <label for="angsuran_ke">Angsuran ke-*</label>
-        <input type="text" id="angsuran_ke" name="angsuran_ke" value=" {{-- {{ $angsuran)->angsuran_ke }} --}}">
+        <input type="text" id="angsuran_ke" name="angsuran_ke" value="{{ old('angsuran_ke', $angsuranKe) }}" readonly>
 
         <label for="sisa_angsuran">Sisa Angsuran*</label>
-        <input type="text" id="sisa_angsuran" name="sisa_angsuran" value="{{-- {{ $pinjaman->sisa_angsuran }} --}}">
+        <input type="text" id="sisa_angsuran" name="sisa_angsuran" value="{{ $sisaAngsuran }}" readonly>
 
         <label for="jumlah_angsuran">Jumlah Angsuran*</label>
-        <input type="number" id="jumlah_angsuran" name="jumlah_angsuran" value=" {{-- {{ isset($pinjaman) ? number_format($pinjaman->jumlah_angsuran, 0, ',', '.') : '' }} --}}">
-
+        <input type="number" id="jumlah_angsuran" name="angsuran_per_bulan"        value="{{ $angsuranPerBulan ?? 0 }}" readonly>
         <label for="pokok_angsuran">Angsuran Pokok*</label>
-        <input type="number" id="pokok_angsuran" name="pokok_angsuran" value="{{-- {{ isset($pinjaman) ? number_format ($pinjaman->pokok_angsuran, 0, ',', '.') : '' }} --}}">
+        <input type="number" id="pokok_angsuran" name="angsuran_pokok" value="{{ $angsuranPokok ?? 0 }}"readonly>
 
         <label for="pendapatan">Pendapatan*</label>
-        <input type="number" id="pendapatan" name="pendapatan" value="{{-- {{ isset($angsuran) ? number_format ($angsuran->pendapatan, 0, ',', '.') : '' }} --}}">
+        <input type="number" id="pendapatan" name="bunga_angsuran" value="{{ $bungaAngsuran ?? 0 }}"readonly>
 
-        <label for="akun_kredit">Akun Pendapatan*</label>
-            <select name="akun_kredit" id="akun_kredit">
-                <option value="" disabled selected>--- Pilih Akun Pendapatan ---</option>
-                <option value="Y">Pendapatan dari Pinjaman</option>
+        <label for="id_jenisAkunTransaksi_sumber">Akun Pendpatan*</label>
+            <select name="id_jenisAkunTransaksi_sumber" id="id_jenisAkunTransaksi_sumber">
+            <option value="" disabled {{ old('id_jenisAkunTransaksi_sumber') ? '' : 'selected' }}>Pilih Akun Pendapatan</option>
+            @foreach ($akunSumber as $a)
+                <option value="{{ $a->id_jenisAkunTransaksi }}"
+                {{ (string)old('id_jenisAkunTransaksi_sumber', $Angsuran->id_jenisAkunTransaksi_sumber ?? '') === (string)$a->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
+                </option>
+            @endforeach
             </select>
 
-        <label for="sisa_tagihan">Sisa Tagihan*</label>
-        <input type="number" id="sisa_tagihan" name="sisa_tagihan" value="{{-- {{ isset($pinjaman) ? number_format ($pinjaman->sisa_tagihan, 0, ',', '.') : '' }} --}}">
+        <label for="sisaTagihan">Sisa Tagihan*</label>
+        <input type="number" id="sisaTagihan" name="sisaTagihan" value="{{ $sisaTagihan }}"readonly>
 
         <label for="denda">Denda</label>
-        <input type="number" id="denda" name="denda" value="{{-- {{ isset($angsuran) ? number_format ($angsuran->denda, 0, ',', '.') : '' }} --}}">
+        <input type="number" id="denda" name="denda" value="{{ $denda }}"readonly>
 
-        <label for="akun_debit">Simpan ke Kas*</label>
-            <select name="akun_debit" id="akun_debit">
-                <option value="" disabled selected>--- Pilih Kas ---</option>
-                <option value="Y">Kas Besar</option>
-                <option value="N">Kas Mandiri</option>
-                <option value="Y">Kas Kecil</option>
-                <option value="N">Kas Niaga</option>
-                <option value="N">Bank BNI</option>
+        <label for="id_jenisAkunTransaksi_tujuan">Simpan ke Kas*</label>
+            <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan">
+            <option value="" disabled {{ old('id_jenisAkunTransaksi_tujuan') ? '' : 'selected' }}>Pilih Kas</option>
+            @foreach ($akunTujuan as $a)
+                <option value="{{ $a->id_jenisAkunTransaksi }}"
+                {{ (string)old('id_jenisAkunTransaksi_tujuan', $Angsuran->id_jenisAkunTransaksi_tujuan ?? '') === (string)$a->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
+                </option>
+            @endforeach
             </select>
 
         <label for="keterangan">Keterangan</label>
-        <input type="text" id="keterangan" name="keterangan" value="{{-- {{ $angsuran->keterangan }} --}}">
+        <input type="text" id="keterangan" name="keterangan" value="{{ old('keterangan') }}" placeholder="Isi keterangan (opsional)">
 
         <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>
@@ -125,32 +130,28 @@ input[type="file"] {
 .btn-batal:hover { background-color: #d73833; }
 </style>
 
-{{-- ========== VALIDASI JS ========== --}}
 <script>
-document.getElementById('formBayarAngsuran').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const wajib = ['tanggal_bayar','id_pinjaman','angsuran_ke','sisa_angsuran','jumlah_angsuran','pokok_angsuran',
-                   'pendapatan','akun_kredit','sisa_tagihan','akun_debit'];
+document.getElementById('formbayar-angsuran').addEventListener('submit', function(e) {
+    const wajib = ['tanggal_bayar', 'id_jenisAkunTransaksi_tujuan', 'id_jenisAkunTransaksi_sumber'];
 
     for (let id of wajib) {
-        if (!document.getElementById(id).value.trim()) {
+        const el = document.getElementById(id);
+        if (!el || !el.value.trim()) {
             alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+            e.preventDefault(); 
             return;
         }
     }
 
-    if (confirm('Apakah data sudah benar dan ingin disimpan?')) {
-        alert('✅ Data bayar berhasil disimpan!');
-        this.reset();
-    }
-});
+    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
 
-document.getElementById('btnBatal').addEventListener('click', function() {
-    if (confirm('Apakah Anda yakin ingin membatalkan pengisian data?')) {
+    if (!yakin) {
+        e.preventDefault(); 
         alert('❌ Pengisian data dibatalkan.');
-        window.history.back();
+        return;
     }
+
+    alert('✅ Data pembayaran berhasil disimpan!');
 });
 </script>
 
