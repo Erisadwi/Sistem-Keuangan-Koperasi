@@ -16,15 +16,16 @@ use Illuminate\Support\Facades\Auth;
 
 class SetoranTunaiController extends Controller
 {
-   public function index(Request $request)
-{
+  public function index(Request $request)
+    {
     $query = Simpanan::with(['anggota', 'jenisSimpanan', 'user'])
         ->where('type_simpanan', 'TRD'); 
 
     if ($request->filled('start') && $request->filled('end')) {
-        $query->whereBetween('tanggal_transaksi', [$request->start, $request->end]);
+        $start = \Carbon\Carbon::parse($request->start)->startOfDay();
+        $end = \Carbon\Carbon::parse($request->end)->endOfDay();
+        $query->whereBetween('tanggal_transaksi', [$start, $end]);
     }
-
     elseif ($request->filled('tanggal')) {
         $query->whereDate('tanggal_transaksi', $request->tanggal);
     }
@@ -60,6 +61,7 @@ class SetoranTunaiController extends Controller
 
     return view('admin.simpanan.setoran-tunai', compact('setoranTunai', 'toolbar'));
     }
+
 
     public function create()
     {

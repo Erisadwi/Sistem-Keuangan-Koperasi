@@ -225,5 +225,42 @@ function clearFilter() {
 function cancelDateRange() {
   document.getElementById('tanggalDropdown').style.display = 'none';
 }
+
+function formatDate(dateStr) {
+  const date = new Date(dateStr);
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  const params = new URLSearchParams(window.location.search);
+
+  const kode = params.get('kode_transaksi');
+  const nama = params.get('nama_anggota');
+  const start = params.get('start_date');
+  const end = params.get('end_date');
+
+  if (kode) document.getElementById('kodeTransaksi').value = kode;
+  if (nama) document.getElementById('namaAnggota').value = nama;
+
+  if (start && end) {
+    document.getElementById('startDate').value = start;
+    document.getElementById('endDate').value = end;
+
+    const button = document.getElementById('tanggalButton');
+    button.innerHTML = `
+      <span class="df-ic" aria-hidden="true">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+          <rect x="3" y="4" width="18" height="17" rx="3" stroke="#0ea5e9" stroke-width="2"/>
+          <path d="M8 2v4M16 2v4M3 10h18" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+      </span>
+      ${formatDate(start)} - ${formatDate(end)}
+    `;
+  }
+});
+
 </script>
 

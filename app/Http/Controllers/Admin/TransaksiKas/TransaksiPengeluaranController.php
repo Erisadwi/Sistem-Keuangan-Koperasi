@@ -20,8 +20,12 @@ class TransaksiPengeluaranController extends Controller
             ->where('type_transaksi', 'TKK'); 
 
         if ($request->filled('start_date') && $request->filled('end_date')) {
-            $query->whereBetween('tanggal_transaksi', [$request->start_date, $request->end_date]);
+        $startDate = date('Y-m-d 00:00:00', strtotime($request->start_date));
+        $endDate   = date('Y-m-d 23:59:59', strtotime($request->end_date));
+
+        $query->whereBetween('tanggal_transaksi', [$startDate, $endDate]);
         }
+
 
         if ($request->filled('search')) {
             $query->where('kode_transaksi', 'LIKE', "%{$request->search}%");
