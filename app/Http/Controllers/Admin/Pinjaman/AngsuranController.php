@@ -11,6 +11,7 @@ use Illuminate\Validation\Rule;
 use App\Models\Anggota;
 use App\Models\JenisAkunTransaksi;
 use Illuminate\Support\Facades\Log;
+use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Angsuran;
 use Carbon\Carbon;
 use App\Models\Pinjaman;
@@ -312,4 +313,81 @@ class AngsuranController extends Controller
             ->with('success', 'Data angsuran berhasil dihapus.');
     }
 
+    private function terbilang($angka)
+{
+    $angka = abs($angka);
+    $huruf = [
+        "", "Satu", "Dua", "Tiga", "Empat", "Lima",
+        "Enam", "Tujuh", "Delapan", "Sembilan", "Sepuluh", "Sebelas"
+    ];
+
+    if ($angka < 12) {
+        return " " . $huruf[$angka];
+    } elseif ($angka < 20) {
+        return $this->terbilang($angka - 10) . " Belas";
+    } elseif ($angka < 100) {
+        return $this->terbilang($angka / 10) . " Puluh" . $this->terbilang($angka % 10);
+    } elseif ($angka < 200) {
+        return " Seratus" . $this->terbilang($angka - 100);
+    } elseif ($angka < 1000) {
+        return $this->terbilang($angka / 100) . " Ratus" . $this->terbilang($angka % 100);
+    } elseif ($angka < 2000) {
+        return " Seribu" . $this->terbilang($angka - 1000);
+    } elseif ($angka < 1000000) {
+        return $this->terbilang($angka / 1000) . " Ribu" . $this->terbilang($angka % 1000);
+    } elseif ($angka < 1000000000) {
+        return $this->terbilang($angka / 1000000) . " Juta" . $this->terbilang(fmod($angka, 1000000));
+    } elseif ($angka < 1000000000000) {
+        return $this->terbilang($angka / 1000000000) . " Miliar" . $this->terbilang(fmod($angka, 1000000000));
+    } else {
+        return " Terlalu Besar";
+    }
+}
+
+
+    public function exportPdf()
+    {
+        $data = Angsuran::with([
+            'pinjaman.anggota',
+            'pinjaman.lamaAngsuran',
+            'user'
+        ])
+        ->orderBy('tanggal_bayar', 'desc')
+        ->get();
+
+        $pdf = Pdf::loadView('admin.pinjaman.nota-angsuran.pdf', compact('data'))
+                ->setPaper('a4', 'portrait');
+
+        return $pdf->download('Laporan_Setoran_Angsuran.pdf');
+    }
+
+
+    public function cetak($id_bayar_angsuran)
+    {
+        $angsuran = Angsuran::with([
+            'pinjaman.anggota',
+            'pinjaman.lamaAngsuran',
+            'data_user'
+        ])->findOrFail($id_bayar_angsuran);
+
+        $pinjaman = $angsuran->pinjaman;
+        $anggota  = $pinjaman->anggota;
+
+        $jumlahAngsuran = ($angsuran->angsuran_pokok ?? 0) + ($angsuran->bunga_angsuran ?? 0) + ($angsuran->denda ?? 0);
+        $terbilang = ucwords($this->terbilang($jumlahAngsuran)) . ' Rupiah';
+
+        $tanggalTransaksi = Carbon::parse($angsuran->tanggal_bayar)->format('d F Y / H:i');
+        $tanggalCetak = Carbon::now()->format('d F Y H:i');
+
+        return view('admin.pinjaman.cetak-nota-bayar-angsuran', [
+            'angsuran' => $angsuran,
+            'pinjaman' => $pinjaman,
+            'anggota' => $anggota,
+            'jumlahAngsuran' => $jumlahAngsuran,
+            'terbilang' => $terbilang,
+            'tanggalTransaksi' => $tanggalTransaksi,
+            'tanggalCetak' => $tanggalCetak,
+        ]);
+
+    }
 }

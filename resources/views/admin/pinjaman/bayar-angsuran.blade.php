@@ -187,11 +187,14 @@
                                 <td>{{ $pay->denda ?? '-' }}</td>
                                 <td>{{ $pay->keterlambatan ?? '-' }}</td>
                                 <td>
-                                    @if(!empty($pay->file_path))
-                                        <a href="{{ asset('storage/'.$pay->file_path) }}" class="download" download>⬇</a>
-                                    @else
-                                        <span class="download">⬇</span>
-                                    @endif
+                                    @if (!empty($pay->file_path))
+                                            <a href="{{ asset('storage/'.$pay->file_path) }}" class="download" download>⬇</a>
+                                        @else
+                                            <a href="{{ route('angsuran.cetak', ['id_bayar_angsuran' => $pay->id_bayar_angsuran]) }}" 
+                                            class="download" target="_blank" title="Cetak Nota">
+                                                🖨️
+                                            </a>
+                                        @endif
                                 </td>
                             </tr>
                         @empty

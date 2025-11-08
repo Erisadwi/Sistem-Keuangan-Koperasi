@@ -200,6 +200,8 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/angsuran/edit/{id_bayar_angsuran}', [AngsuranController::class, 'edit'])->name('angsuran.edit');
     Route::put('/angsuran/update/{id_bayar_angsuran}', [AngsuranController::class, 'update'])->name('angsuran.update');
     Route::delete('/angsuran/delete/{id_bayar_angsuran}', [AngsuranController::class, 'destroy'])->name('angsuran.destroy');
+    Route::get('/export/pdf', [AngsuranController::class, 'exportPdf'])->name('angsuran.export.pdf');
+    Route::get('/cetak/{id_bayar_angsuran}', [AngsuranController::class, 'cetak'])->name('angsuran.cetak');
 });
 
 //Route::get('/', function () {
