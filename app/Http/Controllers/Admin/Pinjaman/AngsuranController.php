@@ -227,7 +227,21 @@ class AngsuranController extends Controller
             'keterangan' => $request->keterangan,
             'id_user' => Auth::user()->id_user,
         ]);
-        Log::info('Setelah create', ['id' => $angsuran->id ?? null]);
+
+        $pinjaman = Pinjaman::with(['anggota', 'lamaAngsuran'])->findOrFail($id_pinjaman);
+        $payments = Angsuran::where('id_pinjaman', $id_pinjaman)->get();
+
+        $totalBayar = $payments->sum(function ($pay) {
+        return ($pay->angsuran_pokok ?? 0) + ($pay->bunga_angsuran ?? 0) + ($pay->denda ?? 0);});
+        $totalPeriode = $pinjaman->lamaAngsuran->lama_angsuran ?? 0;
+
+        $jumlahAngsuranDibayar = $payments->count();
+
+
+        $sisaAngsuran = max(0, $totalPeriode - $jumlahAngsuranDibayar);
+        $sisaTagihan = max(0, $pinjaman->total_tagihan - $totalBayar);
+        $status = $sisaAngsuran == 0 ? 'Lunas' : 'Belum Lunas';
+        $pinjaman->update(['status_lunas' => $status]);
 
         return redirect()->route('bayar.angsuran', ['id_pinjaman' => $id_pinjaman])
         ->with('success', 'Angsuran berhasil ditambahkan.');
@@ -266,6 +280,7 @@ class AngsuranController extends Controller
 
         $tanggalPinjaman = Carbon::parse($pinjaman->tanggal_pinjaman);
         $tanggalJatuhTempo = $tanggalPinjaman->copy()->addMonthsNoOverflow($angsuran->angsuran_ke)->day(30);
+        
 
         $angsuran->update([
             'tanggal_bayar' => $request->tanggal_bayar,

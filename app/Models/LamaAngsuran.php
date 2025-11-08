@@ -29,7 +29,7 @@ public static function generateId()
         ->orderBy('id_lamaAngsuran', 'desc')
         ->first();
 
-    $number = $last ? (int) substr($last->id_barangInventaris, strlen($prefix)) + 1 : 1;
+    $number = $last ? (int) substr($last->id_lamaAngsuran, strlen($prefix)) + 1 : 1;
     return $prefix . str_pad($number, 4, '0', STR_PAD_LEFT);
 }
 }
