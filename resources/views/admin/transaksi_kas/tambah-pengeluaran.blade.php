@@ -27,7 +27,7 @@
             <option value="" disabled {{ old('id_jenisAkunTransaksi_tujuan') ? '' : 'selected' }}>Pilih Kas</option>
             @foreach ($akunTujuan as $a)
                 <option value="{{ $a->id_jenisAkunTransaksi }}"
-                {{ (string)old('id_jenisAkunTransaksi_tujuan', $TransaksiPemasukan->id_jenisAkunTransaksi_tujuan ?? '') === (string)$a->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                {{ (string)old('id_jenisAkunTransaksi_tujuan', $Transaksi->id_jenisAkunTransaksi_tujuan ?? '') === (string)$a->id_jenisAkunTransaksi ? 'selected' : '' }}>
                 {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
                 </option>
             @endforeach
@@ -38,7 +38,7 @@
                 <option value="" disabled {{ old('id_jenisAkunTransaksi_sumber') ? '' : 'selected' }}>Pilih Akun</option>
                 @foreach ($akunSumber as $a)
                     <option value="{{ $a->id_jenisAkunTransaksi }}"
-                    {{ (string)old('id_jenisAkunTransaksi_sumber', $TransaksiPemasukan->id_jenisAkunTransaksi_sumber ?? '') === (string)$a->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                    {{ (string)old('id_jenisAkunTransaksi_sumber', $Transaksi->id_jenisAkunTransaksi_sumber ?? '') === (string)$a->id_jenisAkunTransaksi ? 'selected' : '' }}>
                     {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
                     </option>
                 @endforeach
