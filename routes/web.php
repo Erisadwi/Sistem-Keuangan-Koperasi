@@ -28,7 +28,8 @@ use App\Http\Controllers\Admin\TransaksiKas\TransaksiTransferController;
 use App\Http\Controllers\Admin\Pinjaman\DataPinjamanController;
 use App\Http\Controllers\Admin\Pinjaman\PengajuanPinjamanController;
 use App\Http\Controllers\Admin\Pinjaman\AngsuranController;
-use App\Http\Controllers\Admin\Pinjaman\BayarAngsuranController;
+use App\Http\Controllers\Admin\Pinjaman\PinjamanLunasController;
+
 
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -205,6 +206,13 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/admin/angsuran/{id_pinjaman}', [AngsuranController::class, 'show'])->name('angsuran.show');
 });
 
+Route::middleware(['auth:user'])->prefix('admin')->group(function () {
+    Route::get('/pinjaman-lunas', [PinjamanLunasController::class, 'index'])
+        ->name('pinjaman-lunas.index');
+    Route::get('/pinjaman-lunas/{id_pinjaman}/detail', [PinjamanLunasController::class, 'detail'])
+    ->name('detail.pelunasan');
+});
+
 //Route::get('/', function () {
 //    return view('welcome');
 //});
@@ -321,9 +329,17 @@ Route::get('/admin/laporan/laporan-kas-pinjaman', function () {
     return view('admin.laporan.laporan-kas-pinjaman');
 })->name('admin.laporan.laporan-kas-pinjaman');
 
-Route::get('/admin/pinjaman/pinjaman-lunas', function () {
-    return view('admin.pinjaman.pinjaman-lunas');
-})->name('admin.pinjaman.pinjaman-lunas');
+Route::get('/admin/master_data/saldo-awal-non-kas', function () {
+    return view('admin.master_data.saldo-awal-non-kas');
+})->name('admin.master_data.saldo-awal-non-kas');
+
+Route::get('/admin/master_data/tambah-data-saldo-awal-non-kas', function () {
+    return view('admin.master_data.tambah-data-saldo-awal-non-kas');
+})->name('admin.master_data.tambah-data-saldo-awal-non-kas');
+
+Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
+    return view('admin.master_data.edit-data-saldo-awal-non-kas');
+})->name('admin.master_data.edit-data-saldo-awal-non-kas');
 
 Route::get('/admin/pinjaman/detail-pelunasan', function () {
     return view('admin.pinjaman.detail-pelunasan');

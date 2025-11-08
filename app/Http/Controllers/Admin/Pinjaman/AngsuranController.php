@@ -28,7 +28,7 @@ class AngsuranController extends Controller
 
     public function index(Request $request)
     {
-        $query = ViewDataAngsuran::query();
+       $query = ViewDataAngsuran::where('status_lunas', 'BELUM LUNAS');
 
         if ($request->start_date && $request->end_date) {
             $query->whereBetween('tanggal_pinjaman', [$request->start_date, $request->end_date]);
@@ -42,7 +42,7 @@ class AngsuranController extends Controller
             $query->where('nama_anggota', 'like', '%' . $request->nama_anggota . '%');
         }
 
-        $dataAngsuran = $query->paginate(10);
+        $dataAngsuran = $query->orderBy('tanggal_pinjaman', 'desc')->paginate(10);
         return view('admin.pinjaman.angsuran', compact('dataAngsuran'));
     }
 

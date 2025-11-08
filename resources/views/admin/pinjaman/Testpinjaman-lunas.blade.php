@@ -9,7 +9,8 @@
 <x-menu.toolbar-filter/>
 
 
-<div class="pinjaman-lunas-table-wrap">
+{{-- 🔹 Tabel --}}
+<div class="table-scroll-wrapper">
   <table class="pinjaman-lunas-table">
     <thead>
       <tr class="head-group">
@@ -26,9 +27,8 @@
         <th>Aksi</th>
       </tr>
     </thead>
-
-    <tbody>
-@if(isset($dataPinjamanLunas) && count($dataPinjamanLunas) > 0)
+<tbody>
+  @if(isset($dataPinjamanLunas) && count($dataPinjamanLunas) > 0)
     @foreach ($dataPinjamanLunas as $index => $row)
     <tr>
       <td>{{ $index + 1 }}</td>
@@ -42,7 +42,7 @@
       <td>{{ number_format($row->total_denda ?? 0, 0, ',', '.') }}</td>
       <td>{{ number_format($row->total_tagihan ?? 0, 0, ',', '.') }}</td>
       <td class="actions">
-          <a href="{{ route('detail.pelunasan', ['id_pinjaman' => $row->id_pinjaman]) }}" class="btn-detail">
+          <a href="{{ route('detail.pelunasan', ['id_pinjaman' => $row->id_pinjaman]) }}" class="btn-aksi">
             🔍 Detail
           </a>
         </td>
@@ -54,7 +54,8 @@
       <td colspan="11" class="empty-cell">Belum ada data pinjaman lunas.</td>
     </tr>
   @endif
-    </tbody>
+</tbody>
+
   </table>
 </div>
 
@@ -62,85 +63,79 @@
       <x-menu.pagination :data="$dataPinjamanLunas" />
     </div>
 
+{{-- ======================= STYLE ======================= --}}
 <style>
 :root {
-  --border: #d1d5db;
-  --header-bg: #111827; 
+  --primary: #6ba1be;
+  --primary-dark: #558ca3;
+  --header-bg: #4a4a4a;
   --header-text: #ffffff;
-  --body-bg: #ffffff;
-  --body-text: #000000;
+  --border: #c0c0c0;
 }
-
-.pinjaman-lunas-table-wrap {
-  border: 1.5px solid var(--border);
-  background: var(--body-bg);
-  width: 96%;
-  margin-left: 25px;
-  margin-top: 20px;
+ 
+/* ============================= */
+/* TABEL */
+/* ============================= */
+.table-scroll-wrapper {
   overflow-x: auto;
-  border-radius: 4px;
+  overflow-y: auto;
+  max-height: 420px;
+  width: 100%;
+  left:10px;
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 0;
+  box-sizing: border-box;
 }
 
 .pinjaman-lunas-table {
   width: 100%;
   border-collapse: collapse;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  font-size: 13px;
-  color: var(--body-text);
-  text-align: center;
+  font-size: 14px;
 }
 
-.pinjaman-lunas-table thead .head-group th {
+.pinjaman-lunas-table thead {
   background: var(--header-bg);
   color: var(--header-text);
-  padding: 10px;
-  font-weight: 650;
-  border: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 2;
 }
 
-.pinjaman-lunas-table tbody tr {
-  background: var(--body-bg);
-  border-bottom: 1px solid var(--border);
-}
-
+.pinjaman-lunas-table th,
 .pinjaman-lunas-table td {
-  padding: 8px;
+  text-align: center;
+  padding: 10px 14px;
   border: 1px solid var(--border);
-  color: var(--body-text);
+  white-space: nowrap;
 }
 
-.actions {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.pinjaman-lunas-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
 }
 
-.btn-detail {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  background: #0ea5e9;
-  color: #fff;
-  padding: 4px 8px;
-  border-radius: 5px;
-  text-decoration: none;
-  font-size: 12px;
-  font-weight: 500;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-
-.btn-detail:hover {
-  background: #0284c7;
+.pinjaman-lunas-table tbody tr:hover {
+  background-color: #eef7ff;
 }
 
 .empty-cell {
- padding: 8px 10px;
- color: #6b7280;
- font-style: italic;
+  text-align: center;
+  padding: 12px;
+  color: #6b7280;
+  font-style: italic;
 }
 
-.row-late {
-background-color: #ffcccc !important;
+/* Tombol aksi tabel */
+.btn-aksi {
+  background: var(--primary);
+  color: white;
+  border: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+.btn-aksi:hover {
+  background: var(--primary-dark);
 }
 
 .pagination-container {
@@ -150,7 +145,6 @@ background-color: #ffcccc !important;
   align-items: center;
   padding: 12px 16px;
 }
-
 </style>
 
 @endsection
