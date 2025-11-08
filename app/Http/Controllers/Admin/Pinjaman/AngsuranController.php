@@ -49,7 +49,7 @@ class AngsuranController extends Controller
 
 
 
-    public function bayar($id_pinjaman)
+    public function bayar(Request $request, $id_pinjaman)
     {
         $angsuran = ViewDataAngsuran::where('id_pinjaman', $id_pinjaman)->firstOrFail();
         $pinjaman = Pinjaman::with('anggota')->where('id_pinjaman', $id_pinjaman)->first();
@@ -66,8 +66,20 @@ class AngsuranController extends Controller
             return back()->with('error', 'Data angsuran tidak ditemukan.');
         }
 
+        $query = Angsuran::where('id_pinjaman', $id_pinjaman);
 
-        $payments = Angsuran::where('id_pinjaman', $id_pinjaman)->get();
+        // filter berdasarkan kode
+        if ($request->filled('kode')) {
+            $query->where('id_bayar_angsuran', 'like', '%' . $request->kode . '%');
+        }
+
+        // filter berdasarkan tanggal
+        if ($request->filled('tanggalMulai') && $request->filled('tanggalAkhir')) {
+            $query->whereBetween('tanggal_bayar', [$request->tanggalMulai, $request->tanggalAkhir]);
+        }
+
+        $payments = $query->orderBy('tanggal_bayar', 'asc')->get();
+
         foreach ($payments as $pay) {
         $pay->keterlambatan = 0;
 
@@ -390,4 +402,6 @@ class AngsuranController extends Controller
         ]);
 
     }
+
+
 }

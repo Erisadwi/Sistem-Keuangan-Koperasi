@@ -202,6 +202,7 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::delete('/angsuran/delete/{id_bayar_angsuran}', [AngsuranController::class, 'destroy'])->name('angsuran.destroy');
     Route::get('/export/pdf', [AngsuranController::class, 'exportPdf'])->name('angsuran.export.pdf');
     Route::get('/cetak/{id_bayar_angsuran}', [AngsuranController::class, 'cetak'])->name('angsuran.cetak');
+    Route::get('/admin/angsuran/{id_pinjaman}', [AngsuranController::class, 'show'])->name('angsuran.show');
 });
 
 //Route::get('/', function () {
