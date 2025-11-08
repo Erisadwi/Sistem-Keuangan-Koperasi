@@ -320,18 +320,6 @@ Route::get('/admin/laporan/laporan-kas-pinjaman', function () {
     return view('admin.laporan.laporan-kas-pinjaman');
 })->name('admin.laporan.laporan-kas-pinjaman');
 
-Route::get('/admin/master_data/saldo-awal-non-kas', function () {
-    return view('admin.master_data.saldo-awal-non-kas');
-})->name('admin.master_data.saldo-awal-non-kas');
-
-Route::get('/admin/master_data/tambah-data-saldo-awal-non-kas', function () {
-    return view('admin.master_data.tambah-data-saldo-awal-non-kas');
-})->name('admin.master_data.tambah-data-saldo-awal-non-kas');
-
-Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
-    return view('admin.master_data.edit-data-saldo-awal-non-kas');
-})->name('admin.master_data.edit-data-saldo-awal-non-kas');
-
 Route::get('/admin/pinjaman/pinjaman-lunas', function () {
     return view('admin.pinjaman.pinjaman-lunas');
 })->name('admin.pinjaman.pinjaman-lunas');
