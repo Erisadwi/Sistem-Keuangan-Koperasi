@@ -7,17 +7,17 @@
 @section('content')
 
 <x-menu.toolbar-simpanan 
-    addUrl="{{ route('setoran-tunai.create') }}"
-    editUrl="{{ route('setoran-tunai.edit', '__ID__') }}"
-    deleteUrl="{{ route('setoran-tunai.destroy', '__ID__') }}"
-    exportUrl="{{ route('setoran-tunai.exportPdf') }}"
+    addUrl="{{ route('penarikan-tunai.create') }}"
+    editUrl="{{ route('penarikan-tunai.edit', '__ID__') }}"
+    deleteUrl="{{ route('penarikan-tunai.destroy', '__ID__') }}"
+    exportUrl="{{ route('penarikan-tunai.exportPdf') }}"
 />
 
-<div class="penarikan-wrap">
+<div class="content-inner">
   <div class="table-scroll-wrapper">
-    <table class="penarikan-table">
-      <thead>
-        <tr class="head-group">
+    <table class="table table-bordered table-striped penarikan-table">
+      <thead class="table-primary text-center">
+        <tr>
           <th>No</th>
           <th>Kode Transaksi</th>
           <th>Tanggal Transaksi</th>
@@ -55,6 +55,11 @@
   </div>
 </div>
 
+{{-- <div class="pagination-container">
+      <x-menu.pagination :data="$penarikanTunai" />
+ </div> 
+
+{{-- STYLE --}}
 <style>
 :root {
   --primary: #6ba1be;
@@ -65,28 +70,29 @@
   --text: #222;
 }
 
-.penarikan-wrap {
-  border-radius: 0;
-  background: var(--bg);
-  width: 100%;
-  margin-left: 15px;
-  margin-top: -15px;
-  padding: 0;
-  box-shadow: none;
+.content-inner {
+  padding-left: 25px;
+  padding-right: 25px;
+  margin-top: 25px;
 }
 
-/* Scroll aktif */
 .table-scroll-wrapper {
   overflow-x: auto;
   overflow-y: auto;
   max-height: 400px;
-  width: 98%;
-  padding: 30px 16px 8px 16px;
-  box-sizing: border-box;
+  width: 100%;
+  background: transparent;
+  border-radius: 4px;
+  padding-bottom: 8px;
 }
+
+.table-scroll-wrapper table {
+  margin-bottom: 0;
+  background: white;
+}
+
 .table-scroll-wrapper::-webkit-scrollbar {
   height: 8px;
-  width: 8px;
 }
 .table-scroll-wrapper::-webkit-scrollbar-thumb {
   background: var(--primary);
@@ -96,16 +102,12 @@
   background: #f0f0f0;
 }
 
-/* Tabel */
 .penarikan-table {
   width: 100%;
-  min-width: 1000px;
   border-collapse: collapse;
-  background: #ffffff;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-  font-size: 13px;
+  font-size: 14px;
   color: var(--text);
-  table-layout: auto;
 }
 
 .penarikan-table thead {
@@ -113,7 +115,7 @@
   color: var(--header-text);
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 2;
 }
 
 .penarikan-table th,
@@ -122,7 +124,6 @@
   padding: 10px 14px;
   border: 1px solid var(--border);
   white-space: nowrap;
-  vertical-align: middle;
 }
 
 .penarikan-table tbody tr:nth-child(even) {
@@ -133,8 +134,9 @@
   background-color: #eef7ff;
 }
 
-.empty-cell {
+.penarikan-table .empty-cell {
   text-align: center;
+  padding: 8px 10px;
   color: #6b7280;
   font-style: italic;
 }
@@ -153,6 +155,93 @@
 .btn-nota:hover {
   background-color: #0077aa;
 }
+
+@media (max-width: 640px) {
+  .simpanan-table {
+    font-size: 12px;
+  }
+  .simpanan-table th,
+  .simpanan-table td {
+    padding: 8px;
+  }
+}
+
+.selected-row {
+  background-color: #cce8ff !important;
+}
+.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.pagination-container {
+  margin-top: auto;        
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 16px;
+}
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  const rows = document.querySelectorAll('.selectable-row');
+  const editBtn = document.querySelector('.btn-edit');
+  const deleteBtn = document.querySelector('.btn-delete');
+
+  let selectedId = null;
+
+  rows.forEach(row => {
+    row.addEventListener('click', () => {
+      // Hapus highlight dari baris lain
+      rows.forEach(r => r.classList.remove('selected-row'));
+      
+      // Tambahkan highlight ke baris yang diklik
+      row.classList.add('selected-row');
+      
+      // Simpan ID dari baris yang dipilih
+      selectedId = row.dataset.id;
+      
+      // Aktifkan tombol Edit & Hapus
+      editBtn.classList.remove('disabled');
+      deleteBtn.classList.remove('disabled');
+
+      // Update URL tombol edit & hapus (gantikan __ID__)
+      editBtn.setAttribute('data-url', editBtn.dataset.base.replace('__ID__', selectedId));
+      deleteBtn.setAttribute('data-url', deleteBtn.dataset.base.replace('__ID__', selectedId));
+    });
+  });
+
+  // Aksi ketika tombol Edit diklik
+  editBtn.addEventListener('click', function () {
+    const url = this.getAttribute('data-url');
+    if (!url || this.classList.contains('disabled')) return;
+    window.location.href = url;
+  });
+
+  // Aksi ketika tombol Hapus diklik
+  deleteBtn.addEventListener('click', function () {
+    const url = this.getAttribute('data-url');
+    if (!url || this.classList.contains('disabled')) return;
+
+    if (confirm('Yakin ingin menghapus data ini?')) {
+      fetch(url, {
+        method: 'DELETE',
+        headers: {
+          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+        }
+      })
+      .then(res => {
+        if (res.ok) {
+          alert('Data berhasil dihapus');
+          location.reload();
+        } else {
+          alert('Gagal menghapus data');
+        }
+      });
+    }
+  });
+});
+</script>
 
 @endsection

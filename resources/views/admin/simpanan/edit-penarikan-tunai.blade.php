@@ -25,51 +25,53 @@
 
         <label for="tanggal_transaksi">Tanggal Transaksi</label>
         <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi"
-            value="{{ isset($simpanan->tanggal_transaksi) ? \Carbon\Carbon::parse($simpanan->tanggal_transaksi)->format('Y-m-d\TH:i') : '' }}" required>
+               value="{{ \Carbon\Carbon::parse($penarikanTunai->tanggal_transaksi)->format('Y-m-d\TH:i') }}" required>
 
         <hr style="margin:20px 0; border:1px solid #ccc;">
 
         <h4 style="font-size:14px; margin-bottom:10px;">Identitas Penarikan</h4>
 
+        <input type="hidden" id="id_anggota" name="id_anggota" value="{{ $penarikanTunai->id_anggota }}">
         <label for="nama_anggota">Nama Anggota</label>
-        <input type="text" id="nama_anggota" name="nama_anggota"
-            value="{{ $simpanan->nama_anggota ?? '' }}" required>
+        <input type="text" id="nama_anggota" name="id_anggota"
+                value="{{ $penarikanTunai->anggota->nama_anggota ?? '' }}"
+                readonly
+                style="background-color:#f5f5f5; cursor:not-allowed;">
 
-        <label for="jenis_simpanan">Jenis Simpanan</label>
-        <select name="jenis_simpanan" id="jenis_simpanan" required>
-            <option value="" disabled {{ !isset($simpanan->jenis_simpanan) ? 'selected' : '' }}>-- Pilih Jenis Simpanan --</option>
-            <option value="wajib" {{ (isset($simpanan->jenis_simpanan) && $simpanan->jenis_simpanan == 'wajib') ? 'selected' : '' }}>Simpanan Wajib</option>
-            <option value="pokok" {{ (isset($simpanan->jenis_simpanan) && $simpanan->jenis_simpanan == 'pokok') ? 'selected' : '' }}>Simpanan Pokok</option>
-            <option value="sukarela" {{ (isset($simpanan->jenis_simpanan) && $simpanan->jenis_simpanan == 'sukarela') ? 'selected' : '' }}>Simpanan Sukarela</option>
+        <label for="id_jenis_simpanan">Jenis Simpanan</label>
+        <select name="id_jenis_simpanan" id="id_jenis_simpanan" required>
+            <option value="">-- Pilih Jenis Simpanan --</option>
+            @foreach ($jenisSimpanan as $jenis)
+                <option value="{{ $jenis->id_jenis_simpanan }}"
+                        data-jumlah="{{ $jenis->jumlah_simpanan ?? 0 }}"
+                        {{ $penarikanTunai->id_jenis_simpanan == $jenis->id_jenis_simpanan ? 'selected' : '' }}>
+                    {{ $jenis->jenis_simpanan }}
+                </option>
+            @endforeach
         </select>
 
-        <label for="jumlah_penarikan">Jumlah Penarikan</label>
-        <input type="number" id="jumlah_penarikan" name="jumlah_penarikan"
-            value="{{ $simpanan->jumlah_penarikan ?? '' }}" required>
+        <label for="jumlah_simpanan">Jumlah Penarikan</label>
+        <input type="number" id="jumlah_simpanan" name="jumlah_simpanan"
+               value="{{ $penarikanTunai->jumlah_simpanan }}" required>
 
         <label for="keterangan">Keterangan</label>
         <input type="text" id="keterangan" name="keterangan"
-            value="{{ $simpanan->keterangan ?? '' }}" placeholder="Opsional...">
+               value="{{ $penarikanTunai->keterangan ?? '' }}" placeholder="Opsional...">
 
-        <label for="jenisAkunTransaksi_tujuan">Ambil dari Kas</label>
-        <select name="jenisAkunTransaksi_tujuan" id="jenisAkunTransaksi_tujuan" required>
-            <option value="" disabled {{ !isset($simpanan->jenisAkunTransaksi_tujuan) ? 'selected' : '' }}>-- Pilih Kas --</option>
-            <option value="kas_besar" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'kas_besar') ? 'selected' : '' }}>Kas Besar</option>
-            <option value="bank_mandiri" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'bank_mandiri') ? 'selected' : '' }}>Bank Mandiri</option>
-            <option value="kas_kecil" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'kas_kecil') ? 'selected' : '' }}>Kas Kecil</option>
-            <option value="kas_niaga" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'kas_niaga') ? 'selected' : '' }}>Kas Niaga</option>
-            <option value="bank_bri" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'bank_bni') ? 'selected' : '' }}>Bank BRI</option>
+        <label for="id_jenisAkunTransaksi_tujuan">Ambil dari Kas</label>
+        <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan" required>
+            <option value="">-- Pilih Kas --</option>
+            @foreach ($akunTransaksi as $akun)
+                <option value="{{ $akun->id_jenisAkunTransaksi }}"
+                    {{ $penarikanTunai->id_jenisAkunTransaksi_tujuan == $akun->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                    {{ $akun->nama_AkunTransaksi }}
+                </option>
+            @endforeach
         </select>
 
         <label for="bukti_setoran">Bukti Setoran</label>
         <input type="file" id="bukti_setoran" name="bukti_setoran" accept="image/*,application/pdf"
                class="form-control">
-
-        @if($penarikanTunai->bukti_setoran)
-            <div style="margin-bottom:10px;">
-                <img src="{{ asset('storage/' . $penarikanTunai->bukti_setoran) }}" alt="Bukti Setoran" width="100" style="border-radius:5px;">
-            </div>
-        @endif
 
         {{-- Tombol Simpan & Batal --}}
         <div class="form-buttons">
