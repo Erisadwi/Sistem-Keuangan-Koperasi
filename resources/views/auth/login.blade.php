@@ -19,11 +19,12 @@
         </div>
       </div>
 
-     <!-- Pesan error -->
-      @if ($errors->has('login'))
-      <div class="error-message" style="color: red; margin-bottom: 10px;">
-         {{ $errors->first('login') }}
-      </div>
+      @if ($errors->any())
+        <div class="error-message" style="color: red; margin-bottom: 10px;">
+          @foreach ($errors->all() as $error)
+            <div>{{ $error }}</div>
+          @endforeach
+        </div>
       @endif
 
 

@@ -13,22 +13,20 @@ class AjuanPinjamanController extends Controller
 {
 public function index(Request $request)
 {
-
     $anggota = Auth::user();
 
-    $ajuanPinjaman = AjuanPinjaman::where('id_anggota', $anggota->id_anggota)
-        ->with(['lama_angsuran', 'biaya_administrasi']) 
-        ->orderBy('tanggal_pengajuan', 'desc')
-        ->get();
-    
     $perPage = (int) $request->query('per_page', 10);
-    $query = AjuanPinjaman::query();
-    $ajuanPinjaman = $query->orderBy('id_ajuanPinjaman', 'asc')->paginate($perPage);
+
+    $ajuanPinjaman = AjuanPinjaman::where('id_anggota', $anggota->id_anggota)
+        ->with(['lama_angsuran', 'biaya_administrasi'])
+        ->orderBy('tanggal_pengajuan', 'desc')
+        ->paginate($perPage);
 
     return view('anggota.data-pengajuan', [
         'ajuanPinjaman' => $ajuanPinjaman
     ]);
 }
+
 
     public function create()
     {
