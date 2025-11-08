@@ -28,6 +28,7 @@
 
         <label for="jumlah_angsuran">Jumlah Angsuran*</label>
         <input type="number" id="jumlah_angsuran" name="angsuran_per_bulan"        value="{{ $angsuranPerBulan ?? 0 }}" readonly>
+        
         <label for="pokok_angsuran">Angsuran Pokok*</label>
         <input type="number" id="pokok_angsuran" name="angsuran_pokok" value="{{ $angsuranPokok ?? 0 }}"readonly>
 

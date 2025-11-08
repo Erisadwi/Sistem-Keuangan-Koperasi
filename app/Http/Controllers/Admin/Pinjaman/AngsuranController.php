@@ -234,4 +234,67 @@ class AngsuranController extends Controller
 
     }
 
+     public function edit($id_bayar_angsuran)
+    {
+        $angsuran = Angsuran::where('id_bayar_angsuran', $id_bayar_angsuran)->firstOrFail();
+        $pinjaman = $angsuran->pinjaman; 
+        
+        $akunSumber = \App\Models\JenisAkunTransaksi::where('angsuran', 'Y')->where('is_kas', 0)->get();
+        $akunTujuan = \App\Models\JenisAkunTransaksi::where('angsuran', 'Y')->where('is_kas', 1)->get();
+
+        return view('admin.pinjaman.edit-bayar-angsuran', compact('angsuran', 'pinjaman', 'akunSumber', 'akunTujuan'));
+    }
+
+    public function update(Request $request, $id_bayar_angsuran)
+    {
+        $request->validate([
+            'tanggal_bayar' => 'required|date',
+            'id_jenisAkunTransaksi_sumber' => [
+                'required',
+                Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
+                    ->where(fn($q) => $q->where('angsuran', 'Y')->where('is_kas', 0)),
+            ],
+            'id_jenisAkunTransaksi_tujuan' => [
+                'required',
+                Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
+                    ->where(fn($q) => $q->where('angsuran', 'Y')->where('is_kas', 1)),
+            ],
+        ]);
+
+        $angsuran = Angsuran::findOrFail($id_bayar_angsuran);
+        $pinjaman = $angsuran->pinjaman;
+
+        $tanggalPinjaman = Carbon::parse($pinjaman->tanggal_pinjaman);
+        $tanggalJatuhTempo = $tanggalPinjaman->copy()->addMonthsNoOverflow($angsuran->angsuran_ke)->day(30);
+
+        $angsuran->update([
+            'tanggal_bayar' => $request->tanggal_bayar,
+            'tanggal_jatuh_tempo' => $tanggalJatuhTempo,
+            'angsuran_ke' => $request->angsuran_ke,
+            'angsuran_per_bulan' => $request->angsuran_per_bulan,
+            'angsuran_pokok' => $request->angsuran_pokok,
+            'bunga_angsuran' => $request->bunga_angsuran,
+            'sisa_tagihan' => $request->sisa_tagihan,
+            'denda' => $request->denda ?? 0,
+            'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
+            'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
+            'keterangan' => $request->keterangan,
+            'id_user' => Auth::user()->id_user,
+        ]);
+
+        return redirect()->route('bayar.angsuran', ['id_pinjaman' => $angsuran->id_pinjaman])
+            ->with('success', 'Data angsuran berhasil diperbarui.');
+    }
+
+    public function destroy($id_bayar_angsuran)
+    {
+        $angsuran = Angsuran::findOrFail($id_bayar_angsuran);
+        $id_pinjaman = $angsuran->id_pinjaman;
+
+        $angsuran->delete();
+
+        return redirect()->route('bayar.angsuran', ['id_pinjaman' => $id_pinjaman])
+            ->with('success', 'Data angsuran berhasil dihapus.');
+    }
+
 }

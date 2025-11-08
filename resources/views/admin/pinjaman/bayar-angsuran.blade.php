@@ -98,19 +98,28 @@
             {{-- TOOLBAR --}}
             <div class="toolbar">
                 <div class="left-buttons">
-                    <a href="{{ route('angsuran.create', ['id_pinjaman' => $pinjaman->id_pinjaman]) }}" class="filter-button inline-flex items-center">
+                    <a href="{{ route('angsuran.create', ['id_pinjaman' => $pinjaman->id_pinjaman]) }}" class="filter-button inline-flex items-center"  style="text-decoration: none; color: black; font-weight: 480;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                             <path d="M12 5v14M5 12h14" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
                         </svg>
                         Tambah
                     </a>
 
-                    <button class="filter-button hapus">
+                    <a id="editBtn" href="{{ "#" }}" class="filter-button inline-flex items-center" style="text-decoration: none; color: black; font-weight: 480;">
+                        <span class="df-ic" aria-hidden="true">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <path d="M15.232 5.232l3.536 3.536M4 20h4l10.293-10.293a1 1 0 000-1.414l-2.586-2.586a1 1 0 00-1.414 0L4 16v4z" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        Edit
+                    </a>
+
+                    <a id="deleteBtn" href="{{ "#" }}" class="filter-button hapus" style="text-decoration: none; color: black; font-weight: 480;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                             <path d="M3 6h18M8 6v14a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V6m-5-3h2a1 1 0 0 1 1 1v2H9V4a1 1 0 0 1 1-1h2z" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                         Hapus
-                    </button>
+                    </a>
 
                     {{-- Tombol Tanggal --}}
                     <div class="tanggal-wrapper" style="position: relative;">
@@ -168,7 +177,7 @@
                     </thead>
                     <tbody>
                         @forelse($payments as $i => $pay)
-                            <tr>
+                            <tr class="selectable-row" data-id="{{ $pay->id_bayar_angsuran }}">
                                 <td>{{ $i + 1 }}</td>
                                 <td>{{ $pay->id_bayar_angsuran ?? '-' }}</td>
                                 <td>{{ $pay->tanggal_bayar ?? '-' }}</td>
@@ -446,9 +455,69 @@
   padding: 4px 10px;
   cursor: pointer;
 }
+.selectable-row.selected td{
+  background-color: #b6d8ff !important;
+  color: #000;
+}
 </style>
 
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const editButton = document.getElementById('editBtn');
+    const deleteButton = document.getElementById('deleteBtn');
+    let selectedId = null;
+
+    // Klik baris untuk memilih
+    document.querySelectorAll('.selectable-row').forEach(row => {
+        row.addEventListener('click', function() {
+            // hapus highlight dari semua baris
+            document.querySelectorAll('.selectable-row').forEach(r => r.classList.remove('selected'));
+            // tambahkan highlight ke baris ini
+            this.classList.add('selected');
+            selectedId = this.dataset.id;
+            console.log("Baris terpilih ID:", selectedId);
+        });
+    });
+
+    // Tombol Edit
+    if (editButton) {
+        editButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!selectedId) return alert('Pilih data terlebih dahulu');
+            window.location.href = `/admin/angsuran/edit/${selectedId}`;
+        });
+    }
+
+    // Tombol Hapus
+    if (deleteButton) {
+        deleteButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!selectedId) return alert('Pilih data terlebih dahulu');
+            if (!confirm('Yakin ingin menghapus data ini?')) return;
+
+            // buat form POST + DELETE
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/admin/angsuran/delete/${selectedId}`;
+
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            form.appendChild(csrfInput);
+
+            const methodInput = document.createElement('input');
+            methodInput.type = 'hidden';
+            methodInput.name = '_method';
+            methodInput.value = 'DELETE';
+            form.appendChild(methodInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        });
+    }
+});
+
 function toggleTanggalPopup() {
   const popup = document.getElementById('tanggalPopup');
   popup.style.display = popup.style.display === 'block' ? 'none' : 'block';

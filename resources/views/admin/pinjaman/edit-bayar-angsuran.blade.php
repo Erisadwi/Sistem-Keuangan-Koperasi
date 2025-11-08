@@ -8,58 +8,67 @@
 
 @section('content')
 
+
+
+
 <div class="form-container">
-    <form id="formBayarAngsuran" action="# {{-- {{ route('edit-bayar-angsuran.update', $angsuran->id_angsuran) }} --}}" method="POST" enctype="multipart/form-data">
+    <form id="formBayarAngsuran" action="{{ route('angsuran.update', $angsuran->id_bayar_angsuran) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
         <label for="tanggal_bayar">Tanggal Transaksi*</label>
-        <input type="datetime-local" id="tanggal_bayar" name="tanggal_transaksi" 
+        <input type="datetime-local" id="tanggal_bayar" name="tanggal_bayar" 
         value="{{ isset($angsuran) ? \Carbon\Carbon::parse($angsuran->tanggal_bayar)->format('Y-m-d\TH:i') : '' }}">
 
 
         <label for="id_pinjaman">Nomor Pinjaman*</label>
-        <input type="text" id="type_barang" name="id_pinjaman" value="{{-- {{ $pinjaman->id_pinjaman }} --}}">
+        <input type="text" id="id_pinjaman" name="id_pinjaman" value="{{ $pinjaman->id_pinjaman }}" readonly>
 
         <label for="angsuran_ke">Angsuran ke-*</label>
-        <input type="text" id="angsuran_ke" name="angsuran_ke" value=" {{-- {{ $angsuran)->angsuran_ke }} --}}">
+        <input type="text" id="angsuran_ke" name="angsuran_ke" value="{{ old('angsuran_ke', $angsuran->angsuran_ke) }}" readonly>
 
         <label for="sisa_angsuran">Sisa Angsuran*</label>
-        <input type="text" id="sisa_angsuran" name="sisa_angsuran" value="{{-- {{ $pinjaman->sisa_angsuran }} --}}">
+        <input type="text" id="sisa_angsuran" name="sisa_angsuran" value="{{ old('sisa_angsuran', $sisaAngsuran ?? 0) }}" readonly>
 
-        <label for="jumlah_angsuran">Jumlah Angsuran*</label>
-        <input type="number" id="jumlah_angsuran" name="jumlah_angsuran" value=" {{-- {{ isset($pinjaman) ? number_format($pinjaman->jumlah_angsuran, 0, ',', '.') : '' }} --}}">
+        <label for="angsuran_per_bulan">Jumlah Angsuran*</label>
+        <input type="number" id="angsuran_per_bulan" name="angsuran_per_bulan" value="{{ old('angsuran_per_bulan', number_format($angsuran->angsuran_per_bulan, 0, '.', '')) }}" readonly>
 
         <label for="pokok_angsuran">Angsuran Pokok*</label>
-        <input type="number" id="pokok_angsuran" name="pokok_angsuran" value="{{-- {{ isset($pinjaman) ? number_format ($pinjaman->pokok_angsuran, 0, ',', '.') : '' }} --}}">
+        <input type="number" id="pokok_angsuran" name="pokok_angsuran" value="{{ old('angsuran_pokok', number_format($angsuran->angsuran_pokok, 0, '.', '')) }}" readonly>
 
-        <label for="pendapatan">Pendapatan*</label>
-        <input type="number" id="pendapatan" name="pendapatan" value="{{-- {{ isset($angsuran) ? number_format ($angsuran->pendapatan, 0, ',', '.') : '' }} --}}">
+        <label for="bunga_angsuran">Pendapatan*</label>
+        <input type="number" id="bunga_angsuran" name="bunga_angsuran" value="{{ old('bunga_angsuran', number_format($angsuran->bunga_angsuran, 0, '.', '')) }}" readonly>
 
-        <label for="akun_kredit">Akun Pendapatan*</label>
-            <select name="akun_kredit" id="akun_kredit">
-                <option value="" disabled selected>--- Pilih Akun Pendapatan ---</option>
-                <option value="Y">Pendapatan dari Pinjaman</option>
+        <label for="id_jenisAkunTransaksi_sumber">Akun Pendapatan*</label>
+            <select name="id_jenisAkunTransaksi_sumber" id="id_jenisAkunTransaksi_sumber">
+            <option value="" disabled {{ old('id_jenisAkunTransaksi_sumber') ? '' : 'selected' }}>Pilih Akun Pendapatan</option>
+            @foreach ($akunSumber as $a)
+                <option value="{{ $a->id_jenisAkunTransaksi }}"
+                    {{ (string)old('id_jenisAkunTransaksi_sumber', $angsuran->id_jenisAkunTransaksi_sumber ?? '') === (string)$a->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                    {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
+                </option>
+            @endforeach
             </select>
 
-        <label for="sisa_tagihan">Sisa Tagihan*</label>
-        <input type="number" id="sisa_tagihan" name="sisa_tagihan" value="{{-- {{ isset($pinjaman) ? number_format ($pinjaman->sisa_tagihan, 0, ',', '.') : '' }} --}}">
+        <label for="sisaTagihan">Sisa Tagihan*</label>
+        <input type="number" id="sisaTagihan" name="sisa_tagihan" value="{{ old('sisaTagihan', $angsuran->sisaTagihan ?? $sisaTagihan ?? 0) }}" readonly>
 
         <label for="denda">Denda</label>
-        <input type="number" id="denda" name="denda" value="{{-- {{ isset($angsuran) ? number_format ($angsuran->denda, 0, ',', '.') : '' }} --}}">
+        <input type="number" id="denda" name="denda" value="{{ old('denda', number_format($angsuran->denda, 0, '.', '')) }}" readonly>
 
-        <label for="akun_debit">Simpan ke Kas*</label>
-            <select name="akun_debit" id="akun_debit">
-                <option value="" disabled selected>--- Pilih Kas ---</option>
-                <option value="Y">Kas Besar</option>
-                <option value="N">Kas Mandiri</option>
-                <option value="Y">Kas Kecil</option>
-                <option value="N">Kas Niaga</option>
-                <option value="N">Bank BNI</option>
+        <label for="id_jenisAkunTransaksi_tujuan">Simpan ke Kas*</label>
+            <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan">
+            <option value="" disabled {{ old('id_jenisAkunTransaksi_tujuan') ? '' : 'selected' }}>Pilih Kas</option>
+            @foreach ($akunTujuan as $a)
+                <option value="{{ $a->id_jenisAkunTransaksi }}"
+                    {{ (string)old('id_jenisAkunTransaksi_tujuan', $angsuran->id_jenisAkunTransaksi_tujuan ?? '') === (string)$a->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                    {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
+                </option>
+            @endforeach
             </select>
 
         <label for="keterangan">Keterangan</label>
-        <input type="text" id="keterangan" name="keterangan" value="{{-- {{ $angsuran->keterangan }} --}}">
+        <input type="text" id="keterangan" name="keterangan" value="{{ old('keterangan', $angsuran->keterangan ?? '') }}" placeholder="Isi keterangan (opsional)">
 
         <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>
@@ -130,30 +139,39 @@ input[type="file"] {
 {{-- ========== VALIDASI JS ========== --}}
 <script>
 document.getElementById('formBayarAngsuran').addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const wajib = ['tanggal_bayar','id_pinjaman','angsuran_ke','sisa_angsuran','jumlah_angsuran','pokok_angsuran',
-                   'pendapatan','akun_kredit','sisa_tagihan','akun_debit'];
+    const wajib = [
+        'tanggal_bayar','id_pinjaman','angsuran_ke','sisa_angsuran','angsuran_per_bulan',
+        'pokok_angsuran','bunga_angsuran','id_jenisAkunTransaksi_sumber','sisaTagihan','id_jenisAkunTransaksi_tujuan'
+    ];
 
     for (let id of wajib) {
-        if (!document.getElementById(id).value.trim()) {
+        const el = document.getElementById(id);
+        if (!el) {
+            e.preventDefault(); 
+            alert('⚠️ Field wajib tidak ditemukan: ' + id);
+            return;
+        }
+
+        if ((el.tagName === 'INPUT' && el.value.trim() === '') ||
+            (el.tagName === 'SELECT' && el.selectedIndex === 0)) {
+            e.preventDefault(); 
             alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
             return;
         }
     }
 
-    if (confirm('Apakah data sudah benar dan ingin disimpan?')) {
-        alert('✅ Data bayar berhasil disimpan!');
-        this.reset();
+    if (!confirm('Apakah data sudah benar dan ingin disimpan?')) {
+        e.preventDefault(); 
+        return;
     }
+
 });
 
 document.getElementById('btnBatal').addEventListener('click', function() {
-    if (confirm('Apakah Anda yakin ingin membatalkan pengisian data?')) {
-        alert('❌ Pengisian data dibatalkan.');
-        window.history.back();
-    }
+    window.history.back();
 });
+
+
 </script>
 
 @endsection
