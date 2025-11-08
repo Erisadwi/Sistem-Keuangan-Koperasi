@@ -197,6 +197,9 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/angsuran/bayar/{id_pinjaman}', [AngsuranController::class, 'bayar'])->name('bayar.angsuran');
     Route::get('/angsuran/tambah/{id_pinjaman}', [AngsuranController::class, 'create'])->name('angsuran.create');
     Route::post('/angsuran/tambah/{id_pinjaman}', [AngsuranController::class, 'store'])->name('angsuran.store');
+    Route::get('/angsuran/edit/{id_bayar_angsuran}', [AngsuranController::class, 'edit'])->name('angsuran.edit');
+    Route::put('/angsuran/update/{id_bayar_angsuran}', [AngsuranController::class, 'update'])->name('angsuran.update');
+    Route::delete('/angsuran/delete/{id_bayar_angsuran}', [AngsuranController::class, 'destroy'])->name('angsuran.destroy');
 });
 
 //Route::get('/', function () {

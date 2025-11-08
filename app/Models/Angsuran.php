@@ -50,7 +50,7 @@ public static function generateId()
     }
         public function pinjaman()
     {
-        return $this->belongsTo(user::class, 'id_pinjaman', 'id_pinjaman');
+        return $this->belongsTo(Pinjaman::class, 'id_pinjaman', 'id_pinjaman');
     }
         public function sumber()
     {
