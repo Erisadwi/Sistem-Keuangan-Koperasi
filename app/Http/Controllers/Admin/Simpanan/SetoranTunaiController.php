@@ -46,7 +46,7 @@ class SetoranTunaiController extends Controller
         });
     }
 
-    $setoranTunai = $query->orderBy('tanggal_transaksi', 'desc')->get();
+    $setoranTunai = $query->orderBy('tanggal_transaksi', 'desc')->paginate(10);
 
     if ($setoranTunai->isEmpty() && $request->hasAny(['start', 'end', 'tanggal', 'kode', 'nama', 'jenis'])) {
         session()->flash('warning', '⚠️ Tidak ditemukan data dengan filter yang diterapkan.');

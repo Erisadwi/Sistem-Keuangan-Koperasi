@@ -70,7 +70,7 @@
           <a href="{{ route('pengajuan-pinjaman.index') }}" class="submenu-row">Data Pengajuan</a>
           <a href="{{ route('pinjaman.index') }}" class="submenu-row">Data Pinjaman</a>
           <a href="{{ route('angsuran.index') }}" class="submenu-row">Angsuran</a>
-          <a href="#" class="submenu-row">Pinjaman Lunas</a>
+          <a href="{{ route('pinjaman-lunas.index') }}" class="submenu-row">Pinjaman Lunas</a>
         </x-menu.section>
       @endif
       
