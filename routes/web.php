@@ -28,7 +28,7 @@ use App\Http\Controllers\Admin\TransaksiKas\TransaksiTransferController;
 use App\Http\Controllers\Admin\Pinjaman\DataPinjamanController;
 use App\Http\Controllers\Admin\Pinjaman\PengajuanPinjamanController;
 use App\Http\Controllers\Admin\Pinjaman\AngsuranController;
-
+use App\Http\Controllers\Admin\Pinjaman\BayarAngsuranController;
 
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -194,7 +194,12 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/angsuran', [AngsuranController::class, 'index'])->name('angsuran.index');
-    Route::get('/angsuran/bayar/{id}', [AngsuranController::class, 'bayar'])->name('bayar.angsuran');
+    Route::get('/angsuran/bayar/{id_pinjaman}', [AngsuranController::class, 'bayar'])->name('bayar.angsuran');
+    Route::get('/angsuran/tambah/{id_pinjaman}', [AngsuranController::class, 'create'])->name('angsuran.create');
+    Route::post('/angsuran/tambah/{id_pinjaman}', [AngsuranController::class, 'store'])->name('angsuran.store');
+    Route::get('/angsuran/edit/{id_bayar_angsuran}', [AngsuranController::class, 'edit'])->name('angsuran.edit');
+    Route::put('/angsuran/update/{id_bayar_angsuran}', [AngsuranController::class, 'update'])->name('angsuran.update');
+    Route::delete('/angsuran/delete/{id_bayar_angsuran}', [AngsuranController::class, 'destroy'])->name('angsuran.destroy');
 });
 
 //Route::get('/', function () {
@@ -288,9 +293,6 @@ Route::get('/admin/transaksi_non_kas/transaksi', function () {
     return view('admin.transaksi_non_kas.transaksi');
 })->name('admin.transaksi_non_kas.transaksi');
 
-Route::get('/admin/pinjaman/tambah-bayar-angsuran', function () {
-    return view('admin.pinjaman.tambah-bayar-angsuran');
-})->name('admin.pinjaman.tambah-bayar-angsuran');
 
 Route::get('/admin/pinjaman/edit-bayar-angsuran', function () {
     return view('admin.pinjaman.edit-bayar-angsuran');
@@ -328,9 +330,6 @@ Route::get('/admin/profil/edit-profil', function () {
     return view('admin.profil.edit-profil');
 })->name('admin.profil.edit-edit-profil');
 
-Route::get('/admin/pinjaman/bayar-angsuran', function () {
-    return view('admin.pinjaman.bayar-angsuran');
-})->name('admin.pinjaman.bayar-angsuran');
 
 Route::get('/admin/pinjaman/detail-peminjaman', function () {
     return view('admin.pinjaman.detail-peminjaman');

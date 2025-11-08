@@ -7,8 +7,6 @@
 @section('content')
 
 @php
-    $pinjaman = $pinjaman ?? null;
-    $pinjaman = $pinjaman ?? null;
     $payments = $payments ?? [];
 @endphp
 
@@ -30,8 +28,8 @@
         <div class="card-putih">
             <div class="data-anggota">
                 @php
-                    $fotoPath = (!empty($pinjaman) && !empty($pinjaman->foto))
-                        ? asset('storage/'.$pinjaman->foto)
+                $fotoPath = (!empty($pinjaman) && $pinjaman->anggota && !empty($pinjaman->anggota->foto))
+                        ? asset(''.$pinjaman->anggota->foto)
                         : asset('images/default.jpeg');
                 @endphp
                 <img src="{{ $fotoPath }}" alt="Foto Anggota" class="foto-anggota">
@@ -39,34 +37,35 @@
                 <div class="info">
                     <div class="left">
                         <h4>Data Anggota</h4>
-                        <p>ID Anggota: <span>{{ $pinjaman->id_anggota ?? '-' }}</span></p>
-                        <p>Nama Anggota: <span>{{ $pinjaman->nama ?? '-' }}</span></p>
-                        <p>Departemen: <span>{{ $pinjaman->departemen ?? '-' }}</span></p>
+                        <p>ID Anggota: <span>{{ $anggota->id_anggota ?? '-' }}</span></p>
+                        <p>Nama Anggota: <span>{{ $anggota->nama_anggota ?? '-' }}</span></p>
+                        <p>Departemen: <span>{{ $anggota->departemen ?? '-' }}</span></p>
                         <p>Tempat, Tanggal Lahir: 
                             <span>
-                                @if(!empty($pinjaman?->tempat_lahir) || !empty($pinjaman?->tgl_lahir))
-                                    {{ $pinjaman->tempat_lahir ?? '-' }}, {{ $pinjaman->tgl_lahir ?? '-' }}
+                                @if(!empty($anggota->tempat_lahir) || !empty($anggota->tanggal_lahir))
+                                    {{ $anggota->tempat_lahir ?? '-' }}, {{ $anggota->tanggal_lahir ?? '-' }}
                                 @else
                                     -
                                 @endif
                             </span>
                         </p>
-                        <p>Kota Tinggal: <span>{{ $pinjaman->kota ?? '-' }}</span></p>
+                        <p>Kota Tinggal: <span>{{ $anggota->kota_anggota ?? '-' }}</span></p>
                     </div>
+
 
                     <div class="right">
                         <h4>Data Pinjaman</h4>
-                        <p>Kode Pinjam: <span>{{ $pinjaman->kode_pinjam ?? '-' }}</span></p>
-                        <p>Tanggal Pinjam: <span>{{ $pinjaman->tgl_pinjam ?? '-' }}</span></p>
-                        <p>Tanggal Tempo: <span>{{ $pinjaman->tgl_tempo ?? '-' }}</span></p>
-                        <p>Lama Pinjaman: <span>{{ $pinjaman->lama_pinjaman ?? '-' }}</span></p>
+                        <p>Kode Pinjam: <span>{{ $view->kode_transaksi ?? '-' }}</span></p>
+                        <p>Tanggal Pinjam: <span>{{ $pinjaman->tanggal_pinjaman?? '-' }}</span></p>
+                        <p>Tanggal Tempo: <span>{{ $tanggalTempo ?? '-' }}</span></p>
+                        <p>Lama Pinjaman: <span>{{ $view->lama_angsuran ?? '-' }}</span></p>
                     </div>
 
                     <div class="center">
-                        <p>Pokok Pinjaman: <span>{{ $pinjaman->kode_pinjam ?? '-' }}</span></p>
-                        <p>Angsuran Pokok: <span>{{ $pinjaman->tgl_pinjam ?? '-' }}</span></p>
-                        <p>Biaya & Bunga: <span>{{ $pinjaman->tgl_tempo ?? '-' }}</span></p>
-                        <p>Jumlah Angsuran: <span>{{ $pinjaman->lama_pinjaman ?? '-' }}</span></p>
+                        <p>Pokok Pinjaman: <span>{{ $pinjaman->jumlah_pinjaman ?? '-' }}</span></p>
+                        <p>Angsuran Pokok: <span>{{ $view->angsuran_pokok ?? '-' }}</span></p>
+                        <p>Biaya & Bunga: <span>{{ $view->bunga_angsuran ?? '-' }}</span></p>
+                        <p>Jumlah Angsuran: <span>{{ $view->angsuran_per_bulan ?? '-' }}</span></p>
                     </div>
                 </div>
             </div>
@@ -76,19 +75,19 @@
         <div class="info-biru-bawah">
             <span>Rangkuman &raquo;</span>
             <span>Sisa Angsuran: 
-                <b>{{ isset($pinjaman->sisa_angsuran) ? 'Rp. ' . number_format($pinjaman->sisa_angsuran, 0, ',', '.') : '-' }}</b>
+                <b>{{ $sisaAngsuran }}</b>
             </span>
             <span>Dibayar: 
-                <b>{{ isset($pinjaman->sudah_dibayar) ? 'Rp. ' . number_format($pinjaman->sudah_dibayar, 0, ',', '.') : '-' }}</b>
+                <b>{{ isset($totalBayar) ? 'Rp. ' . number_format($totalBayar, 0, ',', '.') : '-' }}</b>
             </span>
             <span>Denda: 
-                <b>{{ isset($pinjaman->denda) ? 'Rp. ' . number_format($pinjaman->denda, 0, ',', '.') : '-' }}</b>
+                <b>{{ $denda }}</b>
             </span>
             <span>Sisa Tagihan: 
-                <b>{{ isset($pinjaman->sisa_tagihan) ? 'Rp. ' . number_format($pinjaman->sisa_tagihan, 0, ',', '.') : '-' }}</b>
+                <b>{{ isset($sisaTagihan) ? 'Rp. ' . number_format($sisaTagihan, 0, ',', '.') : '-' }}</b>
             </span>
             <span>Status Pelunasan: 
-                <b class="status-lunas">{{ $pinjaman->status ?? '-' }}</b>
+                <b class="status-lunas">{{ $status ?? '-' }}</b>
             </span>
         </div>
 
@@ -99,19 +98,28 @@
             {{-- TOOLBAR --}}
             <div class="toolbar">
                 <div class="left-buttons">
-                    <button class="filter-button">
+                    <a href="{{ route('angsuran.create', ['id_pinjaman' => $pinjaman->id_pinjaman]) }}" class="filter-button inline-flex items-center"  style="text-decoration: none; color: black; font-weight: 480;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                             <path d="M12 5v14M5 12h14" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
                         </svg>
                         Tambah
-                    </button>
+                    </a>
 
-                    <button class="filter-button hapus">
+                    <a id="editBtn" href="{{ "#" }}" class="filter-button inline-flex items-center" style="text-decoration: none; color: black; font-weight: 480;">
+                        <span class="df-ic" aria-hidden="true">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <path d="M15.232 5.232l3.536 3.536M4 20h4l10.293-10.293a1 1 0 000-1.414l-2.586-2.586a1 1 0 00-1.414 0L4 16v4z" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        Edit
+                    </a>
+
+                    <a id="deleteBtn" href="{{ "#" }}" class="filter-button hapus" style="text-decoration: none; color: black; font-weight: 480;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                             <path d="M3 6h18M8 6v14a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V6m-5-3h2a1 1 0 0 1 1 1v2H9V4a1 1 0 0 1 1-1h2z" stroke="#ef4444" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                         Hapus
-                    </button>
+                    </a>
 
                     {{-- Tombol Tanggal --}}
                     <div class="tanggal-wrapper" style="position: relative;">
@@ -169,15 +177,15 @@
                     </thead>
                     <tbody>
                         @forelse($payments as $i => $pay)
-                            <tr>
+                            <tr class="selectable-row" data-id="{{ $pay->id_bayar_angsuran }}">
                                 <td>{{ $i + 1 }}</td>
-                                <td>{{ $pay->kode_bayar ?? '-' }}</td>
-                                <td>{{ $pay->tgl_bayar ?? '-' }}</td>
-                                <td>{{ $pay->tgl_tempo ?? '-' }}</td>
+                                <td>{{ $pay->id_bayar_angsuran ?? '-' }}</td>
+                                <td>{{ $pay->tanggal_bayar ?? '-' }}</td>
+                                <td>{{ $pay->tanggal_jatuh_tempo ?? '-' }}</td>
                                 <td>{{ $pay->angsuran_ke ?? '-' }}</td>
-                                <td>{{ isset($pay->jumlah) ? number_format($pay->jumlah, 0, ',', '.') : '-' }}</td>
+                                <td>{{ isset($pay->angsuran_per_bulan) ? number_format($pay->angsuran_per_bulan, 0, ',', '.') : '-' }}</td>
                                 <td>{{ $pay->denda ?? '-' }}</td>
-                                <td>{{ $pay->terlambat ?? '-' }}</td>
+                                <td>{{ $pay->keterlambatan ?? '-' }}</td>
                                 <td>
                                     @if(!empty($pay->file_path))
                                         <a href="{{ asset('storage/'.$pay->file_path) }}" class="download" download>⬇</a>
@@ -447,9 +455,69 @@
   padding: 4px 10px;
   cursor: pointer;
 }
+.selectable-row.selected td{
+  background-color: #b6d8ff !important;
+  color: #000;
+}
 </style>
 
 <script>
+document.addEventListener('DOMContentLoaded', function () {
+    const editButton = document.getElementById('editBtn');
+    const deleteButton = document.getElementById('deleteBtn');
+    let selectedId = null;
+
+    // Klik baris untuk memilih
+    document.querySelectorAll('.selectable-row').forEach(row => {
+        row.addEventListener('click', function() {
+            // hapus highlight dari semua baris
+            document.querySelectorAll('.selectable-row').forEach(r => r.classList.remove('selected'));
+            // tambahkan highlight ke baris ini
+            this.classList.add('selected');
+            selectedId = this.dataset.id;
+            console.log("Baris terpilih ID:", selectedId);
+        });
+    });
+
+    // Tombol Edit
+    if (editButton) {
+        editButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!selectedId) return alert('Pilih data terlebih dahulu');
+            window.location.href = `/admin/angsuran/edit/${selectedId}`;
+        });
+    }
+
+    // Tombol Hapus
+    if (deleteButton) {
+        deleteButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            if (!selectedId) return alert('Pilih data terlebih dahulu');
+            if (!confirm('Yakin ingin menghapus data ini?')) return;
+
+            // buat form POST + DELETE
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/admin/angsuran/delete/${selectedId}`;
+
+            const csrfInput = document.createElement('input');
+            csrfInput.type = 'hidden';
+            csrfInput.name = '_token';
+            csrfInput.value = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+            form.appendChild(csrfInput);
+
+            const methodInput = document.createElement('input');
+            methodInput.type = 'hidden';
+            methodInput.name = '_method';
+            methodInput.value = 'DELETE';
+            form.appendChild(methodInput);
+
+            document.body.appendChild(form);
+            form.submit();
+        });
+    }
+});
+
 function toggleTanggalPopup() {
   const popup = document.getElementById('tanggalPopup');
   popup.style.display = popup.style.display === 'block' ? 'none' : 'block';

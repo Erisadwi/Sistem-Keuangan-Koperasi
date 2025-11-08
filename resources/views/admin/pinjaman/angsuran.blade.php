@@ -47,7 +47,7 @@
           <td>{{ number_format($angsuran->biaya_admin ?? 0, 0, ',', '.') }}</td>
           <td>{{ number_format($angsuran->angsuran_per_bulan ?? 0, 0, ',', '.') }}</td>
           <td class="actions">
-            <a href="{{ route('bayar.angsuran', ['id' => $angsuran->id_pinjaman]) }}" class="btn-bayar">
+            <a href="{{ route('bayar.angsuran', ['id_pinjaman' => $angsuran->id_pinjaman]) }}" class="btn-bayar">
               💳 Bayar
             </a>
           </td>

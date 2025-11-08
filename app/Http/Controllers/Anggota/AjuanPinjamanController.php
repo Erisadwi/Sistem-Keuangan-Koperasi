@@ -17,7 +17,7 @@ public function index(Request $request)
     $anggota = Auth::user();
 
     $ajuanPinjaman = AjuanPinjaman::where('id_anggota', $anggota->id_anggota)
-        ->with(['lama_angsuran', 'biaya_administrasi']) // relasi opsional jika sudah ada
+        ->with(['lama_angsuran', 'biaya_administrasi']) 
         ->orderBy('tanggal_pengajuan', 'desc')
         ->get();
     
@@ -45,11 +45,15 @@ public function index(Request $request)
     public function store(Request $request)
     {
 
+        $request->merge([
+            'jumlah_ajuan' => str_replace('.', '', $request->jumlah_ajuan),
+        ]);
+
         $validated = $request->validate([
             'tanggal_pengajuan' => 'required|date',
             'tanggal_update' => 'required|date',
             'jenis_ajuan' => 'required|in:PINJAMAN BIASA,PINJAMAN DARURAT,PINJAMAN BARANG',
-            'jumlah_ajuan' => 'required|numeric|min:100000',
+            'jumlah_ajuan' => 'required|numeric',
             'keterangan' => 'nullable|string',
             'status_ajuan' => 'required|in:MENUNGGU KONFIRMASI,DISETUJUI,DITOLAK',
             'id_lamaAngsuran' => 'required|exists:lama_angsuran,id_lamaAngsuran',
@@ -64,10 +68,12 @@ public function index(Request $request)
         $validated['id_anggota'] = $anggota->id_anggota;
         $validated['jumlah_ajuan'] = str_replace('.', '', $validated['jumlah_ajuan']);
 
-        AjuanPinjaman::create($validated);
-
-        return redirect()->route('anggota.pengajuan.index')
-            ->with('success', 'Data pengajuan berhasil disimpan!');
+        try {
+            AjuanPinjaman::create($validated);
+            return redirect()->route('anggota.pengajuan.index')->with('success', 'Data pengajuan berhasil disimpan!');
+        } catch (\Exception $e) {
+            dd($e->getMessage());
+        }
     }
 
 public function simulasi(Request $request)
