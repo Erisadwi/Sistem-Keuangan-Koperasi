@@ -129,9 +129,15 @@
 
         <div class="form-group">
             <label for="jumlah_transaksi">Saldo Awal</label>
-            <input type="number" id="jumlah_transaksi" name="jumlah_transaksi"
-                   value="{{ old('jumlah_transaksi') }}" step="0.01" required
-                   placeholder="Masukkan nominal saldo awal">
+            <input 
+                type="number" 
+                id="jumlah_transaksi" 
+                name="jumlah_transaksi"
+                value="{{ old('jumlah_transaksi', $saldoAwalKas->jumlah_transaksi ?? '') }}"
+                step="0.01"
+                required 
+                placeholder="Masukkan nominal saldo awal"
+            >
         </div>
 
         <div class="form-buttons">

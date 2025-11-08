@@ -22,40 +22,51 @@
 
         <label for="tanggal_transaksi">Tanggal Transaksi</label>
         <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi"
-            value="{{ isset($simpanan->tanggal_transaksi) ? \Carbon\Carbon::parse($simpanan->tanggal_transaksi)->format('Y-m-d\TH:i') : '' }}" required>
+            value="{{ \Carbon\Carbon::now()->format('Y-m-d\TH:i') }}" required>
 
         <hr style="margin:20px 0; border:1px solid #ccc;">
 
         <h4 style="font-size:14px; margin-bottom:10px;">Identitas Penarikan</h4>
 
         <label for="nama_anggota">Nama Anggota</label>
-        <input type="text" id="nama_anggota" name="nama_anggota"
-            value="{{ $simpanan->nama_anggota ?? '' }}" required>
+        <input list="daftar_anggota" id="nama_anggota" name="nama_anggota" placeholder="Ketik nama anggota..." required>
+        <input type="hidden" id="id_anggota" name="id_anggota" value="{{ old('id_anggota') }}">
+        <datalist id="daftar_anggota">
+            @foreach ($anggota as $a)
+            <option data-id="{{ $a->id_anggota }}" value="{{ $a->nama_anggota }}"></option>
+            @endforeach
+        </datalist>
 
-        <label for="jenis_simpanan">Jenis Simpanan</label>
-        <select name="jenis_simpanan" id="jenis_simpanan" required>
-            <option value="" disabled {{ !isset($simpanan->jenis_simpanan) ? 'selected' : '' }}>-- Pilih Jenis Simpanan --</option>
-            <option value="wajib" {{ (isset($simpanan->jenis_simpanan) && $simpanan->jenis_simpanan == 'wajib') ? 'selected' : '' }}>Simpanan Wajib</option>
-            <option value="pokok" {{ (isset($simpanan->jenis_simpanan) && $simpanan->jenis_simpanan == 'pokok') ? 'selected' : '' }}>Simpanan Pokok</option>
-            <option value="sukarela" {{ (isset($simpanan->jenis_simpanan) && $simpanan->jenis_simpanan == 'sukarela') ? 'selected' : '' }}>Simpanan Sukarela</option>
+        <label for="id_jenis_simpanan">Jenis Simpanan</label>
+        <select name="id_jenis_simpanan" id="id_jenis_simpanan" required>
+            <option value="">-- Pilih Jenis Simpanan --</option>
+            @if(isset($jenisSimpanan) && $jenisSimpanan->count())
+            @foreach ($jenisSimpanan as $jenis)
+            <option value="{{ $jenis->id_jenis_simpanan }}"
+                data-jumlah="{{ $jenis->jumlah_simpanan ?? 0 }}"
+                {{ old('id_jenis_simpanan') == $jenis->id_jenis_simpanan ? 'selected' : '' }}>
+                {{ $jenis->jenis_simpanan }}
+            </option>
+            @endforeach
+            @else
+            <option value="" disabled>Tidak ada data jenis simpanan</option>
+            @endif
         </select>
 
-        <label for="jumlah_penarikan">Jumlah Penarikan</label>
-        <input type="number" id="jumlah_penarikan" name="jumlah_penarikan"
-            value="{{ $simpanan->jumlah_penarikan ?? '' }}" required>
+        <label for="jumlah_simpanan">Jumlah Penarikan</label>
+        <input type="number" name="jumlah_simpanan" id="jumlah_simpanan" placeholder="Masukkan jumlah simpanan" required>
 
         <label for="keterangan">Keterangan</label>
-        <input type="text" id="keterangan" name="keterangan"
-            value="{{ $simpanan->keterangan ?? '' }}" placeholder="Opsional...">
+        <input type="text" id="keterangan" name="keterangan" value="{{ old('keterangan') }}" placeholder="Opsional...">
 
-        <label for="jenisAkunTransaksi_tujuan">Ambil dari Kas</label>
-        <select name="jenisAkunTransaksi_tujuan" id="jenisAkunTransaksi_tujuan" required>
-            <option value="" disabled {{ !isset($simpanan->jenisAkunTransaksi_tujuan) ? 'selected' : '' }}>-- Pilih Kas --</option>
-            <option value="kas_besar" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'kas_besar') ? 'selected' : '' }}>Kas Besar</option>
-            <option value="bank_mandiri" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'bank_mandiri') ? 'selected' : '' }}>Bank Mandiri</option>
-            <option value="kas_kecil" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'kas_kecil') ? 'selected' : '' }}>Kas Kecil</option>
-            <option value="kas_niaga" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'kas_niaga') ? 'selected' : '' }}>Kas Niaga</option>
-            <option value="bank_bri" {{ (isset($simpanan->jenisAkunTransaksi_tujuan) && $simpanan->jenisAkunTransaksi_tujuan == 'bank_bni') ? 'selected' : '' }}>Bank BRI</option>
+        <label for="tujuan">Ambil dari Kas</label>
+        <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan" required>
+            <option value="">-- Pilih Kas --</option>
+            @foreach ($akunTransaksi as $akun)
+            <option value="{{ $akun->id_jenisAkunTransaksi }}">
+                {{ $akun->nama_AkunTransaksi }}
+            </option>
+            @endforeach
         </select>
 
         <label for="bukti_setoran">Bukti Setoran</label>
@@ -69,108 +80,155 @@
 </div>
 
 <style>
-.form-container {
-    background-color: transparent;
-    padding: 20px;
-    border-radius: 10px;
-    width: 98%;
-    margin-left: 10px;
-    margin-top: 40px;
-}
+    .form-container {
+        background-color: transparent;
+        padding: 20px;
+        border-radius: 10px;
+        width: 98%;
+        margin-left: 10px;
+        margin-top: 40px;
+    }
 
-label {
-    font-size: 13px;
-    font-weight: 600;
-    margin-bottom: 5px;
-    display: block;
-    color: #000000;
-}
+    label {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 5px;
+        display: block;
+        color: #000000;
+    }
 
-input[type="text"],
-input[type="datetime-local"],
-input[type="number"],
-input[type="file"],
-select,
-textarea {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 15px;
-    border: 1px solid #565656;
-    border-radius: 5px;
-    font-size: 13px;
-    background-color: #fff;
-}
+    input[type="text"],
+    input[type="datetime-local"],
+    input[type="number"],
+    input[type="file"],
+    select,
+    textarea,
+    input[list] {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 15px;
+        border: 1px solid #565656;
+        border-radius: 5px;
+        font-size: 13px;
+        background-color: #fff;
+    }
 
-input:focus,
-select:focus,
-textarea:focus {
-    border-color: #565656;
-    outline: none;
-}
+    input:focus,
+    select:focus,
+    textarea:focus {
+        border-color: #565656;
+        outline: none;
+    }
 
-.form-buttons {
-    display: flex;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 40px;
-}
+    .form-buttons {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 40px;
+    }
 
-.btn {
-    padding: 8px 0;
-    font-size: 16px;
-    font-weight: bold;
-    border-radius: 7px;
-    border: none;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-block;
-    width: 120px;
-    text-align: center;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.293);
-}
+    .btn {
+        padding: 8px 0;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 7px;
+        border: none;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        width: 120px;
+        text-align: center;
+        box-shadow: 0 4px 4px rgba(0, 0, 0, 0.293);
+    }
 
-.btn-simpan {
-    background-color: #25E11B;
-    color: #fff;
-}
+    .btn-simpan {
+        background-color: #25E11B;
+        color: #fff;
+    }
 
-.btn-simpan:hover {
-    background-color: #45a049;
-}
+    .btn-simpan:hover {
+        background-color: #45a049;
+    }
 
-.btn-batal {
-    background-color: #EA2828;
-    color: #fff;
-}
+    .btn-batal {
+        background-color: #EA2828;
+        color: #fff;
+    }
 
-.btn-batal:hover {
-    background-color: #d73833;
-}
+    .btn-batal:hover {
+        background-color: #d73833;
+    }
+
+    /* Hilangkan icon dropdown di datalist */
+    input[list]::-webkit-calendar-picker-indicator {
+        display: none !important;
+        -webkit-appearance: none;
+    }
 </style>
 
+{{-- =======================
+     SCRIPT
+======================= --}}
 <script>
-document.getElementById('formPenarikanTunai').addEventListener('submit', function(e) {
-    const wajib = [''];
+    (function() {
+        const optEls = document.querySelectorAll('#daftar_anggota option');
+        const list = Array.from(optEls).map(o => ({
+            name: o.value,
+            id: o.dataset.id
+        }));
+        const input = document.getElementById('nama_anggota');
+        const hidden = document.getElementById('id_anggota');
 
-    for (let id of wajib) {
-        const el = document.getElementById(id);
-        if (!el || !el.value.trim()) {
-            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
-            e.preventDefault(); 
+        function updateHidden() {
+            const found = list.find(x => x.name === input.value.trim());
+            hidden.value = found ? found.id : '';
+            console.log('✅ ID Anggota:', hidden.value);
+        }
+
+        input.addEventListener('input', updateHidden);
+        input.addEventListener('change', updateHidden);
+    })();
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const jenisSelect = document.getElementById('id_jenis_simpanan');
+        const jumlahInput = document.getElementById('jumlah_simpanan');
+
+        if (jenisSelect && jumlahInput) {
+            jenisSelect.addEventListener('change', function() {
+                // Ambil jumlah dari atribut data-jumlah pada option yang dipilih
+                const selectedOption = jenisSelect.options[jenisSelect.selectedIndex];
+                const jumlah = selectedOption.getAttribute('data-jumlah');
+
+                if (jumlah && parseInt(jumlah) > 0) {
+                    jumlahInput.value = jumlah;
+                    jumlahInput.readOnly = true;
+                } else {
+                    jumlahInput.value = '';
+                    jumlahInput.readOnly = false;
+                }
+            });
+        }
+    });
+
+    document.getElementById('formSetoranTunai').addEventListener('submit', function(e) {
+        const wajib = ['id_anggota', 'id_jenis_simpanan', 'jumlah_simpanan', 'id_jenisAkunTransaksi_tujuan'];
+        for (let id of wajib) {
+            const el = document.getElementById(id);
+            if (!el || !el.value.trim()) {
+                alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+                e.preventDefault();
+                return;
+            }
+        }
+
+        if (!confirm('Apakah data sudah benar dan ingin disimpan?')) {
+            e.preventDefault();
+            alert('❌ Pengisian data dibatalkan.');
             return;
         }
-    }
 
-    const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
-
-    if (!yakin) {
-        e.preventDefault(); 
-        alert('❌ Pengisian data dibatalkan.');
-        return;
-    }
-
-    alert('✅ Data barang berhasil disimpan!');
-});
+        alert('✅ Data barang berhasil disimpan!');
+    });
 </script>
 
 @endsection

@@ -12,7 +12,7 @@
 
 <div class="content-wrapper">
   <h2 class="page-title">
-    <a href="{{ url('#') }}" class="breadcrumb-link">Data Bayar Angsuran</a>
+    <a href="{{ route('angsuran.index') }}" class="breadcrumb-link">Data Bayar Angsuran</a>
     &nbsp; &gt; &nbsp;
     <span>Bayar Angsuran</span>
 </h2>
@@ -60,12 +60,11 @@
                         <p>Tanggal Tempo: <span>{{ $tanggalTempo ?? '-' }}</span></p>
                         <p>Lama Pinjaman: <span>{{ $view->lama_angsuran ?? '-' }}</span></p>
                     </div>
-
                     <div class="center">
-                        <p>Pokok Pinjaman: <span>{{ $pinjaman->jumlah_pinjaman ?? '-' }}</span></p>
-                        <p>Angsuran Pokok: <span>{{ $view->angsuran_pokok ?? '-' }}</span></p>
-                        <p>Biaya & Bunga: <span>{{ $view->bunga_angsuran ?? '-' }}</span></p>
-                        <p>Jumlah Angsuran: <span>{{ $view->angsuran_per_bulan ?? '-' }}</span></p>
+                        <p>Pokok Pinjaman: <span>{{ number_format($pinjaman->jumlah_pinjaman ?? 0, 0, ',', '.') }}</span></p>
+                        <p>Angsuran Pokok: <span>{{ number_format($view->angsuran_pokok ?? 0, 0, ',', '.') }}</span></p>
+                        <p>Biaya & Bunga: <span>{{ number_format($view->bunga_angsuran ?? 0, 0, ',', '.') }}</span></p>
+                        <p>Jumlah Angsuran: <span>{{ number_format($view->angsuran_per_bulan ?? 0, 0, ',', '.') }}</span></p>
                     </div>
                 </div>
             </div>
@@ -187,11 +186,14 @@
                                 <td>{{ $pay->denda ?? '-' }}</td>
                                 <td>{{ $pay->keterlambatan ?? '-' }}</td>
                                 <td>
-                                    @if(!empty($pay->file_path))
-                                        <a href="{{ asset('storage/'.$pay->file_path) }}" class="download" download>⬇</a>
-                                    @else
-                                        <span class="download">⬇</span>
-                                    @endif
+                                    @if (!empty($pay->file_path))
+                                            <a href="{{ asset('storage/'.$pay->file_path) }}" class="download" download>⬇</a>
+                                        @else
+                                            <a href="{{ route('angsuran.cetak', ['id_bayar_angsuran' => $pay->id_bayar_angsuran]) }}" 
+                                            class="download" target="_blank" title="Cetak Nota">
+                                                🖨️
+                                            </a>
+                                        @endif
                                 </td>
                             </tr>
                         @empty
@@ -479,7 +481,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // Tombol Edit
     if (editButton) {
         editButton.addEventListener('click', function(e) {
             e.preventDefault();
@@ -488,7 +489,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Tombol Hapus
     if (deleteButton) {
         deleteButton.addEventListener('click', function(e) {
             e.preventDefault();
@@ -550,6 +550,38 @@ function hapusFilter(){
     </svg>
     Tanggal`;
   closeTanggalPopup();
+}
+document.getElementById('kode').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        const kode = this.value.trim();
+        const url = new URL(window.location.href);
+        url.searchParams.set('kode', kode);
+        window.location.href = url.toString();
+    }
+});
+
+function simpanTanggal() {
+  const mulai = document.getElementById('tanggalMulai').value;
+  const akhir = document.getElementById('tanggalAkhir').value;
+
+  if (mulai && akhir) {
+    const url = new URL(window.location.href);
+    url.searchParams.set('tanggalMulai', mulai);
+    url.searchParams.set('tanggalAkhir', akhir);
+    window.location.href = url.toString();
+  } else {
+    alert("Isi kedua tanggal terlebih dahulu!");
+  }
+  closeTanggalPopup();
+}
+
+function hapusFilter(){
+  const url = new URL(window.location.href);
+  url.searchParams.delete('kode');
+  url.searchParams.delete('tanggalMulai');
+  url.searchParams.delete('tanggalAkhir');
+  window.location.href = url.origin + url.pathname; 
 }
 </script>
 
