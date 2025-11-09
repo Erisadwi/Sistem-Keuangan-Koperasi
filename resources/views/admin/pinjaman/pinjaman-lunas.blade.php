@@ -42,11 +42,10 @@
       <td>{{ number_format($row->total_denda ?? 0, 0, ',', '.') }}</td>
       <td>{{ number_format($row->total_tagihan ?? 0, 0, ',', '.') }}</td>
       <td class="actions">
-          <a href="{{ route('detail.pelunasan', ['id_pinjaman' => $row->id_pinjaman]) }}" class="btn-detail">
+          <a href="{{ route('detail.pelunasan', ['kode_transaksi' => $row->kode_transaksi]) }}" class="btn-detail">
             🔍 Detail
           </a>
         </td>
-
     </tr>
     @endforeach
   @else

@@ -46,9 +46,6 @@ class AngsuranController extends Controller
         return view('admin.pinjaman.angsuran', compact('dataAngsuran'));
     }
 
-
-
-
     public function bayar(Request $request, $id_pinjaman)
     {
         $angsuran = ViewDataAngsuran::where('id_pinjaman', $id_pinjaman)->firstOrFail();
@@ -68,12 +65,10 @@ class AngsuranController extends Controller
 
         $query = Angsuran::where('id_pinjaman', $id_pinjaman);
 
-        // filter berdasarkan kode
         if ($request->filled('kode')) {
             $query->where('id_bayar_angsuran', 'like', '%' . $request->kode . '%');
         }
 
-        // filter berdasarkan tanggal
         if ($request->filled('tanggalMulai') && $request->filled('tanggalAkhir')) {
             $query->whereBetween('tanggal_bayar', [$request->tanggalMulai, $request->tanggalAkhir]);
         }
