@@ -14,8 +14,7 @@ class PengajuanPinjamanController extends Controller
 {
 
      public function index(Request $request)
-    {
-
+{
     $perPage = (int) $request->query('per_page', 10);
     
     $query = AjuanPinjaman::with(['anggota', 'lama_angsuran'])
@@ -28,7 +27,6 @@ class PengajuanPinjamanController extends Controller
         ]);
     }
 
-
     if ($request->filled('jenis')) {
         $query->where('jenis_ajuan', $request->jenis);
     }
@@ -37,7 +35,12 @@ class PengajuanPinjamanController extends Controller
         $query->where('status_ajuan', $request->status);
     }
 
-    $ajuanPinjaman = $query->orderBy('id_ajuanPinjaman', 'asc')
+    $ajuanPinjaman = $query
+        ->orderByRaw("CASE 
+            WHEN status_ajuan = 'Menunggu Konfirmasi' THEN 1 
+            ELSE 2 
+        END")
+        ->orderBy('id_ajuanPinjaman', 'asc')
         ->paginate($perPage)
         ->appends($request->except('page'));
 
@@ -48,8 +51,8 @@ class PengajuanPinjamanController extends Controller
         'status'    => $request->status,
     ];
 
-        return view('admin.pinjaman.data-pengajuan', compact('ajuanPinjaman', 'filters'));
-    }
+    return view('admin.pinjaman.data-pengajuan', compact('ajuanPinjaman', 'filters'));
+}
 
 
     public function disetujui($id)

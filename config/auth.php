@@ -48,7 +48,7 @@ return [
 
     'anggota' => [
     'driver' => 'session',
-    'provider' => 'anggota',
+    'provider' => 'anggotas',
     ],
 
 ],
@@ -76,7 +76,7 @@ return [
         'model' => App\Models\User::class, // <-- MODEL INI
     ],
 
-    'anggota' => [
+    'anggotas' => [
     'driver' => 'eloquent',
     'model' => App\Models\Anggota::class,
     ],

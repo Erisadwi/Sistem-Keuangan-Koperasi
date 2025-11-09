@@ -9,7 +9,7 @@ class LoginController extends Controller
 {
     public function showLoginForm()
     {
-        return view('login');
+        return view('auth.login');
     }
 
     public function login(Request $request)
@@ -23,6 +23,8 @@ class LoginController extends Controller
         'username_anggota' => $request->username,
         'password' => $request->password,
     ];
+
+    $anggota = \App\Models\Anggota::where('username_anggota', $request->username)->first();
 
     if (Auth::guard('anggota')->attempt($anggotaCredentials)) {
         $request->session()->regenerate();
