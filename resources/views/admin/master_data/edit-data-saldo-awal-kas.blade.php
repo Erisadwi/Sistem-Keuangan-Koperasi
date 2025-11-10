@@ -175,6 +175,12 @@ document.getElementById('saldoAwalKasForm').addEventListener('submit', function(
 
     alert('✅ Data berhasil disimpan!');
 });
+    const btnBatal = document.getElementById('btnBatal');
+    if (btnBatal) {
+        btnBatal.addEventListener('click', function() {
+            window.location.href = "{{ route('saldo-awal-kas.index') }}";
+        });
+    }
 </script>
 
 @endsection

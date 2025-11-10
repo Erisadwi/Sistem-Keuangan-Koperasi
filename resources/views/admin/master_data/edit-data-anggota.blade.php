@@ -246,6 +246,13 @@ document.getElementById('formEditAnggota').addEventListener('submit', function(e
 
     alert('✅ Data berhasil disimpan!');
 });
+
+    const btnBatal = document.getElementById('btnBatal');
+    if (btnBatal) {
+        btnBatal.addEventListener('click', function() {
+            window.location.href = "{{ route('anggota.index') }}";
+        });
+    }
 </script>
 
 @endsection

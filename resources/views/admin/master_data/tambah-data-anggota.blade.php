@@ -14,19 +14,19 @@
 
         <div class="form-grid">
             <div class="form-group">
-                <label for="nama_anggota">Nama Lengkap</label>
+                <label for="nama_anggota">Nama Lengkap*</label>
                 <input type="text" id="nama_anggota" name="nama_anggota" 
                        value="{{ old('nama_anggota') }}" required>
             </div>
 
             <div class="form-group">
-                <label for="username_anggota">Username</label>
+                <label for="username_anggota">Username*</label>
                 <input type="text" id="username_anggota" name="username_anggota" 
                        value="{{ old('username_anggota') }}" required>
             </div>
 
             <div class="form-group">
-                <label for="jenis_kelamin">Jenis Kelamin</label>
+                <label for="jenis_kelamin">Jenis Kelamin*</label>
                 <select id="jenis_kelamin" name="jenis_kelamin" required>
                     <option value="">-- Pilih Jenis Kelamin --</option>
                     <option value="L" {{ old('jenis_kelamin') == 'L' ? 'selected' : '' }}>Laki-laki</option>
@@ -35,15 +35,15 @@
             </div>
 
             <div class="form-group">
-                <label for="tempat_lahir">Tempat Lahir</label>
+                <label for="tempat_lahir">Tempat Lahir*</label>
                 <input type="text" id="tempat_lahir" name="tempat_lahir" 
-                       value="{{ old('tempat_lahir') }}">
+                       value="{{ old('tempat_lahir') }}" required>
             </div>
 
             <div class="form-group">
-                <label for="tanggal_lahir">Tanggal Lahir</label>
+                <label for="tanggal_lahir">Tanggal Lahir*</label>
                 <input type="date" id="tanggal_lahir" name="tanggal_lahir" 
-                       value="{{ old('tanggal_lahir') }}">
+                       value="{{ old('tanggal_lahir') }}" required>
             </div>
 
             <div class="form-group">
@@ -87,15 +87,15 @@
             </div>
 
            <div class="form-group">
-                <label for="alamat_anggota">Alamat</label>
+                <label for="alamat_anggota">Alamat*</label>
                 <input type="text" id="alamat_anggota" name="alamat_anggota" 
-                       value="{{ old('alamat_anggota') }}">
+                       value="{{ old('alamat_anggota') }}" required>
             </div>
 
             <div class="form-group">
-                <label for="kota_anggota">Kota</label>
+                <label for="kota_anggota">Kota*</label>
                 <input type="text" id="kota_anggota" name="kota_anggota" 
-                       value="{{ old('kota_anggota') }}">
+                       value="{{ old('kota_anggota') }}" required>
             </div>
 
             <div class="form-group">
@@ -111,8 +111,8 @@
             </div>
 
             <div class="form-group">
-                <label for="jabatan">Jabatan</label>
-                <select id="jabatan" name="jabatan">
+                <label for="jabatan">Jabatan*</label>
+                <select id="jabatan" name="jabatan" required>
                     <option value="">-- Pilih Jabatan --</option>
                     @foreach(['KETUA','SEKRETARIS','BENDAHARA','PENGAWAS','KARYAWAN','PERUSAHAAN'] as $j)
                         <option value="{{ $j }}" {{ old('jabatan') == $j ? 'selected' : '' }}>{{ $j }}</option>
@@ -121,7 +121,7 @@
             </div>
 
             <div class="form-group">
-                <label for="password_anggota">Password</label>
+                <label for="password_anggota">Password*</label>
                 <input type="password" id="password_anggota" name="password_anggota" required>
             </div>
 
@@ -132,7 +132,7 @@
             </div>
 
             <div class="form-group">
-                <label for="status_anggota">Aktif Keanggotaan</label>
+                <label for="status_anggota">Aktif Keanggotaan*</label>
                 <select id="status_anggota" name="status_anggota" required>
                     <option value="AKTIF" {{ old('status_anggota', 'AKTIF') == 'AKTIF' ? 'selected' : '' }}>AKTIF</option>
                     <option value="NON AKTIF" {{ old('status_anggota') == 'NON AKTIF' ? 'selected' : '' }}>NON AKTIF</option>
@@ -246,6 +246,13 @@ document.getElementById('formDataAnggota').addEventListener('submit', function(e
 
     alert('✅ Data berhasil disimpan!');
 });
+
+    const btnBatal = document.getElementById('btnBatal');
+    if (btnBatal) {
+        btnBatal.addEventListener('click', function() {
+            window.location.href = "{{ route('anggota.index') }}";
+        });
+    }
 </script>
 
 @endsection

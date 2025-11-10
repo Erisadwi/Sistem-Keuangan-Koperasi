@@ -21,13 +21,13 @@
         @csrf
 
         <div class="form-group">
-            <label for="tanggal_transaksi">Tanggal</label>
+            <label for="tanggal_transaksi">Tanggal*</label>
             <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi"
                    value="{{ old('tanggal_transaksi') }}" required>
         </div>
 
         <div class="form-group">
-            <label for="id_jenisAkunTransaksi_tujuan">Akun</label>
+            <label for="id_jenisAkunTransaksi_tujuan">Akun*</label>
             <select id="id_jenisAkunTransaksi_tujuan" name="id_jenisAkunTransaksi_tujuan" required>
                 <option value="">-- Pilih Akun Kas --</option>
                 <option value="1" {{ old('id_jenisAkunTransaksi_tujuan') == '1' ? 'selected' : '' }}>Kas Besar</option>
@@ -46,7 +46,7 @@
         </div>
 
         <div class="form-group">
-            <label for="jumlah_transaksi">Saldo Awal</label>
+            <label for="jumlah_transaksi">Saldo Awal*</label>
             <input type="number" id="jumlah_transaksi" name="jumlah_transaksi"
                    value="{{ old('jumlah_transaksi') }}" step="0.01" required
                    placeholder="Masukkan nominal saldo awal">
@@ -164,6 +164,13 @@ document.getElementById('saldoAwalKasForm').addEventListener('submit', function(
 
     alert('✅ Data berhasil disimpan!');
 });
+
+    const btnBatal = document.getElementById('btnBatal');
+    if (btnBatal) {
+        btnBatal.addEventListener('click', function() {
+            window.location.href = "{{ route('saldo-awal-kas.index') }}";
+        });
+    }
 </script>
 
 @endsection

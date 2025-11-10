@@ -8,6 +8,16 @@
 
 @section('content')
 
+@if ($errors->any())
+    <div class="alert alert-danger">
+        <ul>
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
 <div class="form-container">
     <form id="editJenisAkunTransaksiForm" action="{{ route('jenis-akun-transaksi.update', $jenis_akun_transaksi->id_jenisAkunTransaksi) }}" method="POST">
         @csrf
@@ -44,8 +54,8 @@
         </div>
 
         <div class="form-group">
-            <label for="pemasukan">Penarikan</label>
-            <select id="pemasukan" name="pemasukan" required>
+            <label for="penarikan">Penarikan</label>
+            <select id="penarikan" name="penarikan" required>
                 <option value="">-- Pilih --</option>
                 <option value="Y" {{ old('penarikan', $jenis_akun_transaksi->penarikan ?? '') == 'Y' ? 'selected' : '' }}>Ya</option>
                 <option value="N" {{ old('penarikan', $jenis_akun_transaksi->penarikan ?? '') == 'N' ? 'selected' : '' }}>Tidak</option>
@@ -53,8 +63,8 @@
         </div>
 
         <div class="form-group">
-            <label for="pemasukan">Transfer</label>
-            <select id="pemasukan" name="pemasukan" required>
+            <label for="transfer">Transfer</label>
+            <select id="transfer" name="transfer" required>
                 <option value="">-- Pilih --</option>
                 <option value="Y" {{ old('transfer', $jenis_akun_transaksi->transfer ?? '') == 'Y' ? 'selected' : '' }}>Ya</option>
                 <option value="N" {{ old('transfer', $jenis_akun_transaksi->transfer ?? '') == 'N' ? 'selected' : '' }}>Tidak</option>
@@ -117,10 +127,19 @@
 
         <div class="form-group">
             <label for="angsuran">Angsuran</label>
-            <select id="angsuran" name="angsuran">
+            <select id="angsuran" name="angsuran">i
                 <option value="">-- Pilih --</option>
                 <option value="Y" {{ old('angsuran', $jenis_akun_transaksi->angsuran ?? '') == 'Y' ? 'selected' : '' }}>Ya</option>
                 <option value="N" {{ old('angsuran', $jenis_akun_transaksi->angsuran ?? '') == 'N' ? 'selected' : '' }}>Tidak</option>
+            </select>
+        </div>
+         
+        <div class="form-group">
+            <label for="is_kas">Akun Kas</label>
+            <select id="is_kas" name="is_kas">
+                <option value="">-- Pilih --</option>
+                <option value="1" {{ old('is_kas', $jenis_akun_transaksi->is_kas ?? '') == '1' ? 'selected' : '' }}>Ya</option>
+                <option value="0" {{ old('is_kas', $jenis_akun_transaksi->is_kas ?? '') == '0' ? 'selected' : '' }}>Tidak</option>
             </select>
         </div>
 
@@ -131,7 +150,6 @@
     </form>
 </div>
 
-{{-- === STYLE SAMA DENGAN HALAMAN TAMBAH === --}}
 <style>
 .form-container {
     background-color: transparent;
@@ -141,7 +159,10 @@
     margin-left: 10px;
     margin-top: 40px;
 }
-.form-group { margin-bottom: 15px; }
+.form-group { 
+    margin-bottom: 15px; 
+    }
+
 label {
     font-size: 13px;
     font-weight: 600;
@@ -149,6 +170,7 @@ label {
     display: block;
     color: #000000;
 }
+
 input[type="text"],
 select {
     width: 100%;
@@ -159,11 +181,18 @@ select {
     background-color: #fff;
     box-sizing: border-box;
 }
+
+input:focus,
+select:focus {
+    border-color: #565656;
+    outline: none;
+}
+
 .form-buttons {
     display: flex;
     justify-content: flex-end;
     gap: 10px;
-    margin-top: 50px;
+    margin-top: 40px;
 }
 .btn {
     padding: 8px 0;
@@ -172,6 +201,8 @@ select {
     border-radius: 7px;
     border: none;
     cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
     width: 120px;
     text-align: center;
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.293);
@@ -206,5 +237,14 @@ document.getElementById('editJenisAkunTransaksiForm').addEventListener('submit',
 
     alert('✅ Data berhasil disimpan!');
 });
+
+    const btnBatal = document.getElementById('btnBatal');
+    if (btnBatal) {
+        btnBatal.addEventListener('click', function() {
+            window.location.href = "{{ route('jenis-akun-transaksi.index') }}";
+        });
+    }
+</script>
+
 
 @endsection

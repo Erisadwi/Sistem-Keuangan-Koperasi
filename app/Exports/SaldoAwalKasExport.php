@@ -17,7 +17,7 @@ class SaldoAwalKasExport implements FromCollection, WithHeadings, WithStyles
             ->map(function ($item) {
                 return [
                     'Tanggal'    => \Carbon\Carbon::parse($item->tanggal_transaksi)->format('d/m/Y - H:i'),
-                    'Akun'       => $item->type_transaksi ?? '-',
+                    'Akun'       => $item->tujuan->nama_AkunTransaksi ?? '-',
                     'Keterangan' => $item->ket_transaksi ?? '-',
                     'Saldo Awal' => $item->jumlah_transaksi,
                     'Username'   => $item->username ?? '-', 
