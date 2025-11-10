@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bukti Setoran Tunai</title>
+  <title>Bukti Pelunasan Pinjaman</title>
 
   <style>
     @page {
@@ -86,7 +86,7 @@
     }
 
     .paraf .garis {
-      margin-top: 50px;
+      margin-top: 50px; 
       display: inline-block;
       border-top: 1px solid #000;
       width: 80%;
@@ -126,6 +126,34 @@
       background: #6c757d;
     }
 
+    .info table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.info td {
+  padding: 2px 0;
+  vertical-align: top;
+  font-size: 12px;
+}
+
+.info td:first-child {
+  width: 45%;
+  white-space: nowrap;
+}
+
+.info td:nth-child(2) {
+  width: 55%;
+}
+
+.right {
+  float: right;
+  text-align: right;
+  display: inline-block;
+  min-width: 100px;
+}
+
+
     @media print {
       .buttons { display: none !important; }
       .nota { border: none; padding: 0; }
@@ -137,7 +165,7 @@
   <div class="nota">
     <div class="header">
       <div class="kop-kiri">
-        <h3>BUKTI SETORAN TUNAI</h3>
+        <h3>BUKTI PELUNASAN PINJAMAN</h3>
       </div>
       <div class="kop-kanan">
         <img src="{{ asset('images/logo.png') }}" alt="Logo Koperasi">
@@ -148,16 +176,20 @@
 
     <div class="info">
       <div class="kiri">
-        <table>
-          <tr><td>Tanggal Transaksi</td><td>: {{ \Carbon\Carbon::parse($setoran->tanggal_transaksi)->format('d F Y / H:i') }}</td></tr>
-          <tr><td>Kode Transaksi</td><td>: {{ $setoran->kode_simpanan }}</td></tr>
-          <tr><td>ID Anggota</td><td>: {{ $setoran->anggota->id_anggota ?? '-' }}</td></tr>
-          <tr><td>Nama Anggota</td><td>: {{ $setoran->anggota->nama_anggota ?? '-' }}</td></tr>
-          <tr><td>Dept</td><td>: {{ $setoran->anggota->departemen ?? '-' }}</td></tr>
-          <tr><td>Alamat</td><td>: {{ $setoran->anggota->alamat_anggota ?? '-' }}</td></tr>
-          <tr><td>Jenis Akun</td><td>: {{ $setoran->jenisSimpanan->jenis_simpanan ?? '-' }}</td></tr>
-          <tr><td>Jumlah Setoran</td><td>: Rp {{ number_format($setoran->jumlah_simpanan, 0, ',', '.') }}</td></tr>
-        </table>
+       <table>
+  <tr><td>Nomor Pinjaman</td><td>: {{ $pinjaman->id_pinjaman ?? '-' }}</td></tr>
+  <tr><td>Tanggal Pinjam</td><td>: {{ $pinjaman->tanggal_pinjaman ? \Carbon\Carbon::parse($pinjaman->tanggal_pinjaman)->format('Y-m-d') : '-' }}</td></tr>
+  <tr><td>Tanggal Tempo</td><td>: {{ $view->tanggal_jatuh_tempo ?? '-' }}</td></tr>
+  <tr><td>Lama Pinjaman</td><td>: {{ $view->lama_angsuran ?? '-' }}</td></tr>
+  <tr><td>Pokok Pinjaman</td><td>: <span class="right">Rp. {{ number_format($pinjaman->jumlah_pinjaman ?? 0, 0, ',', '.') }}</span></td></tr>
+  <tr><td>Total Bayar</td><td>: <span class="right">Rp. {{ number_format($totalBayar ?? 0, 0, ',', '.') }}</span></td></tr>
+  <tr><td>Denda</td><td>: <span class="right">Rp. {{ number_format($totalDenda ?? 0, 0, ',', '.') }}</span></td></tr>
+  <tr><td>Total Tagihan</td><td>: <span class="right">Rp. {{ number_format($totalBayar ?? 0, 0, ',', '.') }}</span></td></tr>
+  <tr><td>Sisa Tagihan</td><td>: <span class="right">Rp. {{ number_format($sisaTagihan ?? 0, 0, ',', '.') }}</span></td></tr>
+  <tr><td>Status Pelunasan</td><td>: <span class="right">{{ strtoupper($statusPelunasan) }}</span></td></tr>
+</table>
+
+
       </div>
 
       <div class="kanan">
@@ -191,7 +223,7 @@
 
     <div class="buttons">
       <button onclick="window.print()">Cetak</button>
-      <a href="{{ route('setoran-tunai.index') }}">Kembali</a>
+      <a href="{{ route('detail.pelunasan', ['kode_transaksi' => $view->kode_transaksi]) }}">Kembali</a>
     </div>
   </div>
 </body>

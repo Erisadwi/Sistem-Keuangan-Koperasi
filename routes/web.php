@@ -208,10 +208,9 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
 });
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
-    Route::get('/pinjaman-lunas', [PinjamanLunasController::class, 'index'])
-        ->name('pinjaman-lunas.index');
-    Route::get('/pinjaman-lunas/{id_pinjaman}/detail', [PinjamanLunasController::class, 'detail'])
-    ->name('detail.pelunasan');
+    Route::get('/pinjaman-lunas', [PinjamanLunasController::class, 'index'])->name('pinjaman-lunas.index');
+    Route::get('/pinjaman-lunas/{kode_transaksi}/detail', [PinjamanLunasController::class, 'detail'])->name('detail.pelunasan');
+    Route::get('/pinjaman-lunas/cetak/{id_bayar_angsuran}', [PinjamanLunasController::class, 'cetakNota'])->name('detail.pinjaman.cetak');
 });
 
 //Route::get('/', function () {
@@ -341,10 +340,6 @@ Route::get('/admin/master_data/tambah-data-saldo-awal-non-kas', function () {
 Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
     return view('admin.master_data.edit-data-saldo-awal-non-kas');
 })->name('admin.master_data.edit-data-saldo-awal-non-kas');
-
-Route::get('/admin/pinjaman/detail-pelunasan', function () {
-    return view('admin.pinjaman.detail-pelunasan');
-})->name('admin.pinjaman.detail-pelunasan');
 
 Route::get('/admin/profil/edit-profil', function () {
     return view('admin.profil.edit-profil');

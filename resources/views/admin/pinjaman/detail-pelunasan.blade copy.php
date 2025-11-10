@@ -9,16 +9,17 @@
 @php
     $anggota = $anggota ?? null;
     $pinjaman = $pinjaman ?? null;
-    $view = $view ?? null;
     $payments = $payments ?? [];
 @endphp
 
 <div class="content-wrapper">
   <h2 class="page-title">
-    <a href="{{ route('pinjaman-lunas.index') }}" class="breadcrumb-link">Data Pinjaman Lunas</a>
+    <a href="{{ url('#') }}" class="breadcrumb-link">Data Pinjaman Lunas</a>
     &nbsp; &gt; &nbsp;
-    <span> Detail Pelunasan</span>
+    <span>Bayar Pelunasan</span>
 </h2>
+
+
 
     <div class="card-biru">
         <div class="card-header">
@@ -29,8 +30,8 @@
         <div class="card-putih">
             <div class="data-anggota">
                 @php
-                $fotoPath = (!empty($pinjaman) && $pinjaman->anggota && !empty($pinjaman->anggota->foto))
-                        ? asset(''.$pinjaman->anggota->foto)
+                    $fotoPath = (!empty($anggota) && !empty($anggota->foto))
+                        ? asset('storage/'.$anggota->foto)
                         : asset('images/default.jpeg');
                 @endphp
                 <img src="{{ $fotoPath }}" alt="Foto Anggota" class="foto-anggota">
@@ -39,38 +40,26 @@
                     <div class="left">
                         <h4>Data Anggota</h4>
                         <p>ID Anggota: <span>{{ $anggota->id_anggota ?? '-' }}</span></p>
-                        <p>Nama Anggota: <span>{{ $anggota->nama_anggota?? '-' }}</span></p>
+                        <p>Nama Anggota: <span>{{ $anggota->nama ?? '-' }}</span></p>
                         <p>Departemen: <span>{{ $anggota->departemen ?? '-' }}</span></p>
                         <p>Tempat, Tanggal Lahir: 
                             <span>
-                                @if(!empty($anggota?->tempat_lahir) || !empty($anggota?->tanggal_lahir))
-                                    {{ $anggota->tempat_lahir ?? '-' }}, {{ $anggota->tanggal_lahir ?? '-' }}
+                                @if(!empty($anggota?->tempat_lahir) || !empty($anggota?->tgl_lahir))
+                                    {{ $anggota->tempat_lahir ?? '-' }}, {{ $anggota->tgl_lahir ?? '-' }}
                                 @else
                                     -
                                 @endif
                             </span>
                         </p>
-                        <p>Kota Tinggal: <span>{{ $anggota->kota_anggota ?? '-' }}</span></p>
+                        <p>Kota Tinggal: <span>{{ $anggota->kota ?? '-' }}</span></p>
                     </div>
 
                     <div class="right">
                         <h4>Data Pinjaman</h4>
-                        <p>Kode Pinjam: <span>{{ $pinjaman->id_pinjaman ?? '-' }}</span></p>
-                        <p>Tanggal Pinjam: 
-                            <span>
-                                 {{ !empty($pinjaman->tanggal_pinjaman) ? \Carbon\Carbon::parse($pinjaman->tanggal_pinjaman)->format('Y-m-d')  : '-' }}
-                            </span>
-                        </p>
-                        <p>Tanggal Tempo: <span>{{ $view->tanggal_jatuh_tempo ?? '-' }}</span></p>
-                        <p>Lama Pinjaman: <span>{{ $view->lama_angsuran ?? '-' }}</span></p>
-                    </div>
-
-                    <div class="center">
-                        <h4>Detail Angsuran</h4>
-                        <p>Pokok Pinjaman: <span>{{ number_format($pinjaman->jumlah_pinjaman ?? 0, 0, ',', '.') }}</span></p>
-                        <p>Angsuran Pokok: <span>{{ number_format($view->angsuran_pokok ?? 0, 0, ',', '.') }}</span></p>
-                        <p>Biaya & Bunga: <span>{{ number_format($view->bunga_angsuran ?? 0, 0, ',', '.') }}</span></p>
-                        <p>Jumlah Angsuran: <span>{{ number_format($view->angsuran_per_bulan ?? 0, 0, ',', '.') }}</span></p>
+                        <p>Kode Pinjam: <span>{{ $pinjaman->kode_pinjam ?? '-' }}</span></p>
+                        <p>Tanggal Pinjam: <span>{{ $pinjaman->tgl_pinjam ?? '-' }}</span></p>
+                        <p>Tanggal Tempo: <span>{{ $pinjaman->tgl_tempo ?? '-' }}</span></p>
+                        <p>Lama Pinjaman: <span>{{ $pinjaman->lama_pinjaman ?? '-' }}</span></p>
                     </div>
                 </div>
             </div>
@@ -80,16 +69,16 @@
         <div class="info-biru-bawah">
             <span>Detail Pembayaran &raquo;</span>
             <span>Dibayar: 
-                <b>Rp. {{ number_format($totalBayar ?? 0, 0, ',', '.') }}</b>
+                <b>{{ isset($pinjaman->dibayar) ? 'Rp. ' . number_format($pinjaman->dibayar, 0, ',', '.') : '-' }}</b>
             </span>
             <span>Denda: 
-                 <b>Rp. {{ number_format($totalDenda ?? 0, 0, ',', '.') }}</b>
+                <b>{{ isset($pinjaman->denda) ? 'Rp. ' . number_format($pinjaman->denda, 0, ',', '.') : '-' }}</b>
             </span>
             <span>Sisa Tagihan: 
-                 <b>Rp. {{ number_format($sisaTagihan ?? 0, 0, ',', '.') }}</b>
+                <b>{{ isset($pinjaman->sisa_tagihan) ? 'Rp. ' . number_format($pinjaman->sisa_tagihan, 0, ',', '.') : '-' }}</b>
             </span>
             <span>Status Pelunasan: 
-                 <b class="status-lunas">{{ $statusPelunasan ?? '-' }}</b>
+                <b class="status-lunas">{{ $pinjaman->status ?? '-' }}</b>
             </span>
         </div>
 
@@ -97,49 +86,47 @@
         <div class="section-pembayaran">
             <h4 class="section-title">Data Pembayaran Angsuran:</h4>
 
-            <form method="GET" action="{{ route('detail.pelunasan', ['kode_transaksi' => $view->kode_transaksi]) }}" class="toolbar" id="filterForm">
+            {{-- TOOLBAR --}}
+            <div class="toolbar">
                 <div class="left-buttons">
+                    {{-- Tombol Tanggal --}}
                     <div class="tanggal-wrapper" style="position: relative;">
-                        <button type="button" id="btnTanggal" class="filter-button" onclick="toggleTanggalPopup()">
+                        <button id="btnTanggal" class="filter-button" onclick="toggleTanggalPopup()">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                                 <path d="M8 7V3M16 7V3M4 11h16M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"
-                                    stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                  stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
-                                @if(request('start_date') && request('end_date'))
-                                    {{ request('start_date') }} → {{ request('end_date') }}
-                                @else
-                                    Tanggal
-                                @endif
+                            Tanggal
                         </button>
 
-                    <div id="tanggalPopup" class="tanggal-popup">
-                        <h4>Pilih Tanggal</h4>
-                        <div class="tanggal-inputs">
-                            <label>Dari:</label>
-                            <input type="date" id="tanggalMulai" name="start_date" value="{{ request('start_date') }}">
-                            <label>Sampai:</label>
-                            <input type="date" id="tanggalAkhir" name="end_date" value="{{ request('end_date') }}">
+                        <!-- Pop-up filter tanggal -->
+                        <div id="tanggalPopup" class="tanggal-popup">
+                            <h4>Pilih Tanggal</h4>
+                            <div class="tanggal-inputs">
+                                <label>Dari:</label>
+                                <input type="date" id="tanggalMulai">
+                                <label>Sampai:</label>
+                                <input type="date" id="tanggalAkhir">
+                            </div>
+                            <div class="popup-actions">
+                                <button class="btn-simpan" onclick="simpanTanggal()">Simpan</button>
+                                <button class="btn-batal" onclick="closeTanggalPopup()">Batal</button>
+                            </div>
                         </div>
-                        <div class="popup-actions">
-                            <button type="submit" class="btn-simpan">Terapkan</button>
-                            <button type="button" class="btn-batal" onclick="closeTanggalPopup()">Batal</button>
-                        </div>
-                    </div>
                     </div>
                 </div>
 
                 <div class="filter">
                     <label for="kode">Cari:</label>
-                    <input type="text" id="kode" name="kode_transaksi" value="{{ request()->has('kode_transaksi') ? request('kode_transaksi') : '' }}" placeholder="Kode Transaksi">
-                    <a href="{{ route('detail.pelunasan', ['kode_transaksi' => $view->kode_transaksi]) }}" class="filter-button" 
-                    style="color: rgb(55, 51, 51); text-decoration: none;">
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                        <path d="M6 6l12 12M6 18L18 6" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
-                    </svg>
-                    Hapus Filter
-                    </a>
+                    <input type="text" id="kode" placeholder="Kode Transaksi">
+                    <button class="filter-button" onclick="hapusFilter()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                            <path d="M6 6l12 12M6 18L18 6" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+                        </svg>
+                        Hapus Filter
+                    </button>
                 </div>
-            </form>
+            </div>
 
             <div class="table-wrapper">
                 <table class="tabel-pembayaran">
@@ -158,18 +145,17 @@
                         @forelse($payments as $i => $pay)
                             <tr>
                                 <td>{{ $i + 1 }}</td>
-                                <td>{{ $pay->id_bayar_angsuran ?? '-' }}</td>
-                                <td>{{ $pay->tanggal_bayar ?? '-' }}</td>
-                                <td>
-                                    {{ number_format(($pay->angsuran_pokok ?? 0) + ($pay->bunga_angsuran ?? 0), 0, ',', '.') }}
-                                </td>
+                                <td>{{ $pay->kode_bayar ?? '-' }}</td>
+                                <td>{{ $pay->tgl_bayar ?? '-' }}</td>
+                                <td>{{ isset($pay->jumlah) ? number_format($pay->jumlah, 0, ',', '.') : '-' }}</td>
                                 <td>{{ $pay->keterangan ?? '-' }}</td>
-                                <td>{{ $pay->id_user ?? '-' }}</td>
+                                <td>{{ $pay->username ?? '-' }}</td>
                                 <td>
-                                    <a href="{{ route('detail.pinjaman.cetak', ['id_bayar_angsuran' => $pay->id_bayar_angsuran]) }}" 
-                                     class="download" target="_blank" title="Cetak Nota">
-                                         🖨️
-                                    </a>
+                                    @if(!empty($pay->file_path))
+                                        <a href="{{ asset('storage/'.$pay->file_path) }}" class="download" download>⬇</a>
+                                    @else
+                                        <span class="download">⬇</span>
+                                    @endif
                                 </td>
                             </tr>
                         @empty
@@ -185,19 +171,17 @@
 </div>
 
 <style>
+/* ====== Dasar ====== */
 .content-wrapper {
     padding: 18px 22px;
     font-family: "Segoe UI", Tahoma, Arial, sans-serif;
     color: #222;
-    margin-top:-70px;
 }
 .page-title {
-    font-size: 24px;
+    font-size: 20px;
     color: #9aa3ad;
-    margin-bottom: 15px;
-    margin-top: -2px;
+    margin-bottom: 12px;
 }
-
 .page-title span {
     color: #000;
     font-weight: 700;
@@ -223,18 +207,17 @@
 }
 
 .breadcrumb-link {
-  color: #9aa3ad;         
-  text-decoration: none;   
-  cursor: pointer;  
-  font-weight:500;
-  font-size: 20px;           
+  color: #9aa3ad;           /* abu-abu seperti sebelumnya */
+  text-decoration: none;    /* hilangkan garis bawah */
+  cursor: pointer;          /* kursor tangan saat hover */
 }
 
 .breadcrumb-link:hover {
-  color: #6b7280;          
-  text-decoration: none;   
+  color: #6b7280;           /* sedikit lebih gelap saat di-hover */
+  text-decoration: none;    /* tetap tanpa garis bawah */
 }
 
+/* ====== Card putih (isi) ====== */
 .card-putih {
     background-color: #fff;
     margin: 16px;
@@ -263,7 +246,7 @@
     width: calc(100% - 100px);
 }
 .info .left, .info .right {
-    width: 40%;
+    width: 48%;
 }
 .info h4 {
     color: #6E9EB6;
@@ -279,6 +262,7 @@
     font-weight: 600;
 }
 
+/* ====== Info biru bawah ====== */
 .info-biru-bawah {
     background-color: #6E9EB6;
     color: #fff;
@@ -294,6 +278,7 @@
     font-weight: 700;
 }
 
+/* ====== Section pembayaran ====== */
 .section-pembayaran {
     padding: 16px;
 }
@@ -301,9 +286,13 @@
     margin: 0 0 8px 0;
     color: #fff;
     font-size: 16px;
-    font-weight: 650;
 }
-
+.toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
 .left-buttons {
     display: flex;
     gap: 8px;
@@ -326,7 +315,6 @@
     padding: 10px;
     text-align: center;
     font-weight: 600;
-    font-size: 13px;
 }
 .tabel-pembayaran td {
     border: 1px solid #d6d6d6;
@@ -347,7 +335,7 @@
     text-decoration: none;
     font-size: 18px;
 }
-
+/* ====== TOOLBAR ====== */
 .toolbar {
   display: flex;
   justify-content: space-between;
@@ -363,13 +351,18 @@
   padding: 6px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 12px;
+  font-size: 13px;
+}
+
+/* ====== KHUSUS BUTTON HAPUS ====== */
+.filter-button.hapus svg path {
+  stroke: #ef4444;
 }
 
 .filter-button {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 6px;
   background: #fff;
   border: none;
   border-radius: 8px;
@@ -384,6 +377,7 @@
   box-shadow: 0 2px 6px rgba(30,58,138,0.2);
 }
 
+/* === Pop-up tanggal kecil === */
 .tanggal-popup {
   display: none;
   position: absolute;
@@ -433,54 +427,38 @@
 
 <script>
 function toggleTanggalPopup() {
-    const popup = document.getElementById('tanggalPopup');
-    popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
+  const popup = document.getElementById('tanggalPopup');
+  popup.style.display = popup.style.display === 'block' ? 'none' : 'block';
 }
 
 function closeTanggalPopup() {
-    document.getElementById('tanggalPopup').style.display = 'none';
+  document.getElementById('tanggalPopup').style.display = 'none';
 }
 
 function simpanTanggal() {
-    const mulai = document.getElementById('tanggalMulai').value;
-    const akhir = document.getElementById('tanggalAkhir').value;
-    if (mulai && akhir) {
-        document.getElementById('btnTanggal').innerHTML = `
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-            <path d="M8 7V3M16 7V3M4 11h16M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"
-            stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        ${mulai} → ${akhir}`;
-    }
-    closeTanggalPopup();
+  const mulai = document.getElementById('tanggalMulai').value;
+  const akhir = document.getElementById('tanggalAkhir').value;
+  if (mulai && akhir) {
+    document.getElementById('btnTanggal').innerHTML = `
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+        <path d="M8 7V3M16 7V3M4 11h16M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"
+          stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      ${mulai} → ${akhir}`;
+  }
+  closeTanggalPopup();
 }
 
-function hapusFilter() {
-    document.getElementById('kode').value = '';
-    document.getElementById('tanggalMulai').value = '';
-    document.getElementById('tanggalAkhir').value = '';
-    document.getElementById('btnTanggal').innerHTML = `
+function hapusFilter(){
+  document.getElementById('kode').value = '';
+  document.getElementById('btnTanggal').innerHTML = `
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-        <path d="M8 7V3M16 7V3M4 11h16M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"
+      <path d="M8 7V3M16 7V3M4 11h16M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"
         stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
     </svg>
     Tanggal`;
-    document.getElementById('filterForm').submit();
+  closeTanggalPopup();
 }
-
-const filterForm = document.getElementById('filterForm');
-const tanggalMulai = document.getElementById('tanggalMulai');
-const tanggalAkhir = document.getElementById('tanggalAkhir');
-
-[tanggalMulai, tanggalAkhir].forEach(input => {
-    input.addEventListener('keypress', function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();        
-            simpanTanggal();           
-            filterForm.submit();       
-        }
-    });
-});
 </script>
 
 @endsection
