@@ -62,7 +62,7 @@
   </div>
 </div>
 
-{{-- <div class="pagination-container">
+<div class="pagination-container">
       <x-menu.pagination :data="$setoranTunai" />
  </div> 
 
@@ -148,7 +148,6 @@
   font-style: italic;
 }
 
-/* Tombol Nota */
 .btn-nota {
   display: inline-block;
   background-color: #0099cc;

@@ -58,9 +58,9 @@
   </div>
 </div>
 
- {{-- <div class="pagination-container">
+ <div class="pagination-container">
       <x-menu.pagination :data="$TransaksiPengeluaran" />
-    </div> --}}
+    </div> 
 
 {{-- STYLE --}}
 <style>

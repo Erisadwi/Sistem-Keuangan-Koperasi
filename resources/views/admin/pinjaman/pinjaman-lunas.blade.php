@@ -5,11 +5,11 @@
 @section('sub-title', 'Pinjaman Lunas')
 
 @section('content')
+
 <x-menu.toolbar-filter/>
 
 
-{{-- 🔹 Tabel --}}
-<div class="table-scroll-wrapper">
+<div class="pinjaman-lunas-table-wrap">
   <table class="pinjaman-lunas-table">
     <thead>
       <tr class="head-group">
@@ -26,108 +26,130 @@
         <th>Aksi</th>
       </tr>
     </thead>
+
     <tbody>
-      @if(isset($data) && count($data) > 0)
-        @foreach ($data as $index => $row)
-        <tr>
-          <td>{{ $index + 1 }}</td>
-          <td>{{ $row->kode }}</td>
-          <td>{{ $row->nama_anggota }}</td>
-          <td>{{ $row->departemen }}</td>
-          <td>{{ \Carbon\Carbon::parse($row->tanggal_pinjaman)->format('d-m-Y') }}</td>
-          <td>{{ \Carbon\Carbon::parse($row->tanggal_tempo)->format('d-m-Y') }}</td>
-          <td>{{ $row->lama_pinjaman }} bulan</td>
-          <td>{{ number_format($row->total_tagihan, 0, ',', '.') }}</td>
-          <td>{{ number_format($row->total_denda, 0, ',', '.') }}</td>
-          <td>{{ number_format($row->dibayar, 0, ',', '.') }}</td>
-          <td><button class="btn-aksi">Detail</button></td>
-        </tr>
-        @endforeach
-      @else
-      <tr>
-        <td colspan="11" class="empty-cell">Belum ada data pinjaman lunas.</td>
-      </tr>
-      @endif
+@if(isset($dataPinjamanLunas) && count($dataPinjamanLunas) > 0)
+    @foreach ($dataPinjamanLunas as $index => $row)
+    <tr>
+      <td>{{ $index + 1 }}</td>
+      <td>{{ $row->kode_transaksi ?? '-' }}</td>
+      <td>{{ $row->nama_anggota ?? '-' }}</td>
+      <td>{{ $row->departemen ?? '-' }}</td>
+      <td>{{ \Carbon\Carbon::parse($row->tanggal_pinjaman)->format('d-m-Y') }}</td>
+      <td>{{ $row->tanggal_jatuh_tempo ?? '-' }}</td>
+      <td>{{ $row->lama_angsuran ?? '-' }} bulan</td>
+      <td>{{ number_format($row->total_tagihan ?? 0, 0, ',', '.') }}</td>
+      <td>{{ number_format($row->total_denda ?? 0, 0, ',', '.') }}</td>
+      <td>{{ number_format($row->total_tagihan ?? 0, 0, ',', '.') }}</td>
+      <td class="actions">
+          <a href="{{ route('detail.pelunasan', ['kode_transaksi' => $row->kode_transaksi]) }}" class="btn-detail">
+            🔍 Detail
+          </a>
+        </td>
+    </tr>
+    @endforeach
+  @else
+    <tr>
+      <td colspan="11" class="empty-cell">Belum ada data pinjaman lunas.</td>
+    </tr>
+  @endif
     </tbody>
   </table>
 </div>
 
-<x-menu.pagination />
+<div class="pagination-container">
+      <x-menu.pagination :data="$dataPinjamanLunas" />
+    </div>
 
-{{-- ======================= STYLE ======================= --}}
 <style>
 :root {
-  --primary: #6ba1be;
-  --primary-dark: #558ca3;
-  --header-bg: #4a4a4a;
+  --border: #d1d5db;
+  --header-bg: #111827; 
   --header-text: #ffffff;
-  --border: #c0c0c0;
+  --body-bg: #ffffff;
+  --body-text: #000000;
 }
- 
-/* ============================= */
-/* TABEL */
-/* ============================= */
-.table-scroll-wrapper {
+
+.pinjaman-lunas-table-wrap {
+  border: 1.5px solid var(--border);
+  background: var(--body-bg);
+  width: 96%;
+  margin-left: 25px;
+  margin-top: 20px;
   overflow-x: auto;
-  overflow-y: auto;
-  max-height: 420px;
-  width: 100%;
-  left:10px;
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 0;
-  box-sizing: border-box;
+  border-radius: 4px;
 }
 
 .pinjaman-lunas-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 14px;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+  font-size: 13px;
+  color: var(--body-text);
+  text-align: center;
 }
 
-.pinjaman-lunas-table thead {
+.pinjaman-lunas-table thead .head-group th {
   background: var(--header-bg);
   color: var(--header-text);
-  position: sticky;
-  top: 0;
-  z-index: 2;
-}
-
-.pinjaman-lunas-table th,
-.pinjaman-lunas-table td {
-  text-align: center;
-  padding: 10px 14px;
+  padding: 10px;
+  font-weight: 650;
   border: 1px solid var(--border);
-  white-space: nowrap;
 }
 
-.pinjaman-lunas-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
+.pinjaman-lunas-table tbody tr {
+  background: var(--body-bg);
+  border-bottom: 1px solid var(--border);
 }
 
-.pinjaman-lunas-table tbody tr:hover {
-  background-color: #eef7ff;
+.pinjaman-lunas-table td {
+  padding: 8px;
+  border: 1px solid var(--border);
+  color: var(--body-text);
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-detail {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  background: #0ea5e9;
+  color: #fff;
+  padding: 4px 8px;
+  border-radius: 5px;
+  text-decoration: none;
+  font-size: 12px;
+  font-weight: 500;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.btn-detail:hover {
+  background: #0284c7;
 }
 
 .empty-cell {
-  text-align: center;
-  padding: 12px;
-  color: #6b7280;
-  font-style: italic;
+ padding: 8px 10px;
+ color: #6b7280;
+ font-style: italic;
 }
 
-/* Tombol aksi tabel */
-.btn-aksi {
-  background: var(--primary);
-  color: white;
-  border: none;
-  padding: 6px 10px;
-  border-radius: 6px;
-  cursor: pointer;
+.row-late {
+background-color: #ffcccc !important;
 }
-.btn-aksi:hover {
-  background: var(--primary-dark);
+
+.pagination-container {
+  margin-top: auto;        
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 16px;
 }
+
 </style>
 
 @endsection

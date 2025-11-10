@@ -9,8 +9,8 @@
 <x-menu.toolbar-filter/>
 
 
-<div class="pengajuan-pinjaman-table-wrap">
-  <table class="pengajuan-pinjaman-table">
+<div class="angsuran-table-wrap">
+  <table class="angsuran-table">
     <thead>
       <tr class="head-group">
         <th>No</th>
@@ -61,16 +61,20 @@
   </table>
 </div>
 
+<div class="pagination-container">
+      <x-menu.pagination :data="$dataAngsuran" />
+    </div>
+
 <style>
 :root {
   --border: #d1d5db;
-  --header-bg: #111827; /* hitam tua */
+  --header-bg: #111827; 
   --header-text: #ffffff;
   --body-bg: #ffffff;
   --body-text: #000000;
 }
 
-.pengajuan-pinjaman-table-wrap {
+.angsuran-table-wrap {
   border: 1.5px solid var(--border);
   background: var(--body-bg);
   width: 96%;
@@ -80,7 +84,7 @@
   border-radius: 4px;
 }
 
-.pengajuan-pinjaman-table {
+.angsuran-table {
   width: 100%;
   border-collapse: collapse;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
@@ -89,7 +93,7 @@
   text-align: center;
 }
 
-.pengajuan-pinjaman-table thead .head-group th {
+.angsuran-table thead .head-group th {
   background: var(--header-bg);
   color: var(--header-text);
   padding: 10px;
@@ -97,12 +101,12 @@
   border: 1px solid var(--border);
 }
 
-.pengajuan-pinjaman-table tbody tr {
+.angsuran-table tbody tr {
   background: var(--body-bg);
   border-bottom: 1px solid var(--border);
 }
 
-.pengajuan-pinjaman-table td {
+.angsuran-table td {
   padding: 8px;
   border: 1px solid var(--border);
   color: var(--body-text);
@@ -140,6 +144,14 @@
 
 .row-late {
 background-color: #ffcccc !important;
+}
+
+.pagination-container {
+  margin-top: auto;        
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 16px;
 }
 
 </style>

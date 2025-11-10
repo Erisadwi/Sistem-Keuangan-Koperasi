@@ -28,8 +28,8 @@ use App\Http\Controllers\Admin\TransaksiKas\TransaksiTransferController;
 use App\Http\Controllers\Admin\Pinjaman\DataPinjamanController;
 use App\Http\Controllers\Admin\Pinjaman\PengajuanPinjamanController;
 use App\Http\Controllers\Admin\Pinjaman\AngsuranController;
-use App\Http\Controllers\Admin\Pinjaman\BayarAngsuranController;
-
+use App\Http\Controllers\Admin\Pinjaman\PinjamanLunasController;
+use App\Models\JenisSimpanan;
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
@@ -61,6 +61,7 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('jenis-simpanan/{id}/edit', [JenisSimpananController::class, 'edit'])->name('jenis-simpanan.edit');
     Route::put('jenis-simpanan/{id}', [JenisSimpananController::class, 'update'])->name('jenis-simpanan.update');
     Route::delete('jenis-simpanan/{id}', [JenisSimpananController::class, 'destroy'])->name('jenis-simpanan.destroy');
+    Route::get('jenis-simpanan/export', [JenisSimpananController::class, 'export'])->name('jenis-simpanan.export');
 
     Route::get('jenis-barang', [JenisBarangController::class, 'index'])->name('jenis-barang.index');
     Route::get('jenis-barang/create', [JenisBarangController::class, 'create'])->name('jenis-barang.create');
@@ -68,6 +69,7 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('jenis-barang/{id}/edit', [JenisBarangController::class, 'edit'])->name('jenis-barang.edit');
     Route::put('jenis-barang/{id}', [JenisBarangController::class, 'update'])->name('jenis-barang.update');
     Route::delete('jenis-barang/{id}', [JenisBarangController::class, 'destroy'])->name('jenis-barang.destroy');
+    Route::get('jenis-barang/export', [JenisBarangController::class, 'export'])->name('jenis-barang-inventaris.export');
 
     Route::get('jenis-akun-transaksi', [JenisAkunTransaksiController::class, 'index'])->name('jenis-akun-transaksi.index');
     Route::get('jenis-akun-transaksi/create', [JenisAkunTransaksiController::class, 'create'])->name('jenis-akun-transaksi.create');
@@ -200,6 +202,15 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/angsuran/edit/{id_bayar_angsuran}', [AngsuranController::class, 'edit'])->name('angsuran.edit');
     Route::put('/angsuran/update/{id_bayar_angsuran}', [AngsuranController::class, 'update'])->name('angsuran.update');
     Route::delete('/angsuran/delete/{id_bayar_angsuran}', [AngsuranController::class, 'destroy'])->name('angsuran.destroy');
+    Route::get('/export/pdf', [AngsuranController::class, 'exportPdf'])->name('angsuran.export.pdf');
+    Route::get('/cetak/{id_bayar_angsuran}', [AngsuranController::class, 'cetak'])->name('angsuran.cetak');
+    Route::get('/admin/angsuran/{id_pinjaman}', [AngsuranController::class, 'show'])->name('angsuran.show');
+});
+
+Route::middleware(['auth:user'])->prefix('admin')->group(function () {
+    Route::get('/pinjaman-lunas', [PinjamanLunasController::class, 'index'])->name('pinjaman-lunas.index');
+    Route::get('/pinjaman-lunas/{kode_transaksi}/detail', [PinjamanLunasController::class, 'detail'])->name('detail.pelunasan');
+    Route::get('/pinjaman-lunas/cetak/{id_bayar_angsuran}', [PinjamanLunasController::class, 'cetakNota'])->name('detail.pinjaman.cetak');
 });
 
 //Route::get('/', function () {
@@ -318,13 +329,17 @@ Route::get('/admin/laporan/laporan-kas-pinjaman', function () {
     return view('admin.laporan.laporan-kas-pinjaman');
 })->name('admin.laporan.laporan-kas-pinjaman');
 
-Route::get('/admin/pinjaman/pinjaman-lunas', function () {
-    return view('admin.pinjaman.pinjaman-lunas');
-})->name('admin.pinjaman.pinjaman-lunas');
+Route::get('/admin/master_data/saldo-awal-non-kas', function () {
+    return view('admin.master_data.saldo-awal-non-kas');
+})->name('admin.master_data.saldo-awal-non-kas');
 
-Route::get('/admin/pinjaman/detail-pelunasan', function () {
-    return view('admin.pinjaman.detail-pelunasan');
-})->name('admin.pinjaman.detail-pelunasan');
+Route::get('/admin/master_data/tambah-data-saldo-awal-non-kas', function () {
+    return view('admin.master_data.tambah-data-saldo-awal-non-kas');
+})->name('admin.master_data.tambah-data-saldo-awal-non-kas');
+
+Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
+    return view('admin.master_data.edit-data-saldo-awal-non-kas');
+})->name('admin.master_data.edit-data-saldo-awal-non-kas');
 
 Route::get('/admin/profil/edit-profil', function () {
     return view('admin.profil.edit-profil');

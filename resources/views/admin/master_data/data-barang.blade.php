@@ -8,7 +8,7 @@
 
 <x-menu.tambah-unduh 
     addUrl="{{ route('jenis-barang.create') }}" 
-    downloadFile="data_barang.pdf" />
+    downloadFile="{{ route('jenis-barang-inventaris.export') }}" />
 
 <div class="barang-inventaris-table-wrap">
   <table class="barang-inventaris-table">

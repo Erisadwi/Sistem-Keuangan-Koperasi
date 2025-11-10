@@ -49,6 +49,11 @@ class Anggota extends Authenticatable
     {
         return $this->password_anggota;
     }
+    public function getAuthIdentifierName()
+    {
+        return 'username_anggota';
+    }
+
     public function simpanan()
     {
         return $this->hasMany(Simpanan::class, 'id_anggota', 'id_anggota');

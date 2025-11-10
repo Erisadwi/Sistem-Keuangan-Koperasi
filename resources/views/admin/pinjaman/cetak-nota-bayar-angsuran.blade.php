@@ -86,7 +86,7 @@
     }
 
     .paraf .garis {
-      margin-top: 50px;
+      margin-top: 50px; /* tambahkan jarak tanda tangan lebih lebar */
       display: inline-block;
       border-top: 1px solid #000;
       width: 80%;
@@ -137,7 +137,7 @@
   <div class="nota">
     <div class="header">
       <div class="kop-kiri">
-        <h3>BUKTI SETORAN TUNAI</h3>
+        <h3>BUKTI SETORAN ANGSURAN KREDIT</h3>
       </div>
       <div class="kop-kanan">
         <img src="{{ asset('images/logo.png') }}" alt="Logo Koperasi">
@@ -149,14 +149,25 @@
     <div class="info">
       <div class="kiri">
         <table>
-          <tr><td>Tanggal Transaksi</td><td>: {{ \Carbon\Carbon::parse($setoran->tanggal_transaksi)->format('d F Y / H:i') }}</td></tr>
-          <tr><td>Kode Transaksi</td><td>: {{ $setoran->kode_simpanan }}</td></tr>
-          <tr><td>ID Anggota</td><td>: {{ $setoran->anggota->id_anggota ?? '-' }}</td></tr>
-          <tr><td>Nama Anggota</td><td>: {{ $setoran->anggota->nama_anggota ?? '-' }}</td></tr>
-          <tr><td>Dept</td><td>: {{ $setoran->anggota->departemen ?? '-' }}</td></tr>
-          <tr><td>Alamat</td><td>: {{ $setoran->anggota->alamat_anggota ?? '-' }}</td></tr>
-          <tr><td>Jenis Akun</td><td>: {{ $setoran->jenisSimpanan->jenis_simpanan ?? '-' }}</td></tr>
-          <tr><td>Jumlah Setoran</td><td>: Rp {{ number_format($setoran->jumlah_simpanan, 0, ',', '.') }}</td></tr>
+          <tr>
+          <td>Tanggal Transaksi</td>
+          <td>:
+            {{ $tanggalTransaksi}}
+          </td>
+        </tr>
+          <tr><td>Kode Transaksi</td><td>: {{ $angsuran->id_bayar_angsuran }}</td></tr>
+          <tr><td>ID Anggota</td><td>: {{ $anggota->id_anggota ?? '-' }} / {{ strtoupper($anggota->nama_anggota ?? '-') }}</td></tr>
+          <tr><td>Dept</td><td>: {{ $anggota->departemen ?? '-' }}</td></tr>
+          <tr><td>Kode Pinjaman</td><td>: {{ $pinjaman->id_pinjaman }}</td></tr>
+          <tr><td>Angsuran Ke</td><td>: {{ $angsuran->angsuran_ke }} / {{ $pinjaman->lamaAngsuran->lama_angsuran ?? '-' }}</td></tr>
+          <tr><td>Angsuran Pokok</td><td>: Rp {{ number_format($angsuran->angsuran_pokok ?? 0, 0, ',', '.') }}</td></tr>
+          <tr><td>Bunga Angsuran</td><td>: Rp {{ number_format($angsuran->bunga_angsuran ?? 0, 0, ',', '.') }}</td></tr>
+          <tr><td>Biaya Admin</td><td>: Rp {{ number_format($angsuran->biaya_admin ?? 0, 0, ',', '.') }}</td></tr>
+          <tr><td>Jumlah Angsuran</td><td>: Rp {{ number_format($jumlahAngsuran, 0, ',', '.') }}</td></tr>
+          <tr><td>Terbilang</td><td>: {{ $terbilang }}</td></tr>
+          <tr><td>Total Denda</td><td>:Rp {{ number_format($angsuran->denda ?? 0, 0, ',', '.') }}</td></tr>
+          <tr><td>Sisa Pinjaman</td><td>:Rp {{ number_format(($pinjaman->total_tagihan - $jumlahAngsuran) ?? 0, 0, ',', '.') }}</td></tr>
+          <tr><td>Total Tagihan</td><td>:Rp {{ number_format($pinjaman->total_tagihan ?? 0, 0, ',', '.') }}</td></tr>
         </table>
       </div>
 
@@ -191,7 +202,7 @@
 
     <div class="buttons">
       <button onclick="window.print()">Cetak</button>
-      <a href="{{ route('setoran-tunai.index') }}">Kembali</a>
+      <a href="{{ route('bayar.angsuran', ['id_pinjaman' => $angsuran->id_pinjaman]) }}">Kembali</a>
     </div>
   </div>
 </body>
