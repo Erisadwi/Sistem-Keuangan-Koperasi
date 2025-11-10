@@ -31,9 +31,9 @@
     <tbody>
       @if(isset($pinjaman) && count($pinjaman) > 0)
         @foreach ($pinjaman as $index => $row)
-        <tr>
+        <tr class="selectable-row" data-id="{{ $row->id_pinjaman }}">
           <td>{{ $index + 1 }}</td>
-          <td>{{ $row->anggota->id_anggota }}</td>
+          <td>{{ $row->id_pinjaman }}</td>
           <td>{{ \Carbon\Carbon::parse($row->tanggal_pinjaman)->format('d-m-Y') }}</td>
           <td>{{ $row->anggota->nama_anggota }}</td>
  
@@ -196,5 +196,66 @@
     font-style: italic;
   }
 
+  .selectable-row.selected td {
+  background-color: #b6d8ff !important; 
+  color: #000;
+}
+
+
+  .selectable-row:hover {
+    background-color: #eaf3ff;
+    cursor: pointer;
+  }
+
 </style>
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const editButton = document.querySelector('.df-edit');
+    const hapusButton = document.querySelector('.df-hapus');
+    let selectedId = null;
+
+    // saat baris diklik
+    document.querySelectorAll('.selectable-row').forEach(row => {
+        row.addEventListener('click', function() {
+            // hapus highlight dari semua baris
+            document.querySelectorAll('.selectable-row').forEach(r => r.classList.remove('selected'));
+
+            // tambahkan highlight ke baris ini
+            this.classList.add('selected');
+            selectedId = this.dataset.id;
+
+            // ubah tombol edit & hapus agar aktif ke id terpilih
+            if (editButton) editButton.href = `/admin/transaksi-pemasukan/${selectedId}/edit`;
+            if (hapusButton) hapusButton.dataset.id = selectedId;
+        });
+    });
+
+    // aksi hapus
+    if (hapusButton) {
+        hapusButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            const id = this.dataset.id;
+            if (!id) {
+                alert('Pilih data terlebih dahulu');
+                return;
+            }
+
+            if (confirm('Yakin ingin menghapus data ini?')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/admin/transaksi-pemasukan/${id}`;
+                form.innerHTML = `
+                    @csrf
+                    @method('DELETE')
+                `;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    }
+});
+</script>
+@endpush
+
 @endsection

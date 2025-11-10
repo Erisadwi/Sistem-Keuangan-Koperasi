@@ -43,7 +43,7 @@ class TransaksiTransferController extends Controller
     public function create()
     {
         $akunSumber = JenisAkunTransaksi::where('transfer','Y')
-            ->where('is_kas', 0)
+            ->where('is_kas', 1)
             ->orderBy('nama_AkunTransaksi')->get();
 
         $akunTujuan = JenisAkunTransaksi::where('transfer','Y')
@@ -55,12 +55,16 @@ class TransaksiTransferController extends Controller
 
     public function store(Request $request) 
     {
+
         Log::info('➡️ MASUK store TransaksiTransferController');
         $request->validate(rules: [
         'id_jenisAkunTransaksi_sumber' => [
             'required',
             Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
-                ->where(fn ($q) => $q->where('transfer', 'Y')),
+                ->where(function ($q) {
+                    $q->where('transfer', 'Y');
+                    $q->where('is_kas', 1);
+                }),
         ],
         'id_jenisAkunTransaksi_tujuan' => [
             'required',
@@ -68,7 +72,7 @@ class TransaksiTransferController extends Controller
                 ->where(function ($q) {
                     $q->where('transfer', 'Y');
                     $q->where('is_kas', 1);
-                }),TRF
+                }),
             ],
             'jumlah_transaksi' => 'required|numeric|min:0',
             'ket_transaksi' => 'nullable|string|max:255',
@@ -96,7 +100,7 @@ class TransaksiTransferController extends Controller
         $TransaksiTransfer = Transaksi::findOrFail($id);
 
         $akunSumber = JenisAkunTransaksi::where('transfer','Y')
-            ->where('is_kas', 0)
+            ->where('is_kas', 1)
             ->orderBy('nama_AkunTransaksi')->get();
 
         $akunTujuan = JenisAkunTransaksi::where('transfer','Y')
@@ -112,7 +116,10 @@ class TransaksiTransferController extends Controller
         'id_jenisAkunTransaksi_sumber' => [
             'required',
             Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
-                ->where(fn ($q) => $q->where('transfer', 'Y')),
+                 ->where(function ($q) {
+                    $q->where('transfer', 'Y');
+                    $q->where('is_kas', 1);
+                }),
         ],
         'id_jenisAkunTransaksi_tujuan' => [
             'required',

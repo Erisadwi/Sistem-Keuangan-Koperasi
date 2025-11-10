@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin\MasterData;
 use App\Http\Controllers\Controller;
 use App\Models\JenisBarang;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\JenisBarangInventarisExport;
 
 class JenisBarangController extends Controller
 {
@@ -58,5 +60,10 @@ class JenisBarangController extends Controller
         $jenis_barang = JenisBarang::findOrFail($id);
         $jenis_barang->delete();
         return redirect()->route('jenis-barang.index')->with('success', 'Data berhasil dihapus');
+    }
+
+    public function export()
+    {
+    return Excel::download(new JenisBarangInventarisExport, 'jenis-barang-inventaris.xlsx');
     }
 }

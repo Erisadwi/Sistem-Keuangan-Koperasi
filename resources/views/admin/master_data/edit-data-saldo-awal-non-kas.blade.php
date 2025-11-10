@@ -123,8 +123,13 @@
 
         <div class="form-group">
             <label for="ket_transaksi">Keterangan</label>
-            <input type="text" id="ket_transaksi" name="ket_transaksi"
-                   value="{{ old('ket_transaksi') }}" placeholder="Masukkan keterangan">
+            <input 
+                type="text" 
+                id="ket_transaksi" 
+                name="ket_transaksi"
+                value="{{ old('ket_transaksi', $saldoAwalKas->ket_transaksi ?? '') }}"
+                placeholder="Masukkan keterangan"
+            >
         </div>
 
         <div class="form-group">
@@ -138,7 +143,7 @@
                 required 
                 placeholder="Masukkan nominal saldo awal"
             >
-        </div>
+        </div> 
 
         <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>
