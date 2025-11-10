@@ -33,7 +33,7 @@
         ======================== --}}
         <h4 style="font-size:14px; margin-bottom:10px;">Identitas Penyetor</h4>
 
-        <label for="nama_anggota">Nama Anggota</label>
+        <label for="nama_anggota">Nama Anggota*</label>
         <input list="daftar_anggota" id="nama_anggota" name="nama_anggota" placeholder="Ketik nama anggota..." required>
         <input type="hidden" id="id_anggota" name="id_anggota" value="{{ old('id_anggota') }}">
         <datalist id="daftar_anggota">
@@ -42,7 +42,7 @@
             @endforeach
         </datalist>
 
-        <label for="id_jenis_simpanan">Jenis Simpanan</label>
+        <label for="id_jenis_simpanan">Jenis Simpanan*</label>
         <select name="id_jenis_simpanan" id="id_jenis_simpanan" required>
             <option value="">-- Pilih Jenis Simpanan --</option>
             @if(isset($jenisSimpanan) && $jenisSimpanan->count())
@@ -58,13 +58,13 @@
             @endif
         </select>
 
-        <label for="jumlah_simpanan">Jumlah Simpanan</label>
+        <label for="jumlah_simpanan">Jumlah Simpanan*</label>
         <input type="number" name="jumlah_simpanan" id="jumlah_simpanan" placeholder="Masukkan jumlah simpanan" required>
 
         <label for="keterangan">Keterangan</label>
         <input type="text" id="keterangan" name="keterangan" value="{{ old('keterangan') }}" placeholder="Opsional...">
 
-        <label for="tujuan">Simpan Ke Kas</label>
+        <label for="tujuan">Simpan Ke Kas*</label>
         <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan" required>
             <option value="">-- Pilih Kas --</option>
             @foreach ($akunTransaksi as $akun)
@@ -74,8 +74,8 @@
             @endforeach
         </select>
 
-        <label for="bukti_setoran">Bukti Setoran</label>
-        <input type="file" id="bukti_setoran" name="bukti_setoran" accept="image/*,application/pdf">
+        <label for="bukti_setoran">Bukti Setoran*</label>
+        <input type="file" id="bukti_setoran" name="bukti_setoran" accept="image/*,application/pdf" required>
 
         {{-- =======================
              TOMBOL

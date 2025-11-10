@@ -65,7 +65,7 @@ class SetoranTunaiController extends Controller
 
     public function create()
     {
-        $anggota = Anggota::all();
+        $anggota = Anggota::where('status_anggota', 'Aktif')->get();       
         $jenisSimpanan = JenisSimpanan::all(['id_jenis_simpanan', 'jenis_simpanan', 'jumlah_simpanan']);
         $akunTransaksi = JenisAkunTransaksi::whereIn('nama_AkunTransaksi', [
             'Kas Besar', 'Bank BNI', 'Bank Mandiri', 'Kas Niaga', 'Kas Kecil'
@@ -123,7 +123,7 @@ class SetoranTunaiController extends Controller
     public function edit($id)
     {
         $setoranTunai = Simpanan::findOrFail($id);
-        $anggota = Anggota::all();
+        $anggota = Anggota::where('status_anggota', 'Aktif')->get();       
         $jenisSimpanan = JenisSimpanan::all();
 
         $akunTransaksi = JenisAkunTransaksi::where('simpanan', 'Y')

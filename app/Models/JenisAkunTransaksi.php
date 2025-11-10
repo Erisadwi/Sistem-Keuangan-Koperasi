@@ -26,6 +26,7 @@ class JenisAkunTransaksi extends Model
         'pinjaman',
         'angsuran',
         'labarugi',
+        'is_kas',
     ];
 
     public $timestamps = false;

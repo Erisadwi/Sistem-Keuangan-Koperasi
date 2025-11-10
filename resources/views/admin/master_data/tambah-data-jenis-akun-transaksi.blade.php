@@ -8,8 +8,7 @@
 
 @section('content')
 
-<div class="form-container">
-    @if ($errors->any())
+@if ($errors->any())
     <div class="alert alert-danger">
         <ul>
             @foreach ($errors->all() as $error)
@@ -19,6 +18,7 @@
     </div>
 @endif
 
+<div class="form-container">
     <form id="jenisAkunTransaksiForm" action="{{ route('jenis-akun-transaksi.store') }}" method="POST">
         @csrf
 
@@ -135,6 +135,14 @@
             </select>
         </div>
 
+        <div class="form-group">
+            <label for="is_kas">Akun Kas</label>
+            <select id="is_kas" name="is_kas">
+                <option value="">-- Pilih --</option>
+                <option value="1" {{ old('is_kas') == '1' ? 'selected' : '' }}>Ya</option>
+                <option value="0" {{ old('is_kas') == '0' ? 'selected' : '' }}>Tidak</option>
+            </select>
+        </div>
 
         <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>
@@ -248,6 +256,13 @@ document.getElementById('jenisAkunTransaksiForm').addEventListener('submit', fun
 
     alert('✅ Data berhasil disimpan!');
 });
+
+    const btnBatal = document.getElementById('btnBatal');
+    if (btnBatal) {
+        btnBatal.addEventListener('click', function() {
+            window.location.href = "{{ route('jenis-akun-transaksi.index') }}";
+        });
+    }
 </script>
 
 @endsection
