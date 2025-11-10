@@ -83,9 +83,4 @@ class Pinjaman extends Model
         return $this->belongsTo(JenisAkunTransaksi::class, 'id_jenisAkunTransaksi_sumber', 'id_jenisAkunTransaksi');
     }
 
-    public function angsuran()
-    {
-    return $this->hasMany(\App\Models\Angsuran::class, 'id_pinjaman', 'id_pinjaman');
-    }
-
 }
