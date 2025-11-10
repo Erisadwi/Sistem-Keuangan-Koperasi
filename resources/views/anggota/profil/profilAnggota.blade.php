@@ -42,8 +42,8 @@
         </x-menu.section>
 
         <x-menu.section title="Pengajuan Pinjaman" :open="false">
-          <a href="#" class="submenu-row">Data Pengajuan</a>
-          <a href="#" class="submenu-row">Tambah Pengajuan Baru</a>
+          <a href="{{ route('anggota.pengajuan.index') }}" class="submenu-row">Data Pengajuan</a>
+          <a href="{{ route('anggota.pengajuan.create') }}" class="submenu-row">Tambah Pengajuan Baru</a>
         </x-menu.section>
       </ul>
     </aside>
@@ -60,8 +60,17 @@
           <p class="profile-status aktif">{{ $anggota->status_anggota ?? '' }}</p>
 
           <div class="action-group">
-            <button class="btn btn-danger">Non Aktifkan Akun</button>
-            <button class="btn btn-light">Logout</button>
+            <form action="{{ route('nonaktifkan') }}" method="POST" style="display:inline;">
+                @csrf
+                <button type="submit" class="btn btn-danger"
+                    onclick="return confirm('Yakin ingin menonaktifkan akun Anda?')">
+                    Non Aktifkan Akun
+                </button>
+            </form>
+            <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                @csrf
+                <button type="submit" class="btn btn-light">Logout</button>
+            </form>
           </div>
         </section>
 
