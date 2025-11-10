@@ -12,7 +12,7 @@
 
 <x-menu.tambah-unduh 
     addUrl="{{ route('jenis-simpanan.create') }}" 
-    downloadFile="jenis_simpanan.pdf" />
+    downloadFile="{{ route('jenis-simpanan.export') }}"/>
 
 <div class="simpanan-table-wrap">
   <table class="simpanan-table">

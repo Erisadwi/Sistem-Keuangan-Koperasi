@@ -29,8 +29,7 @@ use App\Http\Controllers\Admin\Pinjaman\DataPinjamanController;
 use App\Http\Controllers\Admin\Pinjaman\PengajuanPinjamanController;
 use App\Http\Controllers\Admin\Pinjaman\AngsuranController;
 use App\Http\Controllers\Admin\Pinjaman\PinjamanLunasController;
-
-
+use App\Models\JenisSimpanan;
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
@@ -62,6 +61,7 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('jenis-simpanan/{id}/edit', [JenisSimpananController::class, 'edit'])->name('jenis-simpanan.edit');
     Route::put('jenis-simpanan/{id}', [JenisSimpananController::class, 'update'])->name('jenis-simpanan.update');
     Route::delete('jenis-simpanan/{id}', [JenisSimpananController::class, 'destroy'])->name('jenis-simpanan.destroy');
+    Route::get('jenis-simpanan/export', [JenisSimpananController::class, 'export'])->name('jenis-simpanan.export');
 
     Route::get('jenis-barang', [JenisBarangController::class, 'index'])->name('jenis-barang.index');
     Route::get('jenis-barang/create', [JenisBarangController::class, 'create'])->name('jenis-barang.create');
@@ -69,6 +69,7 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('jenis-barang/{id}/edit', [JenisBarangController::class, 'edit'])->name('jenis-barang.edit');
     Route::put('jenis-barang/{id}', [JenisBarangController::class, 'update'])->name('jenis-barang.update');
     Route::delete('jenis-barang/{id}', [JenisBarangController::class, 'destroy'])->name('jenis-barang.destroy');
+    Route::get('jenis-barang/export', [JenisBarangController::class, 'export'])->name('jenis-barang-inventaris.export');
 
     Route::get('jenis-akun-transaksi', [JenisAkunTransaksiController::class, 'index'])->name('jenis-akun-transaksi.index');
     Route::get('jenis-akun-transaksi/create', [JenisAkunTransaksiController::class, 'create'])->name('jenis-akun-transaksi.create');

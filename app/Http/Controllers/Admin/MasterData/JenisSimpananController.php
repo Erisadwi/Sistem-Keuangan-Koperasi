@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin\MasterData;
 use App\Http\Controllers\Controller;
 use App\Models\JenisSimpanan;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\JenisSimpananExport;
 
 class JenisSimpananController extends Controller
 {
@@ -52,5 +54,10 @@ class JenisSimpananController extends Controller
         $jenis_simpanan = JenisSimpanan::findOrFail($id);
         $jenis_simpanan->delete();
         return redirect()->route('jenis-simpanan.index')->with('success', 'Data berhasil dihapus');
+    }
+
+    public function export()
+    {
+    return Excel::download(new JenisSimpananExport, 'jenis-simpanan.xlsx');
     }
 }
