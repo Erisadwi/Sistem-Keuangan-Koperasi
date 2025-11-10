@@ -9,13 +9,18 @@
 @php
     $anggota = $anggota ?? null;
     $pinjaman = $pinjaman ?? null;
-    $payments = $payments ?? [];
-    $bayar_angsuran = $bayar_angsuran ?? []; 
+    $payments = $payments ?? collect();
+    $bayar_angsuran = $bayar_angsuran ?? collect(); 
+    $sisaAngsuran = $sisaAngsuran ?? 0;
+    $totalBayar = $totalBayar ?? 0;
+    $denda = $denda ?? 0;
+    $sisaTagihan = $sisaTagihan ?? 0;
+    $status = $status ?? '-';
 @endphp
 
 <div class="content-wrapper">
   <h2 class="page-title">
-    <a href="{{ url('#') }}" class="breadcrumb-link">Data Pinjaman</a>
+    <a href="{{ route('pinjaman.index') }}" class="breadcrumb-link">Data Pinjaman</a>
     &nbsp; &gt; &nbsp;
     <span>Detail Pinjaman</span>
   </h2>
@@ -25,73 +30,73 @@
       <h3>Detail Pinjaman</h3>
     </div>
 
-    {{-- CARD PUTIH --}}
-    <div class="card-putih">
-      <div class="data-anggota">
-        @php
-          $fotoPath = (!empty($anggota) && !empty($anggota->foto))
-              ? asset('storage/'.$anggota->foto)
-              : asset('images/default.jpeg');
-        @endphp
-        <img src="{{ $fotoPath }}" alt="Foto Anggota" class="foto-anggota">
+        {{-- CARD PUTIH --}}
+        <div class="card-putih">
+            <div class="data-anggota">
+                @php
+                $fotoPath = (!empty($pinjaman) && $pinjaman->anggota && !empty($pinjaman->anggota->foto))
+                        ? asset(''.$pinjaman->anggota->foto)
+                        : asset('images/default.jpeg');
+                @endphp
+                <img src="{{ $fotoPath }}" alt="Foto Anggota" class="foto-anggota">
 
-        <div class="info">
-          <div class="left">
-            <h4>Data Anggota</h4>
-            <p>ID Anggota: <span>{{ $anggota->id_anggota ?? '-' }}</span></p>
-            <p>Nama Anggota: <span>{{ $anggota->nama ?? '-' }}</span></p>
-            <p>Departemen: <span>{{ $anggota->departemen ?? '-' }}</span></p>
-            <p>Tempat, Tanggal Lahir:
-              <span>
-                @if(!empty($anggota?->tempat_lahir) || !empty($anggota?->tgl_lahir))
-                  {{ $anggota->tempat_lahir ?? '-' }}, {{ $anggota->tgl_lahir ?? '-' }}
-                @else
-                  -
-                @endif
-              </span>
-            </p>
-            <p>Kota Tinggal: <span>{{ $anggota->kota ?? '-' }}</span></p>
-          </div>
+                <div class="info">
+                    <div class="left">
+                        <h4>Data Anggota</h4>
+                        <p>ID Anggota: <span>{{ $anggota->id_anggota ?? '-' }}</span></p>
+                        <p>Nama Anggota: <span>{{ $anggota->nama_anggota ?? '-' }}</span></p>
+                        <p>Departemen: <span>{{ $anggota->departemen ?? '-' }}</span></p>
+                        <p>Tempat, Tanggal Lahir: 
+                            <span>
+                                @if(!empty($anggota->tempat_lahir) || !empty($anggota->tanggal_lahir))
+                                    {{ $anggota->tempat_lahir ?? '-' }}, {{ $anggota->tanggal_lahir ?? '-' }}
+                                @else
+                                    -
+                                @endif
+                            </span>
+                        </p>
+                        <p>Kota Tinggal: <span>{{ $anggota->kota_anggota ?? '-' }}</span></p>
+                    </div>
 
-          <div class="right">
-            <h4>Data Pinjaman</h4>
-            <p>Kode Pinjam: <span>{{ $pinjaman->kode_pinjam ?? '-' }}</span></p>
-            <p>Tanggal Pinjam: <span>{{ $pinjaman->tgl_pinjam ?? '-' }}</span></p>
-            <p>Tanggal Tempo: <span>{{ $pinjaman->tgl_tempo ?? '-' }}</span></p>
-            <p>Lama Pinjaman: <span>{{ $pinjaman->lama_pinjaman ?? '-' }}</span></p>
-          </div>
 
-          <div class="center">
-            <p>Pokok Pinjaman: <span>{{ $pinjaman->pokok_pinjaman ?? '-' }}</span></p>
-            <p>Angsuran Pokok: <span>{{ $pinjaman->angsuran_pokok ?? '-' }}</span></p>
-            <p>Biaya & Bunga: <span>{{ $pinjaman->biaya_bunga ?? '-' }}</span></p>
-            <p>Jumlah Angsuran: <span>{{ $pinjaman->jumlah_angsuran ?? '-' }}</span></p>
-          </div>
+                    <div class="right">
+                        <h4>Data Pinjaman</h4>
+                        <p>Kode Pinjam: <span>{{ $pinjaman->id_pinjaman ?? '-' }}</span></p>
+                        <p>Tanggal Pinjam: <span>{{ $pinjaman->tanggal_pinjaman?? '-' }}</span></p>
+                        <p>Tanggal Tempo: <span>{{ $tanggalTempo ?? '-' }}</span></p>
+                        <p>Lama Pinjaman: <span>{{ $pinjaman->lamaAngsuran->lama_angsuran ?? '-' }}</span></p>
+                    </div>
+                    <div class="center">
+                        <p>Pokok Pinjaman: <span>{{ number_format($pinjaman->jumlah_pinjaman ?? 0, 0, ',', '.') }}</span></p>
+                       <p>Angsuran Pokok: <span>{{ number_format($pinjaman->jumlah_pinjaman / ($pinjaman->lamaAngsuran->lama_angsuran ?? 1), 0, ',', '.') }}</span></p>
+                        <p>Biaya & Bunga: <span>{{ number_format($pinjaman->bunga_pinjaman ?? 0, 0, ',', '.') }}</span></p>
+                        <p>Jumlah Angsuran: <span>{{ number_format($pinjaman->total_tagihan / ($pinjaman->lamaAngsuran->lama_angsuran ?? 1), 0, ',', '.') }}</span></p>
+                    </div>
+                </div>
+            </div>
         </div>
+
+        {{-- INFO BIRU BAWAH --}}
+        <div class="info-biru-bawah">
+          <span>Detail Pembayaran &raquo;</span>
+          <span>Sisa Angsuran: 
+              <b>{{ $pinjaman->sisa_angsuran ?? 0 }}</b>
+          </span>
+          <span>Dibayar: 
+              <b>{{ 'Rp. ' . number_format($pinjaman->sudah_dibayar ?? 0, 0, ',', '.') }}</b>
+          </span>
+          <span>Denda: 
+              <b>{{ 'Rp. ' . number_format($pinjaman->denda ?? 0, 0, ',', '.') }}</b>
+          </span>
+          <span>Sisa Tagihan: 
+              <b>{{ 'Rp. ' . number_format($pinjaman->sisa_tagihan ?? 0, 0, ',', '.') }}</b>
+          </span>
+          <span>Status Pelunasan: 
+              <b class="status-lunas">{{ $pinjaman->status ?? '-' }}</b>
+          </span>
       </div>
-    </div>
 
-    {{-- INFO BIRU BAWAH --}}
-    <div class="info-biru-bawah">
-      <span>Detail Pembayaran &raquo;</span>
-      <span>Sisa Angsuran: 
-        <b>{{ isset($pinjaman->sisa_angsuran) ? 'Rp. ' . number_format($pinjaman->sisa_angsuran, 0, ',', '.') : '-' }}</b>
-      </span>
-      <span>Dibayar: 
-        <b>{{ isset($pinjaman->sudah_dibayar) ? 'Rp. ' . number_format($pinjaman->sudah_dibayar, 0, ',', '.') : '-' }}</b>
-      </span>
-      <span>Denda: 
-        <b>{{ isset($pinjaman->denda) ? 'Rp. ' . number_format($pinjaman->denda, 0, ',', '.') : '-' }}</b>
-      </span>
-      <span>Sisa Tagihan: 
-        <b>{{ isset($pinjaman->sisa_tagihan) ? 'Rp. ' . number_format($pinjaman->sisa_tagihan, 0, ',', '.') : '-' }}</b>
-      </span>
-      <span>Status Pelunasan: 
-        <b class="status-lunas">{{ $pinjaman->status ?? '-' }}</b>
-      </span>
-    </div>
-
-    {{-- SECTION SIMULASI TAGIHAN (Revisi pakai bayar_angsuran) --}}
+    {{-- SECTION SIMULASI TAGIHAN --}}
     <div class="section-detail-pinjaman">
       <h4 class="section-title">Simulasi Tagihan :</h4>
 
@@ -121,8 +126,7 @@
               <tr><td colspan="6" class="no-data">Belum ada data</td></tr>
             @endforelse
 
-            {{-- BARIS JUMLAH --}}
-            @if(count($payments) > 0)
+            @if($payments->count() > 0)
               <tr style="background-color:#dfe9f3; font-weight:bold;">
                 <td>Jumlah</td>
                 <td>{{ number_format($payments->sum('angsuran_pokok'), 0, ',', '.') }}</td>
@@ -161,7 +165,7 @@
             @forelse($bayar_angsuran as $i => $trx)
               <tr>
                 <td>{{ $i + 1 }}</td>
-                <td>{{ $trx->kode_bayar ?? '-' }}</td>
+                 <td>{{ $trx->id_bayar_angsuran }}</td>
                 <td>{{ $trx->tanggal_bayar ?? '-' }}</td>
                 <td>{{ $trx->angsuran_ke ?? '-' }}</td>
                 <td>{{ $trx->jenis_pembayaran ?? '-' }}</td>
@@ -175,8 +179,7 @@
               <tr><td colspan="10" class="no-data">Belum ada transaksi pembayaran</td></tr>
             @endforelse
 
-            {{-- Baris Jumlah --}}
-            @if(count($bayar_angsuran) > 0)
+            @if($bayar_angsuran->count() > 0)
               <tr style="background-color:#dfe9f3; font-weight:bold;">
                 <td colspan="5">Jumlah</td>
                 <td>{{ number_format($bayar_angsuran->sum('jumlah_bayar'), 0, ',', '.') }}</td>
@@ -372,5 +375,6 @@
   border-radius: 6px;
   font-size: 12px;
 }
+</style>
 
 @endsection

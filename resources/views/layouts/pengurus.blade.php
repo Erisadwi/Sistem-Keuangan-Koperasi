@@ -40,7 +40,7 @@
         <x-menu.section title="Transaksi Kas" :open="false" :has-sub="true">
           <a href="{{ route('transaksi-pemasukan.index') }}" class="submenu-row">Pemasukan</a>
           <a href="{{ route('pengeluaran.index') }}" class="submenu-row">Pengeluaran</a>
-          <a href="#" class="submenu-row">Transfer</a>
+          <a href="{{ route('transaksi-transfer.index') }}"  class="submenu-row">Transfer</a>
         </x-menu.section>
 
         <x-menu.section 

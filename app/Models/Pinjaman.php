@@ -68,6 +68,11 @@ class Pinjaman extends Model
         return $this->belongsTo(LamaAngsuran::class, 'id_lamaAngsuran', 'id_lamaAngsuran');
     }
 
+    public function Angsuran()
+    {
+        return $this->belongsTo(Angsuran::class, 'id_bayar_angsuran', 'id_bayar_angsuran');
+    }
+
     public function tujuan()
     {
         return $this->belongsTo(JenisAkunTransaksi::class, 'id_jenisAkunTransaksi_tujuan', 'id_jenisAkunTransaksi');
