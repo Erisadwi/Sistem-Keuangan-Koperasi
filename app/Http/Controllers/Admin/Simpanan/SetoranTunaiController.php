@@ -67,10 +67,11 @@ class SetoranTunaiController extends Controller
     {
         $anggota = Anggota::where('status_anggota', 'Aktif')->get();       
         $jenisSimpanan = JenisSimpanan::all(['id_jenis_simpanan', 'jenis_simpanan', 'jumlah_simpanan']);
-        $akunTransaksi = JenisAkunTransaksi::whereIn('nama_AkunTransaksi', [
-            'Kas Besar', 'Bank BNI', 'Bank Mandiri', 'Kas Niaga', 'Kas Kecil'
-        ])->get();
-
+        $akunTransaksi = JenisAkunTransaksi::where('simpanan', 'Y')
+        ->where('is_kas', 1) 
+        ->where('status_akun', 'Y')
+        ->orderBy('nama_AkunTransaksi')
+        ->get();
         return view('admin.simpanan.tambah-setoran-tunai', compact('anggota', 'jenisSimpanan', 'akunTransaksi'));
     }
 
@@ -127,11 +128,11 @@ class SetoranTunaiController extends Controller
         $jenisSimpanan = JenisSimpanan::all();
 
         $akunTransaksi = JenisAkunTransaksi::where('simpanan', 'Y')
-            ->where('pemasukan', 'Y')
+            ->where('is_kas', 1)
             ->where('status_akun', 'Y')
-            ->orderBy('nama_akunTransaksi', 'asc')
+            ->orderBy('nama_AkunTransaksi', 'asc')
             ->get();
-
+    
         return view('admin.simpanan.edit-setoran-tunai', compact('setoranTunai', 'anggota', 'jenisSimpanan', 'akunTransaksi'));
     }
 
@@ -176,7 +177,7 @@ class SetoranTunaiController extends Controller
     }
 
     public function exportPdf()
-{
+    {
     $data = Simpanan::with(['anggota', 'jenisSimpanan', 'user'])
         ->where('type_simpanan', 'TRD')
         ->orderBy('tanggal_transaksi', 'desc')
@@ -186,7 +187,7 @@ class SetoranTunaiController extends Controller
               ->setPaper('a4', 'portrait');
 
     return $pdf->download('Laporan_Setoran_Tunai.pdf');
-}
+    }
 
 
     public function cetak($id)

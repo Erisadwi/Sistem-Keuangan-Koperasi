@@ -64,15 +64,19 @@
         <label for="keterangan">Keterangan</label>
         <input type="text" id="keterangan" name="keterangan" value="{{ old('keterangan') }}" placeholder="Opsional...">
 
-        <label for="tujuan">Simpan Ke Kas*</label>
+        <label for="id_jenisAkunTransaksi_tujuan">Simpan Ke Kas*</label>
         <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan" required>
-            <option value="">-- Pilih Kas --</option>
-            @foreach ($akunTransaksi as $akun)
-            <option value="{{ $akun->id_jenisAkunTransaksi }}">
-                {{ $akun->nama_AkunTransaksi }}
-            </option>
-            @endforeach
+            <option value="">-- Pilih Kas Simpanan --</option>
+            @forelse ($akunTransaksi as $akun)
+                <option value="{{ $akun->id_jenisAkunTransaksi }}"
+                    {{ old('id_jenisAkunTransaksi_tujuan') == $akun->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                    {{ $akun->nama_AkunTransaksi }}
+                </option>
+            @empty
+                <option value="" disabled>⚠️ Tidak ada akun kas simpanan aktif</option>
+            @endforelse
         </select>
+
 
         <label for="bukti_setoran">Bukti Setoran*</label>
         <input type="file" id="bukti_setoran" name="bukti_setoran" accept="image/*,application/pdf" required>
