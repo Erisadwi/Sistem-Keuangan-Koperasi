@@ -15,44 +15,59 @@
     </div>
   </nav>
 
+  @php
+  $user = Auth::guard('user')->user();
+  @endphp
+
   <div class="layout">
             <aside class="sidebar">
         <div class="profile-card">
         <div class="profile-left">
-          <img src="{{ asset('images/profil-admin.jpg') }}"
-          alt="Foto {{-- {{ $user->nama_lengkap ?? 'Pengguna' }} --}}" class="avatar-70">
+        <img src="{{ $user->foto_user ? asset('storage/foto_user/' . basename($user->foto_user)) : asset('images/default.jpeg') }}" alt="Foto Admin" class="avatar-70">
         </div>
         <div class="profile-right">
-          <div class="profile-name">Iqbal{{-- {{ $user->nama_lengkap ?? 'Nama Tidak Ditemukan' }} --}}</div>
-          <div class="profile-role">Admin Simpanan{{-- {{ $user->role ?? '' }} --}}</div>
+          <div class="profile-name">{{ $user->nama_lengkap ?? 'Nama Tidak Ditemukan' }}</div>
+          <div class="profile-role">{{ $user->role->nama_role ?? 'Role Tidak Ditemukan' }}</div>
         </div>
-        <a href="#{{-- {{ route('admin.profil') }} --}}" class="btn-profil push-right" aria-label="Buka Profil">
+        <a href="{{ route('admin.profil.beranda-profil') }}" class="btn-profil push-right" aria-label="Buka Profil">
           <img src="{{ asset('icons/arrow-profil.png') }}" alt="">
         </a>
       </div>
 
       <ul class="menu-list">
+      @if($user && in_array($user->id_role, ['R06', 'R07']))
         <x-menu.section title="Transaksi Kas" :open="false" :has-sub="true">
-          <a href="#" class="submenu-row">Pemasukan</a>
-          <a href="#" class="submenu-row">Pengeluaran</a>
+          <a href="{{ route('transaksi-pemasukan.index') }}" class="submenu-row">Pemasukan</a>
+          <a href="{{ route('pengeluaran.index') }}" class="submenu-row">Pengeluaran</a>
           <a href="#" class="submenu-row">Transfer</a>
         </x-menu.section>
+      @endif
 
-        <x-menu.section title="Transaksi Non Kas" :open="false" :has-sub="false">
+      @if($user && in_array($user->id_role, ['R06', 'R07']))
+        <x-menu.section         title="Transaksi Non Kas" 
+        :open="false" 
+        :has-sub="false" 
+        :link="route('transaksi-non-kas.index')">
         </x-menu.section>
+      @endif
 
+      @if($user && in_array($user->id_role, ['R04', 'R07']))
         <x-menu.section title="Simpanan" :open="false" :has-sub="true">
-          <a href="#" class="submenu-row">Setoran Tunai</a>
+          <a href="{{ route('setoran-tunai.index') }}" class="submenu-row">Setoran Tunai</a>
           <a href="#" class="submenu-row">Penarikan Tunai</a>
         </x-menu.section>
+      @endif
 
+      @if($user && in_array($user->id_role, ['R05', 'R07']))
         <x-menu.section title="Pinjaman" :open="false" :has-sub="true">
-          <a href="#" class="submenu-row">Data Pengajuan</a>
-          <a href="#" class="submenu-row">Data Pinjaman</a>
-          <a href="#" class="submenu-row">Angsuran</a>
-          <a href="#" class="submenu-row">Pinjaman Lunas</a>
+          <a href="{{ route('pengajuan-pinjaman.index') }}" class="submenu-row">Data Pengajuan</a>
+          <a href="{{ route('pinjaman.index') }}" class="submenu-row">Data Pinjaman</a>
+          <a href="{{ route('angsuran.index') }}" class="submenu-row">Angsuran</a>
+          <a href="{{ route('pinjaman-lunas.index') }}" class="submenu-row">Pinjaman Lunas</a>
         </x-menu.section>
+      @endif
 
+      @if($user && in_array($user->id_role, ['R04', 'R05', 'R06', 'R07']))
         <x-menu.section title="Laporan" :open="false" :has-sub="true">
           <a href="#" class="submenu-row">Jatuh Tempo</a>
           <a href="#" class="submenu-row">Buku Besar</a>
@@ -64,7 +79,9 @@
           <a href="#" class="submenu-row">Laba Rugi</a>
           <a href="#" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
         </x-menu.section>
+      @endif
 
+      @if($user && in_array($user->id_role, ['R07']))
         <x-menu.section title="Master Data" :open="false" :has-sub="true">
           <a href="#" class="submenu-row">Saldo Awal Kas</a>
           <a href="#" class="submenu-row">Saldo Awal Non Kas</a>
@@ -75,68 +92,68 @@
           <a href="#" class="submenu-row">Data Anggota</a>
           <a href="#" class="submenu-row">Data Pengguna</a>
         </x-menu.section>
+      @endif
 
+        @if($user && in_array($user->id_role, ['R07']))
         <x-menu.section title="Setting" :open="false" :has-sub="true">
-          <a href="#" class="submenu-row">Identitas Koperasi</a>
-          <a href="#" class="submenu-row">Suku Bunga</a>
+          <a href="{{ route('identitas-koperasi.editSingle') }}" class="submenu-row">Identitas Koperasi</a>
+          <a href="{{ route('suku-bunga.editSingle') }}" class="submenu-row">Suku Bunga</a>
         </x-menu.section>
+        @endif
+
       </ul>
     </aside>
 
     <main class="content">
-      <h2 class="page-title">My Profile <span class="subtitle">Anggota</span></h2>
+      <h2 class="page-title">My Profile <span class="subtitle">Admin</span></h2>
 
       <div class="profile-wrapper">
         <section class="card-profile">
-          <img src="{{ asset('images/profil-admin.jpg') }}" alt="Foto Admin" class="profile-photo">
-          <h3 class="profile-nama">Iqbaal Diafakhri Ramadhan</h3>
-          <p class="profile-status aktif">Aktif</p>
+          <img src="{{ $user->foto_user ? asset('storage/foto_user/' . basename($user->foto_user)) : asset('images/default.jpeg') }}" alt="Foto Admin" class="profile-photo">
+          <h3 class="profile-nama">{{ $user->nama_lengkap ?? 'Nama Tidak Ditemukan' }}</h3>
+          <p class="profile-status aktif">{{ $user->status ?? '' }}</p>
 
           <div class="action-group">
-            <button class="btn btn-danger">Non Aktifkan Akun</button>
-            <button class="btn btn-light">Logout</button>
+            <form action="{{ route('nonaktifkan') }}" method="POST" style="display:inline;">
+                @csrf
+                <button type="submit" class="btn btn-danger"
+                    onclick="return confirm('Yakin ingin menonaktifkan akun Anda?')">
+                    Non Aktifkan Akun
+                </button>
+            </form>
+            <form action="{{ route('logout') }}" method="POST" style="display: inline;">
+                @csrf
+                <button type="submit" class="btn btn-light">Logout</button>
+            </form>
           </div>
         </section>
 
         <section class="card-form"> 
-          <form>
-         <form class="form" method="post" action="#" {{-- {{ route('profile.update', $users->id_user) }} --}} enctype="multipart/form-data">
-          @csrf
-          @method('PUT')
-
   <div class="form-group">
     <label>Username</label>
-    <input type="text" name="username" value="angga" {{-- {{ $users->username }} --}}>
+    <input type="text" name="username" value="{{ $user->username }}" readonly>
   </div>
 
   <div class="form-group">
     <label>Password</label>
-    <input type="password" name="password" placeholder="Masukkan password">
+    <input type="password" name="password" value="********" readonly>
   </div>
 
   <div class="form-group">
     <label>Nama Lengkap</label>
-    <input type="text" name="nama_lengkap"value="angga aldi yunanda" {{-- {{ $users->nama_lengkap}} --}}>
+    <input type="text" name="nama_lengkap"value="{{ $user->nama_lengkap}}" readonly>
   </div>
 
   <div class="form-group">
     <label>Alamat</label>
-    <textarea name="alamat_user" rows="3">Perum Griya Sejahtera, Blok J No. 20 jl. Medayu Utara 30A, Medokan Ayu, Rungkut Surabaya {{-- {{ $users->alamat_user }} --}}</textarea>
+    <textarea name="alamat_user" rows="3">{{ $user->alamat_user }}</textarea>
   </div>
   
 <div class="form-group">
             <label>Role</label>
-            <select name="id_role">
-              <option value="" disabled selected>pilih role</option>
-              <option value="admin simpanan">admin simpanan</option>
-              <option value="admin pinjaman">admin pinjaman</option>
-              <option value="admin accounting">admin accounting</option>
-              <option value="pengurus">pengurus</option>
-            </select>
+            <input type="text" name="role" value="{{ $user->role->nama_role ?? '-' }}" readonly>
           </div>
-
-            <button type="submit" class="btn btn-primary">Edit Profil</button>
-          </form>
+          <a href="{{ route('profil.edit') }}" class="btn btn-primary">Edit Profil</a>
         </section>
       </div>
     </main>

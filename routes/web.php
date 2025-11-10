@@ -29,11 +29,12 @@ use App\Http\Controllers\Admin\Pinjaman\DataPinjamanController;
 use App\Http\Controllers\Admin\Pinjaman\PengajuanPinjamanController;
 use App\Http\Controllers\Admin\Pinjaman\AngsuranController;
 use App\Http\Controllers\Admin\Pinjaman\PinjamanLunasController;
-use App\Models\JenisSimpanan;
+use App\Http\Controllers\Admin\ProfilController;
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
 Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
+Route::post('/nonaktifkan', [LoginController::class, 'deactivateAccount'])->name('nonaktifkan');
 
 Route::middleware(['auth:user'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
@@ -53,6 +54,12 @@ Route::middleware(['auth:anggota'])->group(function () {
 
 });
 
+Route::middleware(['auth:user'])->prefix('admin')->group(function () {
+
+    Route::get('/profil', [ProfilController::class, 'index'])->name('profil.index');
+    Route::get('/profil/edit', [ProfilController::class, 'edit'])->name('profil.edit');
+    Route::put('/profil/update/{id}', [ProfilController::class, 'update'])->name('profil.update');
+});
 
 Route::prefix('admin/master_data')->group(function () {
     Route::get('jenis-simpanan', [JenisSimpananController::class, 'index'])->name('jenis-simpanan.index');

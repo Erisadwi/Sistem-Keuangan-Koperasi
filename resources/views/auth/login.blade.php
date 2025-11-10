@@ -19,13 +19,6 @@
         </div>
       </div>
 
-      @if ($errors->any())
-        <div class="error-message" style="color: red; margin-bottom: 10px;">
-          @foreach ($errors->all() as $error)
-            <div>{{ $error }}</div>
-          @endforeach
-        </div>
-      @endif
 
 
       <!-- Form Login -->
@@ -43,6 +36,14 @@
 
         <button type="submit" class="button-login">Login</button>
       </form>
+      
+      @if ($errors->any())
+      <div class="error-message" style="color: red; margin-bottom: 0px; text-align: center; font-size: 0.9rem;">
+        @foreach ($errors->all() as $error)
+          <div>{{ $error }}</div>
+        @endforeach
+      </div>
+      @endif
     </div>
   </div>
 

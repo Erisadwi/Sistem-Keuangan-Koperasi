@@ -20,26 +20,23 @@
       <div class="panel-inner">
         <div class="left">
           <div class="avatar-wrap">
-            <img src="{{ {{-- $users->foto ? asset('storage/' . $users->foto) : --}} asset('images/default.jpeg') }}" alt="Foto Profil" class="avatar">
+            <img src="{{ $user->foto_user ? asset('storage/foto_user/' . basename($user->foto_user)) : asset('images/default.jpeg') }}"alt="Foto Profil" class="avatar">
             <button type="button" id="btnCamera" class="btn-camera">
               <img src="{{ asset('icons/camera.png') }}" alt="" class="btn-icon" />
             </button>
           </div>
-          
-          <input type="file" name="foto" id="fotoInput" accept="image/*" style="display: none;">
-
           <button type="button" id="btnUpload" class="btn-upload">
             Ubah Foto
           </button>
         </div>
 
-        <form class="form" method="post" action="#" {{-- {{ route('profile.update', $users->id_user) }} --}} enctype="multipart/form-data">
+        <form class="form" method="post" action="{{ route('profil.update', $user->id_user) }}" enctype="multipart/form-data">
           @csrf
           @method('PUT')
 
           <div class="field">
             <label>Username</label>
-            <input type="text" name="username" value="iqbaal" {{-- {{ $users->username}} --}}>
+            <input type="text" name="username" value="{{ $user->username }}">
           </div>
 
           <div class="field">
@@ -54,24 +51,26 @@
 
           <div class="field">
             <label>Nama Lengkap</label>
-            <input type="text" name="nama_lengkap" value="iqbaal dhiafakhri ramadhan" {{-- {{ $users->nama_lengkap }} --}}>
+            <input type="text" name="nama_lengkap" value="{{ $user->nama_lengkap }}">
           </div>
 
           <div class="field">
             <label>Alamat</label>
-            <textarea name="alamat_user" rows="3">Perum Griya Sejahtera, Blok I No. 18 jl. Medayu Utara 31C, Medokan Ayu, Rungkut Surabaya {{-- {{ $users->alamat_user }} --}}</textarea>
+            <textarea name="alamat_user" rows="3">{{ $user->alamat_user }}"</textarea>
           </div>
 
           <div class="field">
             <label>Role</label>
-            <select name="id_role">
-                <option value="" disabled selected>pilih role</option>
-                <option value="admin simpanan">admin simpanan</option>
-                <option value="admin pinjaman">admin pinjaman</option>
-                <option value="admin accounting">admin accounting</option>
-                <option value="pengurus">pengurus</option>
+            <select name="role">
+                <option value="" disabled>Pilih role</option>
+                <option value="R04" {{ $user->id_role == 'R04' ? 'selected' : '' }}>admin simpanan</option>
+                <option value="R05" {{ $user->id_role == 'R05' ? 'selected' : '' }}>admin pinjaman</option>
+                <option value="R06" {{ $user->id_role == 'R06' ? 'selected' : '' }}>admin accounting</option>
+                <option value="R07" {{ $user->id_role == 'R07' ? 'selected' : '' }}>pengurus</option>
             </select>
             </div>
+
+             <input type="file" name="foto" id="fotoInput" accept="image/*" style="display: none;">
 
           <div class="actions">
             <button type="submit" class="btn btn-save">Simpan Perubahan</button>
