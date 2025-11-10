@@ -14,8 +14,9 @@ class SaldoAwalKasController extends Controller
     public function index()
     {
         $saldoAwalKas = Transaksi::with(['tujuan'])
-            ->where('type_transaksi', 'SAK') 
-            ->get();
+        ->where('type_transaksi', 'SAK')
+        ->orderBy('tanggal_transaksi', 'desc')
+        ->paginate(10);
 
         return view('admin.master_data.saldo-awal-kas', compact('saldoAwalKas'));
     }

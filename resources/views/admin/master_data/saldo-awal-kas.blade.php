@@ -45,9 +45,9 @@
   </table>
 </div>
 
- {{-- <div class="pagination-container">
+ <div class="pagination-container">
       <x-menu.pagination :data="$saldoAwalKas" />
- </div> --}}
+ </div>
 
 <style>
   :root {
