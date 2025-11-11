@@ -8,12 +8,9 @@
 </head>
 <body class="bg-gray-50 font-sans">
 
-  <nav class="nav-top">
-    <div class="nav-left"></div>
-    <div class="nav-right">
-      <img src="{{ asset('images/logo.png') }}" alt="Koperasi TSM" class="logo-coop">
-    </div>
-  </nav>
+    <header>
+        <x-menu.nav-top/>
+    </header>
 
   @php
   $user = Auth::guard('user')->user();
@@ -23,7 +20,7 @@
             <aside class="sidebar">
         <div class="profile-card">
         <div class="profile-left">
-        <img src="{{ $user->foto_user ? asset('storage/foto_user/' . basename($user->foto_user)) : asset('images/default.jpeg') }}" alt="Foto Admin" class="avatar-70">
+        <img src="{{ $user->foto_user ? asset($user->foto_user) : asset('images/default.jpeg') }}" alt="Foto Admin" class="avatar-70">
         </div>
         <div class="profile-right">
           <div class="profile-name">{{ $user->nama_lengkap ?? 'Nama Tidak Ditemukan' }}</div>
@@ -109,7 +106,7 @@
 
       <div class="profile-wrapper">
         <section class="card-profile">
-          <img src="{{ $user->foto_user ? asset('storage/foto_user/' . basename($user->foto_user)) : asset('images/default.jpeg') }}" alt="Foto Admin" class="profile-photo">
+          <img src="{{ $user->foto_user ? asset($user->foto_user) : asset('images/default.jpeg') }}" alt="Foto Admin" class="profile-photo">
           <h3 class="profile-nama">{{ $user->nama_lengkap ?? 'Nama Tidak Ditemukan' }}</h3>
           <p class="profile-status aktif">{{ $user->status ?? '' }}</p>
 

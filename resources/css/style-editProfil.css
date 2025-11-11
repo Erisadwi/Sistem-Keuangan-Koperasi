@@ -37,15 +37,15 @@ body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,"Helv
   flex-direction:column; 
   align-items:center; 
   gap:24px; 
-  padding-top:8px;
+  padding-top:125px;
 }
 
 .avatar { width:100%; height:100%; object-fit:cover; display:block;border-radius: 50%;}
 
 .avatar-wrap {
   position: relative; 
-  width: 150px;
-  height: 150px;
+  width: 200px;
+  height: 200px;
   border-radius: 0px;
   overflow: visible;
 }
@@ -53,22 +53,22 @@ body { margin:0; font-family:system-ui,-apple-system,Segoe UI,Roboto,Inter,"Helv
 .btn-camera {
   position: absolute;
   bottom: -0px; 
-  right: -0px;   
+  right: 10px;   
   background-color:#fff;
   border: none;
   border-radius: 50%;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  width: 35px;   
-  height: 35px; 
+  width: 45px;   
+  height: 45px; 
   display: flex;             
   align-items: center;      
   justify-content: center;   
 }
 
 .btn-camera img {
-  width: 23px;  
-  height: 18px;
+  width: 25px;  
+  height: 20px;
 }
 
 .btn-camera:hover {

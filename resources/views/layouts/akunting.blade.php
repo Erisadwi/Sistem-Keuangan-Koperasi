@@ -39,12 +39,16 @@
 
       <ul class="menu-list">
         <x-menu.section title="Transaksi Kas" :open="false" :has-sub="true">
-          <a href="#" class="submenu-row">Pemasukan</a>
-          <a href="#" class="submenu-row">Pengeluaran</a>
-          <a href="#" class="submenu-row">Transfer</a>
+          <a href="{{ route('transaksi-pemasukan.index') }}" class="submenu-row">Pemasukan</a>
+          <a href="{{ route('pengeluaran.index') }}" class="submenu-row">Pengeluaran</a>
+          <a href="{{ route('transaksi-transfer.index') }}"  class="submenu-row">Transfer</a>
         </x-menu.section>
 
-        <x-menu.section title="Transaksi Non Kas" :open="false" :has-sub="false">
+        <x-menu.section 
+        title="Transaksi Non Kas" 
+        :open="false" 
+        :has-sub="false" 
+        :link="route('transaksi-non-kas.index')">
         </x-menu.section>
 
         <x-menu.section title="Laporan" :open="false" :has-sub="true">

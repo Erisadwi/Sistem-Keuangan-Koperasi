@@ -43,24 +43,20 @@ public function update(Request $request, $id)
     $anggota->alamat_anggota   = $validated['alamat_anggota'] ?? $anggota->alamat_anggota;
     $anggota->jabatan          = $validated['jabatan'] ?? $anggota->jabatan;
 
-    // ✅ 3. Update password jika diisi
     if (!empty($validated['password'])) {
         $anggota->password = Hash::make($validated['password']);
     }
 
-    // ✅ 4. Update foto jika ada file baru
     if ($request->hasFile('foto')) {
-        // hapus foto lama (jika ada)
+
         if ($anggota->foto && Storage::disk('public')->exists(str_replace('storage/', '', $anggota->foto))) {
             Storage::disk('public')->delete(str_replace('storage/', '', $anggota->foto));
         }
 
-        // simpan foto baru
         $path = $request->file('foto')->store('uploads', 'public');
         $anggota->foto = 'storage/' . $path;
     }
 
-    // ✅ 5. Simpan perubahan
     $anggota->save();
 
     return redirect()->route('anggota.profil')->with('success', 'Profil berhasil diperbarui!');

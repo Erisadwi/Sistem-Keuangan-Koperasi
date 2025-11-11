@@ -23,12 +23,7 @@
         <aside class="sidebar">
         <div class="profile-card">
         <div class="profile-left">
-        <img 
-          src="{{ $user && $user->foto 
-            ? asset('storage/' . $user->foto) 
-            : asset('images/default.jpeg') }}" 
-          alt="Foto {{ $user->nama_anggota ?? 'Pengguna' }}" 
-        class="avatar-70">
+          <img src="{{ $user->foto_user ? asset($user->foto_user) : asset('images/default.jpeg') }}" alt="Foto Admin" class="avatar-70">
         </div>
         <div class="profile-right">
           <div class="profile-name">{{ $user->nama_anggota ?? 'Nama Tidak Ditemukan' }}</div>

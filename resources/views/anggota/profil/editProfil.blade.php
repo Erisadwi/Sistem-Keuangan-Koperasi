@@ -12,7 +12,7 @@
 
   <main class="page">
     <div class="page-header">
-      <span class="crumb">My Profile &gt;</span>
+      <a href="javascript:history.back()" class="crumb"style="text-decoration: none;">My Profile &gt;</a>
       <h1 class="title">Edit Profile</h1>
     </div>
 
@@ -25,7 +25,6 @@
               <img src="{{ asset('icons/camera.png') }}" alt="" class="btn-icon" />
             </button>
           </div>
-          <button type="button" id="btnUpload" class="btn-upload">Ubah Foto</button>
         </div>
 
         <form id="formProfil" class="form" method="post" action="{{ route('anggota.profil.update', $anggota->id_anggota) }}" enctype="multipart/form-data">
@@ -59,7 +58,15 @@
 
           <div class="field">
             <label>Jabatan</label>
-            <input type="text" name="jabatan" value="{{ $anggota->jabatan }}">
+            <select name="jabatan">
+                <option value="" disabled>Pilih jabatan</option>
+                <option value="KETUA" {{ $anggota->jabatan == 'KETUA' ? 'selected' : '' }}>Ketua</option>
+                <option value="SEKRETARIS" {{ $anggota->jabatan == 'SEKRETARIS' ? 'selected' : '' }}>Sekretaris</option>
+                <option value="BENDAHARA" {{ $anggota->jabatan == 'BENDAHARA' ? 'selected' : '' }}>Bendahara</option>
+                <option value="PENGAWAS" {{ $anggota->jabatan == 'PENGAWAS' ? 'selected' : '' }}>Pengawas</option>
+                <option value="KARYAWAN" {{ $anggota->jabatan == 'KARYAWAN' ? 'selected' : '' }}>Karyawan</option>
+                <option value="PERUSAHAAN" {{ $anggota->jabatan == 'PERUSAHAAN' ? 'selected' : '' }}>Perusahaan</option>
+            </select>
           </div>
 
           <input type="file" name="foto" id="fotoInput" accept="image/*" style="display: none;">
@@ -78,10 +85,8 @@
 
   const fotoInput = document.getElementById('fotoInput');
   const avatar = document.querySelector('.avatar');
-  const btnUpload = document.getElementById('btnUpload');
   const btnCamera = document.getElementById('btnCamera');
 
-  btnUpload.addEventListener('click', () => fotoInput.click());
   btnCamera.addEventListener('click', () => fotoInput.click());
 
   fotoInput.addEventListener('change', event => {
@@ -94,6 +99,8 @@
       reader.readAsDataURL(file);
     }
   });
+
+  
 </script>
 
 </body>

@@ -111,7 +111,7 @@ class DataPinjamanController extends Controller
         return redirect()->route('pinjaman.index')->with('success', 'Data pinjaman berhasil disimpan!');
     }
 
-    public function show($id)
+public function show($id)
 {
     $pinjaman = Pinjaman::with(['anggota', 'lamaAngsuran', 'angsuran'])->findOrFail($id);
     $anggota = $pinjaman->anggota;
@@ -126,59 +126,79 @@ class DataPinjamanController extends Controller
 
     $tanggalTempo = null;
 
-        if (!empty($pinjaman->tanggal_pinjaman) && $pinjaman->lamaAngsuran) {
+    if (!empty($pinjaman->tanggal_pinjaman) && $pinjaman->lamaAngsuran) {
+        $tanggalPinjaman = $pinjaman->tanggal_pinjaman instanceof \Carbon\Carbon
+            ? $pinjaman->tanggal_pinjaman
+            : \Carbon\Carbon::parse($pinjaman->tanggal_pinjaman);
 
-            $tanggalPinjaman = $pinjaman->tanggal_pinjaman instanceof Carbon
-                                ? $pinjaman->tanggal_pinjaman
-                                : Carbon::parse($pinjaman->tanggal_pinjaman);
-
-            $lamaAngsuran = max(1, (int) $pinjaman->lamaAngsuran->lama_angsuran);
-
-            $tanggalTempoObj = $tanggalPinjaman->copy()->addMonthsNoOverflow($lamaAngsuran);
-            $tanggalTempoObj->day(min(30, $tanggalTempoObj->daysInMonth));
-
-            $tanggalTempo = $tanggalTempoObj->toDateString();
-        }
-
-    $payments = collect();
-    for ($i = 1; $i <= $lama; $i++) {
-        $payments->push((object)[
-            'bulan_ke' => $i,
-            'angsuran_pokok' => $pokokPerBulan,
-            'angsuran_bunga' => $bunga,
-            'biaya_admin' => $biaya_admin,
-            'jumlah_angsuran' => $angsuranPerBulan,
-           'tanggalTempo' => $tanggalTempo,
-        ]);
+        $lamaAngsuran = max(1, (int) $pinjaman->lamaAngsuran->lama_angsuran);
+        $tanggalTempoObj = $tanggalPinjaman->copy()->addMonthsNoOverflow($lamaAngsuran);
+        $tanggalTempoObj->day(min(30, $tanggalTempoObj->daysInMonth));
+        $tanggalTempo = $tanggalTempoObj->toDateString();
     }
 
-    $bayar_angsuran = $pinjaman->angsuran()->orderBy('tanggal_bayar', 'asc')->get();
+    $payments = collect();
 
-    $totalBayar = $bayar_angsuran->sum('angsuran_per_bulan');
-    $totalDenda = $bayar_angsuran->sum('denda');
-    $totalPokok = $bayar_angsuran->sum('angsuran_pokok');
-    $totalBunga = $bayar_angsuran->sum('bunga_angsuran');
+if ($lama > 0) {
+
+    $tanggalPinjaman = $pinjaman->tanggal_pinjaman instanceof Carbon
+        ? $pinjaman->tanggal_pinjaman
+        : Carbon::parse($pinjaman->tanggal_pinjaman);
+
+    for ($i = 1; $i <= $lama; $i++) {
+
+        // Tanggal tempo per bulan
+        $tempo = $tanggalPinjaman->copy()
+            ->addMonthsNoOverflow($i)
+            ->day(min(30, $tanggalPinjaman->copy()->addMonthsNoOverflow($i)->daysInMonth));
+
+        $payments->push((object)[
+            'bulan_ke'        => $i,
+            'angsuran_pokok'  => $pokokPerBulan,
+            'angsuran_bunga'  => $bunga,
+            'biaya_admin'     => $biaya_admin,
+            'jumlah_angsuran' => $angsuranPerBulan,
+            'tanggalTempo'    => $tempo->toDateString(),   // ✅ sudah benar per bulan
+        ]);
+    }
+}
+
+    $bayar_angsuran = \App\Models\Angsuran::where('id_pinjaman', $id)
+        ->orderBy('tanggal_bayar', 'asc')
+        ->get();
+
+    $totalBayar  = $bayar_angsuran->sum('jumlah_bayar');
+    $totalDenda  = $bayar_angsuran->sum('denda');
+    $totalPokok  = $bayar_angsuran->sum('angsuran_pokok');
+    $totalBunga  = $bayar_angsuran->sum('pendapatan');
 
     $totalTagihan = $angsuranPerBulan * $lama;
-    $sisaTagihan = max(0, $totalTagihan - $totalBayar);
+    $sisaTagihan  = max(0, $totalTagihan - $totalBayar);
 
     $pinjaman->sisa_angsuran = $lama - $bayar_angsuran->count();
     $pinjaman->sudah_dibayar = $totalBayar;
     $pinjaman->denda = $totalDenda;
     $pinjaman->sisa_tagihan = $sisaTagihan;
-    $pinjaman->status = $pinjaman->sisa_angsuran <= 0 ? 'LUNAS' : 'BELUM LUNAS';
+
+    if ($pinjaman->status_lunas === 'LUNAS') {
+        $pinjaman->sisa_angsuran = 0;
+        $pinjaman->sisa_tagihan = 0;
+        $pinjaman->sudah_dibayar = $totalTagihan;
+    }
+
+    $pinjaman->status = $pinjaman->status_lunas ?? ($pinjaman->sisa_angsuran <= 0 ? 'LUNAS' : 'BELUM LUNAS');
 
     return view('admin.pinjaman.detail-peminjaman', compact(
-    'pinjaman',
-    'anggota',
-    'payments',
-    'bayar_angsuran',
-    'tanggalTempo',
-    'lama',
-    'totalBayar',
-    'totalDenda',
-    'sisaTagihan'
-));
+        'pinjaman',
+        'anggota',
+        'payments',
+        'bayar_angsuran',
+        'tanggalTempo',
+        'lama',
+        'totalBayar',
+        'totalDenda',
+        'sisaTagihan'
+    ));
 }
 
     public function destroy($id)

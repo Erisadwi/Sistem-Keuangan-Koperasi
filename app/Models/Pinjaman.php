@@ -70,7 +70,7 @@ class Pinjaman extends Model
 
     public function Angsuran()
     {
-        return $this->belongsTo(Angsuran::class, 'id_bayar_angsuran', 'id_bayar_angsuran');
+        return $this->hasMany(Angsuran::class, 'id_pinjaman', 'id_pinjaman');
     }
 
     public function tujuan()
