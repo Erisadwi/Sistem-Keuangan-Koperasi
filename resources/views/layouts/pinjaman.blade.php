@@ -19,12 +19,7 @@
         <aside class="sidebar">
         <div class="profile-card">
         <div class="profile-left">
-           @php
-          $fotoPath = $user && $user->foto_user
-          ? asset('storage/foto_user/' . $user->foto_user)
-          : asset('images/default.jpeg');
-          @endphp
-          <img src="{{ $fotoPath }}" alt="Foto {{ $user->nama_lengkap ?? '' }}" class="avatar-70">
+        <img src="{{ $user->foto_user ? asset($user->foto_user) : asset('images/default.jpeg') }}" alt="Foto Admin" class="avatar-70">
         </div>
         <div class="profile-right">
           <div class="profile-name">{{ $user->nama_lengkap ?? 'Nama Tidak Ditemukan' }}</div>

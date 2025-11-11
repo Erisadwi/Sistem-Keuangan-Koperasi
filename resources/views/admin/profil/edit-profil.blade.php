@@ -12,7 +12,7 @@
 
   <main class="page">
     <div class="page-header">
-      <span class="crumb">My Profile &gt;</span>
+      <a href="javascript:history.back()" class="crumb"style="text-decoration: none;">My Profile &gt;</a>
       <h1 class="title">Edit Profile</h1>
     </div>
 
@@ -20,14 +20,11 @@
       <div class="panel-inner">
         <div class="left">
           <div class="avatar-wrap">
-            <img src="{{ $user->foto_user ? asset('storage/foto_user/' . basename($user->foto_user)) : asset('images/default.jpeg') }}"alt="Foto Profil" class="avatar">
+            <img src="{{ $user->foto_user ? asset($user->foto_user) : asset('images/default.jpeg') }}" alt="Foto Profil" class="avatar">
             <button type="button" id="btnCamera" class="btn-camera">
               <img src="{{ asset('icons/camera.png') }}" alt="" class="btn-icon" />
             </button>
           </div>
-          <button type="button" id="btnUpload" class="btn-upload">
-            Ubah Foto
-          </button>
         </div>
 
         <form class="form" method="post" action="{{ route('profil.update', $user->id_user) }}" enctype="multipart/form-data">
@@ -56,7 +53,7 @@
 
           <div class="field">
             <label>Alamat</label>
-            <textarea name="alamat_user" rows="3">{{ $user->alamat_user }}"</textarea>
+            <textarea name="alamat_user" rows="3">{{ $user->alamat_user }}</textarea>
           </div>
 
           <div class="field">
@@ -70,7 +67,7 @@
             </select>
             </div>
 
-             <input type="file" name="foto" id="fotoInput" accept="image/*" style="display: none;">
+             <input type="file" name="foto_user" id="fotoInput" accept="image/*" style="display: none;">
 
           <div class="actions">
             <button type="submit" class="btn btn-save">Simpan Perubahan</button>
@@ -85,10 +82,8 @@
 
   const fotoInput = document.getElementById('fotoInput');
   const avatar = document.querySelector('.avatar');
-  const btnUpload = document.getElementById('btnUpload');
   const btnCamera = document.getElementById('btnCamera');
 
-  btnUpload.addEventListener('click', () => fotoInput.click());
   btnCamera.addEventListener('click', () => fotoInput.click());
 
   fotoInput.addEventListener('change', event => {
