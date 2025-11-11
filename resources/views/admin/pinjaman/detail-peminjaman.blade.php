@@ -120,7 +120,7 @@
                 <td>{{ number_format($pay->angsuran_bunga ?? 0, 0, ',', '.') }}</td>
                 <td>{{ number_format($pay->biaya_admin ?? 0, 0, ',', '.') }}</td>
                 <td>{{ number_format($pay->jumlah_angsuran ?? 0, 0, ',', '.') }}</td>
-                <td>{{ $pay->tanggal_tempo ?? '-' }}</td>
+                <td>{{ $pay->tanggalTempo ?? '-' }}</td>
               </tr>
             @empty
               <tr><td colspan="6" class="no-data">Belum ada data</td></tr>
@@ -162,39 +162,77 @@
             </tr>
           </thead>
           <tbody>
-            @forelse($bayar_angsuran as $i => $trx)
-              <tr>
-                <td>{{ $i + 1 }}</td>
-                 <td>{{ $trx->id_bayar_angsuran }}</td>
-                <td>{{ $trx->tanggal_bayar ?? '-' }}</td>
-                <td>{{ $trx->angsuran_ke ?? '-' }}</td>
-                <td>{{ $trx->jenis_pembayaran ?? '-' }}</td>
-                <td>{{ number_format($trx->jumlah_bayar ?? 0, 0, ',', '.') }}</td>
-                <td>{{ number_format($trx->pembayaran_pokok ?? 0, 0, ',', '.') }}</td>
-                <td>{{ number_format($trx->pendapatan ?? 0, 0, ',', '.') }}</td>
-                <td>{{ number_format($trx->denda ?? 0, 0, ',', '.') }}</td>
-                <td>{{ $trx->user ?? '-' }}</td>
-              </tr>
-            @empty
-              <tr><td colspan="10" class="no-data">Belum ada transaksi pembayaran</td></tr>
-            @endforelse
+@if($bayar_angsuran->count() > 0)
+    {{-- Jika sudah ada data bayar_angsuran --}}
+    @foreach($payments as $i => $pay)
+        @php
+            $trx = $bayar_angsuran[$i] ?? null;
+        @endphp
+        <tr>
+            <td>{{ $i + 1 }}</td>
+            <td>{{ $trx->id_bayar_angsuran ?? '-' }}</td>
+            <td>{{ $trx->tanggal_bayar ?? $pinjaman->tanggal_pinjaman ?? '-' }}</td>
+            <td>{{ $pay->bulan_ke ?? '-' }}</td>
+            <td>Angsuran</td>
+            <td>{{ number_format($pay->jumlah_angsuran ?? 0, 0, ',', '.') }}</td>
+            <td>{{ number_format($pay->angsuran_pokok ?? 0, 0, ',', '.') }}</td>
+            <td>{{ number_format($pay->angsuran_bunga ?? 0, 0, ',', '.') }}</td>
+            <td>0</td>
+            <td>{{ $pinjaman->user->nama_lengkap ?? '-' }}</td>
+        </tr>
+    @endforeach
 
-            @if($bayar_angsuran->count() > 0)
-              <tr style="background-color:#dfe9f3; font-weight:bold;">
-                <td colspan="5">Jumlah</td>
-                <td>{{ number_format($bayar_angsuran->sum('jumlah_bayar'), 0, ',', '.') }}</td>
-                <td>{{ number_format($bayar_angsuran->sum('pembayaran_pokok'), 0, ',', '.') }}</td>
-                <td>{{ number_format($bayar_angsuran->sum('pendapatan'), 0, ',', '.') }}</td>
-                <td>{{ number_format($bayar_angsuran->sum('denda'), 0, ',', '.') }}</td>
-                <td>-</td>
-              </tr>
-            @endif
-          </tbody>
+    <tr style="background-color:#dfe9f3; font-weight:bold;">
+        <td colspan="5">Jumlah</td>
+        <td>{{ number_format($payments->sum('jumlah_angsuran'), 0, ',', '.') }}</td>
+        <td>{{ number_format($payments->sum('angsuran_pokok'), 0, ',', '.') }}</td>
+        <td>{{ number_format($payments->sum('angsuran_bunga'), 0, ',', '.') }}</td>
+        <td>0</td>
+        <td>-</td>
+    </tr>
+
+@elseif(($pinjaman->status ?? '') == 'LUNAS')
+    {{-- Jika belum ada data bayar tapi status pinjaman sudah lunas --}}
+    @foreach($payments as $i => $pay)
+        <tr>
+            <td>{{ $i + 1 }}</td>
+            <td>-</td>
+            <td>{{ $pinjaman->tanggal_pinjaman ?? '-' }}</td>
+            <td>{{ $pay->bulan_ke ?? '-' }}</td>
+            <td>Angsuran</td>
+            <td>{{ number_format($pay->jumlah_angsuran ?? 0, 0, ',', '.') }}</td>
+            <td>{{ number_format($pay->angsuran_pokok ?? 0, 0, ',', '.') }}</td>
+            <td>{{ number_format($pay->angsuran_bunga ?? 0, 0, ',', '.') }}</td>
+            <td>0</td>
+            <td>-</td>
+        </tr>
+    @endforeach
+
+    <tr style="background-color:#dfe9f3; font-weight:bold;">
+        <td colspan="5">Jumlah</td>
+        <td>{{ number_format($payments->sum('jumlah_angsuran'), 0, ',', '.') }}</td>
+        <td>{{ number_format($payments->sum('angsuran_pokok'), 0, ',', '.') }}</td>
+        <td>{{ number_format($payments->sum('angsuran_bunga'), 0, 0, ',', '.') }}</td>
+        <td>0</td>
+        <td>-</td>
+    </tr>
+
+@else
+    {{-- Jika belum lunas dan belum ada pembayaran --}}
+    <tr>
+        <td colspan="10" class="no-data">Belum ada pembayaran angsuran.</td>
+    </tr>
+@endif
+</tbody>
         </table>
       </div>
     </div>
   </div>
 </div>
+
+<div class="pagination-container">
+      <x-menu.pagination :data="$pinjaman" />
+    </div>
 
 <style>
 .content-wrapper {
