@@ -7,7 +7,7 @@
 @section('content')
 
 <div class="form-container">
-    <form action="{{ route('identitas-koperasi.updateSingle') }}" method="POST">
+    <form action="{{ route('identitas-koperasi.updateSingle') }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
 
@@ -40,13 +40,12 @@
 
         <label for="logo">Logo</label>
         <br>
-@if($identitas_koperasi && $identitas_koperasi->logo_koperasi)
-    <img src="{{ route('identitas.logo', ['nama_koperasi' => urlencode($identitas_koperasi->nama_koperasi)]) }}" 
-         alt="Logo Koperasi" 
-         style="width:100px; height:auto; display:block; margin-bottom:10px;">
-@endif
-<input type="file" id="logo" name="logo_koperasi">
-
+        @if($identitas_koperasi && $identitas_koperasi->logo_koperasi)
+            <img src="{{ route('identitas.logo', ['nama_koperasi' => urlencode($identitas_koperasi->nama_koperasi)]) }}" 
+                alt="Logo Koperasi" 
+                style="width:100px; height:auto; display:block; margin-bottom:10px;">
+        @endif
+        <input type="file" id="logo" name="logo_koperasi">
 
         <button type="submit">Update</button>
     </form>
