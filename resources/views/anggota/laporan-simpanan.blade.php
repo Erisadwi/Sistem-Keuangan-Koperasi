@@ -42,7 +42,8 @@
   </div>
 </div>
 
-{{-- Komponen pagination --}}
-<x-menu.pagination />
+<div class="pagination-container">
+      <x-menu.pagination :data="$data" />
+ </div> 
 
 @endsection

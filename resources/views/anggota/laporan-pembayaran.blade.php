@@ -27,12 +27,12 @@
         @isset($data)
             @forelse($data as $row)
                 <tr>
-                    <td>{{ \Carbon\Carbon::parse($row->tanggal)->format('d-m-Y') }}</td>
+                    <td>{{ \Carbon\Carbon::parse($row->tanggal_bayar)->format('d-m-Y') }}</td>
                     <td>{{ $row->jenis }}</td>
                     <td>{{ $row->angsuran_ke }}</td>
                     <td>Rp {{ number_format($row->denda, 0, ',', '.') }}</td>
-                    <td>Rp {{ number_format($row->jumlah_bayar, 0, ',', '.') }}</td>
-                    <td>{{ $row->keterangan }}</td>
+                    <td>Rp {{ number_format($row->angsuran_per_bulan, 0, ',', '.') }}</td>
+                    <td>{{ $row->keterangan ?? '-' }}</td>
                 </tr>
             @empty
                 <tr>
@@ -49,7 +49,8 @@
   </div>
 </div>
 
-{{-- Komponen pagination --}}
-<x-menu.pagination />
+<div class="pagination-container">
+      <x-menu.pagination :data="$data" />
+ </div> 
 
 @endsection

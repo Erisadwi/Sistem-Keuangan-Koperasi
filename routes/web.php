@@ -30,6 +30,10 @@ use App\Http\Controllers\Admin\Pinjaman\PengajuanPinjamanController;
 use App\Http\Controllers\Admin\Pinjaman\AngsuranController;
 use App\Http\Controllers\Admin\Pinjaman\PinjamanLunasController;
 use App\Http\Controllers\Admin\ProfilController;
+use App\Http\Controllers\Anggota\LaporanSimpananController;
+use App\Http\Controllers\Anggota\LaporanPinjamanController;
+use App\Http\Controllers\Anggota\LaporanPembayaranController;
+
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
@@ -220,6 +224,13 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/pinjaman-lunas/cetak/{id_bayar_angsuran}', [PinjamanLunasController::class, 'cetakNota'])->name('detail.pinjaman.cetak');
 });
 
+Route::middleware(['auth:anggota'])->group(function () {
+    Route::get('/laporan-simpanan', [LaporanSimpananController::class, 'index'])->name('anggota.laporan.simpanan');
+    Route::get('/laporan-pinjaman', [LaporanPinjamanController::class, 'index'])->name('anggota.laporan.pinjaman');
+    Route::get('/laporan-pembayaran', [LaporanPembayaranController::class, 'index'])->name('anggota.laporan.pembayaran');
+});
+
+
 //Route::get('/', function () {
 //    return view('welcome');
 //});
@@ -229,10 +240,6 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
 Route::get('/', function () {
     return view('auth.login');
 });
-
-Route::get('/anggota/laporan-simpanan', function () {
-    return view('anggota.laporan-simpanan');
-})->name('anggota.laporan-simpanan');
 
 Route::get('/anggota/profil/editProfil', function () {
     return view('anggota.profil.editProfil');
@@ -250,14 +257,6 @@ Route::get('/anggota/test', function () {
 Route::get('/admin/laporan/laporan-saldo-kas', function () {
     return view('admin.laporan.laporan-saldo-kas');
 })->name('admin.laporan.laporan-saldo-kas');
-
-Route::get('/anggota/laporan-pinjaman', function () {
-    return view('anggota.laporan-pinjaman');
-})->name('anggota.laporan-pinjaman');
-
-Route::get('/anggota/laporan-pembayaran', function () {
-    return view('anggota.laporan-pembayaran');
-})->name('anggota.laporan-pembayaran');
 
 Route::get('/admin/laporan/laporan-SHU', function () {
     return view('admin.laporan.laporan-SHU');

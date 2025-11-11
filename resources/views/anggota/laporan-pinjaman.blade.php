@@ -25,7 +25,6 @@
           <th>Tempo</th>
           <th>Lunas</th>
           <th>Keterangan</th>
-          <th>Opsi</th>
         </tr>
       </thead>
       <tbody>
@@ -35,14 +34,13 @@
               <td>{{ \Carbon\Carbon::parse($row->tanggal)->format('d-m-Y') }}</td>
               <td>{{ $row->lama_angsuran }} bulan</td>
               <td>Rp {{ number_format($row->jumlah, 0, ',', '.') }}</td>
-              <td>{{ $row->bunga }}%</td>
+              <td>Rp {{ number_format($row->bunga, 0, ',', '.') }}</td>
               <td>Rp {{ number_format($row->administrasi, 0, ',', '.') }}</td>
               <td>Rp {{ number_format($row->angsuran_per_bulan, 0, ',', '.') }}</td>
               <td>Rp {{ number_format($row->tagihan, 0, ',', '.') }}</td>
               <td>{{ \Carbon\Carbon::parse($row->tempo)->format('d-m-Y') }}</td>
-              <td>{{ $row->lunas ? 'Ya' : 'Belum' }}</td>
+              <td>{{ $row->lunas }}</td>
               <td>{{ $row->keterangan ?? '-' }}</td>
-              <td>...</td>
             </tr>
           @empty
             <tr>
@@ -59,7 +57,8 @@
   </div>
 </div>
 
-{{-- Komponen pagination --}}
-<x-menu.pagination />
+<div class="pagination-container">
+      <x-menu.pagination :data="$data" />
+ </div> 
 
 @endsection
