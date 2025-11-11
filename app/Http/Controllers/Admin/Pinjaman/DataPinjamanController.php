@@ -57,11 +57,17 @@ class DataPinjamanController extends Controller
         $users = User::all();
         $anggota = Anggota::all();
         $lamaAngsuran = LamaAngsuran::all();
-        $akunTransaksi = JenisAkunTransaksi::all();
+        $akunSumber = JenisAkunTransaksi::where('pinjaman','Y')
+            ->where('is_kas', 1)
+            ->orderBy('nama_AkunTransaksi')->get();
+
+        $akunTujuan = JenisAkunTransaksi::where('pinjaman','Y')
+            ->where('is_kas', 0)
+            ->orderBy('nama_AkunTransaksi')->get();
 
         return view('admin.pinjaman.tambah-data-pinjaman', compact(
-            'ajuanPinjaman', 'users', 'anggota', 'lamaAngsuran', 'akunTransaksi'
-        ));
+    'ajuanPinjaman', 'users', 'anggota', 'lamaAngsuran', 'akunSumber', 'akunTujuan'
+));
     }
 
     public function store(Request $request)
@@ -139,18 +145,14 @@ public function show($id)
 
     $payments = collect();
 
-if ($lama > 0) {
-
-    $tanggalPinjaman = $pinjaman->tanggal_pinjaman instanceof Carbon
+    if ($lama > 0 && !empty($pinjaman->tanggal_pinjaman)) {
+    $tanggalPinjaman = $pinjaman->tanggal_pinjaman instanceof \Carbon\Carbon
         ? $pinjaman->tanggal_pinjaman
-        : Carbon::parse($pinjaman->tanggal_pinjaman);
+        : \Carbon\Carbon::parse($pinjaman->tanggal_pinjaman);
 
     for ($i = 1; $i <= $lama; $i++) {
-
-        // Tanggal tempo per bulan
-        $tempo = $tanggalPinjaman->copy()
-            ->addMonthsNoOverflow($i)
-            ->day(min(30, $tanggalPinjaman->copy()->addMonthsNoOverflow($i)->daysInMonth));
+        $tempo = $tanggalPinjaman->copy()->addMonthsNoOverflow($i);
+        $tempo->day(min(30, $tempo->daysInMonth)); 
 
         $payments->push((object)[
             'bulan_ke'        => $i,
@@ -158,7 +160,7 @@ if ($lama > 0) {
             'angsuran_bunga'  => $bunga,
             'biaya_admin'     => $biaya_admin,
             'jumlah_angsuran' => $angsuranPerBulan,
-            'tanggalTempo'    => $tempo->toDateString(),   // ✅ sudah benar per bulan
+            'tanggalTempo'    => $tempo->format('Y-m-d'),
         ]);
     }
 }
@@ -199,6 +201,76 @@ if ($lama > 0) {
         'totalDenda',
         'sisaTagihan'
     ));
+}
+
+public function edit($id)
+{
+    $pinjaman = Pinjaman::findOrFail($id);
+    $ajuanPinjaman = AjuanPinjaman::all();
+    $users = User::all();
+    $anggota = Anggota::all();
+    $lamaAngsuran = LamaAngsuran::all();
+
+    $akunSumber = JenisAkunTransaksi::where('pinjaman', 'Y')
+        ->where('is_kas', 1)
+        ->orderBy('nama_AkunTransaksi')
+        ->get();
+
+    $akunTujuan = JenisAkunTransaksi::where('pinjaman', 'Y')
+        ->where('is_kas', 0)
+        ->orderBy('nama_AkunTransaksi')
+        ->get();
+
+    return view('admin.pinjaman.edit-data-pinjaman', compact(
+        'pinjaman', 'ajuanPinjaman', 'users', 'anggota', 'lamaAngsuran', 'akunSumber', 'akunTujuan'
+    ));
+}
+
+    public function update(Request $request, $id)
+{
+    $request->validate([
+        'id_anggota' => 'required|exists:anggota,id_anggota',
+        'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
+        'id_jenisAkunTransaksi_sumber' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
+        'id_lamaAngsuran' => 'required|exists:lama_angsuran,id_lamaAngsuran',
+        'tanggal_pinjaman' => 'required|date',
+        'jumlah_pinjaman' => 'required|numeric|min:0',
+    ]);
+
+    $pinjaman = Pinjaman::findOrFail($id);
+
+    $jumlah = $request->jumlah_pinjaman;
+
+    $sukuBunga = SukuBunga::firstOrFail();
+    $ratePinjaman = (float) $sukuBunga->suku_bunga_pinjaman;
+    $rateAdmin = (float) $sukuBunga->biaya_administrasi;
+
+    $lamaAngsuran = LamaAngsuran::findOrFail($request->id_lamaAngsuran);
+    $lama = (int) $lamaAngsuran->lama_angsuran;
+
+    $bunga_pinjaman = $lama > 0
+        ? round((($ratePinjaman / 100) * $jumlah) / $lama, 2)
+        : 0;
+
+    $biaya_admin = round(($rateAdmin / 100) * $jumlah, 2);
+    $totalTagihan = $jumlah + ($bunga_pinjaman * $lama);
+
+    $pinjaman->update([
+        'id_user' => Auth::user()->id_user,
+        'id_anggota' => $request->id_anggota,
+        'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
+        'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
+        'id_lamaAngsuran' => $request->id_lamaAngsuran,
+        'tanggal_pinjaman' => $request->tanggal_pinjaman,
+        'bunga_pinjaman' => $bunga_pinjaman,
+        'jumlah_pinjaman' => $request->jumlah_pinjaman,
+        'total_tagihan' => $totalTagihan,
+        'biaya_admin' => $biaya_admin,
+        // status_lunas tidak diubah kecuali kamu ingin set ulang, contoh:
+        // 'status_lunas' => 'BELUM LUNAS',
+    ]);
+
+    return redirect()->route('pinjaman.index')->with('success', 'Data pinjaman berhasil diperbarui!');
 }
 
     public function destroy($id)

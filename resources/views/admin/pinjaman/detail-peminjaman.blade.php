@@ -171,7 +171,7 @@
         <tr>
             <td>{{ $i + 1 }}</td>
             <td>{{ $trx->id_bayar_angsuran ?? '-' }}</td>
-            <td>{{ $trx->tanggal_bayar ?? $pinjaman->tanggal_pinjaman ?? '-' }}</td>
+            <td>{{ $pay->tanggalTempo ?? '-' }}</td>
             <td>{{ $pay->bulan_ke ?? '-' }}</td>
             <td>Angsuran</td>
             <td>{{ number_format($pay->jumlah_angsuran ?? 0, 0, ',', '.') }}</td>
@@ -197,7 +197,7 @@
         <tr>
             <td>{{ $i + 1 }}</td>
             <td>-</td>
-            <td>{{ $pinjaman->tanggal_pinjaman ?? '-' }}</td>
+            <td>{{ $pay->tanggalTempo ?? '-' }}</td>
             <td>{{ $pay->bulan_ke ?? '-' }}</td>
             <td>Angsuran</td>
             <td>{{ number_format($pay->jumlah_angsuran ?? 0, 0, ',', '.') }}</td>
@@ -229,10 +229,6 @@
     </div>
   </div>
 </div>
-
-<div class="pagination-container">
-      <x-menu.pagination :data="$pinjaman" />
-    </div>
 
 <style>
 .content-wrapper {
