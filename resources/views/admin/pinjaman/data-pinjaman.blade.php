@@ -91,6 +91,11 @@
   </table>
 </div>
 
+<div class="pagination-container">
+      <x-menu.pagination1 :data="$pinjaman" />
+    </div>
+
+
 <style>
   :root {
     --outer-border: #838383;
@@ -130,7 +135,6 @@
     vertical-align: top;
   }
 
-  /* === Subtable styling === */
   .sub-table {
     width: 100%;
     border-collapse: collapse;
@@ -213,25 +217,56 @@
 document.addEventListener('DOMContentLoaded', function () {
     const editButton = document.querySelector('.df-edit');
     const hapusButton = document.querySelector('.df-hapus');
+    const tambahButton = document.querySelector('.df-tambah');
+    const tanggalButton = document.querySelector('.df-tanggal');
+    const unduhButton = document.querySelector('.df-unduh');
+    const hapusFilterButton = document.querySelector('.df-hapus-filter');
+    const cariButton = document.querySelector('.df-cari');
+    const statusSelect = document.getElementById('statusPinjaman');
+    const urutSelect = document.getElementById('urutkan');
+    const cariKode = document.getElementById('cariKode');
+    const cariNama = document.getElementById('cariNama');
+
     let selectedId = null;
 
-    // saat baris diklik
+    // ===============================
+    // 🔹 Pilih baris tabel (highlight)
+    // ===============================
     document.querySelectorAll('.selectable-row').forEach(row => {
         row.addEventListener('click', function() {
-            // hapus highlight dari semua baris
             document.querySelectorAll('.selectable-row').forEach(r => r.classList.remove('selected'));
-
-            // tambahkan highlight ke baris ini
             this.classList.add('selected');
             selectedId = this.dataset.id;
 
-            // ubah tombol edit & hapus agar aktif ke id terpilih
-            if (editButton) editButton.href = `/admin/transaksi-pemasukan/${selectedId}/edit`;
+            if (editButton) editButton.href = `/admin/pinjaman-pinjaman/${selectedId}/edit`;
             if (hapusButton) hapusButton.dataset.id = selectedId;
         });
     });
 
-    // aksi hapus
+    // ===============================
+    // 🔹 Tambah Data
+    // ===============================
+    if (tambahButton) {
+        tambahButton.addEventListener('click', function() {
+            window.location.href = '/admin/pinjaman-pinjaman/create';
+        });
+    }
+
+    // ===============================
+    // 🔹 Edit Data
+    // ===============================
+    if (editButton) {
+        editButton.addEventListener('click', function(e) {
+            if (!selectedId) {
+                e.preventDefault();
+                alert('Pilih data terlebih dahulu untuk diedit!');
+            }
+        });
+    }
+
+    // ===============================
+    // 🔹 Hapus Data
+    // ===============================
     if (hapusButton) {
         hapusButton.addEventListener('click', function(e) {
             e.preventDefault();
@@ -244,7 +279,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (confirm('Yakin ingin menghapus data ini?')) {
                 const form = document.createElement('form');
                 form.method = 'POST';
-                form.action = `/admin/transaksi-pemasukan/${id}`;
+                form.action = `/admin/pinjaman-pinjaman/${id}`;
                 form.innerHTML = `
                     @csrf
                     @method('DELETE')
@@ -253,6 +288,81 @@ document.addEventListener('DOMContentLoaded', function () {
                 form.submit();
             }
         });
+    }
+
+    // ===============================
+    // 🔹 Filter berdasarkan tanggal
+    // ===============================
+    if (tanggalButton) {
+        tanggalButton.addEventListener('click', function() {
+            const tanggal = prompt('Masukkan tanggal (format: YYYY-MM-DD):');
+            if (tanggal) {
+                applyFilter({ tanggal });
+            }
+        });
+    }
+
+    // ===============================
+    // 🔹 Cari berdasarkan kode / nama
+    // ===============================
+    if (cariButton) {
+        cariButton.addEventListener('click', function() {
+            const kode = cariKode ? cariKode.value : '';
+            const nama = cariNama ? cariNama.value : '';
+            applyFilter({ kode, nama });
+        });
+    }
+
+    // ===============================
+    // 🔹 Hapus Filter
+    // ===============================
+    if (hapusFilterButton) {
+        hapusFilterButton.addEventListener('click', function() {
+            if (cariKode) cariKode.value = '';
+            if (cariNama) cariNama.value = '';
+            if (statusSelect) statusSelect.value = '';
+            if (urutSelect) urutSelect.value = '';
+            applyFilter({});
+        });
+    }
+
+    // ===============================
+    // 🔹 Unduh data (export)
+    // ===============================
+    if (unduhButton) {
+        unduhButton.addEventListener('click', function() {
+            window.location.href = '/admin/pinjaman-pinjaman/export';
+        });
+    }
+
+    // ===============================
+    // 🔹 Filter status pinjaman
+    // ===============================
+    if (statusSelect) {
+        statusSelect.addEventListener('change', function() {
+            applyFilter({ status: this.value });
+        });
+    }
+
+    // ===============================
+    // 🔹 Urutkan berdasarkan
+    // ===============================
+    if (urutSelect) {
+        urutSelect.addEventListener('change', function() {
+            applyFilter({ urutkan: this.value });
+        });
+    }
+
+    // ===============================
+    // 🔹 Fungsi bantu filter URL
+    // ===============================
+    function applyFilter(params) {
+        const url = new URL(window.location.href);
+        Object.keys(params).forEach(key => {
+            if (params[key]) url.searchParams.set(key, params[key]);
+            else url.searchParams.delete(key);
+        });
+        window.location.href = url.toString();
     }
 });
 </script>

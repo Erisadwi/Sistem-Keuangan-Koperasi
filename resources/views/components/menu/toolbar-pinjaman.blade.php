@@ -282,77 +282,137 @@
   </div>
 </div>
 
-<!-- ========================= SCRIPT ========================= -->
+@push('scripts')
 <script>
-document.addEventListener("DOMContentLoaded", function() {
-  let selectedId = null;
-  const editBtn = document.querySelector('[data-action="edit"]');
-  const deleteBtn = document.querySelector('[data-action="delete"]');
+document.addEventListener('DOMContentLoaded', function () {
+    let selectedId = null;
 
-  const rows = document.querySelectorAll(".selectable-row");
-  if (rows.length > 0) {
-    rows.forEach(row => {
-      row.addEventListener("click", function() {
-        rows.forEach(r => r.classList.remove("table-active"));
-        this.classList.add("table-active");
-        selectedId = this.dataset.id;
-        editBtn.disabled = false;
-        deleteBtn.disabled = false;
-      });
+    // Tombol utama
+    const btnTambah = document.querySelector('.filter-button[href*="create"]');
+    const btnEdit = document.querySelector('[data-action="edit"]');
+    const btnHapus = document.querySelector('[data-action="delete"]');
+    const btnExport = document.querySelector('[data-action="export"]');
+
+    // Dropdown
+    const urutkanDropdown = document.getElementById('urutkanDropdown');
+    const statusDropdown = document.getElementById('statusDropdown');
+
+    // Filter tanggal popup
+    const btnTanggal = document.getElementById("btnTanggal");
+    const popupTanggal = document.getElementById("popupTanggal");
+    const btnSimpanTanggal = document.getElementById("btnSimpanTanggal");
+    const btnBatalTanggal = document.getElementById("btnBatalTanggal");
+
+    // === PILIH BARIS DATA ===
+    document.querySelectorAll('.selectable-row').forEach(row => {
+        row.addEventListener('click', function () {
+            document.querySelectorAll('.selectable-row').forEach(r => r.classList.remove('table-active'));
+            this.classList.add('table-active');
+            selectedId = this.dataset.id;
+        });
     });
-  }
 
-  editBtn?.addEventListener("click", function() {
-    if (!selectedId) return alert("Pilih data terlebih dahulu!");
-    const url = this.dataset.url.replace("__ID__", selectedId);
-    window.location.href = url;
-  });
+    // === TAMBAH ===
+    btnTambah?.addEventListener('click', function (e) {
+        e.preventDefault();
+        window.location.href = this.getAttribute('href');
+    });
 
-  deleteBtn?.addEventListener("click", function() {
-    if (!selectedId) return alert("Pilih data terlebih dahulu!");
-    if (!confirm("Yakin ingin menghapus data ini?")) return;
-    const url = this.dataset.url.replace("__ID__", selectedId);
-    fetch(url, {
-      method: "DELETE",
-      headers: { "X-CSRF-TOKEN": "{{ csrf_token() }}" }
-    }).then(() => location.reload());
-  });
+    // === EDIT ===
+    btnEdit?.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (!selectedId) {
+            alert('Pilih data terlebih dahulu!');
+            return;
+        }
+        window.location.href = `/admin/pinjaman-pinjaman/${selectedId}/edit`;
+    });
 
-  window.clearFilter = function() {
-    window.location.href = "{{ url()->current() }}";
-  };
+    // === HAPUS ===
+    btnHapus?.addEventListener('click', function (e) {
+        e.preventDefault();
+        if (!selectedId) {
+            alert('Pilih data terlebih dahulu!');
+            return;
+        }
 
-  // === SCRIPT FILTER TANGGAL ===
-  const btnTanggal = document.getElementById("btnTanggal");
-  const popupTanggal = document.getElementById("popupTanggal");
-  const btnSimpan = document.getElementById("btnSimpanTanggal");
-  const btnBatal = document.getElementById("btnBatalTanggal");
+        if (confirm('Yakin ingin menghapus data ini?')) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = `/admin/pinjaman-pinjaman/${selectedId}`;
+            form.innerHTML = `
+                @csrf
+                @method('DELETE')
+            `;
+            document.body.appendChild(form);
+            form.submit();
+        }
+    });
 
-  btnTanggal.addEventListener("click", function(e) {
-    e.stopPropagation();
-    popupTanggal.style.display = popupTanggal.style.display === "block" ? "none" : "block";
-  });
+    // === EXPORT ===
+    btnExport?.addEventListener('click', function (e) {
+        e.preventDefault();
+        alert('Export data pinjaman dalam format Excel/PDF sedang diproses...');
+        window.location.href = this.getAttribute('href');
+    });
 
-  btnBatal.addEventListener("click", function() {
-    popupTanggal.style.display = "none";
-  });
+    // === URUTKAN BERDASARKAN ===
+    urutkanDropdown?.querySelectorAll('a').forEach(item => {
+        item.addEventListener('click', function (e) {
+            e.preventDefault();
+            const urut = this.getAttribute('data-sort');
+            const url = new URL(window.location.href);
+            url.searchParams.set('sort', urut);
+            window.location.href = url.toString();
+        });
+    });
 
-  btnSimpan.addEventListener("click", function() {
-    const mulai = document.getElementById("tanggalMulai").value;
-    const akhir = document.getElementById("tanggalAkhir").value;
-    if (!mulai || !akhir) {
-      alert("Harap isi kedua tanggal terlebih dahulu!");
-      return;
-    }
-    alert(`Filter tanggal dari ${mulai} sampai ${akhir} diterapkan.`);
-    popupTanggal.style.display = "none";
-  });
+    // === STATUS PINJAMAN ===
+    statusDropdown?.querySelectorAll('a').forEach(item => {
+        item.addEventListener('click', function (e) {
+            e.preventDefault();
+            const status = this.getAttribute('data-status');
+            const url = new URL(window.location.href);
+            url.searchParams.set('status', status);
+            window.location.href = url.toString();
+        });
+    });
 
-  // Tutup popup kalau klik di luar
-  document.addEventListener("click", function(e) {
-    if (!popupTanggal.contains(e.target) && !btnTanggal.contains(e.target)) {
-      popupTanggal.style.display = "none";
-    }
-  });
+    // === FILTER TANGGAL ===
+    btnTanggal?.addEventListener('click', function (e) {
+        e.stopPropagation();
+        popupTanggal.style.display = popupTanggal.style.display === 'block' ? 'none' : 'block';
+    });
+
+    btnSimpanTanggal?.addEventListener('click', function () {
+        const mulai = document.getElementById("tanggalMulai").value;
+        const akhir = document.getElementById("tanggalAkhir").value;
+        if (!mulai || !akhir) {
+            alert("Harap isi kedua tanggal terlebih dahulu!");
+            return;
+        }
+        const url = new URL(window.location.href);
+        url.searchParams.set('tanggal_mulai', mulai);
+        url.searchParams.set('tanggal_akhir', akhir);
+        window.location.href = url.toString();
+    });
+
+    btnBatalTanggal?.addEventListener('click', function () {
+        popupTanggal.style.display = 'none';
+    });
+
+    document.addEventListener('click', function (e) {
+        if (!popupTanggal.contains(e.target) && !btnTanggal.contains(e.target)) {
+            popupTanggal.style.display = 'none';
+        }
+    });
+
+    // === CLEAR FILTER ===
+    window.clearFilter = function () {
+        const url = new URL(window.location.href);
+        url.search = '';
+        window.location.href = url.toString();
+    };
 });
 </script>
+@endpush

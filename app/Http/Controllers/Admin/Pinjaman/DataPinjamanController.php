@@ -19,9 +19,13 @@ use Carbon\Carbon;
 
 class DataPinjamanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $pinjaman = Pinjaman::with(['ajuanPinjaman', 'user', 'anggota', 'lamaAngsuran', 'tujuan', 'sumber'])->get();
+        $perPage = $request->get('per_page', 7);
+
+        $pinjaman = Pinjaman::with(['ajuanPinjaman', 'user', 'anggota', 'lamaAngsuran', 'tujuan', 'sumber'])
+            ->paginate($perPage)
+            ->appends(['per_page' => $perPage]); // agar per_page tetap di URL
 
         foreach ($pinjaman as $item) {
             $jumlah = $item->jumlah_pinjaman ?? 0;
