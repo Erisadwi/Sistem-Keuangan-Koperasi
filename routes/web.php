@@ -113,6 +113,7 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('users/{id}/edit', [UserController::class, 'edit'])->name('data-user.edit');
     Route::put('users/{id}', [UserController::class, 'update'])->name('data-user.update');
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('data-user.destroy');
+    Route::get('users/export', [UserController::class, 'export'])->name('data-user.export');
 
     Route::get('/saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'index'])->name('saldo-awal-non-kas.index');
     Route::get('/saldo-awal-non-kas/create', [SaldoAwalNonKasController::class, 'create'])->name('saldo-awal-non-kas.create');
