@@ -206,5 +206,54 @@
   }
 </style>
 
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const editButton = document.querySelector('.df-edit');
+    const hapusButton = document.querySelector('.df-hapus');
+    let selectedId = null;
+
+    // saat baris diklik
+    document.querySelectorAll('.selectable-row').forEach(row => {
+        row.addEventListener('click', function() {
+            // hapus highlight dari semua baris
+            document.querySelectorAll('.selectable-row').forEach(r => r.classList.remove('selected'));
+
+            // tambahkan highlight ke baris ini
+            this.classList.add('selected');
+            selectedId = this.dataset.id;
+
+            // ubah tombol edit & hapus agar aktif ke id terpilih
+            if (editButton) editButton.href = `/admin/transaksi-pemasukan/${selectedId}/edit`;
+            if (hapusButton) hapusButton.dataset.id = selectedId;
+        });
+    });
+
+    // aksi hapus
+    if (hapusButton) {
+        hapusButton.addEventListener('click', function(e) {
+            e.preventDefault();
+            const id = this.dataset.id;
+            if (!id) {
+                alert('Pilih data terlebih dahulu');
+                return;
+            }
+
+            if (confirm('Yakin ingin menghapus data ini?')) {
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = `/admin/transaksi-transfer/${id}`;
+                form.innerHTML = `
+                    @csrf
+                    @method('DELETE')
+                `;
+                document.body.appendChild(form);
+                form.submit();
+            }
+        });
+    }
+});
+</script>
+@endpush
 
 @endsection
