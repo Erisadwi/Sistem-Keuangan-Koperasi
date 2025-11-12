@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Exports\SaldoAwalNonKasExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class SaldoAwalNonKasController extends Controller
 {
@@ -13,7 +15,8 @@ class SaldoAwalNonKasController extends Controller
     {
         $saldoAwalNonKas = Transaksi::with(['tujuan'])
             ->where('type_transaksi', 'SANK') 
-            ->get();
+            ->orderBy('tanggal_transaksi', 'desc')
+            ->paginate(10);
 
         return view('admin.master_data.saldo-awal-non-kas', compact('saldoAwalNonKas'));
     }
@@ -21,6 +24,11 @@ class SaldoAwalNonKasController extends Controller
     public function create()
     {
         return view('admin.master_data.tambah-data-saldo-awal-non-kas');
+    }
+
+    public function export()
+    {
+    return Excel::download(new SaldoAwalNonKasExport, 'saldo-awal-non-kas.xlsx');
     }
 
     public function store(Request $request)
@@ -73,6 +81,15 @@ class SaldoAwalNonKasController extends Controller
 
         return redirect()->route('saldo-awal-non-kas.index')
             ->with('success', 'Data Saldo Awal Non Kas berhasil diperbarui.');
+    }
+
+    public function destroy($id)
+    {
+        $transaksi = Transaksi::findOrFail($id);
+        $transaksi->delete();
+
+        return redirect()->route('saldo-awal-non-kas.index')
+            ->with('success', 'Data Saldo Awal Kas berhasil dihapus.');
     }
 
 }

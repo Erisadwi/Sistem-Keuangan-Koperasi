@@ -117,6 +117,7 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('/saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'index'])->name('saldo-awal-non-kas.index');
     Route::get('/saldo-awal-non-kas/create', [SaldoAwalNonKasController::class, 'create'])->name('saldo-awal-non-kas.create');
     Route::post('/saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'store'])->name('saldo-awal-non-kas.store');
+    Route::get('saldo-awal-non-kas/export', [SaldoAwalNonKasController::class, 'export'])->name('saldo-awal-non-kas.export');
     Route::get('/saldo-awal-non-kas/{id}/edit', [SaldoAwalNonKasController::class, 'edit'])->name('saldo-awal-non-kas.edit');
     Route::put('/saldo-awal-non-kas/{id}', [SaldoAwalNonKasController::class, 'update'])->name('saldo-awal-non-kas.update');
 
