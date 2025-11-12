@@ -8,7 +8,7 @@
 
 <x-menu.tambah-unduh 
     addUrl="{{ route('data-user.create') }} " 
-    downloadFile="data_pengguna.pdf" />
+    downloadFile="{{ route('data-user.export') }}" />
 
 <div class="laporan-data-pengguna-wrap">
   <div class="table-scroll-wrapper">
@@ -45,24 +45,26 @@
               </span>
             </td>
             <td>
-            @if ($row->foto_user)
-            <img src="{{ asset('storage/foto_user/' . $row->foto_user) }}" 
-              alt="Foto {{ $row->nama_lengkap }}" 
-              width="70" height="70" 
-              style="object-fit: cover; border-radius: 50%;">
-            @else
-              <img src="{{ asset('images/default-user.png') }}" 
-              alt="Default" 
-              width="70" height="70">
-            @endif
+              @if ($row->foto_user)
+              <img src="{{ asset('storage/foto_user/' . $row->foto_user) }}" 
+                alt="Foto {{ $row->nama_lengkap }}" 
+                width="70" height="70" 
+                style="object-fit: cover; border-radius: 50%;">
+              @else
+                <img src="{{ asset('images/default-user.png') }}" 
+                alt="Default" 
+                width="70" height="70">
+              @endif
             </td>
             <td class="actions">
-              <a href="{{ route('data-user.edit', ['id' => $row->id_user]) }}" class="edit">✏️ Edit</a>
-              <form action="{{ route('data-user.destroy', ['id' => $row->id_user]) }}" method="POST" style="display: inline;">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="delete">❌ Hapus</button>
-              </form>
+              <div class="aksi-wrapper">
+                <a href="{{ route('data-user.edit', ['id' => $row->id_user]) }}" class="edit">✏️ Edit</a>
+                <form action="{{ route('data-user.destroy', ['id' => $row->id_user]) }}" method="POST" class="form-hapus">
+                  @csrf
+                  @method('DELETE')
+                  <button type="submit" class="delete">❌ Hapus</button>
+                </form>
+              </div>
             </td>
           </tr>
         @empty
@@ -116,12 +118,11 @@
   background: #f0f0f0;
 }
 
-/* Tabel */
 .data-pengguna-table {
   width: 100%;
   min-width: 1000px;
   border-collapse: collapse;
-  background: #ffffff;
+  background: #ffffff !important;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: 13px;
   color: var(--text);
@@ -146,11 +147,11 @@
 }
 
 .data-pengguna-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
+  background-color: #f9f9f9 !important;
 }
 
 .data-pengguna-table tbody tr:hover {
-  background-color: #eef7ff;
+  background-color: #eef7ff !important;
 }
 
 /* Foto & Status */
@@ -171,27 +172,36 @@
   font-weight: 600;
 }
 
-/* Tombol aksi */
-.actions {
-  display: flex;
-  justify-content: center;
-  gap: 8px;
+/* --- PERBAIKAN DI SINI --- */
+td.actions {
+  background-color: inherit !important; /* ikut warna baris */
+  padding: 10px !important;
+  vertical-align: middle;
 }
 
-.edit, .delete {
-  padding: 6px 10px;
-  border-radius: 5px;
+.aksi-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+}
+
+.actions .edit,
+.actions .delete {
+  padding: 6px 12px;
+  border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
+  color: #fff !important;
+  display: inline-block;
   border: none;
   cursor: pointer;
-  color: #fff;
 }
 
 .edit {
   background-color: #25E11B;
 }
-
 .edit:hover {
   background-color: #1db113;
 }
@@ -199,7 +209,6 @@
 .delete {
   background-color: #FF0000;
 }
-
 .delete:hover {
   background-color: #c60b0b;
 }
@@ -210,5 +219,22 @@
   font-style: italic;
 }
 </style>
+
+<script>
+document.querySelectorAll('.form-hapus').forEach(function(form) {
+    form.addEventListener('submit', function (e) {
+        e.preventDefault(); 
+
+        const yakin = confirm('⚠️ Apakah Anda yakin ingin menghapus data ini?');
+
+        if (yakin) {
+            alert('🗑️ Data berhasil dihapus!');
+            form.submit(); 
+        } else {
+            alert('❌ Penghapusan data dibatalkan.');
+        }
+    });
+});
+</script>
 
 @endsection
