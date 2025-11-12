@@ -11,6 +11,7 @@ use App\Models\Anggota;
 use App\Models\LamaAngsuran;
 use App\Models\JenisAkunTransaksi;
 use App\Models\Angsuran;
+use App\Models\identitasKoperasi;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -18,9 +19,14 @@ use Carbon\Carbon;
 
 class DataPinjamanController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $pinjaman = Pinjaman::with(['ajuanPinjaman', 'user', 'anggota', 'lamaAngsuran', 'tujuan', 'sumber'])->get();
+
+        $perPage = $request->get('per_page', 7);
+
+        $pinjaman = Pinjaman::with(['ajuanPinjaman', 'user', 'anggota', 'lamaAngsuran', 'tujuan', 'sumber'])
+            ->paginate($perPage)
+            ->appends(['per_page' => $perPage]);
 
         foreach ($pinjaman as $item) {
             $jumlah = $item->jumlah_pinjaman ?? 0;
@@ -284,6 +290,17 @@ public function edit($id)
     public function cetakNota($id)
     {
         $pinjaman = Pinjaman::with(['anggota', 'lamaAngsuran'])->findOrFail($id);
+        $koperasi = identitasKoperasi::first(); // ambil data koperasi
+
+            if ($koperasi && $koperasi->alamat_koperasi) {
+                $bagianAlamat = explode(',', $koperasi->alamat_koperasi);
+
+                $koperasi->kota_otomatis = trim(end($bagianAlamat));
+
+                if (empty($koperasi->kota_otomatis)) {
+                    $koperasi->kota_otomatis = 'Surabaya'; 
+                }
+            }
 
         $pokok_pinjaman = $pinjaman->jumlah_pinjaman;
         $lama = $pinjaman->lamaAngsuran->lama_angsuran ?? 0;
@@ -296,7 +313,8 @@ public function edit($id)
             'pokok_pinjaman',
             'angsuran_pokok',
             'angsuran_bunga',
-            'jumlah_angsuran'
+            'jumlah_angsuran',
+            'koperasi'
         ));
     }
 }

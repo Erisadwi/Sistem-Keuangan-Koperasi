@@ -186,7 +186,7 @@
     <div class="ref">Ref. {{ now()->format('Ymd_His') }}</div>
 
     <div class="content">
-      Telah terima dari <b>KOPKAR TEMPRINA SEJAHTERA MANDIRI</b><br>
+      Telah terima dari <b>KOPERASI TUNAS SEJAHTERA MANDIRI</b><br>
       Pada tanggal {{ \Carbon\Carbon::parse($pinjaman->tanggal_pinjaman)->translatedFormat('d F Y') }} untuk realisasi kredit sebesar
       <b>Rp. {{ number_format($pokok_pinjaman, 0, ',', '.') }}</b>
       ({{ strtoupper(terbilang($pokok_pinjaman)) }} RUPIAH)
@@ -219,23 +219,24 @@
       TERBILANG : {{ strtoupper(terbilang($jumlah_angsuran)) }} RUPIAH
     </div>
 
-        <div class="tanda-tangan">
-    <div class="tanggal">
-        Surabaya, {{ \Carbon\Carbon::parse($pinjaman->tanggal_pinjaman)->translatedFormat('d F Y') }}
-    </div>
+      <div class="tanda-tangan">
+          <div class="tanggal">
+          {{ $koperasi->kota_otomatis ?? 'Surabaya' }},
+          {{ \Carbon\Carbon::parse($pinjaman->tanggal_pinjaman)->translatedFormat('d F Y') }}
+      </div>
+      
+  <div class="blok-container">
+      <div class="blok">
+          <br><br><br><br>
+          <span class="nama">{{ strtoupper(Auth::user()->nama_lengkap ?? 'ADMIN' ) }}</span>
+      </div>
 
-    <div class="blok-container">
-        <div class="blok">
-        <br><br><br><br>
-        <span class="nama">IRMA</span>
-        </div>
-
-        <div class="blok">
-        <br><br><br><br>
-        <span class="nama">A. FERY ARDIANSAH</span>
-        </div>
-    </div>
-    </div>
+      <div class="blok">
+          <br><br><br><br>
+          <span class="nama">{{ strtoupper($pinjaman->anggota->nama_anggota ?? 'ANGGOTA' ) }}</span>
+      </div>
+  </div>
+</div>
 
     <div class="footer">
       <p>** Tanda terima ini sah jika telah dibubuhi cap dan tanda tangan oleh Admin **</p>

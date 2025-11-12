@@ -55,7 +55,7 @@
   </div>
 </div>
 
-{{-- <div class="pagination-container">
+<div class="pagination-container">
       <x-menu.pagination :data="$penarikanTunai" />
  </div> 
 

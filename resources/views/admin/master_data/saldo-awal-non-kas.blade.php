@@ -8,7 +8,7 @@
 
 <x-menu.tambah-unduh 
     addUrl="{{ route('saldo-awal-non-kas.create') }}" 
-    downloadFile="saldo-awal-non-kas.pdf" 
+    downloadFile="{{ route('saldo-awal-non-kas.export') }}"
 />
 
 <div class="saldo-awal-non-kas-table-wrap">
@@ -33,7 +33,7 @@
           <td>{{ $row->ket_transaksi ?? '-' }}</td>
           <td>{{ number_format($row->jumlah_transaksi ?? 0, 0, ',', '.') }}</td>
           <td>{{ $row->updated_at ? $row->updated_at->format('d/m/Y - H:i') : '-' }}</td>
-          <td>{{ $row->username ?? '-' }}</td>
+          <td>{{ $row->user->nama_lengkap ?? '' }}</td>
           <td class="actions">
             <a href="{{ route('saldo-awal-non-kas.edit', $row->id_transaksi) }}" class="edit">✏️ Edit</a>
           </td>
@@ -46,6 +46,10 @@
     </tbody>
   </table>
 </div>
+
+<div class="pagination-container">
+      <x-menu.pagination :data="$saldoAwalNonKas" />
+ </div>
 
 <style>
   :root {

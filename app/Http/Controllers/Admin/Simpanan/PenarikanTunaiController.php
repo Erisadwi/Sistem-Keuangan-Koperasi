@@ -22,9 +22,10 @@ class PenarikanTunaiController extends Controller
         ->where('type_simpanan', 'TRK'); 
 
     if ($request->filled('start') && $request->filled('end')) {
-        $query->whereBetween('tanggal_transaksi', [$request->start, $request->end]);
+        $start = \Carbon\Carbon::parse($request->start)->startOfDay();
+        $end = \Carbon\Carbon::parse($request->end)->endOfDay();
+        $query->whereBetween('tanggal_transaksi', [$start, $end]);
     }
-
     elseif ($request->filled('tanggal')) {
         $query->whereDate('tanggal_transaksi', $request->tanggal);
     }
@@ -45,7 +46,7 @@ class PenarikanTunaiController extends Controller
         });
     }
 
-    $penarikanTunai = $query->orderBy('tanggal_transaksi', 'desc')->get();
+    $penarikanTunai = $query->orderBy('tanggal_transaksi', 'desc')->paginate(10);
 
     if ($penarikanTunai->isEmpty() && $request->hasAny(['start', 'end', 'tanggal', 'kode', 'nama', 'jenis'])) {
         session()->flash('warning', '⚠️ Tidak ditemukan data dengan filter yang diterapkan.');

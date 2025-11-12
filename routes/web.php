@@ -117,6 +117,7 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('/saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'index'])->name('saldo-awal-non-kas.index');
     Route::get('/saldo-awal-non-kas/create', [SaldoAwalNonKasController::class, 'create'])->name('saldo-awal-non-kas.create');
     Route::post('/saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'store'])->name('saldo-awal-non-kas.store');
+    Route::get('saldo-awal-non-kas/export', [SaldoAwalNonKasController::class, 'export'])->name('saldo-awal-non-kas.export');
     Route::get('/saldo-awal-non-kas/{id}/edit', [SaldoAwalNonKasController::class, 'edit'])->name('saldo-awal-non-kas.edit');
     Route::put('/saldo-awal-non-kas/{id}', [SaldoAwalNonKasController::class, 'update'])->name('saldo-awal-non-kas.update');
 
@@ -334,18 +335,6 @@ Route::get('/admin/laporan/laporan-kas-simpanan', function () {
 Route::get('/admin/laporan/laporan-kas-pinjaman', function () {
     return view('admin.laporan.laporan-kas-pinjaman');
 })->name('admin.laporan.laporan-kas-pinjaman');
-
-Route::get('/admin/master_data/saldo-awal-non-kas', function () {
-    return view('admin.master_data.saldo-awal-non-kas');
-})->name('admin.master_data.saldo-awal-non-kas');
-
-Route::get('/admin/master_data/tambah-data-saldo-awal-non-kas', function () {
-    return view('admin.master_data.tambah-data-saldo-awal-non-kas');
-})->name('admin.master_data.tambah-data-saldo-awal-non-kas');
-
-Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
-    return view('admin.master_data.edit-data-saldo-awal-non-kas');
-})->name('admin.master_data.edit-data-saldo-awal-non-kas');
 
 Route::get('/admin/profil/edit-profil', function () {
     return view('admin.profil.edit-profil');
