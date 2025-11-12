@@ -39,10 +39,12 @@ class TransaksiPemasukanController extends Controller
     {
         $akunSumber = JenisAkunTransaksi::where('pemasukan','Y')
             ->where('is_kas', 0)
+            ->where('status_akun', 'Y')
             ->orderBy('nama_AkunTransaksi')->get();
 
         $akunTujuan = JenisAkunTransaksi::where('pemasukan','Y')
             ->where('is_kas', 1)
+            ->where('status_akun', 'Y')
             ->orderBy('nama_AkunTransaksi')->get();
 
         return view('admin.transaksi_kas.tambah-pemasukan', compact('akunSumber', 'akunTujuan'));
@@ -57,6 +59,7 @@ class TransaksiPemasukanController extends Controller
             'required',
             Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
                 ->where(fn($q) => $q->where('pengeluaran', 'Y')
+                                    ->where('status_akun', 'Y')
                                     ->where('is_kas', 1)), 
         ],
         'sumber' => 'required|array|min:1',
@@ -64,6 +67,7 @@ class TransaksiPemasukanController extends Controller
             'required',
             Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
                 ->where(fn($q) => $q->where('pengeluaran', 'Y')
+                                    ->where('status_akun', 'Y')
                                     ->where('is_kas', 0)), 
         ],
         'sumber.*.jumlah' => 'required|numeric|min:1',
@@ -110,10 +114,12 @@ class TransaksiPemasukanController extends Controller
 
         $akunSumber = JenisAkunTransaksi::where('pemasukan','Y')
             ->where('is_kas', 0)
+            ->where('status_akun', 'Y')
             ->orderBy('nama_AkunTransaksi')->get();
 
         $akunTujuan = JenisAkunTransaksi::where('pemasukan','Y')
             ->where('is_kas', 1)
+            ->where('status_akun', 'Y')
             ->orderBy('nama_AkunTransaksi')->get();
 
         $akun_tujuan = $TransaksiPemasukan->details->firstWhere('debit', '>', 0);
