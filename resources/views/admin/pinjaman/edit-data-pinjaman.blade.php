@@ -10,8 +10,9 @@
 
 <div class="form-container">
     <div class="form-wrapper">
-    <form id="formDataPinjaman" action="#" method="POST">
+    <form id="formDataPinjaman" action="{{ route('pinjaman.update', $pinjaman->id_pinjaman) }}" method="POST" enctype="multipart/form-data">
         @csrf
+        @method('PUT')
 
         <div class="form-group">
             <label for="tanggal_pinjaman">Tanggal Pinjaman</label>
@@ -77,24 +78,28 @@
         </div>
 
         <div class="form-group">
-            <label for="id_jenisAkunTransaksi_tujuan">Pilih Akun</label>
-            <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan" required>
-                <option value="" disabled>-- Pilih Akun --</option>
-                <option value="7" {{ $pinjaman->id_jenisAkunTransaksi_tujuan == 7 ? 'selected' : '' }}>Pinjaman Karyawan</option>
-                <option value="8" {{ $pinjaman->id_jenisAkunTransaksi_tujuan == 8 ? 'selected' : '' }}>Pinjaman</option>
-                <option value="12" {{ $pinjaman->id_jenisAkunTransaksi_tujuan == 12 ? 'selected' : '' }}>Pinjaman Perusahaan</option>
+            <label for="id_jenisAkunTransaksi_tujuan">Pilih akun*</label>
+            <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan">
+                <option value="" disabled {{ old('id_jenisAkunTransaksi_tujuan', $pinjaman->id_jenisAkunTransaksi_tujuan ?? '') == '' ? 'selected' : '' }}>Pilih Akun</option>
+                @foreach ($akunTujuan as $a)
+                    <option value="{{ $a->id_jenisAkunTransaksi }}"
+                        {{ (string) old('id_jenisAkunTransaksi_tujuan', $pinjaman->id_jenisAkunTransaksi_tujuan ?? '') === (string) $a->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                        {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
+                    </option>
+                @endforeach
             </select>
         </div>
 
         <div class="form-group">
-            <label for="id_jenisAkunTransaksi_sumber">Ambil Dari Kas</label>
-            <select name="id_jenisAkunTransaksi_sumber" id="id_jenisAkunTransaksi_sumber" required>
-                <option value="" disabled>-- Pilih Kas --</option>
-                <option value="1" {{ $pinjaman->id_jenisAkunTransaksi_sumber == 1 ? 'selected' : '' }}>Kas Besar</option>
-                <option value="3" {{ $pinjaman->id_jenisAkunTransaksi_sumber == 3 ? 'selected' : '' }}>Bank Mandiri</option>
-                <option value="4" {{ $pinjaman->id_jenisAkunTransaksi_sumber == 4 ? 'selected' : '' }}>Kas Kecil</option>
-                <option value="5" {{ $pinjaman->id_jenisAkunTransaksi_sumber == 5 ? 'selected' : '' }}>Kas Niaga</option>
-                <option value="2" {{ $pinjaman->id_jenisAkunTransaksi_sumber == 2 ? 'selected' : '' }}>Bank BNI</option>
+            <label for="id_jenisAkunTransaksi_sumber">Ambil dari Kas*</label>
+            <select name="id_jenisAkunTransaksi_sumber" id="id_jenisAkunTransaksi_sumber">
+                <option value="" disabled {{ old('id_jenisAkunTransaksi_sumber', $pinjaman->id_jenisAkunTransaksi_sumber ?? '') == '' ? 'selected' : '' }}>Pilih Kas</option>
+                @foreach ($akunSumber as $a)
+                    <option value="{{ $a->id_jenisAkunTransaksi }}"
+                        {{ (string) old('id_jenisAkunTransaksi_sumber', $pinjaman->id_jenisAkunTransaksi_sumber ?? '') === (string) $a->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                        {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
+                    </option>
+                @endforeach
             </select>
         </div>
 

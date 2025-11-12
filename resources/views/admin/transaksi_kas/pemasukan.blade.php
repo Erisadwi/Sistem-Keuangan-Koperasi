@@ -33,21 +33,38 @@
     </thead>
 
     <tbody>
-      @forelse(($TransaksiPemasukan ?? collect()) as $idx => $row)
+    @forelse($TransaksiPemasukan as $row)
+        @php
+            // akun tujuan = baris dengan debit > 0 (kas masuk)
+            $akunTujuan = $row->details->firstWhere('debit', '>', 0)?->akun;
+            // akun sumber = semua baris dengan kredit > 0
+            $akunSumberList = $row->details->where('kredit', '>', 0);
+            // total jumlah = ambil total debit (pasti sama dengan total kredit)
+            $jumlah = $row->total_debit ?? 0;
+        @endphp
+
         <tr class="selectable-row" data-id="{{ $row->id_transaksi }}">
-          <td>{{ $row->kode_transaksi ?? '' }}</td>
-          <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y') ?? '' }}</td>
-          <td>{{ $row->ket_transaksi ?? '-' }}</td>
-          <td>{{ $row->tujuan->nama_AkunTransaksi ?? '' }}</td>
-          <td>{{ $row->sumber->nama_AkunTransaksi ?? '' }}</td>
-          <td>{{ number_format($row->jumlah_transaksi ?? 0, 0, ',', '.') }}</td>
-          <td>{{ $row->data_user->nama_lengkap ?? '' }}</td>
-      @empty
-        <tr>
-          <td colspan="7" class="empty-cell">Belum ada data pemasukan</td>
+            <td>{{ $row->kode_transaksi }}</td>
+            <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y') }}</td>
+            <td>{{ $row->ket_transaksi ?? '-' }}</td>
+            <td>{{ $akunTujuan->nama_AkunTransaksi ?? '-' }}</td>
+            <td>
+                <ul style="margin:0; padding-left:16px; text-align:left;">
+                    @foreach($akunSumberList as $s)
+                        <li>{{ $s->akun->nama_AkunTransaksi ?? '-' }}</li>
+                    @endforeach
+                </ul>
+            </td>
+            <td>{{ number_format($jumlah, 0, ',', '.') }}</td>
+            <td>{{ $row->data_user->nama_lengkap ?? '-' }}</td>
         </tr>
-      @endforelse
+    @empty
+        <tr>
+            <td colspan="7" class="empty-cell">Belum ada data pemasukan</td>
+        </tr>
+    @endforelse
     </tbody>
+
   </table>
 </div>
 
@@ -216,23 +233,19 @@ document.addEventListener('DOMContentLoaded', function () {
     const hapusButton = document.querySelector('.df-hapus');
     let selectedId = null;
 
-    // saat baris diklik
     document.querySelectorAll('.selectable-row').forEach(row => {
         row.addEventListener('click', function() {
-            // hapus highlight dari semua baris
+
             document.querySelectorAll('.selectable-row').forEach(r => r.classList.remove('selected'));
 
-            // tambahkan highlight ke baris ini
             this.classList.add('selected');
             selectedId = this.dataset.id;
 
-            // ubah tombol edit & hapus agar aktif ke id terpilih
             if (editButton) editButton.href = `/admin/transaksi-pemasukan/${selectedId}/edit`;
             if (hapusButton) hapusButton.dataset.id = selectedId;
         });
     });
 
-    // aksi hapus
     if (hapusButton) {
         hapusButton.addEventListener('click', function(e) {
             e.preventDefault();

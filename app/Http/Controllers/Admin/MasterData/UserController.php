@@ -8,6 +8,8 @@ use App\Models\User;
 use App\Models\Role;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\UsersExport;
 
 
 class UserController extends Controller
@@ -162,5 +164,10 @@ class UserController extends Controller
                       ->value('max_num') ?? 0;
         $nextNumber = $maxNum + 1;
         return 'US' . str_pad($nextNumber, 3, '0', STR_PAD_LEFT);
+    }
+
+    public function export()
+    {
+    return Excel::download(new UsersExport, 'data-user.xlsx');
     }
 }

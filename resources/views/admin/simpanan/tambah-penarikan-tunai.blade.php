@@ -69,7 +69,7 @@
             @endforeach
         </select>
 
-        <label for="bukti_setoran">Bukti Setoran</label>
+        <label for="bukti_setoran">Bukti Penarikan</label>
         <input type="file" id="bukti_setoran" name="bukti_setoran" accept="image/*,application/pdf">
 
         <div class="form-buttons">

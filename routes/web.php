@@ -114,10 +114,12 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('users/{id}/edit', [UserController::class, 'edit'])->name('data-user.edit');
     Route::put('users/{id}', [UserController::class, 'update'])->name('data-user.update');
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('data-user.destroy');
+    Route::get('users/export', [UserController::class, 'export'])->name('data-user.export');
 
     Route::get('/saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'index'])->name('saldo-awal-non-kas.index');
     Route::get('/saldo-awal-non-kas/create', [SaldoAwalNonKasController::class, 'create'])->name('saldo-awal-non-kas.create');
     Route::post('/saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'store'])->name('saldo-awal-non-kas.store');
+    Route::get('saldo-awal-non-kas/export', [SaldoAwalNonKasController::class, 'export'])->name('saldo-awal-non-kas.export');
     Route::get('/saldo-awal-non-kas/{id}/edit', [SaldoAwalNonKasController::class, 'edit'])->name('saldo-awal-non-kas.edit');
     Route::put('/saldo-awal-non-kas/{id}', [SaldoAwalNonKasController::class, 'update'])->name('saldo-awal-non-kas.update');
 
@@ -137,7 +139,6 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::resource('transaksi-pemasukan', TransaksiPemasukanController::class)->except(['show']);
 
     Route::get('transaksi-non-kas/download', [TransaksiNonKasController::class, 'download'])->name('transaksi-non-kas.download');
-
     Route::resource('transaksi-non-kas', TransaksiNonKasController::class)->except(['show']);
 
     Route::get('identitas-koperasi/edit', [identitasKoperasiController::class, 'edit'])->name('identitas-koperasi.editSingle');
@@ -152,8 +153,6 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('pengajuan-pinjaman/{id}/disetujui', [PengajuanPinjamanController::class, 'disetujui'])->name('pengajuan-pinjaman.disetujui');
     Route::patch('pengajuan-pinjaman/{id}/tolak', [PengajuanPinjamanController::class, 'tolak'])->name('pengajuan-pinjaman.tolak');
     Route::get('pengajuan-pinjaman/download', [PengajuanPinjamanController::class, 'download'])->name('pengajuan-pinjaman.download');
-
-    Route::resource('transaksi-non-kas', TransaksiNonKasController::class);
 
     Route::get('transaksi_kas/transfer/download', [TransaksiTransferController::class, 'download'])
         ->name('transaksi-transfer.download');
@@ -195,10 +194,6 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('pinjaman/cetak-nota/{id}', [DataPinjamanController::class, 'cetakNota'])->name('pinjaman.cetak-nota');
 });
 
-Route::middleware(['auth'])->prefix('admin')->group(function () {
-    Route::resource('transaksi-non-kas', TransaksiNonKasController::class);
-
-});
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::resource('pengeluaran', TransaksiPengeluaranController::class)->except(['show']);
@@ -279,14 +274,6 @@ Route::get('/admin/laporan/laporan-neraca-saldo', function () {
     return view('admin.laporan.laporan-neraca-saldo');
 })->name('admin.laporan.laporan-neraca-saldo');
 
-Route::get('/admin/transaksi_non_kas/tambah-transaksi', function () {
-    return view('admin.transaksi_non_kas.tambah-transaksi');
-})->name('admin.transaksi_non_kas.tambah-transaksi');
-
-Route::get('/admin/transaksi_non_kas/edit-transaksi', function () {
-    return view('admin.transaksi_non_kas.edit-transaksi');
-})->name('admin.transaksi_non_kas.edit-transaksi');
-
 Route::get('/admin/pinjaman/data-pengajuan', function () {
     return view('admin.pinjaman.data-pengajuan');
 })->name('admin.pinjaman.data-pengajuan');
@@ -298,23 +285,6 @@ Route::get('/anggota/notifikasi', function () {
 Route::get('/anggota/profil/profilAnggota', function () {
     return view('anggota.profil.profilAnggota');
 })->name('anggota.profil.profilAnggota');
-
-Route::get('/admin/transaksi_kas/pengeluaran', function () {
-    return view('admin.transaksi_kas.pengeluaran');
-})->name('admin.transaksi_kas.pengeluaran');
-
-Route::get('/admin/transaksi_kas/tambah-pengeluaran', function () {
-    return view('admin.transaksi_kas.tambah-pengeluaran');
-})->name('admin.transaksi_kas.tambah-pengeluaran');
-
-Route::get('/admin/transaksi_kas/edit-pengeluaran', function () {
-    return view('admin.transaksi_kas.edit-pengeluaran');
-})->name('admin.transaksi_kas.edit-pengeluaran');
-
-Route::get('/admin/transaksi_non_kas/transaksi', function () {
-    return view('admin.transaksi_non_kas.transaksi');
-})->name('admin.transaksi_non_kas.transaksi');
-
 
 Route::get('/admin/pinjaman/edit-bayar-angsuran', function () {
     return view('admin.pinjaman.edit-bayar-angsuran');
@@ -339,18 +309,6 @@ Route::get('/admin/laporan/laporan-kas-simpanan', function () {
 Route::get('/admin/laporan/laporan-kas-pinjaman', function () {
     return view('admin.laporan.laporan-kas-pinjaman');
 })->name('admin.laporan.laporan-kas-pinjaman');
-
-Route::get('/admin/master_data/saldo-awal-non-kas', function () {
-    return view('admin.master_data.saldo-awal-non-kas');
-})->name('admin.master_data.saldo-awal-non-kas');
-
-Route::get('/admin/master_data/tambah-data-saldo-awal-non-kas', function () {
-    return view('admin.master_data.tambah-data-saldo-awal-non-kas');
-})->name('admin.master_data.tambah-data-saldo-awal-non-kas');
-
-Route::get('/admin/master_data/edit-data-saldo-awal-non-kas', function () {
-    return view('admin.master_data.edit-data-saldo-awal-non-kas');
-})->name('admin.master_data.edit-data-saldo-awal-non-kas');
 
 Route::get('/admin/profil/edit-profil', function () {
     return view('admin.profil.edit-profil');

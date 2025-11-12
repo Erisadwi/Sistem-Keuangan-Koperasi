@@ -105,10 +105,6 @@
                 </div>
             </div>
         </div>
-
     </main>
-    <!-- Konten Halaman 
-
-
 </body>
 </html>
