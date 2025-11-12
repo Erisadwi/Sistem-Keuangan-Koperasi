@@ -14,34 +14,32 @@ class Transaksi extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'id_jenisAkunTransaksi_sumber',
-        'id_jenisAkunTransaksi_tujuan',
         'id_user',
         'type_transaksi',
         'kode_transaksi',
         'ket_transaksi',
         'tanggal_transaksi',
-        'jumlah_transaksi',
+        'total_debit',         // hasil perhitungan otomatis
+        'total_kredit',        // hasil perhitungan otomatis
     ];
 
-        public function sumber()
+    // 🔹 Relasi ke user pembuat transaksi
+    public function data_user()
     {
-        return $this->belongsTo(JenisAkunTransaksi::class, 'id_jenisAkunTransaksi_sumber', 'id_jenisAkunTransaksi');
+        return $this->belongsTo(User::class, 'id_user', 'id_user');
     }
 
-    public function tujuan()
+    // 🔹 Relasi ke detail transaksi (1 transaksi punya banyak detail)
+    public function details()
     {
-        return $this->belongsTo(JenisAkunTransaksi::class, 'id_jenisAkunTransaksi_tujuan', 'id_jenisAkunTransaksi');
+        return $this->hasMany(DetailTransaksi::class, 'id_transaksi', 'id_transaksi');
     }
 
-        public function data_user()
+    // 🔹 Helper: update total debit/kredit otomatis
+    public function updateTotals()
     {
-        return $this->belongsTo(user::class, 'id_user', 'id_user');
+        $this->total_debit = $this->details()->sum('debit');
+        $this->total_kredit = $this->details()->sum('kredit');
+        $this->save();
     }
-
-        public function details()
-    {
-    return $this->hasMany(DetailTransaksi::class, 'id_transaksi', 'id_transaksi');
-    }
-
 }

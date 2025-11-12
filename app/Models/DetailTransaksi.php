@@ -20,4 +20,20 @@ class DetailTransaksi extends Model
     {
         return $this->belongsTo(Transaksi::class, 'id_transaksi', 'id_transaksi');
     }
+
+        public function akun()
+    {
+        return $this->belongsTo(JenisAkunTransaksi::class, 'id_jenisAkunTransaksi', 'id_jenisAkunTransaksi');
+    }
+
+        protected static function booted()
+    {
+        static::saved(function ($detail) {
+            $detail->transaksi?->updateTotals();
+        });
+
+        static::deleted(function ($detail) {
+            $detail->transaksi?->updateTotals();
+        });
+    }
 }
