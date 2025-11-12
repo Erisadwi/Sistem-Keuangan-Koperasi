@@ -63,9 +63,10 @@
         @endforelse
       </tbody>
     </table>
-  </div>
-  <x-menu.pagination :data="$jenis_akun_transaksi" />
-</div>
+    
+ <div class="pagination-container">
+      <x-menu.pagination :data="$jenis_akun_transaksi" />
+    </div>
 
 
 
@@ -82,7 +83,7 @@
 .content-inner {
   padding-left: 25px;   
   padding-right: 25px;
-  margin-top: 30px;    
+  margin-top: 25px;    
 }
 
 .table-scroll-wrapper {
@@ -147,15 +148,9 @@
 
 .jenis-akun-transaksi-table .empty-cell {
   text-align: center;
+  padding: 8px 10px;
   color: #6b7280;
   font-style: italic;
-}
-
-.jenis-akun-transaksi-table .empty-cell {
-    text-align: center;
-    padding: 8px 10px;
-    color: #6b7280;
-    font-style: italic;
   }
 
 
@@ -187,6 +182,14 @@
   .jenis-akun-transaksi-table td {
     padding: 8px;
   }
+}
+
+.pagination-container {
+  margin-top: auto;        
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 16px;
 }
 </style>
 

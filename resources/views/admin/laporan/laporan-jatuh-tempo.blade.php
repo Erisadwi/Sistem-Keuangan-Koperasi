@@ -65,4 +65,8 @@
   </div>
 </div>
 
+  <div class="pagination-container">
+      <x-menu.pagination :data="$dataPinjaman" />
+    </div>
+
 @endsection

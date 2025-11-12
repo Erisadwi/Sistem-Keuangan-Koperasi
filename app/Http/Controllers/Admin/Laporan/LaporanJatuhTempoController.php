@@ -47,7 +47,8 @@ class LaporanJatuhTempoController extends Controller
                 'v.status_lunas'
             )
             ->orderBy('v.tanggal_jatuh_tempo', 'asc')
-            ->get();
+            ->paginate(request('per_page', 10));
+
 
         $namaBulan = Carbon::createFromFormat('m', $bulan)->translatedFormat('F');
         $periode = "{$namaBulan} {$tahun}";
@@ -55,8 +56,8 @@ class LaporanJatuhTempoController extends Controller
         return view('admin.laporan.laporan-jatuh-tempo', compact('dataPinjaman', 'periode', 'bulan', 'tahun'));
     }
 
-   public function export(Request $request)
-{
+    public function export(Request $request)
+    {
     $bulan = $request->get('bulan', date('m'));
     $tahun = $request->get('tahun', date('Y'));
 
@@ -64,7 +65,7 @@ class LaporanJatuhTempoController extends Controller
         new LaporanJatuhTempoExport($bulan, $tahun),
         "Laporan_Jatuh_Tempo_{$bulan}_{$tahun}.xlsx"
     );
-}
+    }
 
 
 }

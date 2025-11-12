@@ -127,7 +127,7 @@ class AnggotaController extends Controller
     if (!empty($validated['password_anggota'])) {
         $validated['password_anggota'] = Hash::make($validated['password_anggota']);
     } else {
-        unset($validated['password_anggota']); // jangan ubah password kalau kosong
+        unset($validated['password_anggota']); 
     }
 
     $anggota->update($validated);
