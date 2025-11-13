@@ -7,13 +7,18 @@
 @section('title', 'Laporan Jatuh Tempo')  
 @section('title-1', 'Jatuh Tempo')  
 @section('title-content', 'Laporan Jatuh Tempo Pembayaran Kredit')  
-@section('period', 'Periode Oktober 2025')  
+
+@section('period')
+  Periode {{ $periode }}
+@endsection
+
 @section('sub-title', 'Laporan Jatuh Tempo Pembayaran Kredit')  
 
 @section('content')
 
 <x-menu.month-filter/>
-<x-menu.unduh/>
+<x-menu.unduh :url="route('laporan.jatuh-tempo.export', ['bulan' => $bulan, 'tahun' => $tahun])" text="Unduh Laporan" />
+
 
 <div class="laporan-jatuh-tempo-wrap">
   <div class="table-scroll-wrapper">
@@ -60,7 +65,8 @@
   </div>
 </div>
 
-{{-- Komponen pagination --}}
-<x-menu.pagination />
+  <div class="pagination-container">
+      <x-menu.pagination :data="$dataPinjaman" />
+    </div>
 
 @endsection

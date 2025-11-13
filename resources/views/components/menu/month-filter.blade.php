@@ -37,13 +37,14 @@
     </button>
 
     <a class="df-btn df-danger" href="{{ $action }}">
-      <span class="df-ic" aria-hidden="true">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-          <path d="M6 6l12 12M18 6L6 18" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
-        </svg>
-      </span>
-      Hapus Filter
-    </a>
+    <span class="df-ic" aria-hidden="true">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+        <path d="M6 6l12 12M18 6L6 18" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </span>
+    Hapus Filter
+  </a>
+
   </div>
 
   <div class="df-pop" id="{{ $uid }}_pop" role="menu" aria-labelledby="{{ $uid }}_trigger" hidden>
@@ -51,26 +52,25 @@
       <div class="df-pop-title">Filter Periode</div>
       <div class="df-fields">
         <label for="{{ $uid }}_month">Bulan</label>
-        <select name="month" id="{{ $uid }}_month">
-          <option value="01" {{ $start && \Carbon\Carbon::parse($start)->format('m') === '01' ? 'selected' : '' }}>Januari</option>
-          <option value="02" {{ $start && \Carbon\Carbon::parse($start)->format('m') === '02' ? 'selected' : '' }}>Februari</option>
-          <option value="03" {{ $start && \Carbon\Carbon::parse($start)->format('m') === '03' ? 'selected' : '' }}>Maret</option>
-          <option value="04" {{ $start && \Carbon\Carbon::parse($start)->format('m') === '04' ? 'selected' : '' }}>April</option>
-          <option value="05" {{ $start && \Carbon\Carbon::parse($start)->format('m') === '05' ? 'selected' : '' }}>Mei</option>
-          <option value="06" {{ $start && \Carbon\Carbon::parse($start)->format('m') === '06' ? 'selected' : '' }}>Juni</option>
-          <option value="07" {{ $start && \Carbon\Carbon::parse($start)->format('m') === '07' ? 'selected' : '' }}>Juli</option>
-          <option value="08" {{ $start && \Carbon\Carbon::parse($start)->format('m') === '08' ? 'selected' : '' }}>Agustus</option>
-          <option value="09" {{ $start && \Carbon\Carbon::parse($start)->format('m') === '09' ? 'selected' : '' }}>September</option>
-          <option value="10" {{ $start && \Carbon\Carbon::parse($start)->format('m') === '10' ? 'selected' : '' }}>Oktober</option>
-          <option value="11" {{ $start && \Carbon\Carbon::parse($start)->format('m') === '11' ? 'selected' : '' }}>November</option>
-          <option value="12" {{ $start && \Carbon\Carbon::parse($start)->format('m') === '12' ? 'selected' : '' }}>Desember</option>
+        <select name="bulan" id="{{ $uid }}_month">
+          @for ($i = 1; $i <= 12; $i++)
+              <option value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}"
+                  {{ ($start ? \Carbon\Carbon::parse($start)->format('m') : date('m')) == str_pad($i, 2, '0', STR_PAD_LEFT) ? 'selected' : '' }}>
+                  {{ \Carbon\Carbon::createFromFormat('!m', $i)->translatedFormat('F') }}
+              </option>
+          @endfor
         </select>
+
         <label for="{{ $uid }}_year">Tahun</label>
-        <select name="year" id="{{ $uid }}_year">
+        <select name="tahun" id="{{ $uid }}_year">
           @foreach(range(2000, \Carbon\Carbon::now()->year) as $year)
-            <option value="{{ $year }}" {{ $start && \Carbon\Carbon::parse($start)->format('Y') === (string)$year ? 'selected' : '' }}>{{ $year }}</option>
+              <option value="{{ $year }}"
+                  {{ ($start ? \Carbon\Carbon::parse($start)->format('Y') : date('Y')) == $year ? 'selected' : '' }}>
+                  {{ $year }}
+              </option>
           @endforeach
         </select>
+
       </div>
 
       <div class="df-actions">

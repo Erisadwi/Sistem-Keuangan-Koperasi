@@ -86,14 +86,12 @@
   --text: #222;
 }
 
-/* Wrapper utama agar sejajar dengan tombol */
 .content-inner {
   padding-left: 25px;
   padding-right: 25px;
   margin-top: 25px;
 }
 
-/* Scroll area tabel */
 .table-scroll-wrapper {
   overflow-x: auto;
   overflow-y: auto;
@@ -104,13 +102,11 @@
   padding-bottom: 8px;
 }
 
-/* Pastikan tabel tetap putih */
 .table-scroll-wrapper table {
   margin-bottom: 0;
   background: white;
 }
 
-/* Scrollbar styling */
 .table-scroll-wrapper::-webkit-scrollbar {
   height: 8px;
 }
@@ -122,7 +118,6 @@
   background: #f0f0f0;
 }
 
-/* Tabel */
 .data-anggota-table {
   width: 100%;
   min-width: 1000px;
@@ -163,7 +158,6 @@
     font-style: italic;
   }
 
-/* Tombol Aksi */
 .actions {
   display: flex;
   justify-content: center;
@@ -189,12 +183,6 @@
   border: none;
 }
 
-
-.pagination button:hover {
-  background: var(--primary-dark);
-}
-
-/* Responsif */
 @media (max-width: 640px) {
   .data-anggota-table {
     font-size: 12px;
@@ -205,7 +193,31 @@
   }
 }
 
+.pagination-container {
+  margin-top: auto;        
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 16px;
+}
 
 </style>
+
+<script>
+document.querySelectorAll('.form-hapus').forEach(function(form) {
+    form.addEventListener('submit', function (e) {
+        e.preventDefault(); 
+
+        const yakin = confirm('⚠️ Apakah Anda yakin ingin menghapus data ini?');
+
+        if (yakin) {
+            alert('🗑️ Data berhasil dihapus!');
+            form.submit(); 
+        } else {
+            alert('❌ Penghapusan data dibatalkan.');
+        }
+    });
+});
+</script>
 
 @endsection

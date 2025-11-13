@@ -51,9 +51,10 @@ class JenisAkunTransaksiExport implements FromCollection, WithHeadings, WithStyl
 
     public function styles(Worksheet $sheet)
     {
+    $highestColumn = $sheet->getHighestColumn(); 
+    $highestRow = $sheet->getHighestRow(); 
 
-        $highestColumn = $sheet->getHighestColumn(); 
-        $sheet->getStyle("A1:{$highestColumn}1")->applyFromArray([
+    $sheet->getStyle("A1:{$highestColumn}1")->applyFromArray([
         'font' => ['bold' => true],
         'alignment' => [
             'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
@@ -62,11 +63,27 @@ class JenisAkunTransaksiExport implements FromCollection, WithHeadings, WithStyl
             'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
             'startColor' => ['rgb' => 'E6F2FF'],
         ],
+        'borders' => [
+            'allBorders' => [
+                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                'color' => ['rgb' => '000000'],
+            ],
+        ],
     ]);
 
-    $sheet->getStyle("A1:{$highestColumn}500")->getAlignment()->setWrapText(true);
+    $sheet->getStyle("A1:{$highestColumn}{$highestRow}")->applyFromArray([
+        'borders' => [
+            'allBorders' => [
+                'borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN,
+                'color' => ['rgb' => '000000'],
+            ],
+        ],
+    ]);
 
-    return [];
+    $sheet->getStyle("A1:{$highestColumn}{$highestRow}")->getAlignment()->setWrapText(true);
+
+    return [];  
     }
+
 
 }
