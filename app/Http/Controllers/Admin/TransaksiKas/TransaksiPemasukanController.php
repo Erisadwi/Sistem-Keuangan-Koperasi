@@ -58,7 +58,7 @@ class TransaksiPemasukanController extends Controller
         'id_akun_tujuan' => [
             'required',
             Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
-                ->where(fn($q) => $q->where('pengeluaran', 'Y')
+                ->where(fn($q) => $q->where('pemasukan', 'Y')
                                     ->where('status_akun', 'Y')
                                     ->where('is_kas', 1)), 
         ],
@@ -66,7 +66,7 @@ class TransaksiPemasukanController extends Controller
         'sumber.*.id_jenisAkunTransaksi' => [
             'required',
             Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
-                ->where(fn($q) => $q->where('pengeluaran', 'Y')
+                ->where(fn($q) => $q->where('pemasukan', 'Y')
                                     ->where('status_akun', 'Y')
                                     ->where('is_kas', 0)), 
         ],
@@ -136,14 +136,14 @@ class TransaksiPemasukanController extends Controller
             'id_akun_tujuan' => [
                 'required',
                 Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
-                    ->where(fn($q) => $q->where('pengeluaran', 'Y')
+                    ->where(fn($q) => $q->where('pemasukan', 'Y')
                                         ->where('is_kas', 1)), 
             ],
             'sumber' => 'required|array|min:1',
             'sumber.*.id_jenisAkunTransaksi' => [
                 'required',
                 Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
-                    ->where(fn($q) => $q->where('pengeluaran', 'Y')
+                    ->where(fn($q) => $q->where('pemasukan', 'Y')
                                         ->where('is_kas', 0)), 
             ],
             'sumber.*.jumlah' => 'required|numeric|min:1',
