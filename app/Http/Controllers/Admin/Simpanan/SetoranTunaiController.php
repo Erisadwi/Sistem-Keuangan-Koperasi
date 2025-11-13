@@ -59,7 +59,7 @@ class SetoranTunaiController extends Controller
         'exportUrl' => route('setoran-tunai.exportPdf'),
     ];
 
-    return view('admin.simpanan.setoran-tunai', compact('setoranTunai', 'toolbar'));
+    return view('admin.simpanan.setoran-tunai.setoran-tunai', compact('setoranTunai', 'toolbar'));
     }
 
 
@@ -72,7 +72,7 @@ class SetoranTunaiController extends Controller
         ->where('status_akun', 'Y')
         ->orderBy('nama_AkunTransaksi')
         ->get();
-        return view('admin.simpanan.tambah-setoran-tunai', compact('anggota', 'jenisSimpanan', 'akunTransaksi'));
+        return view('admin.simpanan.setoran-tunai.tambah-setoran-tunai', compact('anggota', 'jenisSimpanan', 'akunTransaksi'));
     }
 
     public function store(Request $request)
@@ -133,7 +133,7 @@ class SetoranTunaiController extends Controller
             ->orderBy('nama_AkunTransaksi', 'asc')
             ->get();
     
-        return view('admin.simpanan.edit-setoran-tunai', compact('setoranTunai', 'anggota', 'jenisSimpanan', 'akunTransaksi'));
+        return view('admin.simpanan.setoran-tunai.edit-setoran-tunai', compact('setoranTunai', 'anggota', 'jenisSimpanan', 'akunTransaksi'));
     }
 
     public function update(Request $request, $id)
@@ -183,7 +183,7 @@ class SetoranTunaiController extends Controller
         ->orderBy('tanggal_transaksi', 'desc')
         ->get();
 
-    $pdf = Pdf::loadView('admin.simpanan.setoran-tunai.pdf', compact('data'))
+    $pdf = Pdf::loadView('admin.simpanan.setoran-tunai.setoran-tunai-export-pdf', compact('data'))
               ->setPaper('a4', 'portrait');
 
     return $pdf->download('Laporan_Setoran_Tunai.pdf');
@@ -195,6 +195,6 @@ class SetoranTunaiController extends Controller
         $setoran = Simpanan::with(['anggota', 'jenisSimpanan', 'tujuan', 'user'])
             ->findOrFail($id);
 
-        return view('admin.simpanan.cetak-nota-setoran-tunai', compact('setoran'));
+        return view('admin.simpanan.setoran-tunai.cetak-nota-setoran-tunai', compact('setoran'));
     }
 }
