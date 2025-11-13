@@ -19,23 +19,20 @@ class Transaksi extends Model
         'kode_transaksi',
         'ket_transaksi',
         'tanggal_transaksi',
-        'total_debit',         // hasil perhitungan otomatis
-        'total_kredit',        // hasil perhitungan otomatis
+        'total_debit',         
+        'total_kredit',        
     ];
 
-    // 🔹 Relasi ke user pembuat transaksi
     public function data_user()
     {
         return $this->belongsTo(User::class, 'id_user', 'id_user');
     }
 
-    // 🔹 Relasi ke detail transaksi (1 transaksi punya banyak detail)
     public function details()
     {
         return $this->hasMany(DetailTransaksi::class, 'id_transaksi', 'id_transaksi');
     }
 
-    // 🔹 Helper: update total debit/kredit otomatis
     public function updateTotals()
     {
         $this->total_debit = $this->details()->sum('debit');
