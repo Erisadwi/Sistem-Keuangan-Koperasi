@@ -59,6 +59,7 @@ class JenisAkunTransaksiController extends Controller
             'pinjaman'           => 'required|in:Y,N',
             'angsuran'           => 'required|in:Y,N',
             'labarugi'           => 'required|in:PENDAPATAN,BIAYA',
+            'is_kas'           => 'required|in:1,0',
         ]);
 
         JenisAkunTransaksi::create($validated);
