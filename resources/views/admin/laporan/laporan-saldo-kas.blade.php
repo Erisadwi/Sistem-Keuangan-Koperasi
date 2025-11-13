@@ -4,13 +4,15 @@
 @section('title', 'Laporan Saldo Kas')  
 @section('title-1', 'Saldo Kas')  
 @section('title-content', 'Laporan Saldo Kas')  
-@section('period', 'Periode Oktober 2025')  
+@section('period')
+  Periode {{ \Carbon\Carbon::createFromDate($tahun, $bulan, 1)->translatedFormat('F Y') }}
+@endsection
 @section('sub-title', 'Laporan Saldo Kas')  
 
 @section('content')
 
 <x-menu.month-filter/>
-<x-menu.unduh/>
+<x-menu.unduh :url="route('saldo-kas.exportPdf', ['bulan' => $bulan, 'tahun' => $tahun])" text="Unduh PDF" />
 
 
 <table>
@@ -22,39 +24,22 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td colspan="2" class="merged-cell">Saldo Periode Sebelumnya</td> 
-                <td class="saldo">429.565.371 {{-- {{ number_format($kas->saldo_periode_sebelumnya ?? 0, 0, ',', '.') }} --}}</td> 
-            </tr>
-            <tr>
-                <td>1</td>
-                <td>Kas Besar</td>
-                <td>9.364.663 {{-- -{{ number_format($kas->kas_besar?? 0, 0, ',', '.') }} --}}</td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Bank Mandiri</td>
-                <td>417.795.708 {{-- -{{ number_format($kas->bank_mandiri ?? 0, 0, ',', '.') }} --}}</td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>Kas Kecil</td>
-                <td>0 {{-- -{{ number_format($kas->kas_kecil ?? 0, 0, ',', '.') }} --}}</td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td>Kas Niaga</td>
-                <td>208.500 {{-- -{{ number_format($kas->kas_niaga ?? 0, 0, ',', '.') }} --}}</td>
-            </tr>
-            <tr>
-                <td>5</td>
-                <td>Bank BRI</td>
-                <td>2.196.500 {{-- -{{ number_format($kas->bank_bri ?? 0, 0, ',', '.') }} --}}</td>
-            </tr>
-            <tr>
-                <td colspan="2" class="header">Jumlah</td>
-                <td class="saldo">429.565.371 {{-- -{{ number_format($kas->jumlah_kas ?? 0, 0, ',', '.') }} --}}</td>
-            </tr>
+        <tr>
+            <td colspan="2" class="merged-cell">Saldo Periode Sebelumnya</td> 
+            <td class="saldo">{{ number_format($saldo_periode_sebelumnya ?? 0, 0, ',', '.') }}</td> 
+        </tr>
+        @foreach($data as $index => $kas)
+        <tr>
+            <td>{{ $index + 1 }}</td>
+            <td>{{ $kas->nama_kas }}</td>
+            <td>{{ number_format($kas->total_saldo ?? 0, 0, ',', '.') }}</td>
+        </tr>
+        @endforeach
+        <tr>
+            <td colspan="2" class="header">Jumlah</td>
+            <td class="saldo">{{ number_format($jumlah_kas ?? 0, 0, ',', '.') }}</td>
+        </tr>
+
         </tbody>
     </table>
 

@@ -34,7 +34,7 @@ use App\Http\Controllers\Anggota\LaporanSimpananController;
 use App\Http\Controllers\Anggota\LaporanPinjamanController;
 use App\Http\Controllers\Anggota\LaporanPembayaranController;
 use App\Http\Controllers\Admin\Laporan\LaporanJatuhTempoController;
-
+use App\Http\Controllers\Admin\Laporan\LaporanSaldoKasController;
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
@@ -230,6 +230,9 @@ Route::middleware(['auth:anggota'])->group(function () {
 Route::middleware(['auth:user'])->group(function () {
     Route::get('/laporan-jatuh-tempo', [LaporanJatuhTempoController::class, 'index'])->name('laporan.jatuh-tempo');
     Route::get('/laporan-jatuh-tempo/export', [LaporanJatuhTempoController::class, 'export'])->name('laporan.jatuh-tempo.export');
+
+    Route::get('/laporan-saldo-kas', [LaporanSaldoKasController::class, 'index'])->name('laporan.saldo-kas');
+    Route::get('/laporan-saldo-kas/export-pdf', [LaporanSaldoKasController::class, 'exportPdf'])->name('saldo-kas.exportPdf');
 });
 
 
@@ -257,10 +260,6 @@ Route::get('/anggota/lap-SHU', function () {
 Route::get('/anggota/test', function () {
     return view('anggota.test');
 })->name('anggota.test');
-
-Route::get('/admin/laporan/laporan-saldo-kas', function () {
-    return view('admin.laporan.laporan-saldo-kas');
-})->name('admin.laporan.laporan-saldo-kas');
 
 Route::get('/admin/laporan/laporan-SHU', function () {
     return view('admin.laporan.laporan-SHU');
