@@ -179,7 +179,7 @@ class PenarikanTunaiController extends Controller
     public function exportPdf()
 {
     $data = Simpanan::with(['anggota', 'jenisSimpanan', 'user'])
-        ->where('type_simpanan', 'TRD')
+        ->where('type_simpanan', 'TRK')
         ->orderBy('tanggal_transaksi', 'desc')
         ->get();
 
