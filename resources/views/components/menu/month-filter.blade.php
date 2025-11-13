@@ -51,25 +51,33 @@
     <div class="df-pop-section">
       <div class="df-pop-title">Filter Periode</div>
       <div class="df-fields">
-        <label for="{{ $uid }}_month">Bulan</label>
-        <select name="bulan" id="{{ $uid }}_month">
-          @for ($i = 1; $i <= 12; $i++)
-              <option value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}"
-                  {{ ($start ? \Carbon\Carbon::parse($start)->format('m') : date('m')) == str_pad($i, 2, '0', STR_PAD_LEFT) ? 'selected' : '' }}>
-                  {{ \Carbon\Carbon::createFromFormat('!m', $i)->translatedFormat('F') }}
-              </option>
-          @endfor
-        </select>
+      <label for="{{ $uid }}_month">Bulan</label>
+      <select name="bulan" id="{{ $uid }}_month">
+        @for ($i = 1; $i <= 12; $i++)
+            @php
+              $selectedMonth = request('bulan') 
+                              ?: ($start ? \Carbon\Carbon::parse($start)->format('m') : date('m'));
+            @endphp
+            <option value="{{ str_pad($i, 2, '0', STR_PAD_LEFT) }}"
+                {{ $selectedMonth == str_pad($i, 2, '0', STR_PAD_LEFT) ? 'selected' : '' }}>
+                {{ \Carbon\Carbon::createFromFormat('!m', $i)->translatedFormat('F') }}
+            </option>
+        @endfor
+      </select>
 
-        <label for="{{ $uid }}_year">Tahun</label>
-        <select name="tahun" id="{{ $uid }}_year">
-          @foreach(range(2000, \Carbon\Carbon::now()->year) as $year)
-              <option value="{{ $year }}"
-                  {{ ($start ? \Carbon\Carbon::parse($start)->format('Y') : date('Y')) == $year ? 'selected' : '' }}>
-                  {{ $year }}
-              </option>
-          @endforeach
-        </select>
+      <label for="{{ $uid }}_year">Tahun</label>
+      <select name="tahun" id="{{ $uid }}_year">
+        @foreach(range(2000, \Carbon\Carbon::now()->year) as $year)
+            @php
+              $selectedYear = request('tahun') 
+                              ?: ($start ? \Carbon\Carbon::parse($start)->format('Y') : date('Y'));
+            @endphp
+            <option value="{{ $year }}" {{ $selectedYear == $year ? 'selected' : '' }}>
+                {{ $year }}
+            </option>
+        @endforeach
+      </select>
+
 
       </div>
 
@@ -251,19 +259,30 @@
   const autoSubmit = @json((bool)$submitOnChange);
 
   function openPop(){
-    pop.hidden=false; trig.setAttribute('aria-expanded','true');
+    pop.hidden = false; 
+    trig.setAttribute('aria-expanded','true');
     setTimeout(()=>document.addEventListener('click', onDocClick),0);
     document.addEventListener('keydown', onEsc);
   }
 
   function closePop(){
-    pop.hidden=true; trig.setAttribute('aria-expanded','false');
+    pop.hidden = true; 
+    trig.setAttribute('aria-expanded','false');
     document.removeEventListener('click', onDocClick);
     document.removeEventListener('keydown', onEsc);
   }
 
-  function onDocClick(e){ if(!pop.contains(e.target) && e.target!==trig){ closePop(); } }
-  function onEsc(e){ if(e.key==='Escape'){ closePop(); } }
+  function onDocClick(e){ 
+    if(!pop.contains(e.target) && e.target!==trig){ 
+      closePop(); 
+    } 
+  }
+
+  function onEsc(e){ 
+    if(e.key==='Escape'){ 
+      closePop(); 
+    } 
+  }
 
   trig.addEventListener('click', ()=> pop.hidden ? openPop() : closePop());
 
@@ -275,10 +294,27 @@
 
   if (btnSave){
     btnSave.addEventListener('click', ()=>{
-      if (@json((bool)$submitOnChange)) {
+      // Set preset
+      preset.value = 'custom';
+
+      if (autoSubmit) {
         form.submit();
       } 
     });
   }
+
+  window.addEventListener('DOMContentLoaded', () => {
+    const params = new URLSearchParams(window.location.search);
+
+    const selectedMonth = params.get('bulan') || month.value;
+    const selectedYear  = params.get('tahun') || year.value;
+
+    month.value = selectedMonth;
+    year.value  = selectedYear;
+
+    const selectedMonthName = month.options[month.selectedIndex].text;
+    trig.querySelector('.df-label').textContent = `${selectedMonthName} ${selectedYear}`;
+  });
+
 })();
 </script>
