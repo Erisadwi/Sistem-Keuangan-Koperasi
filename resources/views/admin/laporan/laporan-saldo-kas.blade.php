@@ -12,7 +12,7 @@
 @section('content')
 
 <x-menu.month-filter/>
-<x-menu.unduh :url="route('laporan.saldo-kas.export', ['bulan' => $bulan, 'tahun' => $tahun])" text="Unduh Laporan" />
+<x-menu.unduh :url="route('saldo-kas.exportPdf', ['bulan' => $bulan, 'tahun' => $tahun])" text="Unduh PDF" />
 
 
 <table>
