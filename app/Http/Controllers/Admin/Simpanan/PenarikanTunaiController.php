@@ -66,9 +66,11 @@ class PenarikanTunaiController extends Controller
     {
         $anggota = Anggota::all();
         $jenisSimpanan = JenisSimpanan::all(['id_jenis_simpanan', 'jenis_simpanan', 'jumlah_simpanan']);
-        $akunTransaksi = JenisAkunTransaksi::whereIn('nama_AkunTransaksi', [
-            'Kas Besar', 'Bank BNI', 'Bank Mandiri', 'Kas Niaga', 'Kas Kecil'
-        ])->get();
+        $akunTransaksi = JenisAkunTransaksi::where('simpanan', 'Y')
+        ->where('is_kas', 1) 
+        ->where('status_akun', 'Y')
+        ->orderBy('nama_AkunTransaksi')
+        ->get();
 
         return view('admin.simpanan.tambah-penarikan-tunai', compact('anggota', 'jenisSimpanan', 'akunTransaksi'));
     }
@@ -184,7 +186,7 @@ class PenarikanTunaiController extends Controller
     $pdf = Pdf::loadView('admin.simpanan.penarikan-tunai.pdfPenarikan', compact('data'))
               ->setPaper('a4', 'portrait');
 
-    return $pdf->download('Laporan_Penarikan_Tunai.pdfPenarikan');
+    return $pdf->download('Laporan_Penarikan_Tunai.pdf');
 }
 
 

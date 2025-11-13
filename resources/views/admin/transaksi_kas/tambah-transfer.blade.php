@@ -147,7 +147,6 @@ select:focus {
     background-color: #d73833;
 }
 
-
 .btn-tambah, .btn-hapus {
     width: 70px;
     height: 35px;
@@ -219,7 +218,7 @@ function hapusBaris(button) {
         alert('⚠️ Minimal harus ada satu akun sumber.');
     }
 }
-document.getElementById('form-pemasukan').addEventListener('submit', function(e) {
+document.getElementById('form-transfer').addEventListener('submit', function(e) {
 
     const tanggal = document.getElementById('tanggal_transaksi');
     const tujuan = document.getElementById('id_akun_tujuan');

@@ -59,7 +59,7 @@
    <div class="header">
     <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/logo.png'))) }}" alt="Logo">
     <div class="kop">
-        <h2>KOPKAR TUNAS SEJAHTERA MANDIRI</h2>
+        <h2>KOPERASI TUNAS SEJAHTERA MANDIRI</h2>
         <p>Jl. Karah Agung 45</p>
         <p>Tel. 031-8290002 Email : koperasitsm@gmail.com</p>
         <p>Web : www.koperasitsm.com</p>

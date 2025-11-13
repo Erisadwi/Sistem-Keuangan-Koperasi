@@ -193,33 +193,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
   rows.forEach(row => {
     row.addEventListener('click', () => {
-      // Hapus highlight dari baris lain
+
       rows.forEach(r => r.classList.remove('selected-row'));
       
-      // Tambahkan highlight ke baris yang diklik
       row.classList.add('selected-row');
       
-      // Simpan ID dari baris yang dipilih
       selectedId = row.dataset.id;
       
-      // Aktifkan tombol Edit & Hapus
       editBtn.classList.remove('disabled');
       deleteBtn.classList.remove('disabled');
 
-      // Update URL tombol edit & hapus (gantikan __ID__)
       editBtn.setAttribute('data-url', editBtn.dataset.base.replace('__ID__', selectedId));
       deleteBtn.setAttribute('data-url', deleteBtn.dataset.base.replace('__ID__', selectedId));
     });
   });
 
-  // Aksi ketika tombol Edit diklik
   editBtn.addEventListener('click', function () {
     const url = this.getAttribute('data-url');
     if (!url || this.classList.contains('disabled')) return;
     window.location.href = url;
   });
 
-  // Aksi ketika tombol Hapus diklik
   deleteBtn.addEventListener('click', function () {
     const url = this.getAttribute('data-url');
     if (!url || this.classList.contains('disabled')) return;
