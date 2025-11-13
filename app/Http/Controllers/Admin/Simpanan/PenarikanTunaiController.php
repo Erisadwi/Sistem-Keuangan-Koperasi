@@ -66,7 +66,7 @@ class PenarikanTunaiController extends Controller
     {
         $anggota = Anggota::all();
         $jenisSimpanan = JenisSimpanan::all(['id_jenis_simpanan', 'jenis_simpanan', 'jumlah_simpanan']);
-        $akunTransaksi = JenisAkunTransaksi::where('simpanan', 'Y')
+        $akunTransaksi = JenisAkunTransaksi::where('penarikan', 'Y')
         ->where('is_kas', 1) 
         ->where('status_akun', 'Y')
         ->orderBy('nama_AkunTransaksi')
@@ -80,7 +80,7 @@ class PenarikanTunaiController extends Controller
         $request->validate([
             'id_anggota' => 'required|exists:anggota,id_anggota',
             'id_jenis_simpanan' => 'required|exists:jenis_simpanan,id_jenis_simpanan',
-            'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
+            'id_jenisAkunTransaksi_sumber' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
             'jumlah_simpanan' => 'required|numeric|min:0',
             'tanggal_transaksi' => 'required|date',
             'keterangan' => 'nullable|string|max:255',
@@ -90,7 +90,7 @@ class PenarikanTunaiController extends Controller
         $data = $request->only([
             'id_anggota',
             'id_jenis_simpanan',
-            'id_jenisAkunTransaksi_tujuan',
+            'id_jenisAkunTransaksi_sumber',
             'jumlah_simpanan',
             'tanggal_transaksi',
             'keterangan'
@@ -105,9 +105,6 @@ class PenarikanTunaiController extends Controller
         $nextNumber = $lastNumber ? $lastNumber + 1 : 1;
         $data['kode_simpanan'] = 'TRK' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
 
-
-        $akunPiutang = JenisAkunTransaksi::where('nama_AkunTransaksi', 'like', '%Piutang Anggota%')->first();
-        $data['id_jenisAkunTransaksi_sumber'] = $akunPiutang ? $akunPiutang->id_jenisAkunTransaksi : null;
         $data['type_simpanan'] = 'TRK';
 
         if ($request->hasFile('bukti_setoran')) {
@@ -127,7 +124,7 @@ class PenarikanTunaiController extends Controller
         $anggota = Anggota::all();
         $jenisSimpanan = JenisSimpanan::all();
 
-        $akunTransaksi = JenisAkunTransaksi::where('simpanan', 'Y')
+        $akunTransaksi = JenisAkunTransaksi::where('penarikan', 'Y')
             ->where('penarikan', 'Y')
             ->where('status_akun', 'Y')
             ->orderBy('nama_akunTransaksi', 'asc')
@@ -142,7 +139,7 @@ class PenarikanTunaiController extends Controller
 
     $request->validate([
         'id_jenis_simpanan' => 'required|exists:jenis_simpanan,id_jenis_simpanan',
-        'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
+        'id_jenisAkunTransaksi_sumber' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
         'jumlah_simpanan' => 'required|numeric|min:0',
         'keterangan' => 'nullable|string|max:255',
         'bukti_setoran' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
@@ -150,7 +147,7 @@ class PenarikanTunaiController extends Controller
 
     $data = $request->only([
         'id_jenis_simpanan',
-        'id_jenisAkunTransaksi_tujuan',
+        'id_jenisAkunTransaksi_sumber',
         'jumlah_simpanan',
         'tanggal_transaksi',
         'keterangan'
@@ -192,7 +189,7 @@ class PenarikanTunaiController extends Controller
 
     public function cetak($id)
     {
-        $penarikan = Simpanan::with(['anggota', 'jenisSimpanan', 'tujuan', 'user'])
+        $penarikan = Simpanan::with(['anggota', 'jenisSimpanan', 'sumber', 'user'])
             ->findOrFail($id);
 
         return view('admin.simpanan.cetak-nota-penarikan-tunai', compact('penarikan'));

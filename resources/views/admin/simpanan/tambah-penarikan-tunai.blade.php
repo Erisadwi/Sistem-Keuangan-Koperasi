@@ -59,8 +59,8 @@
         <label for="keterangan">Keterangan</label>
         <input type="text" id="keterangan" name="keterangan" value="{{ old('keterangan') }}" placeholder="Opsional...">
 
-        <label for="tujuan">Ambil dari Kas</label>
-        <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan" required>
+        <label for="sumber">Ambil dari Kas</label>
+        <select name="id_jenisAkunTransaksi_sumber" id="id_jenisAkunTransaksi_sumber" required>
             <option value="">-- Pilih Kas --</option>
             @foreach ($akunTransaksi as $akun)
             <option value="{{ $akun->id_jenisAkunTransaksi }}">
@@ -69,7 +69,14 @@
             @endforeach
         </select>
 
-        <label for="bukti_setoran">Bukti Penarikan</label>
+        <label for="bukti_setoran">Bukti Penarikan
+
+
+
+
+
+
+        </label>
         <input type="file" id="bukti_setoran" name="bukti_setoran" accept="image/*,application/pdf">
 
         <div class="form-buttons">
@@ -211,7 +218,7 @@
     });
 
     document.getElementById('formSetoranTunai').addEventListener('submit', function(e) {
-        const wajib = ['id_anggota', 'id_jenis_simpanan', 'jumlah_simpanan', 'id_jenisAkunTransaksi_tujuan'];
+        const wajib = ['id_anggota', 'id_jenis_simpanan', 'jumlah_simpanan', 'id_jenisAkunTransaksi_sumber'];
         for (let id of wajib) {
             const el = document.getElementById(id);
             if (!el || !el.value.trim()) {
