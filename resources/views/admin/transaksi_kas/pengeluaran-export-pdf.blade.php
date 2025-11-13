@@ -59,7 +59,7 @@
    <div class="header">
     <img src="data:image/png;base64,{{ base64_encode(file_get_contents(public_path('images/logo.png'))) }}" alt="Logo">
     <div class="kop">
-        <h2>KOPKAR TUNAS SEJAHTERA MANDIRI</h2>
+        <h2>KOPERASI TUNAS SEJAHTERA MANDIRI</h2>
         <p>Jl. Karah Agung 45</p>
         <p>Tel. 031-8290002 Email : koperasitsm@gmail.com</p>
         <p>Web : www.koperasitsm.com</p>
@@ -79,38 +79,50 @@
 </h3>
 
 
-    <table>
-        <thead>
-            <tr>
-                 <th>No</th>
-                 <th>Kode Transaksi</th>
-                 <th>Tanggal</th>
-                 <th>Uraian</th>
-                 <th>Dari Kas</th>
-                 <th>Untuk Akun</th>
-                 <th>Jumlah</th>
-                 <th>User</th>
-            </tr>
-        </thead>
-        <tbody>
-           @forelse($data as $index => $row)
-                <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $row->kode_transaksi }}</td>
-                    <td>{{ $row->tanggal_transaksi }}</td>
-                    <td>{{ $row->ket_transaksi }}</td>
-                    <td>{{ $row->sumber->nama_AkunTransaksi ?? '-' }}</td>
-                    <td>{{ $row->tujuan->nama_AkunTransaksi ?? '-' }}</td>
-                    <td>{{ number_format($row->jumlah_transaksi, 0, ',', '.') }}</td>
-                    <td>{{ $row->data_user->nama_lengkap ?? '-' }}</td>
-                </tr>
-            @empty
-                <tr>
-                    <td colspan="8">Tidak ada data transaksi kas pengeluaran.</td>
-                </tr>
-            @endforelse
-        </tbody>
-    </table>
+  <table>
+  <thead>
+    <tr>
+      <th>No</th>
+      <th>Kode Transaksi</th>
+      <th>Tanggal Transaksi</th>
+      <th>Dari Kas</th>
+      <th>Untuk Akun</th>
+      <th>Jumlah</th>
+      <th>Uraian</th>
+      <th>User</th>
+    </tr>
+  </thead>
+  <tbody>
+    @forelse($data as $index => $row)
+      @php
+          $akunTujuan = $row->details->firstWhere('debit', '>', 0)?->akun;
+          $akunSumberList = $row->details->where('kredit', '>', 0);
+          $jumlah = $row->total_debit ?? 0;
+      @endphp
+      <tr>
+        <td align="center">{{ $index + 1 }}</td>
+        <td align="center">{{ $row->kode_transaksi ?? '-' }}</td>
+        <td align="center">{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y') }}</td>
+        <td>
+          <ul style="margin:0; padding-left:12px;">
+            @foreach($akunSumberList as $s)
+              <li>{{ $s->akun->nama_AkunTransaksi ?? '-' }}</li>
+            @endforeach
+          </ul>
+        </td>
+        <td>{{ $akunTujuan->nama_AkunTransaksi ?? '-' }}</td>
+        <td align="right">{{ number_format($jumlah, 0, ',', '.') }}</td>
+        <td>{{ $row->ket_transaksi ?? '-' }}</td>
+        <td>{{ $row->data_user->nama_lengkap ?? '-' }}</td>
+      </tr>
+    @empty
+      <tr>
+        <td colspan="8" align="center"><em>Tidak ada data transaksi</em></td>
+      </tr>
+    @endforelse
+  </tbody>
+</table>
+
 
 </body>
 </html>
