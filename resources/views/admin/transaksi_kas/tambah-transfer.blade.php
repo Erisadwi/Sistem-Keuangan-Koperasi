@@ -16,34 +16,37 @@
         <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi" 
                 value="{{ old('tanggal_transaksi') }}">
 
-        <label for="jumlah_transaksi">Jumlah*</label>
-        <input type="number" id="jumlah_transaksi" name="jumlah_transaksi" value=" {{ old('jumlah_transaksi') }}">
+        <label>Dari Kas*</label>
+                <div id="detail-container">
+                    <div class="detail-row">
+                        <select name="sumber[0][id_jenisAkunTransaksi]" class="input-select">
+                            <option value="" disabled selected>Pilih Akun</option>
+                            @foreach ($akunSumber as $a)
+                                <option value="{{ $a->id_jenisAkunTransaksi }}">
+                                    {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
+                                </option>
+                            @endforeach
+                        </select>
+                        <input type="number" name="sumber[0][jumlah]" class="input-number" placeholder="Jumlah">
+                        <button type="button" class="btn btn-tambah" onclick="tambahBaris()">+</button>
+                        <button type="button" class="btn btn-hapus" onclick="hapusBaris(this)">x</button>
+                    </div>
+                </div>
+
+        <label for="id_jenisAkunTransaksi_tujuan">Untuk Kas*</label>
+        <select name="id_akun_tujuan" id="id_akun_tujuan" required>
+            <option value="" disabled selected>Pilih Kas</option>
+            @foreach ($akunTujuan as $a)
+                <option value="{{ $a->id_jenisAkunTransaksi }}"
+                    {{ old('id_akun_tujuan') == $a->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                    {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
+                </option>
+            @endforeach
+        </select>
 
         <label for="keterangan">Keterangan</label>
         <input type="text" id="keterangan" name="ket_transaksi" value="{{ old('ket_transaksi') }}">
 
-        <label for="id_jenisAkunTransaksi_sumber">Dari Kas*</label>
-            <select name="id_jenisAkunTransaksi_sumber" id="id_jenisAkunTransaksi_sumber">
-            <option value="" disabled {{ old('id_jenisAkunTransaksi_sumber') ? '' : 'selected' }}>Pilih Kas</option>
-            @foreach ($akunSumber as $a)
-                <option value="{{ $a->id_jenisAkunTransaksi }}"
-                {{ (string)old('id_jenisAkunTransaksi_sumber', $TransaksiTransfer->id_jenisAkunTransaksi_sumber ?? '') === (string)$a->id_jenisAkunTransaksi ? 'selected' : '' }}>
-                {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
-                </option>
-            @endforeach
-            </select>
-
-
-        <label for="id_jenisAkunTransaksi_tujuan">Untuk Kas*</label>
-            <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan">
-            <option value="" disabled {{ old('id_jenisAkunTransaksi_tujuan') ? '' : 'selected' }}>Pilih Kas</option>
-            @foreach ($akunTujuan as $a)
-                <option value="{{ $a->id_jenisAkunTransaksi }}"
-                {{ (string)old('id_jenisAkunTransaksi_tujuan', $TransaksiTransfer->id_jenisAkunTransaksi_tujuan ?? '') === (string)$a->id_jenisAkunTransaksi ? 'selected' : '' }}>
-                {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
-                </option>
-            @endforeach
-            </select>
 
         <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>
@@ -143,30 +146,123 @@ select:focus {
 .btn-batal:hover {
     background-color: #d73833;
 }
+
+
+.btn-tambah, .btn-hapus {
+    width: 70px;
+    height: 35px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    margin-left: 5px;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.btn-tambah {
+    background-color: #28a745;
+}
+
+.btn-hapus {
+    background-color: #dc3545;
+}
+
+.btn-tambah:hover {
+    background-color: #218838;
+}
+
+.btn-hapus:hover {
+    background-color: #c82333;
+}
+
+.detail-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
 </style>
 
 <script>
-document.getElementById('form-container').addEventListener('submit', function(e) {
-    const wajib = ['jumlah_transaksi'];
+function tambahBaris() {
+    const container = document.getElementById('detail-container');
+    const rows = container.querySelectorAll('.detail-row');
+    const newIndex = rows.length; 
 
-    for (let id of wajib) {
-        const el = document.getElementById(id);
-        if (!el || !el.value.trim()) {
-            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
-            e.preventDefault(); 
+    const akunOptions = rows[0].querySelector('select').innerHTML;
+
+    const newRow = document.createElement('div');
+    newRow.classList.add('detail-row');
+
+    newRow.innerHTML = `
+        <select name="sumber[${newIndex}][id_jenisAkunTransaksi]" class="input-select">
+            ${akunOptions}
+        </select>
+        <input type="number" name="sumber[${newIndex}][jumlah]" class="input-number" placeholder="Jumlah">
+        <button type="button" class="btn btn-tambah" onclick="tambahBaris()">+</button>
+        <button type="button" class="btn btn-hapus" onclick="hapusBaris(this)">x</button>
+    `;
+
+    container.appendChild(newRow);
+}
+
+function hapusBaris(button) {
+    const container = document.getElementById('detail-container');
+    const row = button.closest('.detail-row');
+
+    if (container.querySelectorAll('.detail-row').length > 1) {
+        row.remove();
+    } else {
+        alert('⚠️ Minimal harus ada satu akun sumber.');
+    }
+}
+document.getElementById('form-pemasukan').addEventListener('submit', function(e) {
+
+    const tanggal = document.getElementById('tanggal_transaksi');
+    const tujuan = document.getElementById('id_akun_tujuan');
+    const detailRows = document.querySelectorAll('#detail-container .detail-row');
+
+    if (!tanggal.value.trim()) {
+        alert('⚠️ Mohon isi tanggal transaksi.');
+        e.preventDefault();
+        return;
+    }
+
+    if (detailRows.length === 0) {
+        alert('⚠️ Minimal harus ada satu akun sumber.');
+        e.preventDefault();
+        return;
+    }
+
+    for (let i = 0; i < detailRows.length; i++) {
+        const akun = detailRows[i].querySelector('select');
+        const jumlah = detailRows[i].querySelector('input[type="number"]');
+
+        if (!akun.value || !jumlah.value.trim()) {
+            alert(`⚠️ Mohon lengkapi akun dan jumlah pada baris ke-${i + 1}.`);
+            e.preventDefault();
             return;
         }
+    }
+
+    if (!tujuan.value.trim()) {
+        alert('⚠️ Mohon pilih kas tujuan.');
+        e.preventDefault();
+        return;
     }
 
     const yakin = confirm('Apakah data sudah benar dan ingin disimpan?');
 
     if (!yakin) {
-        e.preventDefault(); 
+        e.preventDefault();
         alert('❌ Pengisian data dibatalkan.');
         return;
     }
 
-    alert('✅ Data barang berhasil disimpan!');
+    alert('✅ Data berhasil disimpan!');
 });
 </script>
 

@@ -32,20 +32,36 @@
     </thead>
 
     <tbody>
-      @forelse(($TransaksiTransfer ?? collect()) as $idx => $row)
+    @forelse($TransaksiTransfer as $row)
+        @php
+            // akun tujuan = baris dengan debit > 0 (kas masuk)
+            $akunTujuan = $row->details->firstWhere('debit', '>', 0)?->akun;
+            // akun sumber = semua baris dengan kredit > 0
+            $akunSumberList = $row->details->where('kredit', '>', 0);
+            // total jumlah = ambil total debit (pasti sama dengan total kredit)
+            $jumlah = $row->total_debit ?? 0;
+        @endphp
+
         <tr class="selectable-row" data-id="{{ $row->id_transaksi }}">
-          <td>{{ $row->kode_transaksi ?? '' }}</td>
-          <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y') ?? '' }}</td>
-          <td>{{ $row->ket_transaksi ?? '-' }}</td>
-          <td>{{ number_format($row->jumlah_transaksi ?? 0, 0, ',', '.') }}</td>
-          <td>{{ $row->sumber->nama_AkunTransaksi ?? '' }}</td>
-          <td>{{ $row->tujuan->nama_AkunTransaksi ?? '' }}</td>
-          <td>{{ $row->data_user->nama_lengkap ?? '' }}</td>
-      @empty
-        <tr>
-          <td colspan="7" class="empty-cell">Belum ada data transfer</td>
+            <td>{{ $row->kode_transaksi }}</td>
+            <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y') }}</td>
+            <td>{{ $row->ket_transaksi ?? '-' }}</td>
+            <td>{{ number_format($jumlah, 0, ',', '.') }}</td>
+            <td>
+                <ul style="margin:0; padding-left:16px; text-align:left;">
+                    @foreach($akunSumberList as $s)
+                        <li>{{ $s->akun->nama_AkunTransaksi ?? '-' }}</li>
+                    @endforeach
+                </ul>
+            </td>
+            <td>{{ $akunTujuan->nama_AkunTransaksi ?? '-' }}</td>
+            <td>{{ $row->data_user->nama_lengkap ?? '-' }}</td>
         </tr>
-      @endforelse
+    @empty
+        <tr>
+            <td colspan="7" class="empty-cell">Belum ada data transfer</td>
+        </tr>
+    @endforelse
     </tbody>
   </table>
 </div>
@@ -97,6 +113,7 @@
 
   .transfer-table td {
     padding: 10px;
+    text-align: center;
     border-bottom: 1px solid var(--grid)!important;
     border-right: 1px solid var(--grid)!important;
     background: #fff;
