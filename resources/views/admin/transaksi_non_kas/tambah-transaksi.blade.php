@@ -26,24 +26,7 @@
         <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi" 
                 value="{{ old('tanggal_transaksi') }}">
 
-        <label for="id_jenisAkunTransaksi_sumber">Akun Debit</label>
-                <div id="detail-container">
-                    <div class="detail-row">
-                        <select name="sumber[0][id_jenisAkunTransaksi]" class="input-select">
-                            <option value="" disabled selected>Pilih Akun</option>
-                            @foreach ($akunSumber as $a)
-                                <option value="{{ $a->id_jenisAkunTransaksi }}">
-                                    {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <input type="number" name="sumber[0][jumlah]" class="input-number" placeholder="Jumlah">
-                        <button type="button" class="btn btn-tambah" onclick="tambahBaris()">+</button>
-                        <button type="button" class="btn btn-hapus" onclick="hapusBaris(this)">x</button>
-                    </div>
-                </div>
-
-        <label for="id_jenisAkunTransaksi_tujuan">Akun Kredit</label>
+        <label for="id_jenisAkunTransaksi_tujuan">Akun Debit</label>
         <select name="id_akun_tujuan" id="id_akun_tujuan" required>
             <option value="" disabled selected>Pilih Kas</option>
             @foreach ($akunTujuan as $a)
@@ -53,9 +36,29 @@
                 </option>
             @endforeach
         </select>
+
+        <label for="id_jenisAkunTransaksi_sumber">Akun Kredit</label>
+        <div id="detail-container">
+            <div class="detail-row">
+                <select name="sumber[0][id_jenisAkunTransaksi]" class="input-select">
+                    <option value="" disabled selected>Pilih Akun</option>
+                    @foreach ($akunSumber as $a)
+                        <option value="{{ $a->id_jenisAkunTransaksi }}">
+                            {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
+                        </option>
+                    @endforeach
+                </select>
+
+                <input type="number" name="sumber[0][jumlah]" class="input-number" placeholder="Jumlah">
+
+                <button type="button" class="btn btn-tambah" onclick="tambahBaris()">+</button>
+                <button type="button" class="btn btn-hapus" onclick="hapusBaris(this)">x</button>
+            </div>
+        </div>
+
         
         <label for="keterangan">Keterangan</label>
-        <input type="text" id="keterangan" name="keterangan" value="{{ old('ket_transaksi') }}">
+        <input type="text" id="keterangan" name="ket_transaksi" value="{{ old('ket_transaksi') }}">
 
         <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>

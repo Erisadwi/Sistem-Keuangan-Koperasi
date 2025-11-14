@@ -58,7 +58,7 @@ class JenisAkunTransaksiController extends Controller
             'simpanan'           => 'required|in:Y,N',
             'pinjaman'           => 'required|in:Y,N',
             'angsuran'           => 'required|in:Y,N',
-            'labarugi'           => 'required|in:PENDAPATAN,BIAYA',
+            'labarugi'           => 'nullable|in:PENDAPATAN,BIAYA',
             'is_kas'           => 'required|in:1,0',
         ]);
 
@@ -89,7 +89,7 @@ class JenisAkunTransaksiController extends Controller
             'simpanan'           => 'required|in:Y,N',
             'pinjaman'           => 'required|in:Y,N',
             'angsuran'           => 'required|in:Y,N',
-            'labarugi'           => 'required|in:PENDAPATAN,BIAYA',
+            'labarugi'           => 'nullable|in:PENDAPATAN,BIAYA',
         ]);
 
         $jenis_akun_transaksi = JenisAkunTransaksi::findOrFail($id);

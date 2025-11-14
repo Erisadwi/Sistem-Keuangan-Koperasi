@@ -32,13 +32,13 @@
 
     @if(isset($data) && count($data) > 0)
       @php
-        $totalPendapatan = collect($data)->sum(function ($item) {
+        $totalBiaya = collect($data)->sum(function ($item) {
           return is_array($item) ? ($item['jumlah'] ?? 0) : ($item->jumlah ?? 0);
         });
       @endphp
       <tr class="total-row">
-        <td colspan="2" class="text-right"><strong>Total Pendapatan</strong></td>
-        <td class="text-right"><strong>{{ number_format($totalPendapatan, 0, ',', '.') }}</strong></td>
+        <td colspan="2" class="text-right"><strong>Total Biaya</strong></td>
+        <td class="text-right"><strong>{{ number_format($totalBiaya, 0, ',', '.') }}</strong></td>
       </tr>
     @endif
   </tbody>

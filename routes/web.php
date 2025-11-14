@@ -35,6 +35,7 @@ use App\Http\Controllers\Anggota\LaporanPinjamanController;
 use App\Http\Controllers\Anggota\LaporanPembayaranController;
 use App\Http\Controllers\Admin\Laporan\LaporanJatuhTempoController;
 use App\Http\Controllers\Admin\Laporan\LaporanSaldoKasController;
+use App\Http\Controllers\Admin\Laporan\LaporanLabaRugiController;
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
@@ -233,6 +234,8 @@ Route::middleware(['auth:user'])->group(function () {
 
     Route::get('/laporan-saldo-kas', [LaporanSaldoKasController::class, 'index'])->name('laporan.saldo-kas');
     Route::get('/laporan-saldo-kas/export-pdf', [LaporanSaldoKasController::class, 'exportPdf'])->name('saldo-kas.exportPdf');
+
+    Route::get('/laporan-laba-rugi', [LaporanLabaRugiController::class, 'index'])->name('laporan.laba-rugi');    
 });
 
 
@@ -288,10 +291,6 @@ Route::get('/anggota/profil/profilAnggota', function () {
 Route::get('/admin/pinjaman/edit-bayar-angsuran', function () {
     return view('admin.pinjaman.edit-bayar-angsuran');
 })->name('admin.pinjaman.edit-bayar-angsuran');
-
-Route::get('/admin/laporan/laporan-laba-rugi', function () {
-    return view('admin.laporan.laporan-laba-rugi');
-})->name('admin.laporan.laporan-laba-rugi');
 
 Route::get('/admin/profil/beranda-profil', function () {
     return view('admin.profil.beranda-profil');
