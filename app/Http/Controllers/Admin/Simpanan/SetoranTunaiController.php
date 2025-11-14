@@ -105,9 +105,8 @@ class SetoranTunaiController extends Controller
         $nextNumber = $lastNumber ? $lastNumber + 1 : 1;
         $data['kode_simpanan'] = 'TRD' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
 
+        $data['id_jenisAkunTransaksi_sumber'] = null;
 
-        $akunPiutang = JenisAkunTransaksi::where('nama_AkunTransaksi', 'like', '%Piutang Anggota%')->first();
-        $data['id_jenisAkunTransaksi_sumber'] = $akunPiutang ? $akunPiutang->id_jenisAkunTransaksi : null;
         $data['type_simpanan'] = 'TRD';
 
         if ($request->hasFile('bukti_setoran')) {

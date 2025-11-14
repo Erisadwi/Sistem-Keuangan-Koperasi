@@ -26,28 +26,34 @@
 
     <tbody>
       @forelse(($saldoAwalKas ?? collect()) as $row)
+        @php
+            $detailDebit = $row->details->where('debit', '>', 0)->first();
+            $akunNama = $detailDebit?->akun?->nama_AkunTransaksi ?? '-';
+            $jumlahSaldo = $detailDebit?->debit ?? 0;
+        @endphp
+
         <tr>
           <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d/m/Y - H:i') }}</td>
-          <td>{{ $row->tujuan->nama_AkunTransaksi ?? '-' }}</td>
+          <td>{{ $akunNama }}</td>
           <td>{{ $row->ket_transaksi ?? '-' }}</td>
-          <td>{{ number_format($row->jumlah_transaksi ?? 0, 0, ',', '.') }}</td>
-          <td>{{ $row->username ?? '-' }}</td>
+          <td>{{ number_format($jumlahSaldo, 0, ',', '.') }}</td>
+          <td>{{ $row->data_user->username ?? '-' }}</td>
           <td class="actions">
             <a href="{{ route('saldo-awal-kas.edit', $row->id_transaksi) }}" class="edit">✏️ Edit</a>
           </td>
         </tr>
       @empty
         <tr>
-          <td colspan="7" class="empty-cell">Belum ada data saldo awal kas</td>
+          <td colspan="6" class="empty-cell">Belum ada data saldo awal kas</td>
         </tr>
       @endforelse
     </tbody>
   </table>
 </div>
 
- <div class="pagination-container">
-      <x-menu.pagination :data="$saldoAwalKas" />
- </div>
+<div class="pagination-container">
+  <x-menu.pagination :data="$saldoAwalKas" />
+</div>
 
 <style>
   :root {
@@ -124,14 +130,13 @@
     }
   }
 
- .pagination-container {
-  margin-top: auto;        
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 12px 16px;
-}
-
+  .pagination-container {
+    margin-top: auto;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    padding: 12px 16px;
+  }
 </style>
 
 @endsection

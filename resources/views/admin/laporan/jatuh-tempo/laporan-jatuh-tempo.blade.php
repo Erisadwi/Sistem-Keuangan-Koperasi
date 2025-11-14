@@ -45,7 +45,7 @@
             <td>{{ $row->nama_anggota }}</td>
             <td>{{ \Carbon\Carbon::parse($row->tanggal_pinjam)->format('d-m-Y') }}</td>
             <td>{{ \Carbon\Carbon::parse($row->tanggal_tempo)->format('d-m-Y') }}</td>
-            <td>{{ $row->lama_pinjam }} hari</td>
+            <td>{{ $row->lama_pinjam }} bulan</td>
             <td>Rp {{ number_format($row->jumlah_tagihan, 0, ',', '.') }}</td>
             <td>Rp {{ number_format($row->dibayar, 0, ',', '.') }}</td>
             <td>Rp {{ number_format($row->sisa_tagihan, 0, ',', '.') }}</td>
