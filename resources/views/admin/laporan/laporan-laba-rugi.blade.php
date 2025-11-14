@@ -3,7 +3,7 @@
 @section('title', 'Laporan Laba Rugi')  
 @section('title-1', 'Laba Rugi')  
 @section('title-content', 'Laporan Laba Rugi')  
-@section('period', 'Periode 1 Jan 2025 - 31 Des 2025')  
+@section('period', $periodeText) 
 @section('sub-title', 'Laporan Laba Rugi')  
 
 @section('content')

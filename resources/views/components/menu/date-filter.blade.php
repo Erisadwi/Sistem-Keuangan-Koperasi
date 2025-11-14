@@ -140,25 +140,14 @@
   const customBox = document.getElementById('{{ $uid }}_custom');
   const btnSave   = document.getElementById('{{ $uid }}_save');
   const btnCancel = document.getElementById('{{ $uid }}_cancel');
-  const autoSubmit = @json((bool)$submitOnChange);
 
   const pad = n => String(n).padStart(2,'0');
   const fmt = d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 
-  function openPop(){
-    pop.hidden=false; trig.setAttribute('aria-expanded','true');
-    setTimeout(()=>document.addEventListener('click', onDocClick),0);
-    document.addEventListener('keydown', onEsc);
-  }
-  function closePop(){
-    pop.hidden=true; trig.setAttribute('aria-expanded','false');
-    document.removeEventListener('click', onDocClick);
-    document.removeEventListener('keydown', onEsc);
-  }
-  function onDocClick(e){ if(!pop.contains(e.target) && e.target!==trig){ closePop(); } }
-  function onEsc(e){ if(e.key==='Escape'){ closePop(); } }
-
   trig.addEventListener('click', ()=> pop.hidden ? openPop() : closePop());
+
+  function openPop(){ pop.hidden=false; }
+  function closePop(){ pop.hidden=true; }
 
   pop.querySelectorAll('.df-item[data-preset]').forEach(btn=>{
     btn.addEventListener('click', ()=>{
@@ -170,34 +159,28 @@
 
       if (v==='this_year' || v==='last_year') {
         const now = new Date();
-        const year = v==='this_year' ? now.getFullYear() : now.getFullYear()-1;
-        const from = new Date(year,0,1);
-        const to   = new Date(year,11,31);
-        if (start) start.value = fmt(from);
-        if (end)   end.value   = fmt(to);
-        if (autoSubmit) form.submit();
+        const year = v === 'this_year' ? now.getFullYear() : now.getFullYear() - 1;
+        const from = new Date(year, 0, 1);
+        const to   = new Date(year, 11, 31);
+
+        start.value = fmt(from);
+        end.value   = fmt(to);
+
+        form.submit(); // Submit otomatis
       }
     });
   });
 
-  [start,end].forEach(inp=>inp && inp.addEventListener('change', ()=>{
-    if(start.value && end.value && end.value < start.value){
-      end.value = start.value;
-    }
-  }));
-
-  if (btnCancel){
-    btnCancel.addEventListener('click', ()=>{
-      closePop();
-    });
-  }
-
   if (btnSave){
     btnSave.addEventListener('click', ()=>{
-      if (@json((bool)$submitOnChange)) {
-        form.submit();
-      } 
+      preset.value = 'custom';
+      form.submit();
     });
   }
+
+  if (btnCancel){
+    btnCancel.addEventListener('click', ()=> closePop());
+  }
 })();
+
 </script>
