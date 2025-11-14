@@ -31,11 +31,11 @@
             <label for="id_jenisAkunTransaksi_tujuan">Akun</label>
             <select id="id_jenisAkunTransaksi_tujuan" name="id_jenisAkunTransaksi_tujuan" required>
                 <option value="">-- Pilih Akun Kas --</option>
-                <option value="1" {{ old('id_jenisAkunTransaksi_tujuan', $saldoAwalKas->id_jenisAkunTransaksi_tujuan ?? '') == '1' ? 'selected' : '' }}>Kas Besar</option>
-                <option value="2" {{ old('id_jenisAkunTransaksi_tujuan', $saldoAwalKas->id_jenisAkunTransaksi_tujuan ?? '') == '2' ? 'selected' : '' }}>Bank BNI</option>
-                <option value="3" {{ old('id_jenisAkunTransaksi_tujuan', $saldoAwalKas->id_jenisAkunTransaksi_tujuan ?? '') == '3' ? 'selected' : '' }}>Bank Mandiri</option>
-                <option value="4" {{ old('id_jenisAkunTransaksi_tujuan', $saldoAwalKas->id_jenisAkunTransaksi_tujuan ?? '') == '4' ? 'selected' : '' }}>Kas Kecil</option>
-                <option value="5" {{ old('id_jenisAkunTransaksi_tujuan', $saldoAwalKas->id_jenisAkunTransaksi_tujuan ?? '') == '5' ? 'selected' : '' }}>Kas Niaga</option>
+                <option value="1" {{ old('id_jenisAkunTransaksi_tujuan', $detail->id_jenisAkunTransaksi ?? '') == '1' ? 'selected' : '' }}>Kas Besar</option>
+                <option value="2" {{ old('id_jenisAkunTransaksi_tujuan', $detail->id_jenisAkunTransaksi ?? '') == '2' ? 'selected' : '' }}>Bank BNI</option>
+                <option value="3" {{ old('id_jenisAkunTransaksi_tujuan', $detail->id_jenisAkunTransaksi ?? '') == '3' ? 'selected' : '' }}>Bank Mandiri</option>
+                <option value="4" {{ old('id_jenisAkunTransaksi_tujuan', $detail->id_jenisAkunTransaksi ?? '') == '4' ? 'selected' : '' }}>Kas Kecil</option>
+                <option value="5" {{ old('id_jenisAkunTransaksi_tujuan', $detail->id_jenisAkunTransaksi ?? '') == '5' ? 'selected' : '' }}>Kas Niaga</option>
             </select>
         </div>
 
@@ -56,7 +56,7 @@
                 type="number" 
                 id="jumlah_transaksi" 
                 name="jumlah_transaksi"
-                value="{{ old('jumlah_transaksi', $saldoAwalKas->jumlah_transaksi ?? '') }}"
+                value="{{ old('jumlah_transaksi', $detail->debit ?? '') }}"
                 step="0.01"
                 required 
                 placeholder="Masukkan nominal saldo awal"

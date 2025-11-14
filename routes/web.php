@@ -230,7 +230,7 @@ Route::middleware(['auth:anggota'])->group(function () {
 
 Route::middleware(['auth:user'])->group(function () {
     Route::get('/laporan-jatuh-tempo', [LaporanJatuhTempoController::class, 'index'])->name('laporan.jatuh-tempo');
-    Route::get('/laporan-jatuh-tempo/export', [LaporanJatuhTempoController::class, 'export'])->name('laporan.jatuh-tempo.export');
+    Route::get('/laporan-jatuh-tempo/export', [LaporanJatuhTempoController::class, 'exportPdf'])->name('laporan.jatuh-tempo.export');
 
     Route::get('/laporan-saldo-kas', [LaporanSaldoKasController::class, 'index'])->name('laporan.saldo-kas');
     Route::get('/laporan-saldo-kas/export-pdf', [LaporanSaldoKasController::class, 'exportPdf'])->name('saldo-kas.exportPdf');

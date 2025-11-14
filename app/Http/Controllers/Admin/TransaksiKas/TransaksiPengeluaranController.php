@@ -35,7 +35,7 @@ class TransaksiPengeluaranController extends Controller
             ->paginate($perPage)
             ->appends($request->except('page'));
 
-        return view('admin.transaksi_kas.pengeluaran', compact('TransaksiPengeluaran'));
+        return view('admin.transaksi_kas.pengeluaran.pengeluaran', compact('TransaksiPengeluaran'));
     }
 
     public function create()
@@ -50,7 +50,7 @@ class TransaksiPengeluaranController extends Controller
             ->where('status_akun', 'Y')
             ->orderBy('nama_AkunTransaksi')->get();
 
-        return view('admin.transaksi_kas.tambah-pengeluaran',compact('akunSumber','akunTujuan'));
+        return view('admin.transaksi_kas.pengeluaran.tambah-pengeluaran',compact('akunSumber','akunTujuan'));
     }
 
     public function store(Request $request)
@@ -133,7 +133,7 @@ class TransaksiPengeluaranController extends Controller
 
     $akun_sumber = $TransaksiPengeluaran->details->where('kredit', '>', 0);
 
-    return view('admin.transaksi_kas.edit-pengeluaran', compact(
+    return view('admin.transaksi_kas.pengeluaran.edit-pengeluaran', compact(
         'TransaksiPengeluaran',
         'akunSumber',
         'akunTujuan',
@@ -225,7 +225,7 @@ class TransaksiPengeluaranController extends Controller
     
     $data = $query->orderBy('id_transaksi', 'desc')->get();
 
-    $pdf = Pdf::loadView('admin.transaksi_kas.pengeluaran-export-pdf', [
+    $pdf = Pdf::loadView('admin.transaksi_kas.pengeluaran.pengeluaran-export-pdf', [
         'data' => $data
     ])->setPaper('A4', 'portrait');
 
