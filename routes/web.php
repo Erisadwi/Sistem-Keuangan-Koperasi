@@ -137,7 +137,7 @@ Route::get('/test-logo', [App\Http\Controllers\Admin\setting\identitasKoperasiCo
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
 
-    Route::get('transaksi-non-kas/download', [TransaksiNonKasController::class, 'download'])->name('transaksi-non-kas.download');
+    Route::get('transaksi-non-kas/export-pdf', [TransaksiNonKasController::class, 'exportPdf'])->name('transaksi-non-kas.export-pdf');
     Route::resource('transaksi-non-kas', TransaksiNonKasController::class)->except(['show']);
 
     Route::get('identitas-koperasi/edit', [identitasKoperasiController::class, 'edit'])->name('identitas-koperasi.editSingle');

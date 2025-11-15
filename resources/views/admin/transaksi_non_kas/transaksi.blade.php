@@ -14,7 +14,7 @@
 <x-menu.toolbar-right 
   searchPlaceholder="Cari Kode Transaksi"
   searchName="kode_transaksi"
-  :downloadRoute="route('transaksi-non-kas.download', request()->query())"
+    :downloadRoute="route('transaksi-non-kas.export-pdf', request()->only(['start_date', 'end_date', 'search']))"
 />
 
 <div class="pemasukan-table-wrap">
