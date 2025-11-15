@@ -235,7 +235,8 @@ Route::middleware(['auth:user'])->group(function () {
     Route::get('/laporan-saldo-kas', [LaporanSaldoKasController::class, 'index'])->name('laporan.saldo-kas');
     Route::get('/laporan-saldo-kas/export-pdf', [LaporanSaldoKasController::class, 'exportPdf'])->name('saldo-kas.exportPdf');
 
-    Route::get('/laporan-laba-rugi', [LaporanLabaRugiController::class, 'index'])->name('laporan.laba-rugi');    
+    Route::get('/laporan-laba-rugi', [LaporanLabaRugiController::class, 'index'])->name('laporan.laba-rugi'); 
+    Route::get('/laporan-laba-rugi/export-pdf', [LaporanLabaRugiController::class, 'exportPdf'])->name('laba-rugi.exportPdf');   
 });
 
 

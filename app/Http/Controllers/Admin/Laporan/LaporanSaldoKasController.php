@@ -128,7 +128,7 @@ class LaporanSaldoKasController extends Controller
         $saldo_periode_sebelumnya = $data->sum('total_saldo_lalu');
         $jumlah_kas = $data->sum('total_saldo');
 
-        return view('admin.laporan.laporan-saldo-kas', compact(
+        return view('admin.laporan.saldo-kas.laporan-saldo-kas', compact(
             'data', 'bulan', 'tahun', 'startDate', 'endDate',
             'saldo_periode_sebelumnya', 'jumlah_kas'
         ));

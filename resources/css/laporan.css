@@ -132,7 +132,7 @@ a.btn-profil:focus-visible, btn-profil:focus-visible{ outline: 2px solid #1d4ed8
   width: 97%;
   height: auto;
   min-height: 700px;
-  max-height: 1920px;
+  max-height: 1950px;
   position: relative;
   left: 0px;
   top: 0px;
@@ -144,7 +144,7 @@ a.btn-profil:focus-visible, btn-profil:focus-visible{ outline: 2px solid #1d4ed8
 .title-content {
   color: #000;
   position: absolute;
-  top: 15%; /* posisi vertikal dari atas */
+  top: 7%; /* posisi vertikal dari atas */
   left: 50%;
   transform: translateX(-50%);
   font-family: "Inter-SemiBold", sans-serif;

@@ -3,23 +3,34 @@
 @section('title', 'Laporan Laba Rugi')  
 @section('title-1', 'Laba Rugi')  
 @section('title-content', 'Laporan Laba Rugi')  
-@section('period', $periodeText) 
+@section('period')
+    {{ $periodeText }}
+@endsection
 @section('sub-title', 'Laporan Laba Rugi')  
 
 @section('content')
 
 <x-menu.date-filter/>
-<x-menu.unduh/>
+<x-menu.unduh 
+    :url="route('laba-rugi.exportPdf', [
+        'start_date' => request('start_date'),
+        'end_date'   => request('end_date'),
+        'preset'     => request('preset')
+    ])" 
+    text="Unduh Laporan"
+/>
+
+
 
 <div class="laporan-laba-rugi-wrap">
     
-    <h4 class="judul-section">Pinjaman</h4>
+    <h3 class="judul-section">Pinjaman</h3>
     @include('partials.pinjaman-table', ['data' => $pinjaman ?? null, 'label' => 'pinjaman'])
 
-    <h4 class="judul-section">Pendapatan</h4>
+    <h3 class="judul-section">Pendapatan</h3>
     @include('partials.pendapatan-table', ['data' => $pendapatan ?? null, 'label' => 'pendapatan'])
 
-    <h4 class="judul-section">Biaya - Biaya</h4>
+    <h3 class="judul-section">Biaya - Biaya</h3>
     @include('partials.biaya-table', ['data' => $biaya ?? null, 'label' => 'biaya - biaya'])
 
     {{-- ===== Total Laba Rugi ===== --}}
@@ -35,7 +46,7 @@
         $labaRugi = $totalPendapatan - $totalBiaya;
     @endphp
 
-    <h4 class="judul-section">Total Laba Rugi</h4>
+    <h3 class="judul-section">Total Laba Rugi</h3>
     <table class="laba-rugi-table">
         <tbody>
             <tr class="laba-rugi-row">
@@ -73,20 +84,16 @@
   overflow-x: visible; 
 }
 
-/* Judul section */
 .judul-section {
   font-weight: 600;
-  font-size: 16px;
-  margin-top: 14px;      /* ↑ agak diturunkan biar tidak nabrak judul atas */
-  margin-bottom: 4px;    /* ↓ jarak ke tabel sedikit lebih dekat */
+  margin-top: 20px;    
+  margin-bottom: 7px;    
   color: #333;
 }
 
-
-/* Tabel utama */
 .laba-rugi-table {
   width: 100%;
-  min-width: 1000px; /* Paksa scroll horizontal jika terlalu lebar */
+  min-width: 1000px; 
   border-collapse: collapse;
   background: white;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
@@ -104,7 +111,7 @@
 
 .laba-rugi-table th,
 .laba-rugi-table td {
-  text-align: center;
+  text-align: left;
   padding: 10px 14px;
   border: 1px solid var(--border);
   white-space: nowrap;
