@@ -117,13 +117,6 @@ Route::prefix('admin/master_data')->group(function () {
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('data-user.destroy');
     Route::get('users/export', [UserController::class, 'export'])->name('data-user.export');
 
-    Route::get('/saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'index'])->name('saldo-awal-non-kas.index');
-    Route::get('/saldo-awal-non-kas/create', [SaldoAwalNonKasController::class, 'create'])->name('saldo-awal-non-kas.create');
-    Route::post('/saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'store'])->name('saldo-awal-non-kas.store');
-    Route::get('saldo-awal-non-kas/export', [SaldoAwalNonKasController::class, 'export'])->name('saldo-awal-non-kas.export');
-    Route::get('/saldo-awal-non-kas/{id}/edit', [SaldoAwalNonKasController::class, 'edit'])->name('saldo-awal-non-kas.edit');
-    Route::put('/saldo-awal-non-kas/{id}', [SaldoAwalNonKasController::class, 'update'])->name('saldo-awal-non-kas.update');
-
     Route::get('saldo-awal-kas', [SaldoAwalKasController::class, 'index'])->name('saldo-awal-kas.index');
     Route::get('saldo-awal-kas/create', [SaldoAwalKasController::class, 'create'])->name('saldo-awal-kas.create');
     Route::post('saldo-awal-kas', [SaldoAwalKasController::class, 'store'])->name('saldo-awal-kas.store');
@@ -191,6 +184,15 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::put('/pinjaman/{id}', [DataPinjamanController::class, 'update'])->name('pinjaman.update');
     Route::delete('/pinjaman/{id}', [DataPinjamanController::class, 'destroy'])->name('pinjaman.destroy');
     Route::get('pinjaman/cetak-nota/{id}', [DataPinjamanController::class, 'cetakNota'])->name('pinjaman.cetak-nota');
+});
+
+Route::middleware(['auth:user'])->prefix('admin')->group(function () {
+    Route::get('/saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'index'])->name('saldo-awal-non-kas.index');
+    Route::get('/saldo-awal-non-kas/create', [SaldoAwalNonKasController::class, 'create'])->name('saldo-awal-non-kas.create');
+    Route::post('/saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'store'])->name('saldo-awal-non-kas.store');
+    Route::get('saldo-awal-non-kas/export', [SaldoAwalNonKasController::class, 'export'])->name('saldo-awal-non-kas.export');
+    Route::get('/saldo-awal-non-kas/{id}/edit', [SaldoAwalNonKasController::class, 'edit'])->name('saldo-awal-non-kas.edit');
+    Route::put('/saldo-awal-non-kas/{id}', [SaldoAwalNonKasController::class, 'update'])->name('saldo-awal-non-kas.update');
 });
 
 

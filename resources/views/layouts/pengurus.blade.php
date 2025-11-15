@@ -71,7 +71,7 @@
 
         <x-menu.section title="Master Data" :open="false" :has-sub="true">
           <a href="#" class="submenu-row">Saldo Awal Kas</a>
-          <a href="#" class="submenu-row">Saldo Awal Non Kas</a>
+          <a href="{{ route('saldo-awal-non-kas.index') }}" class="submenu-row">Saldo Awal Non Kas</a>
           <a href="#" class="submenu-row">Jenis Simpanan</a>
           <a href="#" class="submenu-row">Jenis Akun Transaksi</a>
           <a href="#" class="submenu-row">Lama Angsuran</a>

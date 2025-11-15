@@ -221,7 +221,6 @@ select:focus {
 }
 </style>
 
-{{-- ======== SCRIPT POP-UP VALIDASI DAN KONFIRMASI ======== --}}
 <script>
 document.getElementById('saldoAwalNonKasForm').addEventListener('submit', function(e) {
     const wajib = ['tanggal_transaksi', 'id_jenisAkunTransaksi_tujuan', 'jumlah_transaksi'];
@@ -245,6 +244,13 @@ document.getElementById('saldoAwalNonKasForm').addEventListener('submit', functi
 
     alert('✅ Data berhasil disimpan!');
 });
+
+    const btnBatal = document.getElementById('btnBatal');
+    if (btnBatal) {
+        btnBatal.addEventListener('click', function() {
+            window.location.href = "{{ route('saldo-awal-non-kas.index') }}";
+        });
+    }
 </script>
 
 @endsection

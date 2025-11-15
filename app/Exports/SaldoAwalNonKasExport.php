@@ -15,15 +15,21 @@ class SaldoAwalNonKasExport implements FromCollection, WithHeadings, WithStyles
 {
     public function collection()
     {
-        return Transaksi::where('type_transaksi', 'SANK')
+        return Transaksi::with(['details.akun', 'data_user'])
+            ->where('type_transaksi', 'SANK')
             ->get()
             ->map(function ($item) {
+                $detail = $item->details->first();
+                $akun = $detail?->akun?->nama_AkunTransaksi ?? '-';
+                $saldo = $detail?->debit ?? 0;
+                $username = $item->data_user->username ?? '-';
+
                 return [
                     'Tanggal'    => \Carbon\Carbon::parse($item->tanggal_transaksi)->format('d/m/Y - H:i'),
-                    'Akun'       => $item->tujuan->nama_AkunTransaksi ?? '-',
+                    'Akun'       => $akun,
                     'Keterangan' => $item->ket_transaksi ?? '-',
-                    'Saldo Awal' => $item->jumlah_transaksi,
-                    'Username'   => $item->username ?? '-', 
+                    'Saldo Awal' => $saldo,
+                    'Username'   => $username,
                 ];
             });
     }
