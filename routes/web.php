@@ -136,8 +136,6 @@ Route::prefix('admin/master_data')->group(function () {
 Route::get('/test-logo', [App\Http\Controllers\Admin\setting\identitasKoperasiController::class, 'testBlob']);
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
-    Route::get('transaksi_kas/pemasukan/download', [TransaksiPemasukanController::class, 'download'])->name('transaksi-pemasukan.download');
-    Route::resource('transaksi-pemasukan', TransaksiPemasukanController::class)->except(['show']);
 
     Route::get('transaksi-non-kas/download', [TransaksiNonKasController::class, 'download'])->name('transaksi-non-kas.download');
     Route::resource('transaksi-non-kas', TransaksiNonKasController::class)->except(['show']);
@@ -200,6 +198,9 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::resource('pengeluaran', TransaksiPengeluaranController::class)->except(['show']);
     Route::get('/pengeluaran/export-pdf', [TransaksiPengeluaranController::class, 'exportPdf'])
         ->name('pengeluaran.export-pdf');
+    
+    Route::get('transaksi_kas/pemasukan/export-pdf', [TransaksiPemasukanController::class, 'exportPdf'])->name('transaksi-pemasukan.export-pdf');
+    Route::resource('transaksi-pemasukan', TransaksiPemasukanController::class)->except(['show']);
 });
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
