@@ -155,6 +155,11 @@ class AngsuranController extends Controller
         $totalPeriode = $pinjaman->lamaAngsuran->lama_angsuran ?? 0;
 
         $jumlahAngsuranDibayar = $payments->count();
+        
+        if ($jumlahAngsuranDibayar >= $totalPeriode) {
+        return redirect()->route('bayar.angsuran', $id_pinjaman)
+            ->with('error', 'Pinjaman ini sudah lunas. Anda tidak dapat menambahkan angsuran baru.');
+        }
 
         $sisaAngsuran = max(0, $totalPeriode - $jumlahAngsuranDibayar);
         $sisaTagihan = max(0, $pinjaman->total_tagihan - $totalBayar);
@@ -181,9 +186,11 @@ class AngsuranController extends Controller
             ->where('is_kas', 1)
             ->orderBy('nama_AkunTransaksi')->get();
 
+        $keteranganDefault = ($angsuranKe == $totalPeriode) ? "Pelunasan" : "";
+
         return view('admin.pinjaman.tambah-bayar-angsuran', compact(
             'pinjaman', 'payments', 'sisaTagihan', 'sisaAngsuran', 'angsuranKe', 
-            'angsuranPerBulan', 'angsuranPokok', 'bungaAngsuran', 'denda', 'idBayar', 'akunSumber', 'akunTujuan'
+            'angsuranPerBulan', 'angsuranPokok', 'bungaAngsuran', 'denda', 'idBayar', 'akunSumber', 'akunTujuan', 'keteranganDefault'
         ));
     }
 

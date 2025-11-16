@@ -90,6 +90,19 @@
             </span>
         </div>
 
+
+        @if(session('error'))
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+Swal.fire({
+    icon: 'warning',
+    title: 'Sudah Lunas',
+    text: '{{ session("error") }}',
+    confirmButtonText: 'OK'
+});
+</script>
+@endif
+
         {{-- SECTION PEMBAYARAN --}}
         <div class="section-pembayaran">
             <h4 class="section-title">Data Pembayaran Angsuran:</h4>
