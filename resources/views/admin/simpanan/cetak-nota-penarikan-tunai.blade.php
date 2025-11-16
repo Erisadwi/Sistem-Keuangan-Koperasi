@@ -155,7 +155,7 @@
           <tr><td>Nama Anggota</td><td>: {{ $penarikan->anggota->nama_anggota ?? '-' }}</td></tr>
           <tr><td>Dept</td><td>: {{ $penarikan->anggota->departemen ?? '-' }}</td></tr>
           <tr><td>Alamat</td><td>: {{ $penarikan->anggota->alamat_anggota ?? '-' }}</td></tr>
-          <tr><td>Jenis Akun</td><td>: {{ $penarikan->jenisSimpanan->jenis_simpanan ?? '-' }}</td></tr>
+          <tr><td>Jenis Penarikan</td><td>: {{ $penarikan->jenisSimpanan->jenis_simpanan ?? '-' }}</td></tr>
           <tr><td>Jumlah Penarikan</td><td>: Rp {{ number_format($penarikan->jumlah_simpanan, 0, ',', '.') }}</td></tr>
         </table>
       </div>

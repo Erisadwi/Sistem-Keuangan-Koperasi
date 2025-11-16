@@ -19,9 +19,15 @@ class JenisSimpanan extends Model
     protected $fillable = [
         'jenis_simpanan',
         'jumlah_simpanan',
+        'id_jenisAkunTransaksi',
         'tampil_simpanan',
     ];
     
+    public function akunSimpanan()
+    {
+        return $this->belongsTo(JenisAkunTransaksi::class, 'id_jenisAkunTransaksi', 'id_jenisAkunTransaksi');
+    }
+
     public function simpanan()
     {
         return $this->hasMany(Simpanan::class, 'id_jenis_simpanan', 'id_jenis_simpanan');

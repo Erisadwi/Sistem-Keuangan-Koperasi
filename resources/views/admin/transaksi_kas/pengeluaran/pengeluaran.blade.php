@@ -39,17 +39,15 @@
       <tbody>
         @forelse(($TransaksiPengeluaran ?? collect()) as $index => $row)
          @php
-            // akun tujuan = baris dengan debit > 0 (kas masuk)
             $akunTujuan = $row->details->firstWhere('debit', '>', 0)?->akun;
-            // akun sumber = semua baris dengan kredit > 0
             $akunSumberList = $row->details->where('kredit', '>', 0);
-            // total jumlah = ambil total debit (pasti sama dengan total kredit)
             $jumlah = $row->total_debit ?? 0;
         @endphp
         <tr class="selectable-row" data-id="{{ $row->id_transaksi }}">
           <td>{{ $index + 1 }}</td>
           <td>{{ $row->kode_transaksi ?? '-' }}</td>
           <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y') }}</td>
+          <td>{{ $akunTujuan->nama_AkunTransaksi ?? '' }}</td>
           <td>
                 <ul style="margin:0; padding-left:16px; text-align:left;">
                     @foreach($akunSumberList as $s)
@@ -57,7 +55,6 @@
                     @endforeach
                 </ul>
             </td>
-          <td>{{ $akunTujuan->nama_AkunTransaksi ?? '' }}</td>
           <td>{{ number_format($jumlah, 0, ',', '.') }}</td>
           <td>{{ $row->ket_transaksi ?? '-' }}</td>
           <td>{{ $row->data_user->nama_lengkap ?? '-' }}</td>
@@ -76,7 +73,6 @@
       <x-menu.pagination :data="$TransaksiPengeluaran" />
     </div> 
 
-{{-- STYLE --}}
 <style>
 :root {
   --primary: #6ba1be;
@@ -87,14 +83,13 @@
   --text: #222;
 }
 
-/* Wrapper utama agar sejajar dengan tombol */
 .content-inner {
   padding-left: 25px;
   padding-right: 60px;
   margin-top: 25px;
 }
 
-/* Scroll area tabel */
+
 .table-scroll-wrapper {
   overflow-x: auto;
   overflow-y: auto;
@@ -105,13 +100,11 @@
   padding-bottom: 8px;
 }
 
-/* Pastikan tabel tetap putih */
 .table-scroll-wrapper table {
   margin-bottom: 0;
   background: white;
 }
 
-/* Scrollbar styling */
 .table-scroll-wrapper::-webkit-scrollbar {
   height: 8px;
 }
@@ -123,7 +116,6 @@
   background: #f0f0f0;
 }
 
-/* Tabel */
 .pengeluaran-table {
   width: 100%;
   min-width: 1000px;

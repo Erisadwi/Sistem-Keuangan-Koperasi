@@ -155,7 +155,7 @@
           <tr><td>Nama Anggota</td><td>: {{ $setoran->anggota->nama_anggota ?? '-' }}</td></tr>
           <tr><td>Dept</td><td>: {{ $setoran->anggota->departemen ?? '-' }}</td></tr>
           <tr><td>Alamat</td><td>: {{ $setoran->anggota->alamat_anggota ?? '-' }}</td></tr>
-          <tr><td>Jenis Akun</td><td>: {{ $setoran->jenisSimpanan->jenis_simpanan ?? '-' }}</td></tr>
+          <tr><td>Jenis Simpanan</td><td>: {{ $setoran->jenisSimpanan->jenis_simpanan ?? '-' }}</td></tr>
           <tr><td>Jumlah Setoran</td><td>: Rp {{ number_format($setoran->jumlah_simpanan, 0, ',', '.') }}</td></tr>
         </table>
       </div>

@@ -19,8 +19,10 @@ class Simpanan extends Model
         'id_user',
         'id_anggota',
         'id_jenis_simpanan',
+
         'id_jenisAkunTransaksi_tujuan',
         'id_jenisAkunTransaksi_sumber',
+
         'jumlah_simpanan',
         'type_simpanan',
         'kode_simpanan',
@@ -55,5 +57,4 @@ class Simpanan extends Model
     {
         return $this->belongsTo(JenisAkunTransaksi::class, 'id_jenisAkunTransaksi_sumber', 'id_jenisAkunTransaksi');
     }
-
 }

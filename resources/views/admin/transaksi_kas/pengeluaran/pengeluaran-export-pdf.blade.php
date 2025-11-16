@@ -103,6 +103,7 @@
         <td align="center">{{ $index + 1 }}</td>
         <td align="center">{{ $row->kode_transaksi ?? '-' }}</td>
         <td align="center">{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y') }}</td>
+        <td>{{ $akunTujuan->nama_AkunTransaksi ?? '-' }}</td>
         <td>
           <ul style="margin:0; padding-left:12px;">
             @foreach($akunSumberList as $s)
@@ -110,7 +111,6 @@
             @endforeach
           </ul>
         </td>
-        <td>{{ $akunTujuan->nama_AkunTransaksi ?? '-' }}</td>
         <td align="right">{{ number_format($jumlah, 0, ',', '.') }}</td>
         <td>{{ $row->ket_transaksi ?? '-' }}</td>
         <td>{{ $row->data_user->nama_lengkap ?? '-' }}</td>

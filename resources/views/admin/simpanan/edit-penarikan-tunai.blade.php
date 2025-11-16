@@ -58,8 +58,8 @@
         <input type="text" id="keterangan" name="keterangan"
                value="{{ $penarikanTunai->keterangan ?? '' }}" placeholder="Opsional...">
 
-        <label for="id_jenisAkunTransaksi_sumber">Ambil dari Kas</label>
-        <select name="id_jenisAkunTransaksi_sumber" id="id_jenisAkunTransaksi_sumber" required>
+        <label for="id_jenisAkunTransaksi_tujuan">Ambil dari Kas</label>
+        <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan" required>
             <option value="">-- Pilih Kas --</option>
             @foreach ($akunTransaksi as $akun)
                 <option value="{{ $akun->id_jenisAkunTransaksi }}"
@@ -201,7 +201,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Validasi form
-document.getElementById('formEditSetoranTunai').addEventListener('submit', function(e) {
+document.getElementById('formEditPenarikanTunai').addEventListener('submit', function(e) {
     const wajib = ['id_anggota','id_jenis_simpanan','jumlah_simpanan','id_jenisAkunTransaksi_tujuan'];
     for (let id of wajib) {
         const el = document.getElementById(id);
