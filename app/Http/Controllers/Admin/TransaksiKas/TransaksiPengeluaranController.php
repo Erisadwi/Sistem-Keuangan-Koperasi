@@ -92,21 +92,22 @@ class TransaksiPengeluaranController extends Controller
         $TransaksiPengeluaran->save();
 
          foreach ($request->sumber as $s) {
-            DetailTransaksi::create([
-                'id_transaksi' => $TransaksiPengeluaran->id_transaksi,
-                'id_jenisAkunTransaksi' => $s['id_jenisAkunTransaksi'],
-                'debit' => 0,
-                'kredit' => $s['jumlah'],
+           DetailTransaksi::create([
+            'id_transaksi' => $TransaksiPengeluaran->id_transaksi,
+            'id_jenisAkunTransaksi' => $s['id_jenisAkunTransaksi'],
+            'debit' => $s['jumlah'], 
+            'kredit' => 0,
+
             ]);
         }
 
         DetailTransaksi::create([
             'id_transaksi' => $TransaksiPengeluaran->id_transaksi,
             'id_jenisAkunTransaksi' => $request->id_akun_tujuan,
-            'debit' => $total,
-            'kredit' => 0,
+            'debit' => 0,
+            'kredit' => $total,
         ]);
-
+        
         return redirect()->route('pengeluaran.index')
             ->with('success', 'Transaksi Pengeluaran berhasil ditambahkan');
     }
@@ -128,10 +129,9 @@ class TransaksiPengeluaranController extends Controller
         ->get();
 
   
-    $akun_tujuan = $TransaksiPengeluaran->details->where('debit', '>', 0)->first();
+   $akun_tujuan = $TransaksiPengeluaran->details->where('kredit', '>', 0)->first(); 
 
-
-    $akun_sumber = $TransaksiPengeluaran->details->where('kredit', '>', 0);
+   $akun_sumber = $TransaksiPengeluaran->details->where('debit', '>', 0); 
 
     return view('admin.transaksi_kas.pengeluaran.edit-pengeluaran', compact(
         'TransaksiPengeluaran',
@@ -181,16 +181,16 @@ class TransaksiPengeluaranController extends Controller
         DetailTransaksi::create([
             'id_transaksi' => $TransaksiPengeluaran->id_transaksi,
             'id_jenisAkunTransaksi' => $s['id_jenisAkunTransaksi'],
-            'debit' => 0,
-            'kredit' => $s['jumlah'],
+            'debit' => $s['jumlah'],
+            'kredit' => 0,
         ]);
     }
 
     DetailTransaksi::create([
         'id_transaksi' => $TransaksiPengeluaran->id_transaksi,
         'id_jenisAkunTransaksi' => $request->id_akun_tujuan,
-        'debit' => $total,
-        'kredit' => 0,
+        'debit' => 0,
+        'kredit' => $total,
     ]);
 
     return redirect()->route('pengeluaran.index')
@@ -207,29 +207,28 @@ class TransaksiPengeluaranController extends Controller
             ->with('success', 'Data berhasil dihapus');
     }
 
-    public function exportPdf(Request $request)
+   public function exportPdf(Request $request)
     {
-
-    $query = Transaksi::with(['details.akun', 'data_user'])
-        ->where('type_transaksi', 'TKK'); 
-
-    if ($request->filled('start_date') && $request->filled('end_date')) {
-        $startDate = $request->start_date . ' 00:00:00';
-        $endDate   = $request->end_date . ' 23:59:59';
-        $query->whereBetween('tanggal_transaksi', [$startDate, $endDate]);
-    }
     
-     if ($request->filled('search')) {
-        $query->where('kode_transaksi', 'LIKE', "%{$request->search}%");
-    }
-    
-    $data = $query->orderBy('id_transaksi', 'desc')->get();
+    $year = now()->year;
+
+    $startDate = "$year-01-01 00:00:00";
+    $endDate   = "$year-12-31 23:59:59";
+
+    $data = Transaksi::with(['details.akun', 'data_user'])
+        ->where('type_transaksi', 'TKK')
+        ->whereBetween('tanggal_transaksi', [$startDate, $endDate])
+        ->orderBy('id_transaksi', 'desc')
+        ->get();
 
     $pdf = Pdf::loadView('admin.transaksi_kas.pengeluaran.pengeluaran-export-pdf', [
-        'data' => $data
+        'data' => $data,
+        'startDate' => $startDate,
+        'endDate' => $endDate
     ])->setPaper('A4', 'portrait');
 
-    return $pdf->download('transaksi_pengeluaran_kas.pdf');
+    return $pdf->download("transaksi_pengeluaran_kas_$year.pdf");
     }
+
 
 }

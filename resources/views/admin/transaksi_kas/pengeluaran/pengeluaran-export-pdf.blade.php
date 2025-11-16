@@ -69,9 +69,10 @@
 <hr>
 
 @php
-    $start = $data->min('tanggal_transaksi') ? \Carbon\Carbon::parse($data->min('tanggal_transaksi'))->translatedFormat('d F Y') : '-';
-    $end = $data->max('tanggal_transaksi') ? \Carbon\Carbon::parse($data->max('tanggal_transaksi'))->translatedFormat('d F Y') : '-';
+    $start = \Carbon\Carbon::parse($startDate)->translatedFormat('d F Y');
+    $end = \Carbon\Carbon::parse($endDate)->translatedFormat('d F Y');
 @endphp
+
 
 <h3 style="text-align:center; margin-top:5px;">
     Laporan Transaksi Kas Pengeluaran<br>
@@ -95,26 +96,26 @@
   <tbody>
     @forelse($data as $index => $row)
       @php
-          $akunTujuan = $row->details->firstWhere('debit', '>', 0)?->akun;
-          $akunSumberList = $row->details->where('kredit', '>', 0);
-          $jumlah = $row->total_debit ?? 0;
+         $akunTujuan = $row->details->firstWhere('kredit', '>', 0)?->akun;
+         $akunSumberList = $row->details->where('debit', '>', 0);
+         $jumlah = $row->details->where('debit', '>', 0)->sum('debit');
       @endphp
-      <tr>
-        <td align="center">{{ $index + 1 }}</td>
-        <td align="center">{{ $row->kode_transaksi ?? '-' }}</td>
-        <td align="center">{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y') }}</td>
-        <td>{{ $akunTujuan->nama_AkunTransaksi ?? '-' }}</td>
-        <td>
-          <ul style="margin:0; padding-left:12px;">
-            @foreach($akunSumberList as $s)
-              <li>{{ $s->akun->nama_AkunTransaksi ?? '-' }}</li>
-            @endforeach
-          </ul>
-        </td>
-        <td align="right">{{ number_format($jumlah, 0, ',', '.') }}</td>
-        <td>{{ $row->ket_transaksi ?? '-' }}</td>
-        <td>{{ $row->data_user->nama_lengkap ?? '-' }}</td>
-      </tr>
+     <tr class="selectable-row" data-id="{{ $row->id_transaksi }}">
+          <td>{{ $index + 1 }}</td>
+          <td>{{ $row->kode_transaksi ?? '-' }}</td>
+          <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y') }}</td>
+          <td>{{ $akunTujuan->nama_AkunTransaksi ?? '' }}</td>
+          <td>
+                <ul style="margin:0; padding-left:16px; text-align:left;">
+                    @foreach($akunSumberList as $s)
+                        <li>{{ $s->akun->nama_AkunTransaksi ?? '-' }}</li>
+                    @endforeach
+                </ul>
+            </td>
+          <td>{{ number_format($jumlah, 0, ',', '.') }}</td>
+          <td>{{ $row->ket_transaksi ?? '-' }}</td>
+          <td>{{ $row->data_user->nama_lengkap ?? '-' }}</td>
+        </tr>
     @empty
       <tr>
         <td colspan="8" align="center"><em>Tidak ada data transaksi</em></td>

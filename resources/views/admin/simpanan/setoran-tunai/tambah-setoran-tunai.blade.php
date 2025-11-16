@@ -210,7 +210,6 @@
 
         if (jenisSelect && jumlahInput) {
             jenisSelect.addEventListener('change', function() {
-                // Ambil jumlah dari atribut data-jumlah pada option yang dipilih
                 const selectedOption = jenisSelect.options[jenisSelect.selectedIndex];
                 const jumlah = selectedOption.getAttribute('data-jumlah');
 

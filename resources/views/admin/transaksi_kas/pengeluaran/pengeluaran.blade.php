@@ -39,9 +39,9 @@
       <tbody>
         @forelse(($TransaksiPengeluaran ?? collect()) as $index => $row)
          @php
-            $akunTujuan = $row->details->firstWhere('debit', '>', 0)?->akun;
-            $akunSumberList = $row->details->where('kredit', '>', 0);
-            $jumlah = $row->total_debit ?? 0;
+            $akunTujuan = $row->details->firstWhere('kredit', '>', 0)?->akun;
+            $akunSumberList = $row->details->where('debit', '>', 0);
+            $jumlah = $row->details->where('debit', '>', 0)->sum('debit');
         @endphp
         <tr class="selectable-row" data-id="{{ $row->id_transaksi }}">
           <td>{{ $index + 1 }}</td>

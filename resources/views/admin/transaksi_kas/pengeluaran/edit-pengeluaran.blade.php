@@ -17,7 +17,7 @@
 
         <label for="tanggal_transaksi">Tanggal Transaksi*</label>
         <input type="datetime-local" id="tanggal_transaksi" name="tanggal_transaksi" 
-               value="{{ old('tanggal_transaksi', $TransaksiPengeluaran->tanggal_transaksi) }}">
+               value="{{ old('tanggal_transaksi', \Carbon\Carbon::parse($TransaksiPengeluaran->tanggal_transaksi)->format('Y-m-d\TH:i')) }}"
 
         <label for="id_jenisAkunTransaksi_tujuan">Dari Kas*</label>
         <select name="id_akun_tujuan" id="id_akun_tujuan" required>
@@ -45,7 +45,7 @@
         </select>
 
         <input type="number" name="sumber[{{ $i }}][jumlah]" class="input-number"
-               value="{{ old('sumber.'.$i.'.jumlah', $detail->kredit) }}" placeholder="Jumlah" required>
+               value="{{ old('sumber.'.$i.'.jumlah', $detail->debit) }}"placeholder="Jumlah" required>
 
         <button type="button" class="btn btn-tambah" onclick="tambahBaris()">+</button>
         <button type="button" class="btn btn-hapus" onclick="hapusBaris(this)">x</button>

@@ -38,7 +38,7 @@
                                 </option>
                             @endforeach
                         </select>
-                        <input type="number" name="sumber[0][jumlah]" class="input-number" placeholder="Jumlah">
+                        <input type="number" name="sumber[0][jumlah]" class="input-number" placeholder="Jumlah" required>
                         <button type="button" class="btn btn-tambah" onclick="tambahBaris()">+</button>
                         <button type="button" class="btn btn-hapus" onclick="hapusBaris(this)">x</button>
                     </div>
@@ -166,7 +166,10 @@ function tambahBaris() {
     const rows = container.querySelectorAll('.detail-row');
     const newIndex = rows.length; 
 
-    const akunOptions = rows[0].querySelector('select').innerHTML;
+    const akunOptions = Array.from(rows[0].querySelector('select').options)
+    .map(o => `<option value="${o.value}">${o.text}</option>`)
+    .join('');
+
 
     const newRow = document.createElement('div');
     newRow.classList.add('detail-row');
@@ -175,7 +178,7 @@ function tambahBaris() {
         <select name="sumber[${newIndex}][id_jenisAkunTransaksi]" class="input-select">
             ${akunOptions}
         </select>
-        <input type="number" name="sumber[${newIndex}][jumlah]" class="input-number" placeholder="Jumlah">
+        <input type="number" name="sumber[${newIndex}][jumlah]" class="input-number" placeholder="Jumlah" required>
         <button type="button" class="btn btn-tambah" onclick="tambahBaris()">+</button>
         <button type="button" class="btn btn-hapus" onclick="hapusBaris(this)">x</button>
     `;
