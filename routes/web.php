@@ -141,11 +141,6 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('suku-bunga/edit', [SukuBungaController::class, 'edit'])->name('suku-bunga.editSingle');
     Route::put('suku-bunga/', [SukuBungaController::class, 'update'])->name('suku-bunga.updateSingle');
 
-    Route::get('pengajuan-pinjaman', [PengajuanPinjamanController::class, 'index'])->name('pengajuan-pinjaman.index');
-    Route::get('pengajuan-pinjaman/{id}/disetujui', [PengajuanPinjamanController::class, 'disetujui'])->name('pengajuan-pinjaman.disetujui');
-    Route::patch('pengajuan-pinjaman/{id}/tolak', [PengajuanPinjamanController::class, 'tolak'])->name('pengajuan-pinjaman.tolak');
-    Route::get('pengajuan-pinjaman/download', [PengajuanPinjamanController::class, 'download'])->name('pengajuan-pinjaman.download');
-
     Route::get('transaksi_kas/transfer/download', [TransaksiTransferController::class, 'download'])
         ->name('transaksi-transfer.download');
     Route::resource('transaksi-transfer', TransaksiTransferController::class)
@@ -184,6 +179,12 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::put('/pinjaman/{id}', [DataPinjamanController::class, 'update'])->name('pinjaman.update');
     Route::delete('/pinjaman/{id}', [DataPinjamanController::class, 'destroy'])->name('pinjaman.destroy');
     Route::get('pinjaman/cetak-nota/{id}', [DataPinjamanController::class, 'cetakNota'])->name('pinjaman.cetak-nota');
+
+
+    Route::get('pengajuan-pinjaman', [PengajuanPinjamanController::class, 'index'])->name('pengajuan-pinjaman.index');
+    Route::get('pengajuan-pinjaman/{id}/disetujui', [PengajuanPinjamanController::class, 'disetujui'])->name('pengajuan-pinjaman.disetujui');
+    Route::patch('pengajuan-pinjaman/{id}/tolak', [PengajuanPinjamanController::class, 'tolak'])->name('pengajuan-pinjaman.tolak');
+    Route::get('pengajuan-pinjaman/exportPdf', [PengajuanPinjamanController::class, 'exportPdf'])->name('pengajuan-pinjaman.exportPdf');
 });
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {

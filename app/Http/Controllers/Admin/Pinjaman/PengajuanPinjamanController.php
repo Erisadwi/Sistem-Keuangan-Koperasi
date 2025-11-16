@@ -51,7 +51,7 @@ class PengajuanPinjamanController extends Controller
         'status'    => $request->status,
     ];
 
-    return view('admin.pinjaman.data-pengajuan', compact('ajuanPinjaman', 'filters'));
+    return view('admin.pinjaman.ajuan-pinjaman.data-pengajuan', compact('ajuanPinjaman', 'filters'));
 }
 
 
@@ -100,56 +100,52 @@ class PengajuanPinjamanController extends Controller
         return redirect()->route('pengajuan-pinjaman.index')->with('success', 'Pengajuan pinjaman ditolak.');
     }
 
-    public function download()
-{
-    $data = AjuanPinjaman::with(['anggota','lama_angsuran'])->get();
-$html = '
-    <html>
-    <head>
-        <style>
-            body { font-family: DejaVu Sans, sans-serif; font-size: 12px; }
-            table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-            th, td { border: 1px solid #999; padding: 6px; text-align: left; }
-            th { background-color: #f3f4f6; }
-            h2 { text-align: center; margin-bottom: 10px; }
-        </style>
-    </head>
-    <body>
-        <h2>Laporan Pengajuan Pinjaman</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>No</th>
-                    <th>Nama Anggota</th>
-                    <th>Jenis Ajuan</th>
-                    <th>Jumlah Ajuan</th>
-                    <th>Tanggal Pengajuan</th>
-                    <th>Status</th>
-                </tr>
-            </thead>
-            <tbody>';
 
-    foreach ($data as $i => $row) {
-        $html .= '
-            <tr>
-                <td>' . ($i + 1) . '</td>
-                <td>' . ($row->anggota->nama_anggota ?? '-') . '</td>
-                <td>' . $row->jenis_ajuan . '</td>
-                <td>Rp' . number_format($row->jumlah_ajuan, 0, ',', '.') . '</td>
-                <td>' . $row->tanggal_pengajuan . '</td>
-                <td>' . $row->status_ajuan . '</td>
-            </tr>';
+
+public function exportPdf(Request $request)
+{
+
+    $query = AjuanPinjaman::with(['anggota','lama_angsuran']);
+
+    // === Periode (sama dengan transaksi)
+    if ($request->filled('start_date') && $request->filled('end_date')) {
+
+        $periodStart = $request->start_date . ' 00:00:00';
+        $periodEnd   = $request->end_date   . ' 23:59:59';
+        $query->whereBetween('tanggal_pengajuan', [$periodStart, $periodEnd]);
+
+    } else {
+        $tahun = date('Y');
+        $periodStart = "$tahun-01-01 00:00:00";
+        $periodEnd   = "$tahun-12-31 23:59:59";
+        $query->whereBetween('tanggal_pengajuan', [$periodStart, $periodEnd]);
     }
 
-    $html .= '
-            </tbody>
-        </table>
-    </body>
-    </html>';
+    // === Search
+    if ($request->filled('search')) {
+        $query->where('jenis_ajuan', 'LIKE', "%{$request->search}%")
+              ->orWhere('status_ajuan', 'LIKE', "%{$request->search}%")
+              ->orWhereHas('anggota', function($q) use ($request){
+                    $q->where('nama_anggota', 'LIKE', "%{$request->search}%");
+              });
+    }
 
-    $pdf = Pdf::loadHTML($html)->setPaper('a4', 'portrait');
+    $data = $query->orderBy('id_ajuanPinjaman', 'desc')->get();
 
-    return $pdf->download('laporan-pengajuan-pinjaman.pdf');
+try {
+    $pdf = Pdf::loadView('admin.pinjaman.ajuan-pinjaman.pengajuan-export-pdf', [
+        'data'        => $data,
+        'periodStart' => $periodStart,
+        'periodEnd'   => $periodEnd,
+    ])->setPaper('A4', 'landscape');
+
+    return $pdf->download('laporan-ajuan-pinjaman.pdf');
+
+} catch (\Exception $e) {
+    return $e->getMessage();  // tampilkan error asli
 }
+}
+
+
 
 }
