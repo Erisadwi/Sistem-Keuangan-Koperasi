@@ -27,13 +27,17 @@
 
     <tbody>
       @forelse(($saldoAwalNonKas ?? collect()) as $row)
+        @php
+              $detailDebit = $row->details->where('debit', '>', 0)->first();
+              $akunNama = $detailDebit?->akun?->nama_AkunTransaksi ?? '-';
+              $jumlahSaldo = $detailDebit?->debit ?? 0;
+          @endphp
         <tr>
           <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d/m/Y - H:i') }}</td>
-          <td>{{ $row->type_transaksi ?? '-' }}</td>
+          <td>{{ $akunNama }}</td>
           <td>{{ $row->ket_transaksi ?? '-' }}</td>
-          <td>{{ number_format($row->jumlah_transaksi ?? 0, 0, ',', '.') }}</td>
-          <td>{{ $row->updated_at ? $row->updated_at->format('d/m/Y - H:i') : '-' }}</td>
-          <td>{{ $row->user->nama_lengkap ?? '' }}</td>
+          <td>{{ number_format($jumlahSaldo, 0, ',', '.') }}</td>
+          <td>{{ $row->data_user->username ?? '-' }}</td>
           <td class="actions">
             <a href="{{ route('saldo-awal-non-kas.edit', $row->id_transaksi) }}" class="edit">✏️ Edit</a>
           </td>

@@ -35,6 +35,7 @@ use App\Http\Controllers\Anggota\LaporanPinjamanController;
 use App\Http\Controllers\Anggota\LaporanPembayaranController;
 use App\Http\Controllers\Admin\Laporan\LaporanJatuhTempoController;
 use App\Http\Controllers\Admin\Laporan\LaporanSaldoKasController;
+use App\Http\Controllers\Admin\Laporan\LaporanLabaRugiController;
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
@@ -116,13 +117,6 @@ Route::prefix('admin/master_data')->group(function () {
     Route::delete('users/{id}', [UserController::class, 'destroy'])->name('data-user.destroy');
     Route::get('users/export', [UserController::class, 'export'])->name('data-user.export');
 
-    Route::get('/saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'index'])->name('saldo-awal-non-kas.index');
-    Route::get('/saldo-awal-non-kas/create', [SaldoAwalNonKasController::class, 'create'])->name('saldo-awal-non-kas.create');
-    Route::post('/saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'store'])->name('saldo-awal-non-kas.store');
-    Route::get('saldo-awal-non-kas/export', [SaldoAwalNonKasController::class, 'export'])->name('saldo-awal-non-kas.export');
-    Route::get('/saldo-awal-non-kas/{id}/edit', [SaldoAwalNonKasController::class, 'edit'])->name('saldo-awal-non-kas.edit');
-    Route::put('/saldo-awal-non-kas/{id}', [SaldoAwalNonKasController::class, 'update'])->name('saldo-awal-non-kas.update');
-
     Route::get('saldo-awal-kas', [SaldoAwalKasController::class, 'index'])->name('saldo-awal-kas.index');
     Route::get('saldo-awal-kas/create', [SaldoAwalKasController::class, 'create'])->name('saldo-awal-kas.create');
     Route::post('saldo-awal-kas', [SaldoAwalKasController::class, 'store'])->name('saldo-awal-kas.store');
@@ -135,10 +129,8 @@ Route::prefix('admin/master_data')->group(function () {
 Route::get('/test-logo', [App\Http\Controllers\Admin\setting\identitasKoperasiController::class, 'testBlob']);
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
-    Route::get('transaksi_kas/pemasukan/download', [TransaksiPemasukanController::class, 'download'])->name('transaksi-pemasukan.download');
-    Route::resource('transaksi-pemasukan', TransaksiPemasukanController::class)->except(['show']);
 
-    Route::get('transaksi-non-kas/download', [TransaksiNonKasController::class, 'download'])->name('transaksi-non-kas.download');
+    Route::get('transaksi-non-kas/export-pdf', [TransaksiNonKasController::class, 'exportPdf'])->name('transaksi-non-kas.export-pdf');
     Route::resource('transaksi-non-kas', TransaksiNonKasController::class)->except(['show']);
 
     Route::get('identitas-koperasi/edit', [identitasKoperasiController::class, 'edit'])->name('identitas-koperasi.editSingle');
@@ -194,11 +186,23 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('pinjaman/cetak-nota/{id}', [DataPinjamanController::class, 'cetakNota'])->name('pinjaman.cetak-nota');
 });
 
+Route::middleware(['auth:user'])->prefix('admin')->group(function () {
+    Route::get('/saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'index'])->name('saldo-awal-non-kas.index');
+    Route::get('/saldo-awal-non-kas/create', [SaldoAwalNonKasController::class, 'create'])->name('saldo-awal-non-kas.create');
+    Route::post('/saldo-awal-non-kas', [SaldoAwalNonKasController::class, 'store'])->name('saldo-awal-non-kas.store');
+    Route::get('saldo-awal-non-kas/export', [SaldoAwalNonKasController::class, 'export'])->name('saldo-awal-non-kas.export');
+    Route::get('/saldo-awal-non-kas/{id}/edit', [SaldoAwalNonKasController::class, 'edit'])->name('saldo-awal-non-kas.edit');
+    Route::put('/saldo-awal-non-kas/{id}', [SaldoAwalNonKasController::class, 'update'])->name('saldo-awal-non-kas.update');
+});
+
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::resource('pengeluaran', TransaksiPengeluaranController::class)->except(['show']);
     Route::get('/pengeluaran/export-pdf', [TransaksiPengeluaranController::class, 'exportPdf'])
         ->name('pengeluaran.export-pdf');
+    
+    Route::get('transaksi_kas/pemasukan/export-pdf', [TransaksiPemasukanController::class, 'exportPdf'])->name('transaksi-pemasukan.export-pdf');
+    Route::resource('transaksi-pemasukan', TransaksiPemasukanController::class)->except(['show']);
 });
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
@@ -233,6 +237,9 @@ Route::middleware(['auth:user'])->group(function () {
 
     Route::get('/laporan-saldo-kas', [LaporanSaldoKasController::class, 'index'])->name('laporan.saldo-kas');
     Route::get('/laporan-saldo-kas/export-pdf', [LaporanSaldoKasController::class, 'exportPdf'])->name('saldo-kas.exportPdf');
+
+    Route::get('/laporan-laba-rugi', [LaporanLabaRugiController::class, 'index'])->name('laporan.laba-rugi'); 
+    Route::get('/laporan-laba-rugi/export-pdf', [LaporanLabaRugiController::class, 'exportPdf'])->name('laba-rugi.exportPdf');   
 });
 
 
@@ -288,10 +295,6 @@ Route::get('/anggota/profil/profilAnggota', function () {
 Route::get('/admin/pinjaman/edit-bayar-angsuran', function () {
     return view('admin.pinjaman.edit-bayar-angsuran');
 })->name('admin.pinjaman.edit-bayar-angsuran');
-
-Route::get('/admin/laporan/laporan-laba-rugi', function () {
-    return view('admin.laporan.laporan-laba-rugi');
-})->name('admin.laporan.laporan-laba-rugi');
 
 Route::get('/admin/profil/beranda-profil', function () {
     return view('admin.profil.beranda-profil');

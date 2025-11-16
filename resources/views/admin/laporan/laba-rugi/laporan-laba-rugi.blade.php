@@ -1,36 +1,62 @@
-@extends('layouts.laporan-admin2')
-
-
+@extends('layouts.laporan-admin')
 
 @section('title', 'Laporan Laba Rugi')  
 @section('title-1', 'Laba Rugi')  
 @section('title-content', 'Laporan Laba Rugi')  
-@section('period', 'Periode 1 Jan 2025 - 31 Des 2025')  
+@section('period')
+    {{ $periodeText }}
+@endsection
 @section('sub-title', 'Laporan Laba Rugi')  
 
 @section('content')
 
 <x-menu.date-filter/>
-<x-menu.unduh/>
+<x-menu.unduh 
+    :url="route('laba-rugi.exportPdf', [
+        'start_date' => request('start_date'),
+        'end_date'   => request('end_date'),
+        'preset'     => request('preset')
+    ])" 
+    text="Unduh Laporan"
+/>
+
+
 
 <div class="laporan-laba-rugi-wrap">
-  <div class="table-scroll-wrapper">
     
-    <h4 class="judul-section">Estimasi Data Pinjaman</h4>
-    @include('partials.laba-rugi-table', ['data' => $estimasiDataPinjaman ?? null, 'label' => 'estimasi data pinjaman'])
-
-    <h4 class="judul-section">Pinjaman</h4>
+    <h3 class="judul-section">Pinjaman</h3>
     @include('partials.pinjaman-table', ['data' => $pinjaman ?? null, 'label' => 'pinjaman'])
 
-    <h4 class="judul-section">Pendapatan</h4>
+    <h3 class="judul-section">Pendapatan</h3>
     @include('partials.pendapatan-table', ['data' => $pendapatan ?? null, 'label' => 'pendapatan'])
 
-    <h4 class="judul-section">Biaya - Biaya</h4>
-    @include('partials.pendapatan-table', ['data' => $biaya ?? null, 'label' => 'biaya - biaya'])
+    <h3 class="judul-section">Biaya - Biaya</h3>
+    @include('partials.biaya-table', ['data' => $biaya ?? null, 'label' => 'biaya - biaya'])
 
-  </div>
+    {{-- ===== Total Laba Rugi ===== --}}
+    @php
+        $totalPendapatan = collect($pendapatan ?? [])->sum(function($item){
+            return is_array($item) ? ($item['jumlah'] ?? 0) : ($item->jumlah ?? 0);
+        });
+
+        $totalBiaya = collect($biaya ?? [])->sum(function($item){
+            return is_array($item) ? ($item['jumlah'] ?? 0) : ($item->jumlah ?? 0);
+        });
+
+        $labaRugi = $totalPendapatan - $totalBiaya;
+    @endphp
+
+    <h3 class="judul-section">Total Laba Rugi</h3>
+    <table class="laba-rugi-table">
+        <tbody>
+            <tr class="laba-rugi-row">
+                <td colspan="2" class="text-right"><strong>Total Laba Rugi</strong></td>
+                <td class="text-right"><strong>{{ number_format($labaRugi, 0, ',', '.') }}</strong></td>
+            </tr>
+        </tbody>
+    </table>
+
 </div>
-
 
 @endsection
 
@@ -58,40 +84,16 @@
   overflow-x: visible; 
 }
 
-/* Judul section */
 .judul-section {
   font-weight: 600;
-  font-size: 16px;
-  margin-top: 14px;      /* ↑ agak diturunkan biar tidak nabrak judul atas */
-  margin-bottom: 4px;    /* ↓ jarak ke tabel sedikit lebih dekat */
+  margin-top: 20px;    
+  margin-bottom: 7px;    
   color: #333;
 }
 
-/* Wrapper scroll */
-.table-scroll-wrapper {
-  overflow-x: auto;
-  overflow-y: auto;
-  max-height: 700px;
-  width: 100%;
-  padding: 8px 16px 10px 16px; /* ↓ kecilkan padding atas biar tabel lebih dekat dengan judul */
-  box-sizing: border-box;
-}
-.table-scroll-wrapper::-webkit-scrollbar {
-  height: 8px;
-  width: 8px;
-}
-.table-scroll-wrapper::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: 4px;
-}
-.table-scroll-wrapper::-webkit-scrollbar-track {
-  background: #f0f0f0;
-}
-
-/* Tabel utama */
 .laba-rugi-table {
   width: 100%;
-  min-width: 1000px; /* Paksa scroll horizontal jika terlalu lebar */
+  min-width: 1000px; 
   border-collapse: collapse;
   background: white;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
@@ -109,7 +111,7 @@
 
 .laba-rugi-table th,
 .laba-rugi-table td {
-  text-align: center;
+  text-align: left;
   padding: 10px 14px;
   border: 1px solid var(--border);
   white-space: nowrap;

@@ -11,24 +11,31 @@
 
 @php
   use Illuminate\Support\Str;
+  use Carbon\Carbon;
+
   $uid = $id ?: 'df_'.Str::random(6);
 
-  $label = 'Tanggal';
-  if ($preset === 'this_year')   $label = 'Tanggal';
-  if ($preset === 'last_year')   $label = 'Tanggal';
-  if ($preset === 'custom' && ($start || $end)) $label = 'Tanggal';
+  // Closure untuk format tanggal
+  $fmt = fn($d) => $d ? Carbon::parse($d)->format('d/m/Y') : null;
+
+  // Tentukan label untuk tombol
+  if ($start && $end) {
+      $label = $fmt($start) . ' - ' . $fmt($end);
+  } else {
+      $label = 'Tanggal';
+  }
 @endphp
 
 <form method="{{ strtoupper($method)==='POST' ? 'POST' : 'GET' }}"
       action="{{ $action }}"
       id="{{ $uid }}_form"
       class="df-inline {{ $compact ? 'df-compact' : '' }}">
-  @if (strtoupper($method)==='POST') @csrf @endif
+      
+  @if (strtoupper($method) === 'POST') @csrf @endif
 
   <input type="hidden" name="preset" id="{{ $uid }}_preset" value="{{ $preset }}">
 
   <div class="df-row">
-
     <button type="button" class="df-btn df-date" id="{{ $uid }}_trigger" aria-haspopup="true" aria-expanded="false">
       <span class="df-ic" aria-hidden="true">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -42,7 +49,6 @@
 
     <a class="df-btn df-danger" href="{{ $action }}">
       <span class="df-ic" aria-hidden="true">
-        {{-- X (SVG) --}}
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
           <path d="M6 6l12 12M18 6L6 18" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
         </svg>
@@ -76,8 +82,7 @@
       </div>
       <div class="df-actions">
         <button type="button" class="df-btn-red"  id="{{ $uid }}_cancel">Batal</button>
-        <button type="submit" class="df-btn-green" id="{{ $uid }}_save"
-                onclick="document.getElementById('{{ $uid }}_preset').value='custom'">Simpan</button>
+        <button type="submit" class="df-btn-green" id="{{ $uid }}_save">Simpan</button>
       </div>
     </div>
   </div>
@@ -86,13 +91,14 @@
 </form>
 
 <style>
+  /* ==== STYLING ==== */
   .df-inline {display:inline-block;position:relative}
   .df-row{display:flex;gap:8px;align-items:center; margin-top:65px;margin-left:22px;}
   .df-btn{appearance:none;border:1px solid #d1d5db;background:#ffffff;
     padding:5px 6px;border-radius:8px;cursor:pointer;font-size:12px;line-height:1.2;
     text-decoration:none;color:#111827;display:inline-flex;align-items:center;gap:6px;
     box-shadow:0 2px 4px rgba(107, 105, 105, 0.647)
-}
+  }
   .df-btn:hover{background:#f8fafc}
   .df-btn.df-date .df-ic svg{display:block;width: 14px; }
   .df-caret{opacity:.7}
@@ -110,8 +116,7 @@
   .df-item.active{border-color:#0066B0;background:#eff6ff}
 
   .df-fields{display:grid;grid-template-columns:auto 1fr;gap:6px;align-items:center;margin-top:4px;font-size:12px}
-  .df-fields input[type="date"]{border:1px solid #d1d5db;border-radius:8px;padding:6px 8px;font-size:12px; height: 28px;                       /* lebih kecil */
-  width: 160px !important}
+  .df-fields input[type="date"]{border:1px solid #d1d5db;border-radius:8px;padding:6px 8px;font-size:12px; height: 28px; width: 160px !important}
   .df-actions{display:flex;justify-content:flex-end;gap:8px;margin-top:10px}
 
   .df-btn-red{appearance:none;border:1px solid #EA2828;background:#EA2828;color:#fff;
@@ -127,8 +132,6 @@
   }
 </style>
 
-
-
 <script>
 (function(){
   const form   = document.getElementById('{{ $uid }}_form');
@@ -140,64 +143,41 @@
   const customBox = document.getElementById('{{ $uid }}_custom');
   const btnSave   = document.getElementById('{{ $uid }}_save');
   const btnCancel = document.getElementById('{{ $uid }}_cancel');
-  const autoSubmit = @json((bool)$submitOnChange);
 
   const pad = n => String(n).padStart(2,'0');
   const fmt = d => d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());
 
-  function openPop(){
-    pop.hidden=false; trig.setAttribute('aria-expanded','true');
-    setTimeout(()=>document.addEventListener('click', onDocClick),0);
-    document.addEventListener('keydown', onEsc);
-  }
-  function closePop(){
-    pop.hidden=true; trig.setAttribute('aria-expanded','false');
-    document.removeEventListener('click', onDocClick);
-    document.removeEventListener('keydown', onEsc);
-  }
-  function onDocClick(e){ if(!pop.contains(e.target) && e.target!==trig){ closePop(); } }
-  function onEsc(e){ if(e.key==='Escape'){ closePop(); } }
-
   trig.addEventListener('click', ()=> pop.hidden ? openPop() : closePop());
+
+  function openPop(){ pop.hidden=false; }
+  function closePop(){ pop.hidden=true; }
 
   pop.querySelectorAll('.df-item[data-preset]').forEach(btn=>{
     btn.addEventListener('click', ()=>{
       const v = btn.dataset.preset;
       preset.value = v;
 
-      const showCustom = (v==='custom');
-      customBox.hidden = !showCustom;
+      customBox.hidden = (v !== 'custom');
 
-      if (v==='this_year' || v==='last_year') {
+      if (v === 'this_year' || v === 'last_year') {
         const now = new Date();
-        const year = v==='this_year' ? now.getFullYear() : now.getFullYear()-1;
-        const from = new Date(year,0,1);
-        const to   = new Date(year,11,31);
-        if (start) start.value = fmt(from);
-        if (end)   end.value   = fmt(to);
-        if (autoSubmit) form.submit();
+        const year = v === 'this_year' ? now.getFullYear() : now.getFullYear() - 1;
+        start.value = fmt(new Date(year, 0, 1));
+        end.value   = fmt(new Date(year, 11, 31));
+        form.submit();
       }
     });
   });
 
-  [start,end].forEach(inp=>inp && inp.addEventListener('change', ()=>{
-    if(start.value && end.value && end.value < start.value){
-      end.value = start.value;
-    }
-  }));
-
-  if (btnCancel){
-    btnCancel.addEventListener('click', ()=>{
-      closePop();
+  if (btnSave){
+    btnSave.addEventListener('click', ()=> {
+      preset.value = 'custom';
+      form.submit();
     });
   }
 
-  if (btnSave){
-    btnSave.addEventListener('click', ()=>{
-      if (@json((bool)$submitOnChange)) {
-        form.submit();
-      } 
-    });
+  if (btnCancel){
+    btnCancel.addEventListener('click', ()=> closePop());
   }
 })();
 </script>

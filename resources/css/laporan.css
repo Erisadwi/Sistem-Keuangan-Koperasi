@@ -126,13 +126,13 @@ a.btn-profil:focus-visible, btn-profil:focus-visible{ outline: 2px solid #1d4ed8
   left: 23px;
   top: 14px;
 }
-.content-container2 {
+.content-container {
   background: #c4dae5;
   border-radius: 15px;
   width: 97%;
   height: auto;
-  min-height: 600px;
-  max-height: 1920px;
+  min-height: 700px;
+  max-height: 1950px;
   position: relative;
   left: 0px;
   top: 0px;
@@ -140,17 +140,17 @@ a.btn-profil:focus-visible, btn-profil:focus-visible{ outline: 2px solid #1d4ed8
   box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
   padding: 24px;
 }
+
 .title-content {
-  color: #000000;
-  text-align: center;
+  color: #000;
+  position: absolute;
+  top: 7%; /* posisi vertikal dari atas */
+  left: 50%;
+  transform: translateX(-50%);
   font-family: "Inter-SemiBold", sans-serif;
   font-size: 20px;
   font-weight: 600;
-  position: absolute;
-  transform: translateX(70%);
-  top: 105px;
-  width: 495px;
-  height: 18.68px;
+  text-align: center; /* pastikan teks juga center */
 }
 
 

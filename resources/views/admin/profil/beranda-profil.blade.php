@@ -36,7 +36,7 @@
         <x-menu.section title="Transaksi Kas" :open="false" :has-sub="true">
           <a href="{{ route('transaksi-pemasukan.index') }}" class="submenu-row">Pemasukan</a>
           <a href="{{ route('pengeluaran.index') }}" class="submenu-row">Pengeluaran</a>
-          <a href="#" class="submenu-row">Transfer</a>
+          <a href="{{ route('transaksi-transfer.index') }}"  class="submenu-row">Transfer</a>
         </x-menu.section>
       @endif
 
@@ -51,7 +51,7 @@
       @if($user && in_array($user->id_role, ['R04', 'R07']))
         <x-menu.section title="Simpanan" :open="false" :has-sub="true">
           <a href="{{ route('setoran-tunai.index') }}" class="submenu-row">Setoran Tunai</a>
-          <a href="#" class="submenu-row">Penarikan Tunai</a>
+          <a href="{{ route('penarikan-tunai.index') }}" class="submenu-row">Penarikan Tunai</a>
         </x-menu.section>
       @endif
 
@@ -66,14 +66,14 @@
 
       @if($user && in_array($user->id_role, ['R04', 'R05', 'R06', 'R07']))
         <x-menu.section title="Laporan" :open="false" :has-sub="true">
-          <a href="#" class="submenu-row">Jatuh Tempo</a>
+          <a href="{{ route('laporan.jatuh-tempo') }}" class="submenu-row">Jatuh Tempo</a>
           <a href="#" class="submenu-row">Buku Besar</a>
           <a href="#" class="submenu-row">Neraca Saldo</a>
           <a href="#" class="submenu-row">Neraca</a>
           <a href="#" class="submenu-row">Kas Pinjaman</a>
           <a href="#" class="submenu-row">Kas Simpanan</a>
-          <a href="#" class="submenu-row">Saldo Kas</a>
-          <a href="#" class="submenu-row">Laba Rugi</a>
+          <a href="{{ route('laporan.saldo-kas') }}" class="submenu-row">Saldo Kas</a>
+          <a href="{{ route('laporan.laba-rugi') }}" class="submenu-row">Laba Rugi</a>
           <a href="#" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
         </x-menu.section>
       @endif

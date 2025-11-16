@@ -187,54 +187,38 @@ class TransaksiNonKasController extends Controller
         return redirect()->route('transaksi-non-kas.index')->with('success', 'Transaksi berhasil dihapus.');
     }
 
-    // Download laporan PDF
-    public function download(Request $request)
-    {
-        $query = Transaksi::with(['details.akun', 'data_user'])->where('type_transaksi', 'TNK');
+   public function exportPdf(Request $request)
+{
+    $query = Transaksi::with(['details.akun', 'data_user'])
+        ->where('type_transaksi', 'TNK');
 
-        if ($request->filled('start_date') && $request->filled('end_date')) {
-            $query->whereBetween('tanggal_transaksi', [$request->start_date, $request->end_date]);
-        }
-
-        if ($request->filled('search')) {
-            $query->where('kode_transaksi', 'LIKE', "%{$request->search}%");
-        }
-
-        $data = $query->get();
-
-        $html = '<h2>Laporan Transaksi Kas</h2>
-        <table border="1" cellspacing="0" cellpadding="5" width="100%">
-            <tr>
-                <th>Kode</th>
-                <th>Tanggal</th>
-                <th>Keterangan</th>
-                <th>Detail</th>
-                <th>Total Debit</th>
-                <th>Total Kredit</th>
-                <th>User</th>
-            </tr>';
-
-        foreach ($data as $t) {
-            $detail_html = '<ul>';
-            foreach ($t->details as $d) {
-                $detail_html .= "<li>{$d->akun->nama_AkunTransaksi} | Debit: {$d->debit} | Kredit: {$d->kredit}</li>";
-            }
-            $detail_html .= '</ul>';
-
-            $html .= "<tr>
-                        <td>{$t->kode_transaksi}</td>
-                        <td>{$t->tanggal_transaksi}</td>
-                        <td>{$t->ket_transaksi}</td>
-                        <td>{$detail_html}</td>
-                        <td>{$t->total_debit}</td>
-                        <td>{$t->total_kredit}</td>
-                        <td>{$t->data_user?->nama_lengkap}</td>
-                      </tr>";
-        }
-
-        $html .= '</table>';
-
-        $pdf = Pdf::loadHTML($html);
-        return $pdf->download('laporan_transaksi.pdf');
+    // === Jika user memberi filter ===
+    if ($request->filled('start_date') && $request->filled('end_date')) {
+        $startDate = $request->start_date . ' 00:00:00';
+        $endDate   = $request->end_date . ' 23:59:59';
+    } else {
+        // === Jika user tidak memberi filter ===
+        $tahun = date('Y');
+        $startDate = $tahun . '-01-01 00:00:00';
+        $endDate   = $tahun . '-12-31 23:59:59';
     }
+
+    $query->whereBetween('tanggal_transaksi', [$startDate, $endDate]);
+
+    // === Search kode transaksi ===
+    if ($request->filled('search')) {
+        $query->where('kode_transaksi', 'LIKE', "%{$request->search}%");
+    }
+
+    $data = $query->orderBy('id_transaksi', 'desc')->get();
+
+    return Pdf::loadView('admin.transaksi_non_kas.nonkas-export-pdf', [
+        'data' => $data,
+        'periodStart' => $startDate,
+        'periodEnd'   => $endDate,
+    ])
+    ->setPaper('A4', 'landscape')
+    ->download('laporan_transaksi_non_kas.pdf');
+}
+
 }

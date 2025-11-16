@@ -11,8 +11,6 @@
     filePath="{{ route('pengajuan-pinjaman.download') }}" 
 />
 
-
-
 <div class="pengajuan-pinjaman-table-wrap">
   <table class="pengajuan-pinjaman-table">
     <thead>
