@@ -219,7 +219,7 @@ document.getElementById('formEditPenarikanTunai').addEventListener('submit', fun
 
 // Tombol batal
 document.getElementById('btnBatal').addEventListener('click', function(){
-    window.location.href = "{{ route('setoran-tunai.index') }}";
+    window.location.href = "{{ route('penarikan-tunai.index') }}";
 });
 </script>
 
