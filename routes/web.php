@@ -141,11 +141,6 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('suku-bunga/edit', [SukuBungaController::class, 'edit'])->name('suku-bunga.editSingle');
     Route::put('suku-bunga/', [SukuBungaController::class, 'update'])->name('suku-bunga.updateSingle');
 
-    Route::get('transaksi_kas/transfer/download', [TransaksiTransferController::class, 'download'])
-        ->name('transaksi-transfer.download');
-    Route::resource('transaksi-transfer', TransaksiTransferController::class)
-        ->except(['show']);
-
 });
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
@@ -204,6 +199,9 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     
     Route::get('transaksi_kas/pemasukan/export-pdf', [TransaksiPemasukanController::class, 'exportPdf'])->name('transaksi-pemasukan.export-pdf');
     Route::resource('transaksi-pemasukan', TransaksiPemasukanController::class)->except(['show']);
+
+    Route::get('transaksi_kas/transfer/export-pdf', [TransaksiTransferController::class,  'exportPdf'])->name('transaksi-transfer.export-pdf');
+    Route::resource('transaksi-transfer', TransaksiTransferController::class)->except(['show']);
 });
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {

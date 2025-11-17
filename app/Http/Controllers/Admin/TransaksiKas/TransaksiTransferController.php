@@ -6,41 +6,37 @@ use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
 use App\Models\DetailTransaksi;
 use App\Models\JenisAkunTransaksi;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Validation\Rule; 
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Barryvdh\DomPDF\Facade\Pdf;
-
 
 class TransaksiTransferController extends Controller
 {
     public function index(Request $request)
-{
-    $perPage = $request->input('per_page', 10);
+    {
+        $perPage = $request->input('per_page', 10);
 
-    $query = Transaksi::with(['details.akun', 'data_user'])
-        ->where('type_transaksi', 'TRF');
+        $query = Transaksi::with(['data_user', 'details.akun'])
+            ->where('type_transaksi', 'TRF');
 
-    if ($request->filled('start_date') && $request->filled('end_date')) {
-        $query->whereBetween('tanggal_transaksi', [
-            $request->start_date,
-            $request->end_date
-        ]);
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+            $query->whereBetween('tanggal_transaksi', [
+                $request->start_date, 
+                $request->end_date
+            ]);
+        }
+
+        if ($request->filled('search')) {
+            $query->where('kode_transaksi', 'LIKE', "%{$request->search}%");
+        }
+
+        $TransaksiTransfer = $query->orderBy('id_transaksi', 'asc')
+            ->paginate($perPage)
+            ->appends($request->except('page'));
+
+        return view('admin.transaksi_kas.transfer.transfer', compact('TransaksiTransfer'));
     }
-
-    if ($request->filled('search')) {
-        $query->where('kode_transaksi', 'LIKE', "%{$request->search}%");
-    }
-
-    $TransaksiTransfer = $query
-        ->orderBy('id_transaksi', 'desc')
-        ->paginate($perPage)
-        ->appends($request->except('page'));
-
-    return view('admin.transaksi_kas.transfer', compact('TransaksiTransfer'));
-}
-
 
     public function create()
     {
@@ -54,7 +50,7 @@ class TransaksiTransferController extends Controller
             ->where('status_akun', 'Y')
             ->orderBy('nama_AkunTransaksi')->get();
 
-        return view('admin.transaksi_kas.tambah-transfer',compact('akunSumber','akunTujuan'));
+        return view('admin.transaksi_kas.transfer.tambah-transfer', compact('akunSumber', 'akunTujuan'));
     }
 
     public function store(Request $request)
@@ -73,7 +69,7 @@ class TransaksiTransferController extends Controller
         'sumber.*.id_jenisAkunTransaksi' => [
             'required',
             Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
-                ->where(fn($q) => $q->where('pengeluaran', 'Y')
+                ->where(fn($q) => $q->where('transfer', 'Y')
                                     ->where('status_akun', 'Y')
                                     ->where('is_kas', 1)), 
         ],
@@ -117,7 +113,6 @@ class TransaksiTransferController extends Controller
 
     public function edit($id)
     {
-
         $TransaksiTransfer = Transaksi::with('details.akun')->findOrFail($id);
 
         $akunSumber = JenisAkunTransaksi::where('transfer','Y')
@@ -133,7 +128,7 @@ class TransaksiTransferController extends Controller
         $akun_tujuan = $TransaksiTransfer->details->firstWhere('debit', '>', 0);
         $akun_sumber = $TransaksiTransfer->details->where('kredit', '>', 0)->values();
 
-        return view('admin.transaksi_kas.edit-transfer', compact('TransaksiTransfer','akunSumber','akunTujuan'));
+        return view('admin.transaksi_kas.transfer.edit-transfer', compact('TransaksiTransfer', 'akunSumber', 'akunTujuan', 'akun_tujuan', 'akun_sumber'));
     }
 
     public function update(Request $request, $id)
@@ -197,54 +192,40 @@ class TransaksiTransferController extends Controller
         return redirect()->route('transaksi-transfer.index')->with('success', 'Transaksi berhasil dihapus.');
     }
 
-    // Download laporan PDF
-    public function download(Request $request)
-    {
-        $query = Transaksi::with(['details.akun', 'data_user'])->where('type_transaksi', 'TRF');
+public function exportPdf(Request $request)
+{
+    $query = Transaksi::with(['details.akun', 'data_user'])
+        ->where('type_transaksi', 'TRF');
 
-        if ($request->filled('start_date') && $request->filled('end_date')) {
-            $query->whereBetween('tanggal_transaksi', [$request->start_date, $request->end_date]);
-        }
+    if ($request->filled('start_date') && $request->filled('end_date')) {
 
-        if ($request->filled('search')) {
-            $query->where('kode_transaksi', 'LIKE', "%{$request->search}%");
-        }
+        $periodStart = $request->start_date . ' 00:00:00';
+        $periodEnd   = $request->end_date . ' 23:59:59';
 
-        $data = $query->get();
+        $query->whereBetween('tanggal_transaksi', [$periodStart, $periodEnd]);
 
-        $html = '<h2>Laporan Transaksi Kas</h2>
-        <table border="1" cellspacing="0" cellpadding="5" width="100%">
-            <tr>
-                <th>Kode</th>
-                <th>Tanggal</th>
-                <th>Keterangan</th>
-                <th>Detail</th>
-                <th>Total Debit</th>
-                <th>Total Kredit</th>
-                <th>User</th>
-            </tr>';
+    } else {
 
-        foreach ($data as $t) {
-            $detail_html = '<ul>';
-            foreach ($t->details as $d) {
-                $detail_html .= "<li>{$d->akun->nama_AkunTransaksi} | Debit: {$d->debit} | Kredit: {$d->kredit}</li>";
-            }
-            $detail_html .= '</ul>';
+        $tahun = date('Y');
 
-            $html .= "<tr>
-                        <td>{$t->kode_transaksi}</td>
-                        <td>{$t->tanggal_transaksi}</td>
-                        <td>{$t->ket_transaksi}</td>
-                        <td>{$detail_html}</td>
-                        <td>{$t->total_debit}</td>
-                        <td>{$t->total_kredit}</td>
-                        <td>{$t->data_user?->nama_lengkap}</td>
-                      </tr>";
-        }
+        $periodStart = $tahun . '-01-01 00:00:00';
+        $periodEnd   = $tahun . '-12-31 23:59:59';
 
-        $html .= '</table>';
-
-        $pdf = Pdf::loadHTML($html);
-        return $pdf->download('laporan_transaksi.pdf');
+        $query->whereBetween('tanggal_transaksi', [$periodStart, $periodEnd]);
     }
+
+    if ($request->filled('search')) {
+        $query->where('kode_transaksi', 'LIKE', "%{$request->search}%");
+    }
+
+    $data = $query->orderBy('id_transaksi', 'desc')->get();
+
+    return Pdf::loadView('admin.transaksi_kas.transfer.transfer-export-pdf', [
+        'data'        => $data,
+        'periodStart' => $periodStart,
+        'periodEnd'   => $periodEnd,
+    ])->setPaper('A4', 'landscape')
+      ->download('transaksi_transfer_kas.pdf');
+}
+
 }
