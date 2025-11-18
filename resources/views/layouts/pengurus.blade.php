@@ -15,6 +15,10 @@
     $user = Auth::guard('user')->user();
 @endphp
 
+@if(!$user)
+    <script>window.location.href="{{ route('login') }}";</script>
+@endif
+
 
     <div class="layout">
         <aside class="sidebar">
@@ -32,6 +36,7 @@
       </div>
 
       <ul class="menu-list">
+      @if($user && in_array($user->id_role, ['R06', 'R07']))
         <x-menu.section title="Transaksi Kas" :open="false" :has-sub="true">
           <a href="{{ route('transaksi-pemasukan.index') }}" class="submenu-row">Pemasukan</a>
           <a href="{{ route('pengeluaran.index') }}" class="submenu-row">Pengeluaran</a>
@@ -44,19 +49,25 @@
         :has-sub="false" 
         :link="route('transaksi-non-kas.index')">
         </x-menu.section>
+      @endif
 
+      @if($user && in_array($user->id_role, ['R04', 'R07']))
         <x-menu.section title="Simpanan" :open="false" :has-sub="true">
           <a href="{{ route('setoran-tunai.index') }}" class="submenu-row">Setoran Tunai</a>
           <a href="{{ route('penarikan-tunai.index') }}" class="submenu-row">Penarikan Tunai</a>
         </x-menu.section>
+      @endif
 
+      @if($user && in_array($user->id_role, ['R05', 'R07']))
         <x-menu.section title="Pinjaman" :open="false" :has-sub="true">
           <a href="{{ route('pengajuan-pinjaman.index') }}" class="submenu-row">Data Pengajuan</a>
           <a href="{{ route('pinjaman.index') }}" class="submenu-row">Data Pinjaman</a>
           <a href="{{ route('angsuran.index') }}" class="submenu-row">Angsuran</a>
           <a href="{{ route('pinjaman-lunas.index') }}" class="submenu-row">Pinjaman Lunas</a>
         </x-menu.section>
+      @endif
 
+      @if($user && in_array($user->id_role, ['R04', 'R05', 'R06', 'R07']))
         <x-menu.section title="Laporan" :open="false" :has-sub="true">
           <a href="{{ route('laporan.jatuh-tempo') }}" class="submenu-row">Jatuh Tempo</a>
           <a href="#" class="submenu-row">Buku Besar</a>
@@ -68,7 +79,9 @@
           <a href="{{ route('laporan.laba-rugi') }}" class="submenu-row">Laba Rugi</a>
           <a href="#" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
         </x-menu.section>
+       @endif
 
+      @if($user && in_array($user->id_role, ['R07']))
         <x-menu.section title="Master Data" :open="false" :has-sub="true">
           <a href="#" class="submenu-row">Saldo Awal Kas</a>
           <a href="{{ route('saldo-awal-non-kas.index') }}" class="submenu-row">Saldo Awal Non Kas</a>
@@ -79,11 +92,14 @@
           <a href="#" class="submenu-row">Data Anggota</a>
           <a href="#" class="submenu-row">Data Pengguna</a>
         </x-menu.section>
+      @endif
 
+      @if($user && in_array($user->id_role, ['R07']))
         <x-menu.section title="Setting" :open="false" :has-sub="true">
           <a href="{{ route('identitas-koperasi.editSingle') }}" class="submenu-row">Identitas Koperasi</a>
           <a href="{{ route('suku-bunga.editSingle') }}" class="submenu-row">Suku Bunga</a>
         </x-menu.section>
+      @endif
       </ul>
     </aside>
     </div>

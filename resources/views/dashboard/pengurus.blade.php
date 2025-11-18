@@ -58,11 +58,18 @@
         <span class="icon">👥</span>
       </div>
       <div class="card-body">
-        <div>{{ $anggota_aktif ?? 267 }} <span>Anggota Aktif</span></div>
-        <div>{{ $anggota_tidak ?? 330 }} <span>Anggota Tidak Aktif</span></div>
-        <div>{{ $anggota_total ?? 579 }} <span>Jumlah Anggota</span></div>
+        <div>{{ $anggota_aktif ?? 0 }} <span>Anggota Aktif</span></div>
+        <div>{{ $anggota_nonaktif ?? 0 }} <span>Anggota Tidak Aktif</span></div>
+        <div>{{ $anggota_total ?? 0 }} <span>Jumlah Anggota</span></div>
       </div>
-      <a href="#" class="card-footer">More info ➜</a>
+      @php
+          $role = Auth::guard('user')->user()->id_role;
+      @endphp
+      @if($role === 'R07') 
+          <a href="{{ route('anggota.index') }}" class="card-footer">More info ➜</a>
+      @else
+          <span class="card-footer text-gray-400 cursor-not-allowed">More info ➜</span>
+      @endif
     </div>
 
     {{-- === Card: Data Peminjam === --}}
@@ -72,11 +79,18 @@
         <span class="icon">🧾</span>
       </div>
       <div class="card-body">
-        <div>{{ $peminjam_total ?? 6071 }} <span>Peminjam</span></div>
-        <div>{{ $peminjam_lunas ?? 5850 }} <span>Sudah Lunas</span></div>
-        <div>{{ $peminjam_belum ?? 221 }} <span>Belum Lunas</span></div>
+        <div>{{ $peminjam_total ?? 0 }} <span>Peminjam</span></div>
+        <div>{{ $peminjam_lunas ?? 0 }} <span>Sudah Lunas</span></div>
+        <div>{{ $peminjam_belum ?? 0 }} <span>Belum Lunas</span></div>
       </div>
-      <a href="#" class="card-footer">More info ➜</a>
+      @php
+          $role = Auth::guard('user')->user()->id_role;
+      @endphp
+      @if(in_array($role, ['R05', 'R07']))
+          <a href="{{ route('pinjaman.index') }}" class="card-footer">More info ➜</a>
+      @else
+          <span class="card-footer text-gray-400 cursor-not-allowed">More info ➜</span>
+      @endif
     </div>
 
     {{-- === Card: Data Pengguna === --}}
@@ -86,12 +100,20 @@
         <span class="icon">👤</span>
       </div>
       <div class="card-body">
-        <div>{{ $user_aktif ?? 9 }} <span>User Aktif</span></div>
-        <div>{{ $user_nonaktif ?? 3 }} <span>User Non-Aktif</span></div>
-        <div>{{ $user_total ?? 12 }} <span>Jumlah User</span></div>
-      </div>
-      <a href="#" class="card-footer">More info ➜</a>
+        <div>{{ $user_aktif ?? 0 }} <span>User Aktif</span></div>
+        <div>{{ $user_nonaktif ?? 0}} <span>User Non-Aktif</span></div>
+        <div>{{ $user_total ?? 0 }} <span>Jumlah User</span></div>
+      </div> 
+      @php
+          $role = Auth::guard('user')->user()->id_role;
+      @endphp
+      @if($role === 'R07') 
+          <a href="{{ route('data-user.index') }}" class="card-footer">More info ➜</a>
+      @else
+          <span class="card-footer text-gray-400 cursor-not-allowed">More info ➜</span>
+      @endif
     </div>
+
   </div>
 </div>
 
