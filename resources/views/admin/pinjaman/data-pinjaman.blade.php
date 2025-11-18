@@ -238,6 +238,9 @@ document.addEventListener('DOMContentLoaded', function () {
             this.classList.add('selected');
             selectedId = this.dataset.id;
 
+            if (editButton) editButton.removeAttribute('disabled');
+            if (hapusButton) hapusButton.removeAttribute('disabled');
+
             if (editButton) editButton.href = `/admin/pinjaman-pinjaman/${selectedId}/edit`;
             if (hapusButton) hapusButton.dataset.id = selectedId;
         });
