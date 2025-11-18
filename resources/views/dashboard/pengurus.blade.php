@@ -40,15 +40,15 @@
     {{-- === Card: Kas Bulan === --}}
     <div class="card purple">
       <div class="card-header">
-        <h4>Kas Bulan Oktober 2025</h4>
+        <h4>Saldo Kas Bulan {{ $bulanName }} {{ $tahun }}</h4>
         <span class="icon">📒</span>
       </div>
       <div class="card-body">
-        <div>{{ number_format($transaksi->awal ?? 429565371, 0, ',', '.') }} <span>Saldo Awal</span></div>
-        <div>{{ number_format($transaksi->mutasi ?? 0, 0, ',', '.') }} <span>Mutasi</span></div>
-        <div>{{ number_format($transaksi->akhir ?? 429565371, 0, ',', '.') }} <span>Saldo Akhir</span></div>
-      </div>
-      <a href="#" class="card-footer">More info ➜</a>
+        <div>Rp {{ number_format($saldo_awal, 0, ',', '.') }} <span>Saldo Awal</span></div>
+        <div>Rp {{ number_format($mutasi, 0, ',', '.') }} <span>Mutasi</span></div>
+        <div>Rp {{ number_format($saldo_akhir, 0, ',', '.') }} <span>Saldo Akhir</span></div>
+     </div>
+      <a href="{{ route('laporan.saldo-kas') }}" class="card-footer">More info ➜</a>
     </div>
 
     {{-- === Card: Data Anggota === --}}
@@ -58,11 +58,18 @@
         <span class="icon">👥</span>
       </div>
       <div class="card-body">
-        <div>{{ $anggota_aktif ?? 267 }} <span>Anggota Aktif</span></div>
-        <div>{{ $anggota_tidak ?? 330 }} <span>Anggota Tidak Aktif</span></div>
-        <div>{{ $anggota_total ?? 579 }} <span>Jumlah Anggota</span></div>
+        <div>{{ $anggota_aktif ?? 0 }} <span>Anggota Aktif</span></div>
+        <div>{{ $anggota_nonaktif ?? 0 }} <span>Anggota Tidak Aktif</span></div>
+        <div>{{ $anggota_total ?? 0 }} <span>Jumlah Anggota</span></div>
       </div>
-      <a href="#" class="card-footer">More info ➜</a>
+      @php
+          $role = Auth::guard('user')->user()->id_role;
+      @endphp
+      @if($role === 'R07') 
+          <a href="{{ route('anggota.index') }}" class="card-footer">More info ➜</a>
+      @else
+          <span class="card-footer text-gray-400 cursor-not-allowed">More info ➜</span>
+      @endif
     </div>
 
     {{-- === Card: Data Peminjam === --}}
@@ -72,11 +79,18 @@
         <span class="icon">🧾</span>
       </div>
       <div class="card-body">
-        <div>{{ $peminjam_total ?? 6071 }} <span>Peminjam</span></div>
-        <div>{{ $peminjam_lunas ?? 5850 }} <span>Sudah Lunas</span></div>
-        <div>{{ $peminjam_belum ?? 221 }} <span>Belum Lunas</span></div>
+        <div>{{ $peminjam_total ?? 0 }} <span>Peminjam</span></div>
+        <div>{{ $peminjam_lunas ?? 0 }} <span>Sudah Lunas</span></div>
+        <div>{{ $peminjam_belum ?? 0 }} <span>Belum Lunas</span></div>
       </div>
-      <a href="#" class="card-footer">More info ➜</a>
+      @php
+          $role = Auth::guard('user')->user()->id_role;
+      @endphp
+      @if(in_array($role, ['R05', 'R07']))
+          <a href="{{ route('pinjaman.index') }}" class="card-footer">More info ➜</a>
+      @else
+          <span class="card-footer text-gray-400 cursor-not-allowed">More info ➜</span>
+      @endif
     </div>
 
     {{-- === Card: Data Pengguna === --}}
@@ -86,12 +100,20 @@
         <span class="icon">👤</span>
       </div>
       <div class="card-body">
-        <div>{{ $user_aktif ?? 9 }} <span>User Aktif</span></div>
-        <div>{{ $user_nonaktif ?? 3 }} <span>User Non-Aktif</span></div>
-        <div>{{ $user_total ?? 12 }} <span>Jumlah User</span></div>
-      </div>
-      <a href="#" class="card-footer">More info ➜</a>
+        <div>{{ $user_aktif ?? 0 }} <span>User Aktif</span></div>
+        <div>{{ $user_nonaktif ?? 0}} <span>User Non-Aktif</span></div>
+        <div>{{ $user_total ?? 0 }} <span>Jumlah User</span></div>
+      </div> 
+      @php
+          $role = Auth::guard('user')->user()->id_role;
+      @endphp
+      @if($role === 'R07') 
+          <a href="{{ route('data-user.index') }}" class="card-footer">More info ➜</a>
+      @else
+          <span class="card-footer text-gray-400 cursor-not-allowed">More info ➜</span>
+      @endif
     </div>
+
   </div>
 </div>
 
@@ -103,12 +125,10 @@
   margin-right: 20px;
 }
 
-/* HEADER */
 .page-header h2 { font-size: 22px; }
 .page-header h3 { margin-top: 5px; font-size: 20px; }
 .page-header p { color: gray; margin-bottom: 25px; }
 
-/* GRID */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -117,7 +137,6 @@
   margin: 0 auto;
 }
 
-/* CARD */
 .card {
   height: auto;
   max-width: 350px;
@@ -132,12 +151,12 @@
   transition: all 0.3s ease;
   overflow: hidden;
 }
+
 .card:hover {
   transform: translateY(-6px);
   box-shadow: 0 8px 16px rgba(0,0,0,0.2);
 }
 
-/* HEADER */
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -149,6 +168,7 @@
   font-weight: 700;
   line-height: 1;
 }
+
 .icon {
   display: inline-block;
   font-family: 'Segoe UI Emoji', 'Noto Color Emoji', 'Apple Color Emoji', sans-serif;
@@ -160,7 +180,6 @@
   align-self: flex-end;
 }
 
-/* BODY */
 .card-body {
   margin-top: 10px;
   padding: 0 20px 15px 20px;
@@ -179,7 +198,6 @@
   font-size: 12px;
 }
 
-/* FOOTER */
 .card-footer {
   display: flex;
   justify-content: center;
@@ -198,7 +216,6 @@
   background: rgba(255,255,255,0.4);
 }
 
-/* COLORS */
 .orange { background-color: #FEA855; }
 .green { background-color: #8EDAAB; }
 .purple { background-color: #DC9CE9; }

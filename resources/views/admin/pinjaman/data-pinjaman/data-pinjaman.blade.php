@@ -231,8 +231,16 @@ document.addEventListener("DOMContentLoaded", function() {
 
             selectedId = this.dataset.id;
 
+<<<<<<< HEAD:resources/views/admin/pinjaman/data-pinjaman/data-pinjaman.blade.php
             editBtn.disabled = false;
             deleteBtn.disabled = false;
+=======
+            if (editButton) editButton.removeAttribute('disabled');
+            if (hapusButton) hapusButton.removeAttribute('disabled');
+
+            if (editButton) editButton.href = `/admin/pinjaman-pinjaman/${selectedId}/edit`;
+            if (hapusButton) hapusButton.dataset.id = selectedId;
+>>>>>>> 4629fbcac97b3016085ba9c04a2349691b8c465f:resources/views/admin/pinjaman/data-pinjaman.blade.php
         });
     });
 

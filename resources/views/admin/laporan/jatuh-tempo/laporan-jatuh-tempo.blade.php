@@ -52,13 +52,9 @@
           </tr>
         @empty
           <tr>
-            <td colspan="7" class="empty-cell">Belum ada data jatuh tempo.</td>
+            <td colspan="9" class="empty-cell">Belum ada data jatuh tempo.</td>
           </tr>
         @endforelse
-      @else
-        <tr>
-          <td colspan="7" class="empty-cell">Belum ada data jatuh tempo.</td>
-        </tr>
       @endisset
     </tbody>
   </table>
@@ -67,6 +63,16 @@
 
   <div class="pagination-container">
       <x-menu.pagination :data="$dataPinjaman" />
-    </div>
+  </div>
+
+<style>
+  .pagination-container {
+  margin-top: auto;        
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 16px;
+  }
+</style>
 
 @endsection
