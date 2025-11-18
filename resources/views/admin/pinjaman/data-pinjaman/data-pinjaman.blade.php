@@ -349,7 +349,6 @@ function clearFilter() {
     
     window.location.href = "{{ route('pinjaman.index') }}";
 }
-
 </script>
 @endpush
 
