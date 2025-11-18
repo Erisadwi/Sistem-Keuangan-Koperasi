@@ -63,6 +63,8 @@
         @endforelse
       </tbody>
     </table>
+  </div>
+  </div>
     
  <div class="pagination-container">
       <x-menu.pagination :data="$jenis_akun_transaksi" />
