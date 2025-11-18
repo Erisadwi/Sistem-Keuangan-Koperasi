@@ -54,7 +54,7 @@
         </select>
 
         <label for="jumlah_simpanan">Jumlah Penarikan</label>
-        <input type="number" name="jumlah_simpanan" id="jumlah_simpanan" placeholder="Masukkan jumlah simpanan" required>
+        <input type="number" name="jumlah_simpanan" id="jumlah_simpanan" value="0" placeholder="Masukkan jumlah simpanan" required>
 
         <label for="keterangan">Keterangan</label>
         <input type="text" id="keterangan" name="keterangan" value="{{ old('keterangan') }}" placeholder="Opsional...">
@@ -207,11 +207,17 @@
                 const selectedOption = jenisSelect.options[jenisSelect.selectedIndex];
                 const jumlah = selectedOption.getAttribute('data-jumlah');
 
+                if (jenis.includes('wajib') || jenis.includes('pokok')) {
+                    jumlahInput.value = 0;     
+                    jumlahInput.readOnly = false; 
+                return; 
+        }
+
                 if (jumlah && parseInt(jumlah) > 0) {
                     jumlahInput.value = jumlah;
                     jumlahInput.readOnly = true;
                 } else {
-                    jumlahInput.value = '';
+                    jumlahInput.value = 0;
                     jumlahInput.readOnly = false;
                 }
             });
