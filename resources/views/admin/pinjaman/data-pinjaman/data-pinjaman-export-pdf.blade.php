@@ -112,7 +112,6 @@
 
                 <td>{{ $row->anggota->nama_anggota ?? '-' }}</td>
 
-                <!-- HITUNGAN -->
                 <td>
                     <div class="row-sub">
                         <span class="subcell-title">Jumlah Pinjaman:</span>
@@ -140,7 +139,6 @@
                     </div>
                 </td>
 
-                <!-- TOTAL TAGIHAN -->
                 <td>
                     <div class="row-sub">
                         <span class="subcell-title">Jumlah Angsuran:</span>

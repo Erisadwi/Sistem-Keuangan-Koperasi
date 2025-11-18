@@ -164,7 +164,6 @@
   }
 </style>
 
-<!-- ========================= HTML ========================= -->
 <div class="toolbar-wrapper">
 
   <!-- BARIS 1 -->
@@ -181,7 +180,7 @@
       </div>
 
       <div>
-        <button class="filter-button" data-action="edit" data-url="{{ $editUrl ?? '#' }}">
+        <button class="filter-button" data-action="edit" data-url="{{ $editUrl ?? '#' }}" disabled>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
             <path d="M12 20h9M16.5 3.5a2.121 2.121 0 0 1 3 3L8 18l-4 1 1-4 11.5-11.5z" 
                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -191,7 +190,7 @@
       </div>
 
       <div>
-        <button class="filter-button" data-action="delete" data-url="{{ $deleteUrl ?? '#' }}">
+        <button class="filter-button" data-action="delete" data-url="{{ $deleteUrl ?? '#' }}" disabled>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
             <path d="M6 7h12M9 7V5h6v2M10 11v6M14 11v6M5 7h14l-1 14H6L5 7z" 
                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -200,7 +199,6 @@
         </button>
       </div>
 
-      <!-- === TOMBOL TANGGAL BARU === -->
       <div style="position: relative;">
         <button class="filter-button" id="btnTanggal">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -212,7 +210,6 @@
           Tanggal
         </button>
 
-        <!-- POPUP FILTER TANGGAL -->
         <div class="date-filter-popup" id="popupTanggal">
           <label>Tanggal Mulai:</label>
           <input type="date" id="tanggalMulai">
@@ -226,7 +223,7 @@
           </div>
         </div>
       </div>
-      <!-- === END TOMBOL TANGGAL === -->
+
     </div>
 
     <div class="toolbar-right">
@@ -261,7 +258,6 @@
     </div>
   </div>
 
-  <!-- BARIS 2 -->
   <div class="toolbar-row">
     <div class="search-area">
       <span>Cari :</span>
@@ -283,4 +279,3 @@
     </div>
   </div>
 </div>
-

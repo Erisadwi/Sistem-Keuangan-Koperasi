@@ -51,24 +51,20 @@ class DataPinjamanController extends Controller
     if ($request->filled('sort')) {
     switch ($request->sort) {
 
-        // tanggal baru → lama
         case 'baru':
             $query->orderBy('tanggal_pinjaman', 'desc');
             break;
 
-        // tanggal lama → baru
         case 'lama':
             $query->orderBy('tanggal_pinjaman', 'asc');
             break;
 
-        // nama A → Z
         case 'nama_asc':
             $query->join('anggota', 'pinjaman.id_anggota', '=', 'anggota.id_anggota')
                   ->orderBy('anggota.nama_anggota', 'asc')
                   ->select('pinjaman.*');
             break;
 
-        // nama Z → A
         case 'nama_desc':
             $query->join('anggota', 'pinjaman.id_anggota', '=', 'anggota.id_anggota')
                   ->orderBy('anggota.nama_anggota', 'desc')

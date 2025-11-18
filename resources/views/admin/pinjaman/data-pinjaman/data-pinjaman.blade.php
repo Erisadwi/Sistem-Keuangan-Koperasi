@@ -7,8 +7,8 @@
 @section('content')
 <x-menu.toolbar-pinjaman
     addUrl="{{ route('pinjaman.create') }}"
-    editUrl="{{ route('pinjaman.edit', '__ID__') }}"
-    deleteUrl="{{ route('pinjaman.destroy', '__ID__') }}"
+    editUrl="{{ route('pinjaman.edit', '_ID_') }}"
+    deleteUrl="{{ route('pinjaman.destroy', '_ID_') }}"
     exportUrl="{{ route('pinjaman.exportPdf') }}"
 />
 
@@ -231,22 +231,14 @@ document.addEventListener("DOMContentLoaded", function() {
 
             selectedId = this.dataset.id;
 
-<<<<<<< HEAD:resources/views/admin/pinjaman/data-pinjaman/data-pinjaman.blade.php
             editBtn.disabled = false;
             deleteBtn.disabled = false;
-=======
-            if (editButton) editButton.removeAttribute('disabled');
-            if (hapusButton) hapusButton.removeAttribute('disabled');
-
-            if (editButton) editButton.href = `/admin/pinjaman-pinjaman/${selectedId}/edit`;
-            if (hapusButton) hapusButton.dataset.id = selectedId;
->>>>>>> 4629fbcac97b3016085ba9c04a2349691b8c465f:resources/views/admin/pinjaman/data-pinjaman.blade.php
         });
     });
 
     editBtn.addEventListener("click", function() {
         if (!selectedId) return alert("Pilih data dulu!");
-        const url = this.dataset.url.replace("__ID__", selectedId);
+        const url = this.dataset.url.replace("_ID_", selectedId);
         window.location.href = url;
     });
 
@@ -254,12 +246,12 @@ document.addEventListener("DOMContentLoaded", function() {
         if (!selectedId) return alert("Pilih data dulu!");
         if (!confirm("Yakin ingin menghapus data ini?")) return;
 
-        const url = this.dataset.url.replace("__ID__", selectedId);
+        const url = this.dataset.url.replace("_ID_", selectedId);
 
         const form = document.createElement("form");
         form.method = "POST";
         form.action = url;
-        form.innerHTML = `@csrf @method('DELETE')`;
+        form.innerHTML = @csrf @method('DELETE');
         document.body.appendChild(form);
         form.submit();
     });
