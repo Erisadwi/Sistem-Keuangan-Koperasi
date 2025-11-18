@@ -198,7 +198,6 @@
         </button>
       </div>
 
-      <!-- === TOMBOL TANGGAL BARU === -->
       <div style="position: relative;">
         <button class="filter-button" id="btnTanggal">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -210,7 +209,6 @@
           Tanggal
         </button>
 
-        <!-- POPUP FILTER TANGGAL -->
         <div class="date-filter-popup" id="popupTanggal">
           <label>Tanggal Mulai:</label>
           <input type="date" id="tanggalMulai">
