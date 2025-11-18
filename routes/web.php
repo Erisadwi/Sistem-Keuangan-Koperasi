@@ -168,12 +168,13 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/pinjaman', [DataPinjamanController::class, 'index'])->name('pinjaman.index');
     Route::get('/pinjaman/create', [DataPinjamanController::class, 'create'])->name('pinjaman.create');
+    Route::get('pinjaman/cetak-nota/{id}', [DataPinjamanController::class, 'cetakNota'])->name('pinjaman.cetak-nota');
+    Route::get('pinjaman/exportPdf', [DataPinjamanController::class, 'exportPdf'])->name('pinjaman.exportPdf');
     Route::post('/pinjaman', [DataPinjamanController::class, 'store'])->name('pinjaman.store');
-    Route::get('/pinjaman/{id}', [DataPinjamanController::class, 'show'])->name('pinjaman.show');
     Route::get('/pinjaman/{id}/edit', [DataPinjamanController::class, 'edit'])->name('pinjaman.edit');
+    Route::get('/pinjaman/{id}', [DataPinjamanController::class, 'show'])->name('pinjaman.show');
     Route::put('/pinjaman/{id}', [DataPinjamanController::class, 'update'])->name('pinjaman.update');
     Route::delete('/pinjaman/{id}', [DataPinjamanController::class, 'destroy'])->name('pinjaman.destroy');
-    Route::get('pinjaman/cetak-nota/{id}', [DataPinjamanController::class, 'cetakNota'])->name('pinjaman.cetak-nota');
 
 
     Route::get('pengajuan-pinjaman', [PengajuanPinjamanController::class, 'index'])->name('pengajuan-pinjaman.index');

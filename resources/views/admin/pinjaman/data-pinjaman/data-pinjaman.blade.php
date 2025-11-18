@@ -9,7 +9,7 @@
     addUrl="{{ route('pinjaman.create') }}"
     editUrl="{{ route('pinjaman.edit', '__ID__') }}"
     deleteUrl="{{ route('pinjaman.destroy', '__ID__') }}"
-    exportUrl="#"
+    exportUrl="{{ route('pinjaman.exportPdf') }}"
 />
 
 <div class="data-pinjaman-table-wrap">
@@ -68,7 +68,7 @@
                   <circle cx="11" cy="11" r="8" stroke-width="2"/>
                   <line x1="21" y1="21" x2="16.65" y2="16.65" stroke-width="2"/>
                 </svg>
-              </button>
+                </a>
 
               <a href="{{ route('pinjaman.cetak-nota', $row->id_pinjaman) }}" class="aksi-btn nota-btn" title="Cetak Nota">
                 <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -212,159 +212,144 @@
   }
 
 </style>
+
 @push('scripts')
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    const editButton = document.querySelector('.df-edit');
-    const hapusButton = document.querySelector('.df-hapus');
-    const tambahButton = document.querySelector('.df-tambah');
-    const tanggalButton = document.querySelector('.df-tanggal');
-    const unduhButton = document.querySelector('.df-unduh');
-    const hapusFilterButton = document.querySelector('.df-hapus-filter');
-    const cariButton = document.querySelector('.df-cari');
-    const statusSelect = document.getElementById('statusPinjaman');
-    const urutSelect = document.getElementById('urutkan');
-    const cariKode = document.getElementById('cariKode');
-    const cariNama = document.getElementById('cariNama');
+document.addEventListener("DOMContentLoaded", function() {
 
     let selectedId = null;
+    const rows = document.querySelectorAll(".selectable-row");
 
-    // ===============================
-    // 🔹 Pilih baris tabel (highlight)
-    // ===============================
-    document.querySelectorAll('.selectable-row').forEach(row => {
-        row.addEventListener('click', function() {
-            document.querySelectorAll('.selectable-row').forEach(r => r.classList.remove('selected'));
-            this.classList.add('selected');
+    const editBtn = document.querySelector("[data-action='edit']");
+    const deleteBtn = document.querySelector("[data-action='delete']");
+
+    rows.forEach(row => {
+        row.addEventListener("click", function() {
+
+            rows.forEach(r => r.classList.remove("selected"));
+            this.classList.add("selected");
+
             selectedId = this.dataset.id;
 
-            if (editButton) editButton.href = `/admin/pinjaman-pinjaman/${selectedId}/edit`;
-            if (hapusButton) hapusButton.dataset.id = selectedId;
+            editBtn.disabled = false;
+            deleteBtn.disabled = false;
         });
     });
 
-    // ===============================
-    // 🔹 Tambah Data
-    // ===============================
-    if (tambahButton) {
-        tambahButton.addEventListener('click', function() {
-            window.location.href = '/admin/pinjaman-pinjaman/create';
-        });
-    }
+    editBtn.addEventListener("click", function() {
+        if (!selectedId) return alert("Pilih data dulu!");
+        const url = this.dataset.url.replace("__ID__", selectedId);
+        window.location.href = url;
+    });
 
-    // ===============================
-    // 🔹 Edit Data
-    // ===============================
-    if (editButton) {
-        editButton.addEventListener('click', function(e) {
-            if (!selectedId) {
-                e.preventDefault();
-                alert('Pilih data terlebih dahulu untuk diedit!');
-            }
-        });
-    }
+    deleteBtn.addEventListener("click", function() {
+        if (!selectedId) return alert("Pilih data dulu!");
+        if (!confirm("Yakin ingin menghapus data ini?")) return;
 
-    // ===============================
-    // 🔹 Hapus Data
-    // ===============================
-    if (hapusButton) {
-        hapusButton.addEventListener('click', function(e) {
-            e.preventDefault();
-            const id = this.dataset.id;
-            if (!id) {
-                alert('Pilih data terlebih dahulu');
-                return;
-            }
+        const url = this.dataset.url.replace("__ID__", selectedId);
 
-            if (confirm('Yakin ingin menghapus data ini?')) {
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = `/admin/pinjaman-pinjaman/${id}`;
-                form.innerHTML = `
-                    @csrf
-                    @method('DELETE')
-                `;
-                document.body.appendChild(form);
-                form.submit();
-            }
-        });
-    }
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = url;
+        form.innerHTML = `@csrf @method('DELETE')`;
+        document.body.appendChild(form);
+        form.submit();
+    });
 
-    // ===============================
-    // 🔹 Filter berdasarkan tanggal
-    // ===============================
-    if (tanggalButton) {
-        tanggalButton.addEventListener('click', function() {
-            const tanggal = prompt('Masukkan tanggal (format: YYYY-MM-DD):');
-            if (tanggal) {
-                applyFilter({ tanggal });
-            }
-        });
-    }
+    const codeInput = document.getElementById("transactionId");
+    const nameInput = document.getElementById("memberName");
+    const statusSelect = document.getElementById("statusPinjaman");
+    const sortSelect   = document.getElementById("filterSort");
 
-    // ===============================
-    // 🔹 Cari berdasarkan kode / nama
-    // ===============================
-    if (cariButton) {
-        cariButton.addEventListener('click', function() {
-            const kode = cariKode ? cariKode.value : '';
-            const nama = cariNama ? cariNama.value : '';
-            applyFilter({ kode, nama });
-        });
-    }
+    const applyFilter = () => {
+        let params = new URLSearchParams(window.location.search);
 
-    // ===============================
-    // 🔹 Hapus Filter
-    // ===============================
-    if (hapusFilterButton) {
-        hapusFilterButton.addEventListener('click', function() {
-            if (cariKode) cariKode.value = '';
-            if (cariNama) cariNama.value = '';
-            if (statusSelect) statusSelect.value = '';
-            if (urutSelect) urutSelect.value = '';
-            applyFilter({});
-        });
-    }
+        if (codeInput.value) params.set("kode", codeInput.value);
+        else params.delete("kode");
 
-    // ===============================
-    // 🔹 Unduh data (export)
-    // ===============================
-    if (unduhButton) {
-        unduhButton.addEventListener('click', function() {
-            window.location.href = '/admin/pinjaman-pinjaman/export';
-        });
-    }
+        if (nameInput.value) params.set("nama", nameInput.value);
+        else params.delete("nama");
 
-    // ===============================
-    // 🔹 Filter status pinjaman
-    // ===============================
-    if (statusSelect) {
-        statusSelect.addEventListener('change', function() {
-            applyFilter({ status: this.value });
-        });
-    }
+        if (statusSelect.value) params.set("status", statusSelect.value);
+        else params.delete("status");
 
-    // ===============================
-    // 🔹 Urutkan berdasarkan
-    // ===============================
-    if (urutSelect) {
-        urutSelect.addEventListener('change', function() {
-            applyFilter({ urutkan: this.value });
-        });
-    }
+        if (sortSelect.value) {
+            params.set("sort", sortSelect.value);
+        } else {
+            params.delete("sort");
+        }
 
-    // ===============================
-    // 🔹 Fungsi bantu filter URL
-    // ===============================
-    function applyFilter(params) {
-        const url = new URL(window.location.href);
-        Object.keys(params).forEach(key => {
-            if (params[key]) url.searchParams.set(key, params[key]);
-            else url.searchParams.delete(key);
-        });
-        window.location.href = url.toString();
-    }
+        window.location.search = params.toString();
+    };
+
+    statusSelect.addEventListener("change", applyFilter);
+    sortSelect.addEventListener("change", applyFilter);
+    document.getElementById("btnSearch").addEventListener("click", applyFilter);
+
+    const btnTanggal = document.getElementById("btnTanggal");
+    const popupTanggal = document.getElementById("popupTanggal");
+    const tanggalMulai = document.getElementById("tanggalMulai");
+    const tanggalAkhir = document.getElementById("tanggalAkhir");
+
+    const btnSimpanTanggal = document.getElementById("btnSimpanTanggal");
+    const btnBatalTanggal = document.getElementById("btnBatalTanggal");
+
+    btnTanggal.addEventListener("click", function(e) {
+        e.stopPropagation();
+        popupTanggal.style.display =
+            popupTanggal.style.display === "block" ? "none" : "block";
+    });
+
+    document.addEventListener("click", function(e) {
+        if (!popupTanggal.contains(e.target) && !btnTanggal.contains(e.target)) {
+            popupTanggal.style.display = "none";
+        }
+    });
+
+    btnSimpanTanggal.addEventListener("click", function() {
+        let params = new URLSearchParams(window.location.search);
+
+        if (tanggalMulai.value) params.set("start", tanggalMulai.value);
+        else params.delete("start");
+
+        if (tanggalAkhir.value) params.set("end", tanggalAkhir.value);
+        else params.delete("end");
+
+        window.location.search = params.toString();
+    });
+
+    btnBatalTanggal.addEventListener("click", function() {
+        tanggalMulai.value = "";
+        tanggalAkhir.value = "";
+        popupTanggal.style.display = "none";
+    });
+
+    const params = new URLSearchParams(window.location.search);
+
+    if (params.get("kode")) codeInput.value = params.get("kode");
+    if (params.get("nama")) nameInput.value = params.get("nama");
+    if (params.get("status")) statusSelect.value = params.get("status");
+    if (params.get("sort")) sortSelect.value = params.get("sort");
+    if (params.get("start")) tanggalMulai.value = params.get("start");
+    if (params.get("end")) tanggalAkhir.value = params.get("end");
+
+
 });
+
+function clearFilter() {
+
+    document.getElementById('transactionId').value = '';
+    document.getElementById('memberName').value = '';
+    document.getElementById('statusPinjaman').selectedIndex = 0;
+    document.getElementById('filterSort').selectedIndex = 0;
+    document.getElementById('btnTanggal').value = '';
+    document.getElementById('popupTanggal').value = '';
+    document.getElementById('tanggalMulai').value = '';
+    document.getElementById('tanggalAkhir').value = '';
+    
+    window.location.href = "{{ route('pinjaman.index') }}";
+}
+
 </script>
 @endpush
 

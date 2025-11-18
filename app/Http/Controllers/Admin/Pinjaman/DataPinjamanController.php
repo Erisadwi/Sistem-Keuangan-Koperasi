@@ -20,13 +20,68 @@ use Carbon\Carbon;
 class DataPinjamanController extends Controller
 {
     public function index(Request $request)
-    {
+{
+    $perPage = $request->get('per_page', 7);
 
-        $perPage = $request->get('per_page', 7);
+    $query = Pinjaman::with(['ajuanPinjaman', 'user', 'anggota', 'lamaAngsuran', 'tujuan', 'sumber']);
 
-        $pinjaman = Pinjaman::with(['ajuanPinjaman', 'user', 'anggota', 'lamaAngsuran', 'tujuan', 'sumber'])
-            ->paginate($perPage)
-            ->appends(['per_page' => $perPage]);
+    if ($request->filled('kode')) {
+        $query->where('id_pinjaman', 'LIKE', '%' . $request->kode . '%');
+    }
+
+    if ($request->filled('nama')) {
+        $query->whereHas('anggota', function ($q) use ($request) {
+            $q->where('nama_anggota', 'LIKE', '%' . $request->nama . '%');
+        });
+    }
+
+    if ($request->filled('status')) {
+        $query->where('status_lunas', $request->status);
+    }
+
+    if ($request->filled('start') && $request->filled('end')) {
+
+        $start = $request->start . ' 00:00:00';
+        $end   = $request->end . ' 23:59:59';
+
+        $query->whereBetween('tanggal_pinjaman', [$start, $end]);
+    }
+
+
+    if ($request->filled('sort')) {
+    switch ($request->sort) {
+
+        // tanggal baru → lama
+        case 'baru':
+            $query->orderBy('tanggal_pinjaman', 'desc');
+            break;
+
+        // tanggal lama → baru
+        case 'lama':
+            $query->orderBy('tanggal_pinjaman', 'asc');
+            break;
+
+        // nama A → Z
+        case 'nama_asc':
+            $query->join('anggota', 'pinjaman.id_anggota', '=', 'anggota.id_anggota')
+                  ->orderBy('anggota.nama_anggota', 'asc')
+                  ->select('pinjaman.*');
+            break;
+
+        // nama Z → A
+        case 'nama_desc':
+            $query->join('anggota', 'pinjaman.id_anggota', '=', 'anggota.id_anggota')
+                  ->orderBy('anggota.nama_anggota', 'desc')
+                  ->select('pinjaman.*');
+            break;
+    }
+        } else {
+            $query->orderBy('id_pinjaman', 'asc');
+        }
+
+
+    $pinjaman = $query->paginate($perPage)
+                      ->appends($request->all());
 
         foreach ($pinjaman as $item) {
             $jumlah = $item->jumlah_pinjaman ?? 0;
@@ -54,7 +109,7 @@ class DataPinjamanController extends Controller
             }
         }
 
-        return view('admin.pinjaman.data-pinjaman', compact('pinjaman'));
+        return view('admin.pinjaman.data-pinjaman.data-pinjaman', compact('pinjaman'));
     }
 
     public function create()
@@ -71,7 +126,7 @@ class DataPinjamanController extends Controller
             ->where('is_kas', 0)
             ->orderBy('nama_AkunTransaksi')->get();
 
-        return view('admin.pinjaman.tambah-data-pinjaman', compact(
+        return view('admin.pinjaman.data-pinjaman.tambah-data-pinjaman', compact(
     'ajuanPinjaman', 'users', 'anggota', 'lamaAngsuran', 'akunSumber', 'akunTujuan'
 ));
     }
@@ -85,6 +140,7 @@ class DataPinjamanController extends Controller
             'id_lamaAngsuran' => 'required|exists:lama_angsuran,id_lamaAngsuran',
             'tanggal_pinjaman' => 'required|date',
             'jumlah_pinjaman' => 'required|numeric|min:0',
+            'keterangan' => 'nullable|string|max:255',
         ]);
 
         $jumlah = $request->jumlah_pinjaman;
@@ -118,6 +174,7 @@ class DataPinjamanController extends Controller
             'total_tagihan' => $totalTagihan,
             'biaya_admin' => $biaya_admin,
             'status_lunas' => 'BELUM LUNAS',
+            'keterangan' => $request->keterangan,
         ]);
 
         return redirect()->route('pinjaman.index')->with('success', 'Data pinjaman berhasil disimpan!');
@@ -125,7 +182,9 @@ class DataPinjamanController extends Controller
 
 public function show($id)
 {
-    $pinjaman = Pinjaman::with(['anggota', 'lamaAngsuran', 'angsuran'])->findOrFail($id);
+    $pinjaman = Pinjaman::with(['anggota','lamaAngsuran','angsuran'])
+    ->where('id_pinjaman', $id)
+    ->firstOrFail();
     $anggota = $pinjaman->anggota;
 
     $lama = $pinjaman->lamaAngsuran->lama_angsuran ?? 0;
@@ -196,7 +255,7 @@ public function show($id)
 
     $pinjaman->status = $pinjaman->status_lunas ?? ($pinjaman->sisa_angsuran <= 0 ? 'LUNAS' : 'BELUM LUNAS');
 
-    return view('admin.pinjaman.detail-peminjaman', compact(
+    return view('admin.pinjaman.data-pinjaman.detail-peminjaman', compact(
         'pinjaman',
         'anggota',
         'payments',
@@ -211,7 +270,7 @@ public function show($id)
 
 public function edit($id)
 {
-    $pinjaman = Pinjaman::findOrFail($id);
+    $pinjaman = Pinjaman::where('id_pinjaman', $id)->firstOrFail();
     $ajuanPinjaman = AjuanPinjaman::all();
     $users = User::all();
     $anggota = Anggota::all();
@@ -227,7 +286,7 @@ public function edit($id)
         ->orderBy('nama_AkunTransaksi')
         ->get();
 
-    return view('admin.pinjaman.edit-data-pinjaman', compact(
+    return view('admin.pinjaman.data-pinjaman.edit-data-pinjaman', compact(
         'pinjaman', 'ajuanPinjaman', 'users', 'anggota', 'lamaAngsuran', 'akunSumber', 'akunTujuan'
     ));
 }
@@ -241,9 +300,10 @@ public function edit($id)
         'id_lamaAngsuran' => 'required|exists:lama_angsuran,id_lamaAngsuran',
         'tanggal_pinjaman' => 'required|date',
         'jumlah_pinjaman' => 'required|numeric|min:0',
+        'keterangan' => 'nullable|string|max:255',
     ]);
 
-    $pinjaman = Pinjaman::findOrFail($id);
+    $pinjaman = Pinjaman::where('id_pinjaman', $id)->firstOrFail();
 
     $jumlah = $request->jumlah_pinjaman;
 
@@ -272,8 +332,7 @@ public function edit($id)
         'jumlah_pinjaman' => $request->jumlah_pinjaman,
         'total_tagihan' => $totalTagihan,
         'biaya_admin' => $biaya_admin,
-        // status_lunas tidak diubah kecuali kamu ingin set ulang, contoh:
-        // 'status_lunas' => 'BELUM LUNAS',
+        'keterangan' => $request->keterangan,
     ]);
 
     return redirect()->route('pinjaman.index')->with('success', 'Data pinjaman berhasil diperbarui!');
@@ -281,7 +340,7 @@ public function edit($id)
 
     public function destroy($id)
     {
-        $pinjaman = Pinjaman::findOrFail($id);
+        $pinjaman = Pinjaman::where('id_pinjaman', $id)->firstOrFail();
         $pinjaman->delete();
 
         return redirect()->route('pinjaman.index')->with('success', 'Data pinjaman berhasil dihapus!');
@@ -290,7 +349,7 @@ public function edit($id)
     public function cetakNota($id)
     {
         $pinjaman = Pinjaman::with(['anggota', 'lamaAngsuran'])->findOrFail($id);
-        $koperasi = identitasKoperasi::first(); // ambil data koperasi
+        $koperasi = identitasKoperasi::first(); 
 
             if ($koperasi && $koperasi->alamat_koperasi) {
                 $bagianAlamat = explode(',', $koperasi->alamat_koperasi);
@@ -317,4 +376,62 @@ public function edit($id)
             'koperasi'
         ));
     }
+
+    public function exportPdf(Request $request)
+{
+
+    $periodStart = $request->start ? $request->start : now()->startOfMonth()->toDateString();
+    $periodEnd   = $request->end ? $request->end : now()->endOfMonth()->toDateString();
+
+    $query = Pinjaman::with(['user', 'anggota', 'lamaAngsuran'])
+        ->whereBetween('tanggal_pinjaman', [
+            $periodStart . ' 00:00:00',
+            $periodEnd . ' 23:59:59'
+        ])
+        ->orderBy('tanggal_pinjaman', 'asc');
+
+    $data = $query->get();
+
+    foreach ($data as $item) {
+        $jumlah = $item->jumlah_pinjaman ?? 0;
+        $lama   = $item->lamaAngsuran->lama_angsuran ?? 0;
+
+        $item->pokok_angsuran = $lama > 0 ? round($jumlah / $lama, 2) : 0;
+        $item->lama_angsuran_text = $lama > 0 ? $lama : '-';
+
+        $bunga = $item->bunga_pinjaman ?? 0;
+        $item->jumlah_angsuran_otomatis = $item->pokok_angsuran + $bunga;
+
+        // Total bayar
+        $totalBayar = \App\Models\Angsuran::where('id_pinjaman', $item->id_pinjaman)
+            ->sum(\DB::raw('(angsuran_pokok + bunga_angsuran + denda)'));
+
+        $totalAngsuranDibayar = \App\Models\Angsuran::where('id_pinjaman', $item->id_pinjaman)->count();
+
+        $item->sudah_dibayar  = $totalBayar;
+        $item->sisa_tagihan   = max(($item->total_tagihan ?? 0) - $totalBayar, 0);
+        $item->sisa_angsuran  = max(0, $lama - $totalAngsuranDibayar);
+
+        if ($item->status_lunas === 'LUNAS') {
+            $item->sudah_dibayar = $item->total_tagihan;
+            $item->sisa_tagihan  = 0;
+            $item->sisa_angsuran = 0;
+        }
+    }
+
+try {
+    $pdf = Pdf::loadView('admin.pinjaman.data-pinjaman.data-pinjaman-export-pdf', [
+        'data'        => $data,
+        'periodStart' => $periodStart,
+        'periodEnd'   => $periodEnd,
+    ])->setPaper('A4', 'landscape');
+
+    return $pdf->download('laporan-ajuan-pinjaman.pdf');
+
+} catch (\Exception $e) {
+    return $e->getMessage();  
+}
+
+}
+
 }

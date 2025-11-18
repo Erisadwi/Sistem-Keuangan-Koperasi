@@ -78,17 +78,17 @@
         </div>
 
         <div class="form-group">
-            <label for="id_jenisAkunTransaksi_tujuan">Pilih akun*</label>
+            <label for="id_jenisAkunTransaksi_tujuan">Pilih Akun*</label>
             <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan">
-                <option value="" disabled {{ old('id_jenisAkunTransaksi_tujuan', $pinjaman->id_jenisAkunTransaksi_tujuan ?? '') == '' ? 'selected' : '' }}>Pilih Akun</option>
-                @foreach ($akunTujuan as $a)
-                    <option value="{{ $a->id_jenisAkunTransaksi }}"
-                        {{ (string) old('id_jenisAkunTransaksi_tujuan', $pinjaman->id_jenisAkunTransaksi_tujuan ?? '') === (string) $a->id_jenisAkunTransaksi ? 'selected' : '' }}>
-                        {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
-                    </option>
-                @endforeach
+            <option value="" disabled {{ old('id_jenisAkunTransaksi_tujuan') ? '' : 'selected' }}>Pilih Akun</option>
+            @foreach ($akunTujuan as $a)
+                <option value="{{ $a->id_jenisAkunTransaksi }}"
+                    {{ (string)old('id_jenisAkunTransaksi_tujuan', $pinjaman->id_jenisAkunTransaksi_tujuan ?? '') === (string)$a->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                    {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
+                </option>
+            @endforeach
             </select>
-        </div>
+
 
         <div class="form-group">
             <label for="id_jenisAkunTransaksi_sumber">Ambil dari Kas*</label>
@@ -105,8 +105,13 @@
 
         <div class="form-group">
             <label for="keterangan">Keterangan</label>
-            <input type="text" id="keterangan" name="keterangan"
-                value="{{ $pinjaman->keterangan }}">
+            <input 
+                type="text" 
+                id="keterangan" 
+                name="keterangan"
+                value="{{ old('keterangan', $pinjaman->keterangan ?? '') }}"
+                placeholder="Masukkan keterangan"
+            >
         </div>
 
         <div class="form-buttons">
