@@ -40,15 +40,15 @@
     {{-- === Card: Kas Bulan === --}}
     <div class="card purple">
       <div class="card-header">
-        <h4>Kas Bulan Oktober 2025</h4>
+        <h4>Saldo Kas Bulan {{ $bulanName }} {{ $tahun }}</h4>
         <span class="icon">📒</span>
       </div>
       <div class="card-body">
-        <div>{{ number_format($transaksi->awal ?? 429565371, 0, ',', '.') }} <span>Saldo Awal</span></div>
-        <div>{{ number_format($transaksi->mutasi ?? 0, 0, ',', '.') }} <span>Mutasi</span></div>
-        <div>{{ number_format($transaksi->akhir ?? 429565371, 0, ',', '.') }} <span>Saldo Akhir</span></div>
-      </div>
-      <a href="#" class="card-footer">More info ➜</a>
+        <div>Rp {{ number_format($saldo_awal, 0, ',', '.') }} <span>Saldo Awal</span></div>
+        <div>Rp {{ number_format($mutasi, 0, ',', '.') }} <span>Mutasi</span></div>
+        <div>Rp {{ number_format($saldo_akhir, 0, ',', '.') }} <span>Saldo Akhir</span></div>
+     </div>
+      <a href="{{ route('laporan.saldo-kas') }}" class="card-footer">More info ➜</a>
     </div>
 
     {{-- === Card: Data Anggota === --}}
@@ -125,12 +125,10 @@
   margin-right: 20px;
 }
 
-/* HEADER */
 .page-header h2 { font-size: 22px; }
 .page-header h3 { margin-top: 5px; font-size: 20px; }
 .page-header p { color: gray; margin-bottom: 25px; }
 
-/* GRID */
 .card-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -139,7 +137,6 @@
   margin: 0 auto;
 }
 
-/* CARD */
 .card {
   height: auto;
   max-width: 350px;
@@ -154,12 +151,12 @@
   transition: all 0.3s ease;
   overflow: hidden;
 }
+
 .card:hover {
   transform: translateY(-6px);
   box-shadow: 0 8px 16px rgba(0,0,0,0.2);
 }
 
-/* HEADER */
 .card-header {
   display: flex;
   justify-content: space-between;
@@ -171,6 +168,7 @@
   font-weight: 700;
   line-height: 1;
 }
+
 .icon {
   display: inline-block;
   font-family: 'Segoe UI Emoji', 'Noto Color Emoji', 'Apple Color Emoji', sans-serif;
@@ -182,7 +180,6 @@
   align-self: flex-end;
 }
 
-/* BODY */
 .card-body {
   margin-top: 10px;
   padding: 0 20px 15px 20px;
@@ -201,7 +198,6 @@
   font-size: 12px;
 }
 
-/* FOOTER */
 .card-footer {
   display: flex;
   justify-content: center;
@@ -220,7 +216,6 @@
   background: rgba(255,255,255,0.4);
 }
 
-/* COLORS */
 .orange { background-color: #FEA855; }
 .green { background-color: #8EDAAB; }
 .purple { background-color: #DC9CE9; }
