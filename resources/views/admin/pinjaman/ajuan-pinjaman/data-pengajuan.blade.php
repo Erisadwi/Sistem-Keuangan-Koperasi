@@ -8,7 +8,7 @@
 
 <x-menu.toolbar-search-ajuan/>
 <x-menu.unduh-right
-    filePath="{{ route('pengajuan-pinjaman.download') }}" 
+        :downloadRoute="route('pengajuan-pinjaman.exportPdf', request()->only(['start_date', 'end_date', 'search']))"
 />
 
 <div class="pengajuan-pinjaman-table-wrap">

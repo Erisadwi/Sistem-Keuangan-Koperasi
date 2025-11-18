@@ -21,7 +21,10 @@ class TransaksiPemasukanController extends Controller
             ->where('type_transaksi', 'TKD');
 
         if ($request->filled('start_date') && $request->filled('end_date')) {
-            $query->whereBetween('tanggal_transaksi', [$request->start_date, $request->end_date]);
+            $query->whereBetween('tanggal_transaksi', [
+                $request->start_date, 
+                $request->end_date
+            ]);
         }
 
         if ($request->filled('search')) {

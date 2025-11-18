@@ -1,7 +1,7 @@
 @extends('layouts.app-admin-add')
 
 @section('title', 'Transaksi Kas')  
-@section('back-url', url('admin/transaksi_kas/transfer')) 
+@section('back-url', url('admin/transaksi_kas/transfer'))
 @section('back-title', 'Transaksi Kas >')
 @section('title-1', 'Transfer')  
 @section('sub-title', 'Tambah Data Transfer')  
@@ -20,7 +20,7 @@
                 <div id="detail-container">
                     <div class="detail-row">
                         <select name="sumber[0][id_jenisAkunTransaksi]" class="input-select">
-                            <option value="" disabled selected>Pilih Akun</option>
+                            <option value="" disabled selected>Pilih Kas</option>
                             @foreach ($akunSumber as $a)
                                 <option value="{{ $a->id_jenisAkunTransaksi }}">
                                     {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}

@@ -64,7 +64,13 @@
             </select>
 
         <label for="keterangan">Keterangan</label>
-        <input type="text" id="keterangan" name="keterangan" value="{{ old('keterangan') }}" placeholder="Isi keterangan (opsional)">
+        <input 
+            type="text" 
+            id="keterangan" 
+            name="keterangan" 
+            value="{{ old('keterangan', $keteranganDefault) }}" 
+            class="form-control"
+            @if($keteranganDefault == 'Pelunasan') readonly @endif>
 
         <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>

@@ -12,9 +12,9 @@
     id="action-buttons"
 />
 <x-menu.toolbar-right 
-  searchPlaceholder="Cari Kode Transaksi"
-  searchName="kode_transaksi"
-  :downloadRoute="route('transaksi-transfer.download', request()->query())"
+    searchPlaceholder="Cari Kode Transaksi"
+    searchName="kode_transaksi"
+    :downloadRoute="route('transaksi-transfer.export-pdf', request()->only(['start_date', 'end_date', 'search']))"
 />
 
 <div class="transfer-table-wrap">
@@ -34,11 +34,8 @@
     <tbody>
     @forelse($TransaksiTransfer as $row)
         @php
-            // akun tujuan = baris dengan debit > 0 (kas masuk)
             $akunTujuan = $row->details->firstWhere('debit', '>', 0)?->akun;
-            // akun sumber = semua baris dengan kredit > 0
             $akunSumberList = $row->details->where('kredit', '>', 0);
-            // total jumlah = ambil total debit (pasti sama dengan total kredit)
             $jumlah = $row->total_debit ?? 0;
         @endphp
 
@@ -241,7 +238,7 @@ document.addEventListener('DOMContentLoaded', function () {
             selectedId = this.dataset.id;
 
             // ubah tombol edit & hapus agar aktif ke id terpilih
-            if (editButton) editButton.href = `/admin/transaksi-pemasukan/${selectedId}/edit`;
+            if (editButton) editButton.href = `/admin/transaksi-transfer/${selectedId}/edit`;
             if (hapusButton) hapusButton.dataset.id = selectedId;
         });
     });

@@ -55,7 +55,7 @@ class PenarikanTunaiController extends Controller
             'exportUrl' => route('penarikan-tunai.exportPdf'),
         ];
 
-        return view('admin.simpanan.penarikan-tunai', compact('penarikanTunai', 'toolbar'));
+        return view('admin.simpanan.penarikan-tunai.penarikan-tunai', compact('penarikanTunai', 'toolbar'));
     }
 
     public function create()
@@ -63,12 +63,13 @@ class PenarikanTunaiController extends Controller
         $anggota = Anggota::where('status_anggota', 'Aktif')->get();
         $jenisSimpanan = JenisSimpanan::all(['id_jenis_simpanan', 'jenis_simpanan', 'jumlah_simpanan']);
 
-        $akunTransaksi = JenisAkunTransaksi::where('is_kas', 1)
+        $akunTransaksi = JenisAkunTransaksi::where('penarikan', 'Y')
+            ->where('is_kas', 1)
             ->where('status_akun', 'Y')
             ->orderBy('nama_AkunTransaksi')
             ->get();
 
-        return view('admin.simpanan.tambah-penarikan-tunai', compact(
+        return view('admin.simpanan.penarikan-tunai.tambah-penarikan-tunai', compact(
             'anggota',
             'jenisSimpanan',
             'akunTransaksi'
@@ -81,16 +82,20 @@ class PenarikanTunaiController extends Controller
             'id_anggota' => 'required|exists:anggota,id_anggota',
             'id_jenis_simpanan' => 'required|exists:jenis_simpanan,id_jenis_simpanan',
             'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi', // kas
-            'jumlah_simpanan' => 'required|numeric|min:1',
+            'jumlah_simpanan' => 'required|numeric|min:0',
             'tanggal_transaksi' => 'required|date',
             'keterangan' => 'nullable|string|max:255',
+            'bukti_setoran' => 'nullable|file|max:2048',
         ]);
 
-        $jenisSimpanan = JenisSimpanan::findOrFail($request->id_jenis_simpanan);
 
-        
-        $akunSumber = $jenisSimpanan->id_jenisAkunTransaksi; 
-        $akunTujuan = $request->id_jenisAkunTransaksi_tujuan; 
+        $buktiPath = null;
+        if ($request->hasFile('bukti_setoran')) {
+            $buktiPath = $request->file('bukti_setoran')
+                ->store('bukti_setoran', 'public');
+        }
+
+        $jenisSimpanan = JenisSimpanan::findOrFail($request->id_jenis_simpanan);
 
         $last = Simpanan::where('type_simpanan', 'TRK')
             ->orderBy('id_simpanan', 'desc')
@@ -103,14 +108,15 @@ class PenarikanTunaiController extends Controller
             'id_anggota' => $request->id_anggota,
             'id_jenis_simpanan' => $request->id_jenis_simpanan,
 
-            'id_jenisAkunTransaksi_sumber' => $akunTujuan, 
-            'id_jenisAkunTransaksi_tujuan' => $akunSumber,
+            'id_jenisAkunTransaksi_sumber' => $request->id_jenis_simpanan,
+            'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
 
             'jumlah_simpanan' => $request->jumlah_simpanan,
             'type_simpanan' => 'TRK',
             'kode_simpanan' => $nextCode,
             'tanggal_transaksi' => $request->tanggal_transaksi,
-            'keterangan' => $request->keterangan
+            'keterangan' => $request->keterangan,
+            'bukti_setoran' => $buktiPath
         ]);
 
         return redirect()->route('penarikan-tunai.index')
@@ -122,12 +128,13 @@ class PenarikanTunaiController extends Controller
         $penarikanTunai = Simpanan::findOrFail($id);
         $anggota = Anggota::where('status_anggota', 'Aktif')->get();
         $jenisSimpanan = JenisSimpanan::all();
-        $akunTransaksi = JenisAkunTransaksi::where('is_kas', 1)
+        $akunTransaksi = JenisAkunTransaksi::where('penarikan', 'Y')
+            ->where('is_kas', 1)
             ->where('status_akun', 'Y')
             ->orderBy('nama_AkunTransaksi')
             ->get();
 
-        return view('admin.simpanan.edit-penarikan-tunai', compact(
+        return view('admin.simpanan.penarikan-tunai.edit-penarikan-tunai', compact(
             'penarikanTunai',
             'anggota',
             'jenisSimpanan',
@@ -142,24 +149,27 @@ class PenarikanTunaiController extends Controller
         $request->validate([
             'id_jenis_simpanan' => 'required|exists:jenis_simpanan,id_jenis_simpanan',
             'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
-            'jumlah_simpanan' => 'required|numeric|min:1',
+            'jumlah_simpanan' => 'required|numeric|min:0',
             'tanggal_transaksi' => 'required|date',
             'keterangan' => 'nullable|string|max:255',
+            'bukti_setoran' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
-        $jenisSimpanan = JenisSimpanan::findOrFail($request->id_jenis_simpanan);
-
-        $akunSumber = $request->id_jenisAkunTransaksi_tujuan; 
-        $akunTujuan = $jenisSimpanan->id_jenisAkunTransaksi;
-
-        $penarikanTunai->update([
-            'id_jenis_simpanan' => $request->id_jenis_simpanan,
-            'id_jenisAkunTransaksi_sumber' => $akunSumber,
-            'id_jenisAkunTransaksi_tujuan' => $akunTujuan,
-            'jumlah_simpanan' => $request->jumlah_simpanan,
-            'tanggal_transaksi' => $request->tanggal_transaksi,
-            'keterangan' => $request->keterangan
+        $data = $request->only([
+            'id_jenis_simpanan',
+            'id_jenisAkunTransaksi_tujuan',
+            'jumlah_simpanan',
+            'tanggal_transaksi',
+            'keterangan'
         ]);
+
+        if ($request->hasFile('bukti_setoran')) {
+            $file = $request->file('bukti_setoran');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $data['bukti_setoran'] = $file->storeAs('bukti_setoran', $filename, 'public');
+        }
+
+        $penarikanTunai->update($data);
 
         return redirect()->route('penarikan-tunai.index')
             ->with('success', 'Penarikan tunai berhasil diperbarui.');
@@ -181,7 +191,7 @@ class PenarikanTunaiController extends Controller
             ->orderBy('tanggal_transaksi', 'desc')
             ->get();
 
-        $pdf = Pdf::loadView('admin.simpanan.penarikan-tunai.pdfPenarikan', compact('data'))
+        $pdf = Pdf::loadView('admin.simpanan.penarikan-tunai.penarikan-tunai-export-pdf', compact('data'))
             ->setPaper('a4', 'portrait');
 
         return $pdf->download('Laporan_Penarikan_Tunai.pdf');
@@ -192,6 +202,6 @@ class PenarikanTunaiController extends Controller
         $penarikan = Simpanan::with(['anggota', 'jenisSimpanan', 'sumber', 'user'])
             ->findOrFail($id);
 
-        return view('admin.simpanan.cetak-nota-penarikan-tunai', compact('penarikan'));
+        return view('admin.simpanan.penarikan-tunai.cetak-nota-penarikan-tunai', compact('penarikan'));
     }
 }

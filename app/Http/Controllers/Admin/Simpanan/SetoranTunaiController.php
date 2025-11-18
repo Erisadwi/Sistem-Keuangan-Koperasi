@@ -102,9 +102,8 @@ class SetoranTunaiController extends Controller
             'id_anggota' => $request->id_anggota,
             'id_jenis_simpanan' => $request->id_jenis_simpanan,
 
-            'id_jenisAkunTransaksi_sumber' => $jenisSimpanan->id_jenisAkunTransaksi,
-
-            'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
+            'id_jenisAkunTransaksi_sumber' => $akunTujuan, 
+            'id_jenisAkunTransaksi_tujuan' => $akunSumber,
 
             'jumlah_simpanan' => $request->jumlah_simpanan,
             'type_simpanan' => 'TRD',
