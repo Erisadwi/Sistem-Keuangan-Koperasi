@@ -251,7 +251,11 @@ document.addEventListener("DOMContentLoaded", function() {
         const form = document.createElement("form");
         form.method = "POST";
         form.action = url;
-        form.innerHTML = @csrf @method('DELETE');
+        form.innerHTML = `
+            @csrf
+            @method('DELETE')
+        `;
+
         document.body.appendChild(form);
         form.submit();
     });
