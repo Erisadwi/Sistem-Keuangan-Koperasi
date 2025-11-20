@@ -3,20 +3,30 @@
 @section('title', 'Laporan Kas Pinjaman')
 @section('title-1', 'Kas Pinjaman')
 @section('title-content', 'Laporan Pinjaman')
-@section('period', 'Periode 01 Jan 2025 - 31 Des 2025')
-@section('sub-title', 'Laporan Kas Pinjaman')
+@section('period')
+    {{ $periodeText }}
+@endsection
+@section('sub-title', 'Laporan Kas Pinjaman')  
 
 @section('content')
 
 <x-menu.date-filter/>
-<x-menu.unduh/>
+<x-menu.unduh 
+    :url="route('kas-pinjaman.exportPdf', [
+        'start_date' => request('start_date'),
+        'end_date'   => request('end_date'),
+        'preset'     => request('preset')
+    ])" 
+    text="Unduh Laporan"
+/>
 
 <div class="laporan-kas-pinjaman-wrap">
   <div class="table-scroll-wrapper">
+
     <div class="laporan-info">
-      <p>Jumlah Peminjam : 504</p>
-      <p>Peminjam Lunas : 376</p>
-      <p>Pinjaman Belum Lunas : 128</p>
+      <p>Jumlah Peminjam : {{ $jumlahPeminjam }}</p>
+      <p>Peminjam Lunas : {{ $jumlahLunas }}</p>
+      <p>Pinjaman Belum Lunas : {{ $jumlahBelumLunas }}</p>
     </div>
 
     <table class="laporan-kas-pinjaman-table">
@@ -27,41 +37,49 @@
           <th>Jumlah</th>
         </tr>
       </thead>
+
       <tbody>
+
         <tr>
           <td>1</td>
           <td>Pokok Pinjaman</td>
-          <td>660.117.616</td>
+          <td>{{ number_format($totalPokokPinjaman, 0, ',', '.') }}</td>
         </tr>
+
         <tr>
           <td>2</td>
           <td>Tagihan Pinjaman</td>
-          <td>751.662.700</td>
+          <td>{{ number_format($totalTagihan, 0, ',', '.') }}</td>
         </tr>
+
         <tr>
           <td>3</td>
           <td>Tagihan Denda</td>
-          <td>0</td>
+          <td>{{ number_format($totalDenda, 0, ',', '.') }}</td>
         </tr>
+
         <tr class="total-row">
           <td colspan="2"><b>Jumlah Tagihan + Denda</b></td>
-          <td><b>751.662.700</b></td>
+          <td><b>{{ number_format($totalTagihan + $totalDenda, 0, ',', '.') }}</b></td>
         </tr>
+
         <tr>
           <td>4</td>
           <td>Tagihan Sudah Dibayar</td>
-          <td>237.211.000</td>
+          <td>{{ number_format($totalSudahDibayar, 0, ',', '.') }}</td>
         </tr>
+
         <tr>
           <td>5</td>
           <td>Sisa Tagihan</td>
-          <td>514.451.700</td>
+          <td>{{ number_format($sisaTagihan, 0, ',', '.') }}</td>
         </tr>
+
       </tbody>
     </table>
+
   </div>
 </div>
-
 
 <style>
 :root {
@@ -74,7 +92,6 @@
   --text: #222;
 }
 
-/* Wrapper luar */
 .laporan-kas-pinjaman-wrap {
   border: 1.5px solid var(--outer-border);
   border-radius: 0;
@@ -85,27 +102,6 @@
   padding: 0;             
   box-shadow: none;       
   overflow-x: visible;
-}
-
-/* Scroll wrapper */
-.table-scroll-wrapper {
-  overflow-x: auto;
-  overflow-y: auto;
-  max-height: 400px;
-  width: 100%;
-  padding: 30px 16px 10px 16px;
-  box-sizing: border-box;
-}
-.table-scroll-wrapper::-webkit-scrollbar {
-  height: 8px;
-  width: 8px;
-}
-.table-scroll-wrapper::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: 4px;
-}
-.table-scroll-wrapper::-webkit-scrollbar-track {
-  background: #f0f0f0;
 }
 
 /* Info text di atas tabel */
@@ -155,35 +151,6 @@
 .laporan-kas-pinjaman-table .total-row {
   background-color: #e6f1f8;
   font-weight: bold;
-}
-
-/* Pagination */
-.pagination {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 6px;
-  margin-top: 15px;
-  font-size: 14px;
-}
-
-.pagination select,
-.pagination button {
-  padding: 4px 6px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  background: white;
-  cursor: pointer;
-}
-
-.pagination button {
-  background: var(--primary);
-  color: white;
-  border: none;
-}
-
-.pagination button:hover {
-  background: var(--primary-dark);
 }
 </style>
 

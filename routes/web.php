@@ -36,6 +36,8 @@ use App\Http\Controllers\Anggota\LaporanPembayaranController;
 use App\Http\Controllers\Admin\Laporan\LaporanJatuhTempoController;
 use App\Http\Controllers\Admin\Laporan\LaporanSaldoKasController;
 use App\Http\Controllers\Admin\Laporan\LaporanLabaRugiController;
+use App\Http\Controllers\Admin\Laporan\LaporanKasPinjamanController;
+
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
@@ -175,8 +177,9 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/pinjaman/{id}', [DataPinjamanController::class, 'show'])->name('pinjaman.show');
     Route::put('/pinjaman/{id}', [DataPinjamanController::class, 'update'])->name('pinjaman.update');
     Route::delete('/pinjaman/{id}', [DataPinjamanController::class, 'destroy'])->name('pinjaman.destroy');
+});
 
-
+Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('pengajuan-pinjaman', [PengajuanPinjamanController::class, 'index'])->name('pengajuan-pinjaman.index');
     Route::get('pengajuan-pinjaman/{id}/disetujui', [PengajuanPinjamanController::class, 'disetujui'])->name('pengajuan-pinjaman.disetujui');
     Route::patch('pengajuan-pinjaman/{id}/tolak', [PengajuanPinjamanController::class, 'tolak'])->name('pengajuan-pinjaman.tolak');
@@ -240,6 +243,9 @@ Route::middleware(['auth:user'])->group(function () {
 
     Route::get('/laporan-laba-rugi', [LaporanLabaRugiController::class, 'index'])->name('laporan.laba-rugi'); 
     Route::get('/laporan-laba-rugi/export-pdf', [LaporanLabaRugiController::class, 'exportPdf'])->name('laba-rugi.exportPdf');   
+
+    Route::get('/laporan-kas-pinjaman', [LaporanKasPinjamanController::class, 'index'])->name('laporan.kas-pinjaman'); 
+    Route::get('/laporan-kas-pinjaman/export-pdf', [LaporanKasPinjamanController::class, 'exportPdf'])->name('kas-pinjaman.exportPdf'); 
 });
 
 
@@ -307,10 +313,6 @@ Route::get('/admin/laporan/laporan-neraca', function () {
 Route::get('/admin/laporan/laporan-kas-simpanan', function () {
     return view('admin.laporan.laporan-kas-simpanan');
 })->name('admin.laporan.laporan-kas-simpanan');
-
-Route::get('/admin/laporan/laporan-kas-pinjaman', function () {
-    return view('admin.laporan.laporan-kas-pinjaman');
-})->name('admin.laporan.laporan-kas-pinjaman');
 
 Route::get('/admin/profil/edit-profil', function () {
     return view('admin.profil.edit-profil');

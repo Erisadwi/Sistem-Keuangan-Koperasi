@@ -73,7 +73,7 @@
           <a href="#" class="submenu-row">Buku Besar</a>
           <a href="#" class="submenu-row">Neraca Saldo</a>
           <a href="#" class="submenu-row">Neraca</a>
-          <a href="#" class="submenu-row">Kas Pinjaman</a>
+          <a href="{{ route('laporan.kas-pinjaman') }}" class="submenu-row">Kas Pinjaman</a>
           <a href="#" class="submenu-row">Kas Simpanan</a>
           <a href="{{ route('laporan.saldo-kas') }}" class="submenu-row">Saldo Kas</a>
           <a href="{{ route('laporan.laba-rugi') }}" class="submenu-row">Laba Rugi</a>

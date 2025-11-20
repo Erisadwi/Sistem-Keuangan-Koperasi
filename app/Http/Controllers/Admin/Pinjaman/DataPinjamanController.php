@@ -426,7 +426,7 @@ try {
         'periodEnd'   => $periodEnd,
     ])->setPaper('A4', 'landscape');
 
-    return $pdf->download('laporan-ajuan-pinjaman.pdf');
+    return $pdf->download('laporan-data-pinjaman.pdf');
 
 } catch (\Exception $e) {
     return $e->getMessage();  
