@@ -20,7 +20,7 @@
         <div>{{ number_format($pinjaman_pelunasan, 0, ',', '.') }}<span>Jumlah Pelunasan</span></div>
         <div>{{ number_format($pinjaman_sisa, 0, ',', '.') }}<span>Sisa Tagihan</span></div>
       </div>
-      <a href="#" class="card-footer">More info ➜</a>
+      <a href="{{ route('laporan.kas-pinjaman') }}" class="card-footer">More info ➜</a>
     </div>
 
     {{-- === Card: Simpanan === --}}
