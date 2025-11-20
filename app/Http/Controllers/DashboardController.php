@@ -5,16 +5,19 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Services\KasService;
+use App\Services\PinjamanDashboardService;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 
 class DashboardController extends Controller
 {
     protected $kas;
+    protected $pinjamanService;
 
-    public function __construct(KasService $kas)
+    public function __construct(KasService $kas, PinjamanDashboardService $pinjamanService)
     {
         $this->kas = $kas;
+        $this->pinjamanService = $pinjamanService;
     }
 
     public function index()
@@ -24,31 +27,33 @@ class DashboardController extends Controller
             return redirect()->route('login');
         }
 
-        // ========== HITUNG SALDO KAS DARI SERVICE ==========
+        $pinjamanCard = $this->pinjamanService->getSummary();
+
         $kas = $this->kas->getSaldoKas();
 
         $bulan = date('m');
         $tahun = date('Y');
 
-       $bulanName = \Carbon\Carbon::createFromDate($tahun, $bulan, 1)
-                ->translatedFormat('F');
+        $bulanName = \Carbon\Carbon::createFromDate($tahun, $bulan, 1)
+                    ->translatedFormat('F');
 
-        // ========== DATA ANGGOTA ==========
         $anggota_aktif = DB::table('anggota')->where('status_anggota', 'Aktif')->count();
         $anggota_nonaktif = DB::table('anggota')->where('status_anggota', 'Non Aktif')->count();
         $anggota_total = DB::table('anggota')->count();
 
-        // ========== DATA PEMINJAM ==========
         $peminjam_total = DB::table('pinjaman')->count();
         $peminjam_lunas = DB::table('pinjaman')->where('status_lunas','LUNAS')->count();
         $peminjam_belum = DB::table('pinjaman')->where('status_lunas','BELUM LUNAS')->count();
 
-        // ========== DATA PENGGUNA ==========
         $user_aktif = User::where('status','aktif')->count();
         $user_nonaktif = User::where('status','nonaktif')->count();
         $user_total = User::count();
 
         $data = [
+            'pinjaman_tagihan'   => $pinjamanCard['tagihan'],
+            'pinjaman_pelunasan' => $pinjamanCard['pelunasan'],
+            'pinjaman_sisa'      => $pinjamanCard['sisa'],
+
             'saldo_awal'  => $kas['saldo_awal'],
             'mutasi'      => $kas['mutasi'],
             'saldo_akhir' => $kas['saldo_akhir'],

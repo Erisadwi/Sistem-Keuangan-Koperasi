@@ -16,9 +16,9 @@
         <span class="icon">💰</span>
       </div>
       <div class="card-body">
-        <div>{{ number_format($pinjaman->tagihan ?? 7180059100, 0, ',', '.') }} <span>Jumlah Tagihan</span></div>
-        <div>{{ number_format($pinjaman->pelunasan ?? 6389993269, 0, ',', '.') }} <span>Jumlah Pelunasan</span></div>
-        <div>{{ number_format($pinjaman->sisa ?? 790065831, 0, ',', '.') }} <span>Sisa Tagihan</span></div>
+        <div>{{ number_format($pinjaman_tagihan, 0, ',', '.') }}<span>Jumlah Tagihan</span></div>
+        <div>{{ number_format($pinjaman_pelunasan, 0, ',', '.') }}<span>Jumlah Pelunasan</span></div>
+        <div>{{ number_format($pinjaman_sisa, 0, ',', '.') }}<span>Sisa Tagihan</span></div>
       </div>
       <a href="#" class="card-footer">More info ➜</a>
     </div>
@@ -29,13 +29,16 @@
         <h4>Simpanan</h4>
         <span class="icon">💼</span>
       </div>
+
       <div class="card-body">
-        <div>{{ number_format($simpanan->anggota ?? 1861247000, 0, ',', '.') }} <span>Simpanan Anggota</span></div>
-        <div>{{ number_format($simpanan->penarikan ?? 876049740, 0, ',', '.') }} <span>Penarikan Tunai</span></div>
-        <div>{{ number_format($simpanan->jumlah ?? 985197260, 0, ',', '.') }} <span>Jumlah Simpanan</span></div>
+        <div>{{ number_format($pinjaman_tagihan, 0, ',', '.') }} <span>Jumlah Tagihan</span></div>
+        <div>{{ number_format($pinjaman_pelunasan, 0, ',', '.') }} <span>Jumlah Pelunasan</span></div>
+        <div>{{ number_format($pinjaman_sisa, 0, ',', '.') }} <span>Sisa Tagihan</span></div>
       </div>
+
       <a href="#" class="card-footer">More info ➜</a>
     </div>
+
 
     {{-- === Card: Kas Bulan === --}}
     <div class="card purple">
