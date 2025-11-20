@@ -31,11 +31,10 @@
       </div>
 
       <div class="card-body">
-        <div>{{ number_format($pinjaman_tagihan, 0, ',', '.') }} <span>Jumlah Tagihan</span></div>
-        <div>{{ number_format($pinjaman_pelunasan, 0, ',', '.') }} <span>Jumlah Pelunasan</span></div>
-        <div>{{ number_format($pinjaman_sisa, 0, ',', '.') }} <span>Sisa Tagihan</span></div>
+        <div>{{ number_format($simpanan_setoran, 0, ',', '.') }} <span>Simpanan Anggota</span></div>
+        <div>{{ number_format($simpanan_penarikan, 0, ',', '.') }} <span>Penarikan Tunai</span></div>
+        <div>{{ number_format($simpanan_jumlah, 0, ',', '.') }} <span>Jumlah Simpanan</span></div>
       </div>
-
       <a href="#" class="card-footer">More info ➜</a>
     </div>
 
