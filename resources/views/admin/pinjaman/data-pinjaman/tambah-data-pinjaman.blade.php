@@ -91,7 +91,8 @@
 
         <div class="form-group">
             <label for="keterangan">Keterangan</label>
-            <input type="text" id="keterangan" name="keterangan">
+            <input type="text" id="keterangan" name="keterangan"
+                   value="{{ old('keterangan') }}" placeholder="Masukkan keterangan">
         </div>
 
         <div class="form-buttons">

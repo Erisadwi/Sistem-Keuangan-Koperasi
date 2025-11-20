@@ -1,4 +1,3 @@
-<!-- ========================= CSS ========================= -->
 <style>
   .toolbar-wrapper {
     display: flex;
@@ -165,10 +164,8 @@
   }
 </style>
 
-<!-- ========================= HTML ========================= -->
 <div class="toolbar-wrapper">
 
-  <!-- BARIS 1 -->
   <div class="toolbar-row">
     <div class="toolbar-left">
 
@@ -201,7 +198,6 @@
         </button>
       </div>
 
-      <!-- === TOMBOL TANGGAL BARU === -->
       <div style="position: relative;">
         <button class="filter-button" id="btnTanggal">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -213,7 +209,6 @@
           Tanggal
         </button>
 
-        <!-- POPUP FILTER TANGGAL -->
         <div class="date-filter-popup" id="popupTanggal">
           <label>Tanggal Mulai:</label>
           <input type="date" id="tanggalMulai">
@@ -227,28 +222,31 @@
           </div>
         </div>
       </div>
-      <!-- === END TOMBOL TANGGAL === -->
+
     </div>
 
     <div class="toolbar-right">
       <div>
-        <select class="filter-button">
-          <option selected>Status Pinjaman</option>
-          <option value="lunas">Belum Lunas</option>
-          <option value="belum_lunas">Sudah Lunas</option>
-        </select>
+        <select id="statusPinjaman" class="filter-button">
+          <option value="" selected disabled>Status Pinjaman</option>
+          <option value="Lunas">Lunas</option>
+          <option value="Belum Lunas">Belum Lunas</option>
+      </select>
       </div>
 
       <div>
-        <select class="filter-button">
+        <select class="filter-button" id="filterSort">
           <option selected>Urutkan Berdasarkan</option>
-          <option value="nama">Nama</option>
-          <option value="tanggal">Tanggal</option>
+          <option value="baru">Tanggal (Baru → Lama)</option>
+          <option value="lama">Tanggal (Lama → Baru)</option>
+          <option value="nama_asc">Nama (A → Z)</option>
+          <option value="nama_desc">Nama (Z → A)</option>
+
         </select>
       </div>
 
       <div>
-        <a href="{{ $exportUrl ?? '#' }}" class="filter-button" data-action="export">
+        <a href="{{ $exportUrl ?? '#' }}" class="filter-button" id="btnExport">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
             <path d="M12 16v-4m0 0l-4 4m4-4l4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
             <path d="M4 4h16v12H4V4z" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -259,13 +257,12 @@
     </div>
   </div>
 
-  <!-- BARIS 2 -->
   <div class="toolbar-row">
     <div class="search-area">
       <span>Cari :</span>
       <input type="text" id="transactionId" placeholder="Kode Transaksi" class="search-input">
       <input type="text" id="memberName" placeholder="Nama Anggota" class="search-input">
-      <button class="filter-button">
+      <button class="filter-button" id="btnSearch">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
           <circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="2"/>
           <path d="M21 21l-4.3-4.3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -281,138 +278,3 @@
     </div>
   </div>
 </div>
-
-@push('scripts')
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    let selectedId = null;
-
-    // Tombol utama
-    const btnTambah = document.querySelector('.filter-button[href*="create"]');
-    const btnEdit = document.querySelector('[data-action="edit"]');
-    const btnHapus = document.querySelector('[data-action="delete"]');
-    const btnExport = document.querySelector('[data-action="export"]');
-
-    // Dropdown
-    const urutkanDropdown = document.getElementById('urutkanDropdown');
-    const statusDropdown = document.getElementById('statusDropdown');
-
-    // Filter tanggal popup
-    const btnTanggal = document.getElementById("btnTanggal");
-    const popupTanggal = document.getElementById("popupTanggal");
-    const btnSimpanTanggal = document.getElementById("btnSimpanTanggal");
-    const btnBatalTanggal = document.getElementById("btnBatalTanggal");
-
-    // === PILIH BARIS DATA ===
-    document.querySelectorAll('.selectable-row').forEach(row => {
-        row.addEventListener('click', function () {
-            document.querySelectorAll('.selectable-row').forEach(r => r.classList.remove('table-active'));
-            this.classList.add('table-active');
-            selectedId = this.dataset.id;
-        });
-    });
-
-    // === TAMBAH ===
-    btnTambah?.addEventListener('click', function (e) {
-        e.preventDefault();
-        window.location.href = this.getAttribute('href');
-    });
-
-    // === EDIT ===
-    btnEdit?.addEventListener('click', function (e) {
-        e.preventDefault();
-        if (!selectedId) {
-            alert('Pilih data terlebih dahulu!');
-            return;
-        }
-        window.location.href = `/admin/pinjaman-pinjaman/${selectedId}/edit`;
-    });
-
-    // === HAPUS ===
-    btnHapus?.addEventListener('click', function (e) {
-        e.preventDefault();
-        if (!selectedId) {
-            alert('Pilih data terlebih dahulu!');
-            return;
-        }
-
-        if (confirm('Yakin ingin menghapus data ini?')) {
-            const form = document.createElement('form');
-            form.method = 'POST';
-            form.action = `/admin/pinjaman-pinjaman/${selectedId}`;
-            form.innerHTML = `
-                @csrf
-                @method('DELETE')
-            `;
-            document.body.appendChild(form);
-            form.submit();
-        }
-    });
-
-    // === EXPORT ===
-    btnExport?.addEventListener('click', function (e) {
-        e.preventDefault();
-        alert('Export data pinjaman dalam format Excel/PDF sedang diproses...');
-        window.location.href = this.getAttribute('href');
-    });
-
-    // === URUTKAN BERDASARKAN ===
-    urutkanDropdown?.querySelectorAll('a').forEach(item => {
-        item.addEventListener('click', function (e) {
-            e.preventDefault();
-            const urut = this.getAttribute('data-sort');
-            const url = new URL(window.location.href);
-            url.searchParams.set('sort', urut);
-            window.location.href = url.toString();
-        });
-    });
-
-    // === STATUS PINJAMAN ===
-    statusDropdown?.querySelectorAll('a').forEach(item => {
-        item.addEventListener('click', function (e) {
-            e.preventDefault();
-            const status = this.getAttribute('data-status');
-            const url = new URL(window.location.href);
-            url.searchParams.set('status', status);
-            window.location.href = url.toString();
-        });
-    });
-
-    // === FILTER TANGGAL ===
-    btnTanggal?.addEventListener('click', function (e) {
-        e.stopPropagation();
-        popupTanggal.style.display = popupTanggal.style.display === 'block' ? 'none' : 'block';
-    });
-
-    btnSimpanTanggal?.addEventListener('click', function () {
-        const mulai = document.getElementById("tanggalMulai").value;
-        const akhir = document.getElementById("tanggalAkhir").value;
-        if (!mulai || !akhir) {
-            alert("Harap isi kedua tanggal terlebih dahulu!");
-            return;
-        }
-        const url = new URL(window.location.href);
-        url.searchParams.set('tanggal_mulai', mulai);
-        url.searchParams.set('tanggal_akhir', akhir);
-        window.location.href = url.toString();
-    });
-
-    btnBatalTanggal?.addEventListener('click', function () {
-        popupTanggal.style.display = 'none';
-    });
-
-    document.addEventListener('click', function (e) {
-        if (!popupTanggal.contains(e.target) && !btnTanggal.contains(e.target)) {
-            popupTanggal.style.display = 'none';
-        }
-    });
-
-    // === CLEAR FILTER ===
-    window.clearFilter = function () {
-        const url = new URL(window.location.href);
-        url.search = '';
-        window.location.href = url.toString();
-    };
-});
-</script>
-@endpush
