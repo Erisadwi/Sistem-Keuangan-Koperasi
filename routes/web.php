@@ -38,6 +38,7 @@ use App\Http\Controllers\Admin\Laporan\LaporanSaldoKasController;
 use App\Http\Controllers\Admin\Laporan\LaporanLabaRugiController;
 use App\Http\Controllers\Admin\Laporan\LaporanKasPinjamanController;
 use App\Http\Controllers\Admin\Laporan\LaporanSHUUtamaController;
+use App\Http\Controllers\Admin\Laporan\LaporanKasSimpananController;
 
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -250,6 +251,9 @@ Route::middleware(['auth:user'])->group(function () {
 
     Route::get('/laporan-shu', [LaporanSHUUtamaController::class, 'index'])->name('laporan.shu'); 
 
+    Route::get('/laporan-kas-simpanan', [LaporanKasSimpananController::class, 'index'])->name('laporan.kas-simpanan'); 
+    Route::get('/laporan-kas-simpanan/export-pdf', [LaporanKasSimpananController::class, 'exportPdf'])->name('kas-simpanan.exportPdf'); 
+
 });
 
 
@@ -309,10 +313,6 @@ Route::get('/admin/profil/beranda-profil', function () {
 Route::get('/admin/laporan/laporan-neraca', function () {
     return view('admin.laporan.laporan-neraca');
 })->name('admin.laporan.laporan-neraca');
-
-Route::get('/admin/laporan/laporan-kas-simpanan', function () {
-    return view('admin.laporan.laporan-kas-simpanan');
-})->name('admin.laporan.laporan-kas-simpanan');
 
 Route::get('/admin/profil/edit-profil', function () {
     return view('admin.profil.edit-profil');

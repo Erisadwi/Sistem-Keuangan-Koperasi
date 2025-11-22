@@ -3,59 +3,80 @@
 @section('title', 'Laporan Kas Simpanan')  
 @section('title-1', 'Kas Simpanan')  
 @section('title-content', 'Laporan Simpanan Anggota')  
-@section('period', 'Periode 01 Mei 2025 - 31 Mei 2025')  
+@section('period')
+    {{ $periodeText }}
+@endsection 
 @section('sub-title', 'Laporan Kas Simpanan')  
 
 @section('content')
 
 <x-menu.date-filter/>
-<x-menu.unduh/>
+<x-menu.unduh 
+    :url="route('kas-simpanan.exportPdf', [
+        'start_date' => request('start_date'),
+        'end_date'   => request('end_date'),
+        'preset'     => request('preset')
+    ])" 
+    text="Unduh Laporan"
+/>
 
 <div class="laporan-simpanan-wrap">
   <div class="table-scroll-wrapper">
     <table class="laporan-simpanan-table">
       <thead>
         <tr>
-          <th>No.</th>
-          <th>Keterangan</th>
-          <th>Nominal Simpanan</th>
-          <th>Nominal Penarikan</th>
+          <th>No</th>
+          <th>Jenis Akun</th>
+          <th>Simpanan</th>
+          <th>Penarikan</th>
           <th>Jumlah</th>
         </tr>
       </thead>
+
       <tbody>
+
+        @php
+          $total_simpanan = 0;
+          $total_penarikan = 0;
+          $total_jumlah = 0;
+        @endphp
+
+        @forelse ($data as $item)
+        @php
+            $simpanan   = $item->simpanan ?? 0;
+            $penarikan  = $item->penarikan ?? 0;
+            $jumlah     = $item->jumlah ?? ($simpanan - $penarikan);
+
+            $total_simpanan += $simpanan;
+            $total_penarikan += $penarikan;
+            $total_jumlah += $jumlah;
+        @endphp
+
         <tr>
-          <td>1</td>
-          <td>Simpanan Sukarela</td>
-          <td>1.000.000</td>
-          <td>817.437</td>
-          <td>182.563</td>
+          <td>{{ $loop->iteration }}</td>
+          <td>{{ $item->jenis_akun }}</td>
+          <td>{{ number_format($simpanan, 0, ',', '.') }}</td>
+          <td>{{ number_format($penarikan, 0, ',', '.') }}</td>
+          <td>{{ number_format($jumlah, 0, ',', '.') }}</td>
         </tr>
+
+        @empty
         <tr>
-          <td>2</td>
-          <td>Simpanan Pokok</td>
-          <td>400.000</td>
-          <td>0</td>
-          <td>400.000</td>
+          <td colspan="5">Tidak ada data</td>
         </tr>
-        <tr>
-          <td>3</td>
-          <td>Simpanan Wajib</td>
-          <td>13.500.000</td>
-          <td>0</td>
-          <td>13.500.000</td>
-        </tr>
+        @endforelse
+
         <tr class="total-row">
           <td colspan="2"><strong>Jumlah Total</strong></td>
-          <td><strong>14.900.000</strong></td>
-          <td><strong>817.437</strong></td>
-          <td><strong>14.082.563</strong></td>
+          <td><strong>{{ number_format($total_simpanan, 0, ',', '.') }}</strong></td>
+          <td><strong>{{ number_format($total_penarikan, 0, ',', '.') }}</strong></td>
+          <td><strong>{{ number_format($total_jumlah, 0, ',', '.') }}</strong></td>
         </tr>
+
       </tbody>
     </table>
   </div>
 </div>
-
 
 <style>
 :root {
@@ -68,43 +89,21 @@
   --text: #222;
 }
 
-/* ===== Wrapper luar ===== */
 .laporan-simpanan-wrap {
   border: 1.5px solid var(--outer-border);
   border-radius: 0;
   background: var(--bg);
   width: 98%;          
   margin-left: 10px;     
-  margin-top: 65px;      
+  margin-top: 100px;      
   padding: 0;             
   box-shadow: none;       
   overflow-x: visible;
 }
 
-/* ===== Wrapper scroll (agar tabel bisa horizontal scroll) ===== */
-.table-scroll-wrapper {
-  overflow-x: auto;
-  overflow-y: auto;
-  max-height: 400px;
-  width: 100%;
-  padding: 30px 16px 10px 16px;
-  box-sizing: border-box;
-}
-.table-scroll-wrapper::-webkit-scrollbar {
-  height: 8px;
-}
-.table-scroll-wrapper::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: 4px;
-}
-.table-scroll-wrapper::-webkit-scrollbar-track {
-  background: #f0f0f0;
-}
-
-/* ===== Tabel utama ===== */
 .laporan-simpanan-table {
   width: 100%;
-  min-width: 1000px; /* biar bisa scroll horizontal */
+  min-width: 1000px;
   border-collapse: collapse;
   background: white;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
@@ -112,7 +111,6 @@
   table-layout: auto;
 }
 
-/* ===== Header ===== */
 .laporan-simpanan-table thead {
   background: var(--header-bg);
   color: var(--header-text);
@@ -120,7 +118,6 @@
   top: 0;
   z-index: 1;
 }
-
 .laporan-simpanan-table th,
 .laporan-simpanan-table td {
   text-align: center;
@@ -130,7 +127,6 @@
   vertical-align: middle;
 }
 
-/* ===== Warna baris ===== */
 .laporan-simpanan-table tbody tr:nth-child(even) {
   background-color: #f9f9f9;
 }
@@ -138,7 +134,6 @@
   background-color: #eef7ff;
 }
 
-/* ===== Baris total ===== */
 .total-row td {
   background-color: var(--header-bg);
   color: #ffffff;
