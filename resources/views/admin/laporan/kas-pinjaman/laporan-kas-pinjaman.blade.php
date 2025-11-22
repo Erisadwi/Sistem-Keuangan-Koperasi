@@ -104,7 +104,6 @@
   overflow-x: visible;
 }
 
-/* Info text di atas tabel */
 .laporan-info {
   font-size: 14px;
   color: var(--text);
@@ -112,7 +111,6 @@
   line-height: 1.5;
 }
 
-/* Tabel utama */
 .laporan-kas-pinjaman-table {
   width: 100%;
   min-width: 1000px;

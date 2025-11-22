@@ -104,10 +104,6 @@
         s/d {{ \Carbon\Carbon::parse($end_date)->format('d/m/Y') }}</small>
 </h3>
 
-
-{{-- ===========================
-      INFO PEMINJAM
-=========================== --}}
 <table>
     <thead>
         <tr>
@@ -132,11 +128,6 @@
     </tbody>
 </table>
 
-
-
-{{-- ===========================
-      RINGKASAN KAS PINJAMAN
-=========================== --}}
 <table>
     <thead>
         <tr>
@@ -155,7 +146,7 @@
         </tr>
 
         <tr>
-            <td>Total Tagihan (Pokok + Bunga)</td>
+            <td>Total Tagihan</td>
             <td>{{ number_format($totalTagihan, 0, ',', '.') }}</td>
         </tr>
 
