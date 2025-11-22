@@ -37,6 +37,7 @@ use App\Http\Controllers\Admin\Laporan\LaporanJatuhTempoController;
 use App\Http\Controllers\Admin\Laporan\LaporanSaldoKasController;
 use App\Http\Controllers\Admin\Laporan\LaporanLabaRugiController;
 use App\Http\Controllers\Admin\Laporan\LaporanKasPinjamanController;
+use App\Http\Controllers\Admin\Laporan\LaporanSHUUtamaController;
 
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
@@ -246,6 +247,9 @@ Route::middleware(['auth:user'])->group(function () {
 
     Route::get('/laporan-kas-pinjaman', [LaporanKasPinjamanController::class, 'index'])->name('laporan.kas-pinjaman'); 
     Route::get('/laporan-kas-pinjaman/export-pdf', [LaporanKasPinjamanController::class, 'exportPdf'])->name('kas-pinjaman.exportPdf'); 
+
+    Route::get('/laporan-shu', [LaporanSHUUtamaController::class, 'index'])->name('laporan.shu'); 
+
 });
 
 
@@ -273,10 +277,6 @@ Route::get('/anggota/lap-SHU', function () {
 Route::get('/anggota/test', function () {
     return view('anggota.test');
 })->name('anggota.test');
-
-Route::get('/admin/laporan/laporan-SHU', function () {
-    return view('admin.laporan.laporan-SHU');
-})->name('admin.laporan.laporan-SHU');
 
 Route::get('/admin/laporan/laporan-buku-besar', function () {
     return view('admin.laporan.laporan-buku-besar');

@@ -77,7 +77,7 @@
           <a href="#" class="submenu-row">Kas Simpanan</a>
           <a href="{{ route('laporan.saldo-kas') }}" class="submenu-row">Saldo Kas</a>
           <a href="{{ route('laporan.laba-rugi') }}" class="submenu-row">Laba Rugi</a>
-          <a href="#" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
+          <a href="{{ route('laporan.shu') }}" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
         </x-menu.section>
        @endif
 
