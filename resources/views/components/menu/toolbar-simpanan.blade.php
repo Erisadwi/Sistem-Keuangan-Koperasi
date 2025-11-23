@@ -7,7 +7,6 @@
     margin-top: 40px;
   }
 
-  /* === BARIS 1 === */
   .toolbar-row-1 {
     display: flex;
     justify-content: space-between;
@@ -22,7 +21,6 @@
     gap: 8px;
   }
 
-  /* === BARIS 2 === */
   .toolbar-row-2 {
     display: flex;
     justify-content: center;
@@ -31,23 +29,23 @@
     gap: 10px;
   }
 
-  /* === Tombol Umum === */
   .filter-button {
     display: flex;
     align-items: center;
     gap: 6px;
-    border: 1px solid #2563eb;
     background-color: white;
     color: #000; /* teks hitam */
-    border-radius: 6px;
-    padding: 6px 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    padding: 5px 12px;
     cursor: pointer;
-    font-size: 13px;
+    font-size: 12px;
     transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(107, 105, 105, 0.647);
   }
 
   .filter-button svg {
-    color: #2563eb; /* semua ikon biru */
+    color: #2563eb; 
   }
 
   .filter-button:hover {
@@ -59,14 +57,12 @@
     color: white !important;
   }
 
-  /* === Tombol Hapus (warna merah) === */
   .filter-button.danger {
-    border-color: #ef4444;
-    color: #000 !important; /* tetap teks hitam */
+    color: #000 !important;
   }
 
   .filter-button.danger svg {
-    color: #ef4444 !important; /* ikon merah */
+    color: #ef4444 !important; 
   }
 
   .filter-button.danger:hover {
@@ -78,7 +74,6 @@
     color: white !important;
   }
 
-  /* === Dropdown tanggal === */
   .date-filter {
     position: relative;
   }
@@ -105,7 +100,7 @@
     flex-direction: column;
     margin-bottom: 8px;
     font-size: 13px;
-    color: #000; /* teks label tanggal tetap hitam */
+    color: #000;
   }
 
   .input-date {
@@ -137,13 +132,12 @@
     color: white;
   }
 
-  /* Input cari */
   .search-input {
     border: 1px solid #ccc;
     border-radius: 6px;
     padding: 4px 8px;
     font-size: 13px;
-    color: gray; /* biarkan abu-abu */
+    color: gray; 
   }
 
   .search-input.small {
@@ -152,23 +146,35 @@
 
   a.filter-button {
     text-decoration: none !important;
-    color: #000; /* teks tombol link tetap hitam */
+    color: #000; 
   }
 
-  /* Tombol disable visual */
   .filter-button:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
+    opacity: 1;                
+    cursor: not-allowed;      
+    pointer-events: none;     
   }
 
   .table-active {
     background-color: #e0f2fe !important;
   }
 
-  /* Label "Cari:" tetap hitam */
   .search-filter span {
     color: #000;
     font-weight: 500;
+  }
+
+  select.filter-button:focus-visible {
+    outline: none !important;
+  }
+
+  select.filter-button::-webkit-focus-inner {
+    border: 0 !important;
+  }
+
+  select.filter-button:focus {
+    outline: none !important;
+    box-shadow: none !important;
   }
 </style>
 
@@ -181,7 +187,7 @@
 
       <a href="{{ $addUrl ?? '#' }}" class="filter-button">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
-          <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          <path d="M12 5v14M5 12h14" stroke="#0ea5e9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
         Tambah
       </a>
@@ -350,5 +356,35 @@ if (jenis) {
   jenisSelect.value = jenis;
 }
 
-});
+  const start = params.get('start');
+  const end = params.get('end');
+
+  if (start) document.getElementById('startDate').value = start;
+  if (end) document.getElementById('endDate').value = end;
+
+  if (start || end) {
+    const tglBtn = document.getElementById("tanggalButton");
+    let label = "Tanggal";
+
+    if (start && end) label = `${start} → ${end}`;
+    else if (start) label = `Dari ${start}`;
+    else if (end) label = `Sampai ${end}`;
+
+    tglBtn.innerHTML = `
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+        <rect x="3" y="4" width="18" height="17" rx="3" stroke="currentColor" stroke-width="2"/>
+        <path d="M8 2v4M16 2v4M3 10h18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+      ${label}
+    `;
+  }
+
+
+  const kode = params.get('kode');
+  const nama = params.get('nama');
+
+  if (kode) document.getElementById("transactionId").value = kode;
+  if (nama) document.getElementById("memberName").value = nama;
+
+  });
 </script>
