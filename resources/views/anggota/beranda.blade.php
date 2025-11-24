@@ -69,39 +69,38 @@
 
       
       <section class="cards">
-        <a href="# {{-- {{ route('nama_route_tujuan') }} --}}" class="card pastel-orange">
+        <a href="{{ route('anggota.laporan.simpanan') }}" class="card pastel-orange">
           <div class="card-icon">
             <img src="{{ asset('icons/icon-simpanan.png') }}" alt="Simpanan" class="icon-28">
           </div>
           <div class="card-text">
             <div class="card-amount">
-              {{-- Rp{{ number_format($simpanan, 0, ',', '.') }}  --}}
-              Rp2.500.000
+                Rp{{ number_format($simpanan, 0, ',', '.') }}
             </div>
             <div class="card-label">Simpananmu</div>
           </div>
         </a>
 
-        <a href="# {{-- {{ route('nama_route_tujuan') }} --}}" class="card pastel-yellow">
+        <a href="{{ route('anggota.laporan.pinjaman') }}" class="card pastel-yellow">
           <div class="card-icon">
             <img src="{{ asset('icons/icon-pinjaman.png') }}" alt="Pinjaman" class="icon-28">
           </div>
           <div class="card-text">
             <div class="card-amount">
-              {{-- Rp{{ number_format($pinjaman, 0, ',', '.') }}  --}}
-              Rp1.500.000</div>
+              Rp{{ number_format($pinjaman, 0, ',', '.') }}
+            </div>
             <div class="card-label">Pinjamanmu</div>
           </div>
         </a>
 
-        <a href="# {{-- {{ route('nama_route_tujuan') }} --}}" class="card pastel-pink">
+        <a href="{{ route('anggota.laporan.pembayaran') }}" class="card pastel-pink">
           <div class="card-icon">
             <img src="{{ asset('icons/icon-transaksi.png') }}" alt="Transaksi" class="icon-28">
           </div>
           <div class="card-text">
             <div class="card-amount">
-              {{-- {{ $totalTransaksi }} --}}
-              3</div>
+              {{ $totalTransaksi }}
+            </div>
             <div class="card-label">Transaksimu</div>
           </div>
         </a>
@@ -132,8 +131,8 @@
             <div class="mini-amount">
               <div class="rp">Rp</div>
               <div class="money">
-                {{-- {{ number_format($totalDana, 2, ',', '.') }} --}}
-                4.000.000,00</div>
+                {{ $totalDana }}
+              </div>
             </div>
             <div class="mini-caption">Total Dana</div>
           </div>
@@ -148,17 +147,21 @@
               <div class="legend-row">
                 <span class="dot dot-simpan"></span>
                 <span class="legend-text">Dana Simpanan</span>
-                <span class="legend-val">62%</span>
+                <span class="legend-val">{{ $persenSimpanan }}%</span>
               </div>
               <div class="legend-row">
                 <span class="dot dot-pinj"></span>
                 <span class="legend-text">Dana Pinjaman</span>
-                <span class="legend-val">38%</span>
+                <span class="legend-val">{{ $persenPinjaman }}%</span>
               </div>
             </div>
-
             <div class="pie">
-              <div class="pie-graphic"></div>
+              <div class="pie-graphic" 
+                  style="background: conic-gradient(
+                        #f87171 {{ $persenSimpanan }}%, 
+                        #fbbf24 {{ $persenPinjaman }}%
+                  );">
+              </div>
             </div>
           </div>
         </div>
