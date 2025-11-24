@@ -16,7 +16,7 @@
   $user = Auth::guard('anggota')->user();
   @endphp
 
-  {{-- 🔹 KONTEN UTAMA --}}
+
   <div class="layout">
     {{-- 🔸 SIDEBAR --}}
     <aside class="sidebar">
@@ -34,21 +34,20 @@
       </div>
 
       <ul class="menu-list">
-        <x-menu.section title="Laporan" :open="false">
-          <a href="#" class="submenu-row">Simpanan</a>
-          <a href="#" class="submenu-row">Pinjaman</a>
-          <a href="#" class="submenu-row">Pembayaran</a>
-          <a href="#" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
+        <x-menu.section title="Laporan" :open="false" :has-sub="true">
+          <a href="{{ route('anggota.laporan.simpanan') }}" class="submenu-row">Simpanan</a>
+          <a href="{{ route('anggota.laporan.pinjaman') }}" class="submenu-row">Pinjaman</a>
+          <a href="{{ route('anggota.laporan.pembayaran') }}" class="submenu-row">Pembayaran</a>
+          <a href="{{ route('anggota.laporan.SHU') }}" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
         </x-menu.section>
 
-        <x-menu.section title="Pengajuan Pinjaman" :open="false">
+        <x-menu.section title="Pengajuan Pinjaman" :open="false" :has-sub="true">
           <a href="{{ route('anggota.pengajuan.index') }}" class="submenu-row">Data Pengajuan</a>
           <a href="{{ route('anggota.pengajuan.create') }}" class="submenu-row">Tambah Pengajuan Baru</a>
         </x-menu.section>
       </ul>
     </aside>
 
-    {{-- 🔸 ISI PROFIL --}}
     <main class="content">
       <h2 class="page-title">My Profile <span class="subtitle">Anggota</span></h2>
 

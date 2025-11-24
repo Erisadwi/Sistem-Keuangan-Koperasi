@@ -34,7 +34,7 @@
           <div class="profile-name">{{ $user->nama_anggota ?? 'Nama Tidak Ditemukan' }}</div>
           <div class="profile-role">Anggota</div>
         </div>
-        <a href="{{ route('anggota.profil.profilAnggota') }}" class="btn-profil push-right" aria-label="Buka Profil">
+        <a href="{{ route('anggota.profil') }}" class="btn-profil push-right" aria-label="Buka Profil">
           <img src="{{ asset('icons/arrow-profil.png') }}" alt="">
         </a>
       </div>

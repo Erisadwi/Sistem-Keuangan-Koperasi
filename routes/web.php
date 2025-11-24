@@ -54,7 +54,7 @@ Route::middleware(['auth:user'])->group(function () {
 Route::middleware(['auth:anggota'])->group(function () {
     Route::get('/anggota/beranda', [DashboardControllerAnggota::class, 'index'])->name('anggota.beranda');
 
-    Route::get('/profil', [ProfileController::class, 'index'])->name('anggota.profil');
+    Route::get('/anggota/profil', [ProfileController::class, 'index'])->name('anggota.profil');
     Route::get('/profil/edit', [ProfileController::class, 'edit'])->name('anggota.profil.edit');
     Route::put('/profil/{id}', [ProfileController::class, 'update'])->name('anggota.profil.update');
 
@@ -272,9 +272,6 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/anggota/profil/editProfil', function () {
-    return view('anggota.profil.editProfil');
-})->name('anggota.profil.editProfil');
 
 Route::get('/anggota/test', function () {
     return view('anggota.test');
@@ -288,34 +285,17 @@ Route::get('/admin/laporan/laporan-neraca-saldo', function () {
     return view('admin.laporan.laporan-neraca-saldo');
 })->name('admin.laporan.laporan-neraca-saldo');
 
-Route::get('/admin/pinjaman/data-pengajuan', function () {
-    return view('admin.pinjaman.data-pengajuan');
-})->name('admin.pinjaman.data-pengajuan');
-
 Route::get('/anggota/notifikasi', function () {
     return view('anggota.notifikasi');
 })->name('anggota.notifikasi');
-
-Route::get('/anggota/profil/profilAnggota', function () {
-    return view('anggota.profil.profilAnggota');
-})->name('anggota.profil.profilAnggota');
 
 Route::get('/admin/pinjaman/edit-bayar-angsuran', function () {
     return view('admin.pinjaman.edit-bayar-angsuran');
 })->name('admin.pinjaman.edit-bayar-angsuran');
 
-Route::get('/admin/profil/beranda-profil', function () {
-    return view('admin.profil.beranda-profil');
-})->name('admin.profil.beranda-profil');
-
 Route::get('/admin/laporan/laporan-neraca', function () {
     return view('admin.laporan.laporan-neraca');
 })->name('admin.laporan.laporan-neraca');
-
-Route::get('/admin/profil/edit-profil', function () {
-    return view('admin.profil.edit-profil');
-})->name('admin.profil.edit-edit-profil');
-
 
 Route::get('/admin/pinjaman/detail-peminjaman', function () {
     return view('admin.pinjaman.detail-peminjaman');
