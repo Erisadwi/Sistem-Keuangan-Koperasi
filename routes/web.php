@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\ProfilController;
 use App\Http\Controllers\Anggota\LaporanSimpananController;
 use App\Http\Controllers\Anggota\LaporanPinjamanController;
 use App\Http\Controllers\Anggota\LaporanPembayaranController;
+use App\Http\Controllers\Anggota\LaporanSHUAnggotaController;
 use App\Http\Controllers\Admin\Laporan\LaporanJatuhTempoController;
 use App\Http\Controllers\Admin\Laporan\LaporanSaldoKasController;
 use App\Http\Controllers\Admin\Laporan\LaporanLabaRugiController;
@@ -233,6 +234,7 @@ Route::middleware(['auth:anggota'])->group(function () {
     Route::get('/laporan-simpanan', [LaporanSimpananController::class, 'index'])->name('anggota.laporan.simpanan');
     Route::get('/laporan-pinjaman', [LaporanPinjamanController::class, 'index'])->name('anggota.laporan.pinjaman');
     Route::get('/laporan-pembayaran', [LaporanPembayaranController::class, 'index'])->name('anggota.laporan.pembayaran');
+    Route::get('/laporan-SHU', [LaporanSHUAnggotaController::class, 'index'])->name('anggota.laporan.SHU');
 });
 
 
@@ -273,11 +275,6 @@ Route::get('/', function () {
 Route::get('/anggota/profil/editProfil', function () {
     return view('anggota.profil.editProfil');
 })->name('anggota.profil.editProfil');
-
-Route::get('/anggota/lap-SHU', function () {
-    return view('anggota.lap-SHU');
-})->name('anggota.lap-SHU');
-
 
 Route::get('/anggota/test', function () {
     return view('anggota.test');

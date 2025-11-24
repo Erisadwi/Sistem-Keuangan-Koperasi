@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Default Title')</title>  
-    @vite(['resources/css/laporan.css'])
+    @vite(['resources/css/app2.css'])
     @stack('styles')
     @yield('styles')
     @stack('scripts')
@@ -35,31 +35,31 @@
       </div>
 
       <ul class="menu-list">
-        <x-menu.section title="Laporan" :open="false">
-          <a href="#" class="submenu-row">Simpanan</a>
-          <a href="#" class="submenu-row">Pinjaman</a>
-          <a href="#" class="submenu-row">Pembayaran</a>
-          <a href="#" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
+        <x-menu.section title="Laporan" :open="false" :has-sub="true">
+          <a href="{{ route('anggota.laporan.simpanan') }}" class="submenu-row">Simpanan</a>
+          <a href="{{ route('anggota.laporan.pinjaman') }}" class="submenu-row">Pinjaman</a>
+          <a href="{{ route('anggota.laporan.pembayaran') }}" class="submenu-row">Pembayaran</a>
+          <a href="{{ route('anggota.laporan.SHU') }}" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
         </x-menu.section>
 
-        <x-menu.section title="Pengajuan Pinjaman" :open="false">
-          <a href="{{ route('anggota.data-pengajuan') }}" class="submenu-row">Data Pengajuan</a>
-          <a href="{{ route('anggota.tambah-data-pengajuan') }}" class="submenu-row">Tambah Pengajuan Baru</a>
+        <x-menu.section title="Pengajuan Pinjaman" :open="false" :has-sub="true">
+          <a href="{{ route('anggota.pengajuan.index') }}" class="submenu-row">Data Pengajuan</a>
+          <a href="{{ route('anggota.pengajuan.create') }}" class="submenu-row">Tambah Pengajuan Baru</a>
         </x-menu.section>
-      </ul>
+      </ul> 
     </aside>
     </div>
 
     <main class="main">
           <div class="title-1">@yield('title-1', 'Default Title')</div>       
         <div class="container">
-                <div class="content-container2">
-                  @yield('content')
-                </div>
+            <div class="content-container">
                 <div class="title-content">
                     @yield('title-content', 'Default title') 
                     <br />
                     @yield('period', 'Default period')
+                </div>
+                @yield('content')
                 </div>
             <div class="title-container">
                 <div class="sub-title">
@@ -67,7 +67,6 @@
                 </div>
             </div>
         </div>
-
     </main>
 
 </body>

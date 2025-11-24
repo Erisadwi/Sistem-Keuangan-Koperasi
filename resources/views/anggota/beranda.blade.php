@@ -46,7 +46,7 @@
           <a href="{{ route('anggota.laporan.simpanan') }}" class="submenu-row">Simpanan</a>
           <a href="{{ route('anggota.laporan.pinjaman') }}" class="submenu-row">Pinjaman</a>
           <a href="{{ route('anggota.laporan.pembayaran') }}" class="submenu-row">Pembayaran</a>
-          <a href="#" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
+          <a href="{{ route('anggota.laporan.SHU') }}" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
         </x-menu.section>
 
         <x-menu.section title="Pengajuan Pinjaman" :open="false" :has-sub="true">
