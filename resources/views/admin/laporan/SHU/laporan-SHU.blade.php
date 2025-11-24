@@ -12,7 +12,14 @@
 @section('content')
 
 <x-menu.date-filter/>
-<x-menu.unduh/>
+<x-menu.unduh 
+    :url="route('laporan.shu.download', [
+        'preset' => request('preset', 'this_year'),
+        'start_date' => request('start_date'),
+        'end_date' => request('end_date')
+    ])" 
+    text="Unduh PDF" 
+/>
 
 
 <table>
@@ -42,7 +49,7 @@
     <tr>
         <td>Dana Cadangan</td>
         <td class="center">{{ number_format($biayaAdm->dana_cadangan ?? 0, 0, ',', '.') }}%</td>
-        <td class="right">{{ number_format($shu->shu_dana_cadangan ?? 0, 0, ',', '.') }}</td>
+        <td class="right">{{ number_format($shu->total_dana_cadangan ?? 0, 0, ',', '.') }}</td>
     </tr>
     <tr>
         <td>Jasa Anggota</td>
@@ -57,7 +64,7 @@
     <tr>
         <td>Dana Karyawan</td>
         <td class="center">{{ number_format($biayaAdm->dana_karyawan ?? 0, 0, ',', '.') }}%</td>
-        <td class="right">{{ number_format($shu->shu_jasa_karyawan ?? 0, 0, ',', '.') }}</td>
+        <td class="right">{{ number_format($shu->shu_dana_karyawan ?? 0, 0, ',', '.') }}</td>
     </tr>
     <tr>
         <td>Dana Pendidikan</td>

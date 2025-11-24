@@ -250,6 +250,7 @@ Route::middleware(['auth:user'])->group(function () {
     Route::get('/laporan-kas-pinjaman/export-pdf', [LaporanKasPinjamanController::class, 'exportPdf'])->name('kas-pinjaman.exportPdf'); 
 
     Route::get('/laporan-shu', [LaporanSHUUtamaController::class, 'index'])->name('laporan.shu'); 
+    Route::get('/laporan-shu/download', [LaporanSHUUtamaController::class, 'downloadPDF'])->name('laporan.shu.download');
 
     Route::get('/laporan-kas-simpanan', [LaporanKasSimpananController::class, 'index'])->name('laporan.kas-simpanan'); 
     Route::get('/laporan-kas-simpanan/export-pdf', [LaporanKasSimpananController::class, 'exportPdf'])->name('kas-simpanan.exportPdf'); 
