@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ViewNeraca extends Model
 {
-    protected $table = 'view_neraca'; 
+    protected $table = 'view_neraca';
     protected $primaryKey = null;
     public $incrementing = false;
     public $timestamps = false;
@@ -23,11 +23,8 @@ class ViewNeraca extends Model
         static::deleting(function () { return false; });
     }
 
-    /**
-     * Getter saldo otomatis untuk memudahkan penggunaan di Blade
-     */
     public function getSaldoFormattedAttribute()
     {
-        return number_format($this->saldo, 0, ',', '.');
+        return number_format($this->saldo_akhir, 0, ',', '.');
     }
 }
