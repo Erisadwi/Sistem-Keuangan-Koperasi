@@ -40,7 +40,7 @@ use App\Http\Controllers\Admin\Laporan\LaporanLabaRugiController;
 use App\Http\Controllers\Admin\Laporan\LaporanKasPinjamanController;
 use App\Http\Controllers\Admin\Laporan\LaporanSHUUtamaController;
 use App\Http\Controllers\Admin\Laporan\LaporanKasSimpananController;
-
+use App\Http\Controllers\Admin\Laporan\LaporanNeracaController;
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
@@ -257,6 +257,9 @@ Route::middleware(['auth:user'])->group(function () {
     Route::get('/laporan-kas-simpanan', [LaporanKasSimpananController::class, 'index'])->name('laporan.kas-simpanan'); 
     Route::get('/laporan-kas-simpanan/export-pdf', [LaporanKasSimpananController::class, 'exportPdf'])->name('kas-simpanan.exportPdf'); 
 
+    Route::get('/laporan-neraca', [LaporanNeracaController::class, 'index'])->name('laporan.neraca'); 
+    Route::get('/laporan-neraca/export-pdf', [LaporanNeracaController::class, 'exportPdf'])->name('laporan-neraca.exportPdf'); 
+
 });
 
 
@@ -292,10 +295,6 @@ Route::get('/anggota/notifikasi', function () {
 Route::get('/admin/pinjaman/edit-bayar-angsuran', function () {
     return view('admin.pinjaman.edit-bayar-angsuran');
 })->name('admin.pinjaman.edit-bayar-angsuran');
-
-Route::get('/admin/laporan/laporan-neraca', function () {
-    return view('admin.laporan.laporan-neraca');
-})->name('admin.laporan.laporan-neraca');
 
 Route::get('/admin/pinjaman/detail-peminjaman', function () {
     return view('admin.pinjaman.detail-peminjaman');
