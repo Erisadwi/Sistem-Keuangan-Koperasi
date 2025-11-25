@@ -18,8 +18,6 @@
   :downloadRoute="route('pengeluaran.export-pdf')"
 />
 
-
-
 <div class="content-inner">
   <div class="table-scroll-wrapper">
     <table class="table table-bordered table-striped pengeluaran-table">
@@ -27,41 +25,51 @@
         <tr>
           <th>No</th>
           <th>Kode Transaksi</th>
-          <th>Tanggal Transaksi</th>
-          <th>Dari Kas</th>
+          <th>Tanggal</th>
+          <th>Dari Kas </th>
           <th>Untuk Akun</th>
           <th>Jumlah</th>
-          <th>Uraian</th>
+          <th>Keterangan</th>
           <th>User</th>
         </tr>
       </thead>
 
       <tbody>
         @forelse(($TransaksiPengeluaran ?? collect()) as $index => $row)
-         @php
-            $akunTujuan = $row->details->firstWhere('kredit', '>', 0)?->akun;
-            $akunSumberList = $row->details->where('debit', '>', 0);
-            $jumlah = $row->details->where('debit', '>', 0)->sum('debit');
+
+        @php
+           // Sumber Kas  (credit > 0)
+          $akunSumberList = $row->details->where('kredit', '>', 0);
+
+          // Tujuan Akun (debit > 0) — hanya satu
+          $akunTujuan = $row->details->firstWhere('debit', '>', 0)?->akun;
+
+          // Jumlah total berdasarkan debit (tujuan)
+          $jumlah = $row->details->where('debit', '>', 0)->sum('debit');
         @endphp
+
         <tr class="selectable-row" data-id="{{ $row->id_transaksi }}">
           <td>{{ $index + 1 }}</td>
-          <td>{{ $row->kode_transaksi ?? '-' }}</td>
+          <td>{{ $row->kode_transaksi }}</td>
           <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y') }}</td>
-          <td>{{ $akunTujuan->nama_AkunTransaksi ?? '' }}</td>
-          <td>
-                <ul style="margin:0; padding-left:16px; text-align:left;">
-                    @foreach($akunSumberList as $s)
-                        <li>{{ $s->akun->nama_AkunTransaksi ?? '-' }}</li>
-                    @endforeach
-                </ul>
-            </td>
+         <td style="text-align:left">
+              <ul style="margin:0; padding-left:16px;">
+                  @foreach($akunSumberList as $s)
+                      <li>{{ $s->akun->nama_AkunTransaksi ?? '-' }}</li>
+                  @endforeach
+              </ul>
+          </td>
+
+          <td>{{ $akunTujuan->nama_AkunTransaksi ?? '-' }}</td>
+
           <td>{{ number_format($jumlah, 0, ',', '.') }}</td>
           <td>{{ $row->ket_transaksi ?? '-' }}</td>
           <td>{{ $row->data_user->nama_lengkap ?? '-' }}</td>
         </tr>
+
         @empty
         <tr>
-          <td colspan="8" class="empty-cell">Belum ada data transaksi pengeluaran kas.</td>
+          <td colspan="8" class="empty-cell">Belum ada data pengeluaran kas.</td>
         </tr>
         @endforelse
       </tbody>
@@ -69,9 +77,9 @@
   </div>
 </div>
 
- <div class="pagination-container">
+<div class="pagination-container">
       <x-menu.pagination :data="$TransaksiPengeluaran" />
-    </div> 
+</div>
 
 <style>
 :root {
