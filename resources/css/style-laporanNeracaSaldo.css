@@ -27,9 +27,11 @@
   overflow-y: auto;
   max-height: 400px;
   width: 100%;
-  padding: 30px 16px 10px 16px; /* ← Tambah padding kiri dan kanan */
+  padding: 0 16px 10px 16px; /* FIX SCROLL BAR */
   box-sizing: border-box;
+  position: relative;
 }
+
 .table-scroll-wrapper::-webkit-scrollbar {
   height: 8px;
   width: 8px;
@@ -45,12 +47,12 @@
 /* Tabel utama */
 .laporan-neraca-saldo-table {
   width: 100%;
-  min-width: 1000px; /* Paksa scroll horizontal jika terlalu lebar */
+  min-width: 1000px;
   border-collapse: collapse;
   background: white;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: 14px;
-  table-layout: auto
+  table-layout: auto;
 }
 
 .laporan-neraca-saldo-table thead {
@@ -58,7 +60,7 @@
   color: var(--header-text);
   position: sticky;
   top: 0;
-  z-index: 1;
+  z-index: 10; /* FIX supaya header selalu di atas scrollbar */
 }
 
 .laporan-neraca-saldo-table th,
@@ -70,6 +72,13 @@
   vertical-align: middle;
 }
 
+/* Nama akun rata kiri */
+.laporan-neraca-saldo-table td.nama-akun-item,
+.laporan-neraca-saldo-table td.nama-akun {
+  text-align: left !important;
+  padding-left: 14px;
+}
+
 .laporan-neraca-saldo-table tbody tr:nth-child(even) {
   background-color: #f9f9f9;
 }
@@ -79,7 +88,7 @@
 }
 
 .laporan-neraca-saldo-table .empty-cell {
-  width: 200px;          
+  width: 200px;
   text-align: center;
   padding: 10px;
   color: #6b7280;

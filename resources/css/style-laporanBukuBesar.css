@@ -125,3 +125,49 @@
 .pagination button:hover {
   background: var(--primary-dark);
 }
+
+
+/* ======== TABEL BUKU BESAR ======== */
+
+.tabel-buku-besar {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 14px;
+    margin-bottom: 20px;
+    border: 1px solid #d0d0d0;
+}
+
+/* Header tabel */
+.tabel-buku-besar thead {
+    background: #e5e5e5;         /* Abu lembut */
+    color: #333;
+}
+
+.tabel-buku-besar th {
+    padding: 10px 14px;
+    text-align: center;
+    font-weight: 600;
+    border: 1px solid #c7c7c7;
+    white-space: nowrap;
+}
+
+/* Isi tabel */
+.tabel-buku-besar td {
+    padding: 10px 14px;
+    border: 1px solid #d6d6d6;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* Baris selang-seling */
+.tabel-buku-besar tbody tr:nth-child(even) {
+    background: #fafafa;
+}
+
+/* Hover efek */
+.tabel-buku-besar tbody tr:hover {
+    background: #eef7ff;
+    transition: 0.2s;
+}

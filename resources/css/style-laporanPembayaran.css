@@ -8,7 +8,7 @@
   --text: #222;
 }
 
-/* Wrapper luar */
+
 .laporan-pembayaran-wrap {
   border: 1.5px solid var(--outer-border);
   border-radius: 0;
@@ -21,13 +21,12 @@
   overflow-x: visible; 
 }
 
-/* Wrapper scroll */
 .table-scroll-wrapper {
   overflow-x: auto;
   overflow-y: auto;
   max-height: 400px;
   width: 100%;
-  padding: 50px 16px 10px 16px; /* ← Tambah padding kiri dan kanan */
+  padding: 50px 16px 10px 16px; 
   box-sizing: border-box;
 }
 .table-scroll-wrapper::-webkit-scrollbar {
@@ -42,7 +41,6 @@
   background: #f0f0f0;
 }
 
-/* Tabel utama */
 .laporan-pembayaran-table {
   width: 100%;
   min-width: 1000px; 
