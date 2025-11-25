@@ -93,37 +93,40 @@
       <th>User</th>
     </tr>
   </thead>
-  <tbody>
-    @forelse($data as $index => $row)
-      @php
-         $akunTujuan = $row->details->firstWhere('kredit', '>', 0)?->akun;
-         $akunSumberList = $row->details->where('debit', '>', 0);
-         $jumlah = $row->details->where('debit', '>', 0)->sum('debit');
-      @endphp
-     <tr class="selectable-row" data-id="{{ $row->id_transaksi }}">
-          <td>{{ $index + 1 }}</td>
-          <td>{{ $row->kode_transaksi ?? '-' }}</td>
-          <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y') }}</td>
-          <td>{{ $akunTujuan->nama_AkunTransaksi ?? '' }}</td>
-          <td>
-                <ul style="margin:0; padding-left:16px; text-align:left;">
+ <tbody>
+    @forelse(($data ?? collect()) as $index => $row)
+
+        @php
+            $akunSumberList = $row->details->where('kredit', '>', 0);
+            $akunTujuan = $row->details->firstWhere('debit', '>', 0)?->akun;
+            $jumlah = $row->details->where('debit', '>', 0)->sum('debit');
+        @endphp
+
+        <tr>
+            <td>{{ $index + 1 }}</td>
+            <td>{{ $row->kode_transaksi }}</td>
+            <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d-m-Y') }}</td>
+
+            <td style="text-align:left">
+                <ul style="margin:0; padding-left:16px;">
                     @foreach($akunSumberList as $s)
                         <li>{{ $s->akun->nama_AkunTransaksi ?? '-' }}</li>
                     @endforeach
                 </ul>
             </td>
-          <td>{{ number_format($jumlah, 0, ',', '.') }}</td>
-          <td>{{ $row->ket_transaksi ?? '-' }}</td>
-          <td>{{ $row->data_user->nama_lengkap ?? '-' }}</td>
+
+            <td>{{ $akunTujuan->nama_AkunTransaksi ?? '-' }}</td>
+
+            <td>{{ number_format($jumlah, 0, ',', '.') }}</td>
+            <td>{{ $row->ket_transaksi ?? '-' }}</td>
+            <td>{{ $row->data_user->nama_lengkap ?? '-' }}</td>
         </tr>
+
     @empty
-      <tr>
-        <td colspan="8" align="center"><em>Tidak ada data transaksi</em></td>
-      </tr>
+        <tr>
+            <td colspan="8">Belum ada data</td>
+        </tr>
     @endforelse
-  </tbody>
-</table>
+</tbody>
 
-
-</body>
 </html>
