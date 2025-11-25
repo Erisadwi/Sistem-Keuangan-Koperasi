@@ -8,7 +8,7 @@ use App\Models\DetailTransaksi;
 use App\Models\JenisAkunTransaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use App\Exports\SaldoAwalNonKasExport;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -26,87 +26,100 @@ class SaldoAwalNonKasController extends Controller
 
     public function create()
     {
-        $akunKas = JenisAkunTransaksi::where('status_akun', 'AKTIF')->get();
-        return view('admin.master_data.tambah-data-saldo-awal-non-kas', compact('akunKas'));
-    }
+        $akunSumber = JenisAkunTransaksi::where('nonkas','Y')
+            ->where('is_kas', 0)
+            ->where('status_akun', 'Y')
+            ->orderBy('nama_AkunTransaksi')->get();
 
-    public function export()
-    {
-    return Excel::download(new SaldoAwalNonKasExport, 'saldo-awal-non-kas.xlsx');
+        return view('admin.master_data.tambah-data-saldo-awal-non-kas', compact('akunSumber'));
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
-            'jumlah_transaksi' => 'required|numeric|min:0',
-            'ket_transaksi' => 'nullable|string|max:255',
-            'tanggal_transaksi' => 'required|date',
+{
+
+    $request->validate([
+    'jumlah_transaksi' => 'required|numeric|min:0',
+    'ket_transaksi' => 'nullable|string|max:255',
+    'tanggal_transaksi' => 'required|date',
+
+    'id_jenisAkunTransaksi_sumber' => [
+        'required',
+        Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
+            ->where(fn($q) => $q->where('nonkas', 'Y')
+                                ->where('status_akun', 'Y')
+                                ->where('is_kas', 0)),
+    ],
+]);
+
+        $transaksi = Transaksi::create([
+            // 'id_user' => Auth::check() ? Auth::user()->id_user : null,//
+            'type_transaksi' => 'SANK',
+            'kode_transaksi' => '',
+            'ket_transaksi' => $request->ket_transaksi,
+            'tanggal_transaksi' => $request->tanggal_transaksi,
         ]);
 
-        DB::transaction(function () use ($request) {
-            $transaksi = Transaksi::create([
-              //  'id_user' => Auth::check() ? Auth::user()->id_user : null,//
-                'type_transaksi' => 'SANK',
-                'kode_transaksi' => '',
-                'ket_transaksi' => $request->ket_transaksi,
-                'tanggal_transaksi' => $request->tanggal_transaksi,
-            ]);
+        $transaksi->kode_transaksi = 'SANK' . str_pad($transaksi->id_transaksi, 5, '0', STR_PAD_LEFT);
+        $transaksi->save();
 
-            $transaksi->kode_transaksi = 'SANK' . str_pad($transaksi->id_transaksi, 5, '0', STR_PAD_LEFT);
-            $transaksi->save();
+        DetailTransaksi::create([
+            'id_transaksi' => $transaksi->id_transaksi,
+            'id_jenisAkunTransaksi' => $request->id_jenisAkunTransaksi_sumber,
+            'debit' => 0, 
+            'kredit' => $request->jumlah_transaksi
+]);
 
-            $transaksi->details()->create([
-                'id_jenisAkunTransaksi' => $request->id_jenisAkunTransaksi_tujuan,
-                'debit' => $request->jumlah_transaksi,
-                'kredit' => 0,
-            ]);
-        });
-
-       return redirect()->route('saldo-awal-non-kas.index')
-            ->with('success', 'Data Saldo Awal Non Kas berhasil ditambahkan.');
-    }
+    return redirect()->route('saldo-awal-non-kas.index')
+        ->with('success', 'Data Saldo Awal Non Kas berhasil ditambahkan.');
+}
 
     public function edit($id)
     {
-        $saldoAwalNonKas = Transaksi::with('details')->findOrFail($id);
-        $detail = $saldoAwalNonKas->details->first();
-        $akunKas = JenisAkunTransaksi::where('status_akun', 'AKTIF')->get();
-        return view('admin.master_data.edit-data-saldo-awal-non-kas', compact('saldoAwalNonKas' , 'detail', 'akunKas'));
+        $saldoAwalNonKas = Transaksi::with('details.akun')->findOrFail($id);
+
+        $akunSumber = JenisAkunTransaksi::where('nonkas','Y')
+            ->where('is_kas', 0)
+            ->where('status_akun', 'Y')
+            ->orderBy('nama_AkunTransaksi')->get();
+
+        $detail = $saldoAwalNonKas->details->where('kredit', '>', 0)->first();
+
+        return view('admin.master_data.edit-data-saldo-awal-non-kas', compact('saldoAwalNonKas', 'akunSumber', 'detail'));
     }
 
     public function update(Request $request, $id)
     {
         $request->validate([
-            'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
             'jumlah_transaksi' => 'required|numeric|min:0',
             'ket_transaksi' => 'nullable|string|max:255',
             'tanggal_transaksi' => 'required|date',
-        ]);
 
-        DB::transaction(function () use ($request, $id) {
+            'id_jenisAkunTransaksi_sumber' => [
+                'required',
+                Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
+                    ->where(fn($q) => $q->where('nonkas', 'Y')
+                                        ->where('status_akun', 'Y')
+                                        ->where('is_kas', 0)),
+    ],
+]);
+
             $transaksi = Transaksi::findOrFail($id);
 
-            $transaksi->update([
-                'ket_transaksi' => $request->ket_transaksi,
-                'tanggal_transaksi' => $request->tanggal_transaksi,
-            ]);
+            $total = $request->jumlah_transaksi;
 
-            $detail = $transaksi->details()->first();
-            if ($detail) {
-                $detail->update([
-                    'id_jenisAkunTransaksi' => $request->id_jenisAkunTransaksi_tujuan,
-                    'debit' => $request->jumlah_transaksi,
-                    'kredit' => 0,
-                ]);
-            } else {
-                $transaksi->details()->create([
-                    'id_jenisAkunTransaksi' => $request->id_jenisAkunTransaksi_tujuan,
-                    'debit' => $request->jumlah_transaksi,
-                    'kredit' => 0,
-                ]);
-            }
-        });
+            $transaksi->update([
+            'tanggal_transaksi' => $request->tanggal_transaksi,
+            'ket_transaksi' => $request->ket_transaksi,
+        ]);
+
+            $transaksi->details()->delete();
+
+            DetailTransaksi::create([
+                'id_transaksi' => $transaksi->id_transaksi,
+                'id_jenisAkunTransaksi' => $request->id_jenisAkunTransaksi_sumber,
+                'debit' => 0,
+                'kredit' => $request->jumlah_transaksi,
+            ]);
 
         return redirect()->route('saldo-awal-non-kas.index')
             ->with('success', 'Data Saldo Awal Non Kas berhasil diperbarui.');
@@ -114,14 +127,17 @@ class SaldoAwalNonKasController extends Controller
 
     public function destroy($id)
     {
-        DB::transaction(function () use ($id) {
             $transaksi = Transaksi::findOrFail($id);
             $transaksi->details()->delete();
             $transaksi->delete();
-        });
 
         return redirect()->route('saldo-awal-non-kas.index')
             ->with('success', 'Data Saldo Awal Kas berhasil dihapus.');
+    }
+
+    public function export()
+    {
+        return Excel::download(new SaldoAwalNonKasExport, 'saldo-awal-non-kas.xlsx');
     }
 
 }
