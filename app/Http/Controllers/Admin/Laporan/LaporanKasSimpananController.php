@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Laporan;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Models\ViewRekapSimpanan;
 use Barryvdh\DomPDF\Facade\Pdf;
