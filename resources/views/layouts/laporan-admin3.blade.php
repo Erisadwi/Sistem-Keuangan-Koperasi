@@ -3,22 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    @vite(['resources/css/app3.css'])
-
+    <title>@yield('title', 'Default Title')</title>  
+    @vite(['resources/css/laporan-admin3.css'])
+    @stack('styles')
+    @yield('styles')
+    @stack('scripts')
+    @yield(section:'scripts')
 </head>
 <body class="bg-gray-50 font-sans">
     <header>
         <x-menu.nav-top/>
     </header>
 
-@php
+    @php
     $user = Auth::guard('user')->user();
-@endphp
-
-@if(!$user)
-    <script>window.location.href="{{ route('login') }}";</script>
-@endif
-
+    @endphp
 
     <div class="layout">
         <aside class="sidebar">
@@ -51,7 +50,7 @@
         </x-menu.section>
       @endif
 
-      @if($user && in_array($user->id_role, ['R04', 'R07']))
+        @if($user && in_array($user->id_role, ['R04', 'R07']))
         <x-menu.section title="Simpanan" :open="false" :has-sub="true">
           <a href="{{ route('setoran-tunai.index') }}" class="submenu-row">Setoran Tunai</a>
           <a href="{{ route('penarikan-tunai.index') }}" class="submenu-row">Penarikan Tunai</a>
@@ -70,14 +69,14 @@
       @if($user && in_array($user->id_role, ['R04', 'R05', 'R06', 'R07']))
         <x-menu.section title="Laporan" :open="false" :has-sub="true">
           <a href="{{ route('laporan.jatuh-tempo') }}" class="submenu-row">Jatuh Tempo</a>
-          <a href="{{ route('laporan.buku-besar') }}" class="submenu-row">Buku Besar</a>
+          <a href="#" class="submenu-row">Buku Besar</a>
           <a href="#" class="submenu-row">Neraca Saldo</a>
           <a href="{{ route('laporan.neraca') }}" class="submenu-row">Neraca</a>
           <a href="{{ route('laporan.kas-pinjaman') }}" class="submenu-row">Kas Pinjaman</a>
           <a href="{{ route('laporan.kas-simpanan') }}" class="submenu-row">Kas Simpanan</a>
           <a href="{{ route('laporan.saldo-kas') }}" class="submenu-row">Saldo Kas</a>
           <a href="{{ route('laporan.laba-rugi') }}" class="submenu-row">Laba Rugi</a>
-          <a href="{{ route('laporan.shu') }}" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
+          <a href="#" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
         </x-menu.section>
        @endif
 
@@ -104,11 +103,39 @@
     </aside>
     </div>
 
+    <main class="main">
 
+    <div class="title-1">@yield('title-1')</div>
 
-<div class="container">
-  @yield('content')
-</div>
+    <div class="container">
+        <div class="content-container">
+
+            {{-- FILTER AREA --}}
+            <div class="filter-area">
+                @yield('filter-area')
+            </div>
+
+            {{-- TITLE CONTENT --}}
+            <div class="title-content">
+                @yield('title-content')
+                <br />
+                @yield('period')
+            </div>
+
+            {{-- SUB TITLE --}}
+            <div class="title-container">
+                <div class="sub-title">
+                    @yield('sub-title')
+                </div>
+            </div>
+
+            {{-- MAIN CONTENT --}}
+            @yield('content')
+
+        </div>
+    </div>
+
+</main>
 
 </body>
 </html>

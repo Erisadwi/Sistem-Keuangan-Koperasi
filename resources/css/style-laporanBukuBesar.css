@@ -1,173 +1,77 @@
 :root {
-  --primary: #6ba1be;         
-  --primary-dark: #558ca3;    
-  --header-bg: #4a4a4a;      
+  --primary: #6ba1be;
+  --primary-dark: #558ca3;
+  --header-bg: #4a4a4a;
   --header-text: #ffffff;
   --border: #c0c0c0;
-  --background: #e0edf3;      
+  --background: #e0edf3;
   --text: #222;
 }
 
-/* Wrapper luar */
-.laporan-buku-besar-wrap {
-  border: 1.5px solid var(--outer-border);
-  border-radius: 0;
-  background: var(--bg);
-  width: 98%;          
-  margin-left: 10px;     
-  margin-top: 67px;       
-  padding: 0;             
-  box-shadow: none;       
-  overflow-x: visible; 
-}
-
-/* Judul section */
+/* Judul Section */
 .judul-section {
   font-weight: 600;
   font-size: 16px;
-  margin-top: 14px;      /* ↑ agak diturunkan biar tidak nabrak judul atas */
-  margin-bottom: 4px;    /* ↓ jarak ke tabel sedikit lebih dekat */
+  margin-top: 20px;
+  margin-bottom: 6px;
   color: #333;
 }
 
-/* Wrapper scroll */
-.table-scroll-wrapper {
-  overflow-x: auto;
-  overflow-y: auto;
-  max-height: 400px;
-  width: 100%;
-  padding: 8px 16px 10px 16px; /* ↓ kecilkan padding atas biar tabel lebih dekat dengan judul */
-  box-sizing: border-box;
-}
-.table-scroll-wrapper::-webkit-scrollbar {
-  height: 8px;
-  width: 8px;
-}
-.table-scroll-wrapper::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: 4px;
-}
-.table-scroll-wrapper::-webkit-scrollbar-track {
-  background: #f0f0f0;
-}
-
-/* Tabel utama */
-.laporan-buku-besar-table {
-  width: 100%;
-  min-width: 1000px; /* Paksa scroll horizontal jika terlalu lebar */
+.tabel-buku-besar {
+  width: 95%;         
+  max-width: 900px;        
   border-collapse: collapse;
-  background: white;
+  background: #ffffff;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: 14px;
-  table-layout: auto
+  margin-bottom: 20px;
+  border: 1px solid #d0d0d0;
+  margin: 5px auto !important;
 }
 
-.laporan-buku-besar-table thead {
-  background: var(--header-bg);
-  color: var(--header-text);
-  position: sticky;
-  top: 0;
-  z-index: 1;
+.tabel-buku-besar thead {
+  background: var(--header-bg) !important;
+  color: var(--header-text) !important;
 }
 
-.laporan-buku-besar-table th,
-.laporan-buku-besar-table td {
-  text-align: center;
+.tabel-buku-besar th {
   padding: 10px 14px;
+  text-align: center;
+  font-weight: 600;
   border: 1px solid var(--border);
   white-space: nowrap;
-  vertical-align: middle;
 }
 
-.laporan-buku-besar-table tbody tr:nth-child(even) {
-  background-color: #f9f9f9;
-}
-
-.laporan-buku-besar-table tbody tr:hover {
-  background-color: #eef7ff;
-}
-
-.laporan-buku-besar-table .empty-cell {
-  width: 200px;          
+.tabel-buku-besar td {
+  padding: 10px 14px;
+  border: 1px solid var(--border);
   text-align: center;
+  white-space: nowrap;
+}
+
+.tabel-buku-besar tbody tr:nth-child(even) {
+  background: #f9f9f9;
+}
+
+.tabel-buku-besar tbody tr:hover {
+  background: #eef7ff;
+  transition: 0.2s;
+}
+
+.tabel-buku-besar .empty-cell {
   padding: 10px;
   color: #6b7280;
   font-style: italic;
   background: #ffffff;
-  border-radius: 6px;
 }
 
-/* Pagination style */
-.pagination {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  gap: 6px;
-  margin-top: 15px;
-  font-size: 14px;
-}
-
-.pagination select,
-.pagination button {
-  padding: 4px 6px;
-  border-radius: 4px;
-  border: 1px solid var(--border);
-  background: white;
-  cursor: pointer;
-}
-
-.pagination button {
-  background: var(--primary);
-  color: white;
-  border: none;
-}
-
-.pagination button:hover {
-  background: var(--primary-dark);
+.saldo-box {
+  width: 95% !important;
+  max-width: 900px !important;
+  margin-left: 10px !important;
+  margin-bottom: 5px !important;
+  margin: 5px auto !important;     
 }
 
 
-/* ======== TABEL BUKU BESAR ======== */
 
-.tabel-buku-besar {
-    width: 100%;
-    border-collapse: collapse;
-    background: #ffffff;
-    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
-    font-size: 14px;
-    margin-bottom: 20px;
-    border: 1px solid #d0d0d0;
-}
-
-/* Header tabel */
-.tabel-buku-besar thead {
-    background: #e5e5e5;         /* Abu lembut */
-    color: #333;
-}
-
-.tabel-buku-besar th {
-    padding: 10px 14px;
-    text-align: center;
-    font-weight: 600;
-    border: 1px solid #c7c7c7;
-    white-space: nowrap;
-}
-
-/* Isi tabel */
-.tabel-buku-besar td {
-    padding: 10px 14px;
-    border: 1px solid #d6d6d6;
-    text-align: center;
-    white-space: nowrap;
-}
-
-/* Baris selang-seling */
-.tabel-buku-besar tbody tr:nth-child(even) {
-    background: #fafafa;
-}
-
-/* Hover efek */
-.tabel-buku-besar tbody tr:hover {
-    background: #eef7ff;
-    transition: 0.2s;
-}
