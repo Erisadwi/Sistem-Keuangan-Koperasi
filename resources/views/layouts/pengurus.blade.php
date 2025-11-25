@@ -71,7 +71,7 @@
         <x-menu.section title="Laporan" :open="false" :has-sub="true">
           <a href="{{ route('laporan.jatuh-tempo') }}" class="submenu-row">Jatuh Tempo</a>
           <a href="{{ route('laporan.buku-besar') }}" class="submenu-row">Buku Besar</a>
-          <a href="#" class="submenu-row">Neraca Saldo</a>
+          <a href="{{ route('laporan.neraca-saldo') }}" class="submenu-row">Neraca Saldo</a>
           <a href="{{ route('laporan.neraca') }}" class="submenu-row">Neraca</a>
           <a href="{{ route('laporan.kas-pinjaman') }}" class="submenu-row">Kas Pinjaman</a>
           <a href="{{ route('laporan.kas-simpanan') }}" class="submenu-row">Kas Simpanan</a>

@@ -8,75 +8,56 @@
   --text: #222;
 }
 
-/* Wrapper luar */
 .laporan-neraca-saldo-wrap {
   border: 1.5px solid var(--outer-border);
   border-radius: 0;
   background: var(--bg);
   width: 98%;          
   margin-left: 10px;     
-  margin-top: 65px;       
+  margin-top: 40px;       
   padding: 0;             
   box-shadow: none;       
   overflow-x: visible; 
 }
 
-/* Wrapper scroll */
-.table-scroll-wrapper {
-  overflow-x: auto;
-  overflow-y: auto;
-  max-height: 400px;
-  width: 100%;
-  padding: 0 16px 10px 16px; /* FIX SCROLL BAR */
-  box-sizing: border-box;
-  position: relative;
-}
-
-.table-scroll-wrapper::-webkit-scrollbar {
-  height: 8px;
-  width: 8px;
-}
-.table-scroll-wrapper::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border-radius: 4px;
-}
-.table-scroll-wrapper::-webkit-scrollbar-track {
-  background: #f0f0f0;
-}
-
-/* Tabel utama */
 .laporan-neraca-saldo-table {
   width: 100%;
-  min-width: 1000px;
+  min-width: 0;
   border-collapse: collapse;
   background: white;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: 14px;
-  table-layout: auto;
+  table-layout: fixed;
 }
-
-.laporan-neraca-saldo-table thead {
-  background: var(--header-bg);
-  color: var(--header-text);
-  position: sticky;
-  top: 0;
-  z-index: 10; /* FIX supaya header selalu di atas scrollbar */
-}
-
-.laporan-neraca-saldo-table th,
-.laporan-neraca-saldo-table td {
+.laporan-neraca-saldo-table th {
   text-align: center;
   padding: 10px 14px;
   border: 1px solid var(--border);
   white-space: nowrap;
+}
+
+.laporan-neraca-saldo-table td {
+  text-align: center;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  white-space: normal !important;
+  word-wrap: break-word;
+  word-break: break-word;
   vertical-align: middle;
 }
 
-/* Nama akun rata kiri */
+.laporan-neraca-saldo-table tr.akun-header td {
+  text-align: left !important;
+  padding-left: 14px;
+  font-weight: 600;
+  white-space: normal !important; 
+}
+
 .laporan-neraca-saldo-table td.nama-akun-item,
 .laporan-neraca-saldo-table td.nama-akun {
   text-align: left !important;
   padding-left: 14px;
+  white-space: normal !important;
 }
 
 .laporan-neraca-saldo-table tbody tr:nth-child(even) {
@@ -95,4 +76,10 @@
   font-style: italic;
   background: #ffffff;
   border-radius: 6px;
+}
+
+.laporan-neraca-saldo-table thead th {
+  background: var(--header-bg) !important;
+  color: var(--header-text) !important;
+  font-weight: 600;
 }

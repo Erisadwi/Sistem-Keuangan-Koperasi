@@ -67,7 +67,7 @@
         <label for="id_jenisAkunTransaksi_tujuan">Simpan Ke Kas*</label>
         <select name="id_jenisAkunTransaksi_tujuan" id="id_jenisAkunTransaksi_tujuan" required>
             <option value="">-- Pilih Kas Simpanan --</option>
-            @forelse ($akunTransaksi as $akun)
+            @forelse ($akunKas as $akun)
                 <option value="{{ $akun->id_jenisAkunTransaksi }}"
                     {{ old('id_jenisAkunTransaksi_tujuan') == $akun->id_jenisAkunTransaksi ? 'selected' : '' }}>
                     {{ $akun->nama_AkunTransaksi }}
@@ -76,6 +76,7 @@
                 <option value="" disabled>⚠️ Tidak ada akun kas simpanan aktif</option>
             @endforelse
         </select>
+
 
 
         <label for="bukti_setoran">Bukti Setoran*</label>

@@ -20,8 +20,9 @@ class SetoranTunaiController extends Controller
 
         if ($request->filled('start') && $request->filled('end')) {
             $start = \Carbon\Carbon::parse($request->start)->startOfDay();
-            $end = \Carbon\Carbon::parse($request->end)->endOfDay();
+            $end   = \Carbon\Carbon::parse($request->end)->endOfDay();
             $query->whereBetween('tanggal_transaksi', [$start, $end]);
+        
         } elseif ($request->filled('tanggal')) {
             $query->whereDate('tanggal_transaksi', $request->tanggal);
         }
@@ -44,7 +45,7 @@ class SetoranTunaiController extends Controller
 
         $setoranTunai = $query->orderBy('tanggal_transaksi', 'desc')->paginate(10);
 
-        if ($setoranTunai->isEmpty() && $request->hasAny(['start', 'end', 'tanggal', 'kode', 'nama', 'jenis'])) {
+        if ($setoranTunai->isEmpty() && $request->hasAny(['start','end','tanggal','kode','nama','jenis'])) {
             session()->flash('warning', '⚠️ Tidak ditemukan data dengan filter yang diterapkan.');
         }
 
@@ -58,19 +59,26 @@ class SetoranTunaiController extends Controller
         return view('admin.simpanan.setoran-tunai.setoran-tunai', compact('setoranTunai', 'toolbar'));
     }
 
+
     public function create()
     {
         $anggota = Anggota::where('status_anggota', 'Aktif')->get();
-        $jenisSimpanan = JenisSimpanan::all(['id_jenis_simpanan', 'jenis_simpanan', 'jumlah_simpanan']);
 
-        $akunTransaksi = JenisAkunTransaksi::where('simpanan', 'Y')
-            ->where('is_kas', 1)
+        $jenisSimpanan = JenisSimpanan::where('tampil_simpanan', 'Y')
+            ->get(['id_jenis_simpanan', 'jenis_simpanan', 'jumlah_simpanan']);
+
+        $akunKas = JenisAkunTransaksi::where('is_kas', 1)
             ->where('status_akun', 'Y')
             ->orderBy('nama_AkunTransaksi')
             ->get();
 
-        return view('admin.simpanan.setoran-tunai.tambah-setoran-tunai', compact('anggota', 'jenisSimpanan', 'akunTransaksi'));
+        return view('admin.simpanan.setoran-tunai.tambah-setoran-tunai', compact(
+            'anggota',
+            'jenisSimpanan',
+            'akunKas'
+        ));
     }
+
 
     public function store(Request $request)
     {
@@ -85,16 +93,16 @@ class SetoranTunaiController extends Controller
 
         $buktiPath = null;
         if ($request->hasFile('bukti_setoran')) {
-            $buktiPath = $request->file('bukti_setoran')
-                ->store('bukti_setoran', 'public');
+            $buktiPath = $request->file('bukti_setoran')->store('bukti_setoran', 'public');
         }
 
         $jenisSimpanan = JenisSimpanan::findOrFail($request->id_jenis_simpanan);
 
-        $last = Simpanan::where('type_simpanan', 'TRD')
-            ->orderBy('id_simpanan', 'desc')
-            ->first();
+        $akunSumber = $jenisSimpanan->id_jenisAkunTransaksi;
 
+        $akunTujuan = $request->id_jenisAkunTransaksi_tujuan;
+
+        $last = Simpanan::where('type_simpanan', 'TRD')->orderBy('id_simpanan', 'desc')->first();
         $nextCode = 'TRD' . str_pad(($last->id_simpanan ?? 0) + 1, 5, '0', STR_PAD_LEFT);
 
         Simpanan::create([
@@ -102,8 +110,8 @@ class SetoranTunaiController extends Controller
             'id_anggota' => $request->id_anggota,
             'id_jenis_simpanan' => $request->id_jenis_simpanan,
 
-            'id_jenisAkunTransaksi_sumber' => $akunTujuan, 
-            'id_jenisAkunTransaksi_tujuan' => $akunSumber,
+            'id_jenisAkunTransaksi_sumber' => $akunSumber,
+            'id_jenisAkunTransaksi_tujuan' => $akunTujuan,
 
             'jumlah_simpanan' => $request->jumlah_simpanan,
             'type_simpanan' => 'TRD',
@@ -117,25 +125,26 @@ class SetoranTunaiController extends Controller
             ->with('success', 'Data setoran tunai berhasil disimpan.');
     }
 
+
     public function edit($id)
     {
         $setoranTunai = Simpanan::findOrFail($id);
         $anggota = Anggota::where('status_anggota', 'Aktif')->get();
         $jenisSimpanan = JenisSimpanan::all();
 
-        $akunTransaksi = JenisAkunTransaksi::where('simpanan', 'Y')
-            ->where('is_kas', 1)
+        $akunKas = JenisAkunTransaksi::where('is_kas', 1)
             ->where('status_akun', 'Y')
-            ->orderBy('nama_AkunTransaksi', 'asc')
+            ->orderBy('nama_AkunTransaksi')
             ->get();
 
         return view('admin.simpanan.setoran-tunai.edit-setoran-tunai', compact(
             'setoranTunai',
             'anggota',
             'jenisSimpanan',
-            'akunTransaksi'
+            'akunKas'
         ));
     }
+
 
     public function update(Request $request, $id)
     {
@@ -145,6 +154,7 @@ class SetoranTunaiController extends Controller
             'id_jenis_simpanan' => 'required|exists:jenis_simpanan,id_jenis_simpanan',
             'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
             'jumlah_simpanan' => 'required|numeric|min:0',
+            'tanggal_transaksi' => 'required|date',
             'keterangan' => 'nullable|string|max:255',
             'bukti_setoran' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
@@ -169,13 +179,16 @@ class SetoranTunaiController extends Controller
             ->with('success', '✅ Data setoran tunai berhasil diperbarui.');
     }
 
+
     public function destroy($id)
     {
         $setoranTunai = Simpanan::findOrFail($id);
         $setoranTunai->delete();
 
-        return redirect()->route('setoran-tunai.index')->with('success', '🗑️ Data setoran tunai berhasil dihapus.');
+        return redirect()->route('setoran-tunai.index')
+            ->with('success', '🗑️ Data setoran tunai berhasil dihapus.');
     }
+
 
     public function exportPdf()
     {
@@ -190,6 +203,7 @@ class SetoranTunaiController extends Controller
         return $pdf->download('Laporan_Setoran_Tunai.pdf');
     }
 
+
     public function cetak($id)
     {
         $setoran = Simpanan::with(['anggota', 'jenisSimpanan', 'tujuan', 'user'])
@@ -198,3 +212,4 @@ class SetoranTunaiController extends Controller
         return view('admin.simpanan.setoran-tunai.cetak-nota-setoran-tunai', compact('setoran'));
     }
 }
+

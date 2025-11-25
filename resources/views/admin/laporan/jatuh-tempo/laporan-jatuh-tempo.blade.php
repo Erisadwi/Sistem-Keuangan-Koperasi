@@ -37,25 +37,34 @@
       </tr>
     </thead>
     <tbody>
-      @isset($dataPinjaman)
-        @forelse($dataPinjaman as $index => $row)
+     @isset($dataPinjaman)
+      @forelse($dataPinjaman as $index => $row)
           <tr>
-            <td>{{ $index + 1 }}</td>
-            <td>{{ $row->kode_pinjam }}</td>
-            <td>{{ $row->nama_anggota }}</td>
-            <td>{{ \Carbon\Carbon::parse($row->tanggal_pinjam)->format('d-m-Y') }}</td>
-            <td>{{ \Carbon\Carbon::parse($row->tanggal_tempo)->format('d-m-Y') }}</td>
-            <td>{{ $row->lama_pinjam }} bulan</td>
-            <td>Rp {{ number_format($row->jumlah_tagihan, 0, ',', '.') }}</td>
-            <td>Rp {{ number_format($row->dibayar, 0, ',', '.') }}</td>
-            <td>Rp {{ number_format($row->sisa_tagihan, 0, ',', '.') }}</td>
+              <td>{{ $index + 1 }}</td>
+              <td>{{ $row->kode_pinjam }}</td>
+              <td>{{ $row->nama_anggota }}</td>
+              <td>{{ \Carbon\Carbon::parse($row->tanggal_pinjam)->format('d-m-Y') }}</td>
+              <td>{{ \Carbon\Carbon::parse($row->tanggal_tempo)->format('d-m-Y') }}</td>
+              <td>{{ $row->lama_pinjam }} bulan</td>
+              <td>Rp {{ number_format($row->jumlah_tagihan, 0, ',', '.') }}</td>
+              <td>Rp {{ number_format($row->dibayar, 0, ',', '.') }}</td>
+              <td>Rp {{ number_format($row->sisa_tagihan, 0, ',', '.') }}</td>
           </tr>
-        @empty
+      @empty
           <tr>
-            <td colspan="9" class="empty-cell">Belum ada data jatuh tempo.</td>
+              <td colspan="9" class="empty-cell">Belum ada data jatuh tempo.</td>
           </tr>
-        @endforelse
-      @endisset
+      @endforelse
+
+      @if($dataPinjaman->count() > 0)
+          <tr class="total-row">
+              <td colspan="6" style="text-align: right; font-weight: bold;">Jumlah Total</td>
+              <td style="font-weight: bold;">Rp {{ number_format($totalTagihan, 0, ',', '.') }}</td>
+              <td style="font-weight: bold;">Rp {{ number_format($totalDibayar, 0, ',', '.') }}</td>
+              <td style="font-weight: bold;">Rp {{ number_format($totalSisa, 0, ',', '.') }}</td>
+          </tr>
+      @endif
+  @endisset
     </tbody>
   </table>
   </div>
@@ -64,15 +73,5 @@
   <div class="pagination-container">
       <x-menu.pagination :data="$dataPinjaman" />
   </div>
-
-<style>
-  .pagination-container {
-  margin-top: auto;        
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
-  padding: 12px 16px;
-  }
-</style>
 
 @endsection

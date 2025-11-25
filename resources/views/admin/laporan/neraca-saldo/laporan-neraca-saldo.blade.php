@@ -1,4 +1,4 @@
-@extends('layouts.laporan-admin2')
+@extends('layouts.laporan-admin3')
 
 @push('styles')
 @vite('resources/css/style-laporanNeracaSaldo.css')
@@ -7,13 +7,26 @@
 @section('title', 'Laporan Neraca Saldo')
 @section('title-1', 'Neraca Saldo')
 @section('title-content', 'Laporan Neraca Saldo')
-@section('period', 'Periode ' . date('d M Y', strtotime($periode . '-01')))
+@php
+    $tahun = $tahun ?? date('Y'); 
+    $awal = "01 Jan $tahun";
+    $akhir = "31 Des $tahun";
+@endphp
+
+@section('period', "Periode $awal - $akhir")
+
 @section('sub-title', 'Laporan Neraca Saldo')
 
-@section('content')
+@section('filter-area')
+<div class="header-flex">
+    <div class="left-tools">
+      <x-menu.date-filter />
+      <x-menu.unduh :url="route('laporan-neraca-saldo.export-pdf', ['tahun' => $tahun])" text="Unduh PDF" />
+    </div>
+</div>
+@endsection
 
-<x-menu.date-filter />
-<x-menu.unduh />
+@section('content')
 
 <div class="laporan-neraca-saldo-wrap">
   <div class="table-scroll-wrapper">
@@ -66,6 +79,14 @@
           <td colspan="3" class="empty-cell">Belum ada data neraca saldo.</td>
         </tr>
         @endif
+
+      {{--  SESUAIKAN CONTROLLER DAN JUMLAH DEBET KREDIT HARUS BALANCE
+       <tr class="total-row final-total">
+          <td class="nama-akun-item text-end text-primary"><b>JUMLAH</b></td>
+          <td class="debet text-primary"><b>{{ number_format($totalActiva, 0, ',', '.') }}</b></td>
+          <td class="kredit text-primary"><b>{{ number_format($totalPasiva, 0, ',', '.') }}</b></td>
+      </tr>
+             --}}
 
       </tbody>
     </table>
