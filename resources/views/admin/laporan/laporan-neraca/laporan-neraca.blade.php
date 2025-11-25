@@ -41,20 +41,22 @@
         @endphp
 
         @forelse($listNeraca as $item)
-          <tr class="akun-item">
-            <td class="nama-akun-item">{{ $item->kode_aktiva }}. {{ $item->nama_akun }}</td>
+            <tr>
+              <td style="text-align:left !important;">
+                  {{ $item->kode_aktiva }}. {{ $item->nama_akun }}
+              </td>
 
-            <td class="debet">
-              {{ $item->keterangan_akun === 'ACTIVA' ? number_format($item->total_debit ?? 0, 0, ',', '.') : '-' }}
-            </td>
+              <td style="text-align:center;">
+                {{ $item->keterangan_akun === 'ACTIVA' ? number_format($item->total_debit ?? 0, 0, ',', '.') : '-' }}
+              </td>
 
-            <td class="kredit">
-              {{ $item->keterangan_akun === 'PASIVA' ? number_format($item->total_kredit ?? 0, 0, ',', '.') : '-' }}
-            </td>
-          </tr>
-        @empty
-          <tr><td colspan="3" class="empty-cell">Belum ada data neraca.</td></tr>
-        @endforelse
+              <td style="text-align:center;">
+                {{ $item->keterangan_akun === 'PASIVA' ? number_format($item->total_kredit ?? 0, 0, ',', '.') : '-' }}
+              </td>
+            </tr>
+          @empty
+            <tr><td colspan="3" class="empty-cell">Belum ada data neraca.</td></tr>
+          @endforelse
 
         <tr class="total-row final-total">
           <td class="nama-akun-item text-end text-primary"><b>JUMLAH</b></td>
