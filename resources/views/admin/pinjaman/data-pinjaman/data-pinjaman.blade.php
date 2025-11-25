@@ -211,6 +211,14 @@
     cursor: pointer;
   }
 
+    .pagination-container {
+  margin-top: auto;        
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  padding: 12px 16px;
+}
+
 </style>
 
 @push('scripts')
@@ -298,6 +306,22 @@ document.addEventListener("DOMContentLoaded", function() {
     const btnSimpanTanggal = document.getElementById("btnSimpanTanggal");
     const btnBatalTanggal = document.getElementById("btnBatalTanggal");
 
+    const updateTanggalLabel = () => {
+        let label = "Tanggal";
+        if (tanggalMulai.value && tanggalAkhir.value) label = `${tanggalMulai.value} → ${tanggalAkhir.value}`;
+        else if (tanggalMulai.value) label = `Dari ${tanggalMulai.value}`;
+        else if (tanggalAkhir.value) label = `Sampai ${tanggalAkhir.value}`;
+        btnTanggal.innerHTML = `
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" stroke="currentColor" stroke-width="2"/>
+                <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2"/>
+                <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2"/>
+                <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"/>
+            </svg>
+            ${label}
+        `;
+    };
+
     btnTanggal.addEventListener("click", function(e) {
         e.stopPropagation();
         popupTanggal.style.display =
@@ -326,7 +350,11 @@ document.addEventListener("DOMContentLoaded", function() {
         tanggalMulai.value = "";
         tanggalAkhir.value = "";
         popupTanggal.style.display = "none";
+        updateTanggalLabel(); // ===== MODIFIKASI =====
     });
+
+    tanggalMulai.addEventListener("change", updateTanggalLabel);
+    tanggalAkhir.addEventListener("change", updateTanggalLabel);
 
     const params = new URLSearchParams(window.location.search);
 
@@ -337,6 +365,7 @@ document.addEventListener("DOMContentLoaded", function() {
     if (params.get("start")) tanggalMulai.value = params.get("start");
     if (params.get("end")) tanggalAkhir.value = params.get("end");
 
+    updateTanggalLabel();
 
 });
 

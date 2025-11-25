@@ -34,17 +34,17 @@
           <div class="profile-name">{{ $user->nama_anggota ?? 'Nama Tidak Ditemukan' }}</div>
           <div class="profile-role">Anggota</div>
         </div>
-        <a href="{{ route('anggota.profil.profilAnggota') }}" class="btn-profil push-right" aria-label="Buka Profil">
+        <a href="{{ route('anggota.profil') }}" class="btn-profil push-right" aria-label="Buka Profil">
           <img src="{{ asset('icons/arrow-profil.png') }}" alt="">
         </a>
       </div>
 
       <ul class="menu-list">
-        <x-menu.section title="Laporan" :open="false"  :has-sub="true">
+        <x-menu.section title="Laporan" :open="false" :has-sub="true">
           <a href="{{ route('anggota.laporan.simpanan') }}" class="submenu-row">Simpanan</a>
           <a href="{{ route('anggota.laporan.pinjaman') }}" class="submenu-row">Pinjaman</a>
           <a href="{{ route('anggota.laporan.pembayaran') }}" class="submenu-row">Pembayaran</a>
-          <a href="#" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
+          <a href="{{ route('anggota.laporan.SHU') }}" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
         </x-menu.section>
 
         <x-menu.section title="Pengajuan Pinjaman" :open="false" :has-sub="true">

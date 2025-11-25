@@ -32,11 +32,12 @@
     border: 1px solid #d1d5db;
     border-radius: 8px;
     padding: 6px 12px;
-    font-size: 13px;
+    font-size: 12px;
     font-weight: 500;
     cursor: pointer;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     transition: all 0.2s ease;
+    text-decoration: none;
   }
 
   .filter-button:hover {
@@ -45,19 +46,17 @@
   }
 
   .filter-button svg {
-    color: #000;
+    color: #2563eb;
   }
 
   .filter-button.danger {
     color: #ef4444;
-    border-color: #ef4444;
   }
   .filter-button.danger svg {
     color: #ef4444;
   }
   .filter-button.danger:hover {
     background-color: #fff5f5;
-    border-color: #ef4444;
   }
 
   select.filter-button {
@@ -189,7 +188,7 @@
       </div>
 
       <div>
-        <button class="filter-button" data-action="delete" data-url="{{ $deleteUrl ?? '#' }}" disabled>
+        <button class="filter-button danger" data-action="delete" data-url="{{ $deleteUrl ?? '#' }}" disabled>
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
             <path d="M6 7h12M9 7V5h6v2M10 11v6M14 11v6M5 7h14l-1 14H6L5 7z" 
                   stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>

@@ -33,6 +33,7 @@ use App\Http\Controllers\Admin\ProfilController;
 use App\Http\Controllers\Anggota\LaporanSimpananController;
 use App\Http\Controllers\Anggota\LaporanPinjamanController;
 use App\Http\Controllers\Anggota\LaporanPembayaranController;
+use App\Http\Controllers\Anggota\LaporanSHUAnggotaController;
 use App\Http\Controllers\Admin\Laporan\LaporanJatuhTempoController;
 use App\Http\Controllers\Admin\Laporan\LaporanSaldoKasController;
 use App\Http\Controllers\Admin\Laporan\LaporanLabaRugiController;
@@ -41,6 +42,8 @@ use App\Http\Controllers\Admin\Laporan\LaporanSHUUtamaController;
 use App\Http\Controllers\Admin\Laporan\LaporanKasSimpananController;
 use App\Http\Controllers\Admin\Laporan\LaporanBukuBesarController;
 use App\Http\Controllers\Admin\Laporan\LaporanNeracaSaldoController;
+use App\Http\Controllers\Admin\Laporan\LaporanNeracaController;
+
 
 Route::get('/login', [LoginController::class, 'showLoginForm'])->name('login');
 Route::post('/login', [LoginController::class, 'login'])->name('login.process');
@@ -54,7 +57,7 @@ Route::middleware(['auth:user'])->group(function () {
 Route::middleware(['auth:anggota'])->group(function () {
     Route::get('/anggota/beranda', [DashboardControllerAnggota::class, 'index'])->name('anggota.beranda');
 
-    Route::get('/profil', [ProfileController::class, 'index'])->name('anggota.profil');
+    Route::get('/anggota/profil', [ProfileController::class, 'index'])->name('anggota.profil');
     Route::get('/profil/edit', [ProfileController::class, 'edit'])->name('anggota.profil.edit');
     Route::put('/profil/{id}', [ProfileController::class, 'update'])->name('anggota.profil.update');
 
@@ -234,6 +237,7 @@ Route::middleware(['auth:anggota'])->group(function () {
     Route::get('/laporan-simpanan', [LaporanSimpananController::class, 'index'])->name('anggota.laporan.simpanan');
     Route::get('/laporan-pinjaman', [LaporanPinjamanController::class, 'index'])->name('anggota.laporan.pinjaman');
     Route::get('/laporan-pembayaran', [LaporanPembayaranController::class, 'index'])->name('anggota.laporan.pembayaran');
+    Route::get('/laporan-SHU', [LaporanSHUAnggotaController::class, 'index'])->name('anggota.laporan.SHU');
 });
 
 
@@ -251,9 +255,13 @@ Route::middleware(['auth:user'])->group(function () {
     Route::get('/laporan-kas-pinjaman/export-pdf', [LaporanKasPinjamanController::class, 'exportPdf'])->name('kas-pinjaman.exportPdf'); 
 
     Route::get('/laporan-shu', [LaporanSHUUtamaController::class, 'index'])->name('laporan.shu'); 
+    Route::get('/laporan-shu/download', [LaporanSHUUtamaController::class, 'downloadPDF'])->name('laporan.shu.download');
 
     Route::get('/laporan-kas-simpanan', [LaporanKasSimpananController::class, 'index'])->name('laporan.kas-simpanan'); 
     Route::get('/laporan-kas-simpanan/export-pdf', [LaporanKasSimpananController::class, 'exportPdf'])->name('kas-simpanan.exportPdf'); 
+
+    Route::get('/laporan-neraca', [LaporanNeracaController::class, 'index'])->name('laporan.neraca'); 
+    Route::get('/laporan-neraca/export-pdf', [LaporanNeracaController::class, 'exportPdf'])->name('laporan-neraca.exportPdf'); 
 
 });
 
@@ -271,14 +279,6 @@ Route::get('/', function () {
     return view('auth.login');
 });
 
-Route::get('/anggota/profil/editProfil', function () {
-    return view('anggota.profil.editProfil');
-})->name('anggota.profil.editProfil');
-
-Route::get('/anggota/lap-SHU', function () {
-    return view('anggota.lap-SHU');
-})->name('anggota.lap-SHU');
-
 
 Route::get('/anggota/test', function () {
     return view('anggota.test');
@@ -292,26 +292,9 @@ Route::get('/anggota/notifikasi', function () {
     return view('anggota.notifikasi');
 })->name('anggota.notifikasi');
 
-Route::get('/anggota/profil/profilAnggota', function () {
-    return view('anggota.profil.profilAnggota');
-})->name('anggota.profil.profilAnggota');
-
 Route::get('/admin/pinjaman/edit-bayar-angsuran', function () {
     return view('admin.pinjaman.edit-bayar-angsuran');
 })->name('admin.pinjaman.edit-bayar-angsuran');
-
-Route::get('/admin/profil/beranda-profil', function () {
-    return view('admin.profil.beranda-profil');
-})->name('admin.profil.beranda-profil');
-
-Route::get('/admin/laporan/laporan-neraca', function () {
-    return view('admin.laporan.laporan-neraca');
-})->name('admin.laporan.laporan-neraca');
-
-Route::get('/admin/profil/edit-profil', function () {
-    return view('admin.profil.edit-profil');
-})->name('admin.profil.edit-edit-profil');
-
 
 Route::get('/admin/pinjaman/detail-peminjaman', function () {
     return view('admin.pinjaman.detail-peminjaman');

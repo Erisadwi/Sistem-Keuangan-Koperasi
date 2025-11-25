@@ -23,14 +23,13 @@
         <aside class="sidebar">
         <div class="profile-card">
         <div class="profile-left">
-          <img src="{{ asset('images/profil-admin.jpg') }}"
-          alt="Foto {{-- {{ $user->nama_lengkap ?? 'Pengguna' }} --}}" class="avatar-70">
+          <img src="{{ $user->foto_user ? asset($user->foto_user) : asset('images/default.jpeg') }}" alt="Foto Admin" class="avatar-70">
         </div>
         <div class="profile-right">
           <div class="profile-name">{{ $user->nama_lengkap ?? 'Nama Tidak Ditemukan' }}</div>
           <div class="profile-role">{{ $user->role->nama_role ?? 'Role Tidak Ditemukan' }}</div>
         </div>
-        <a href="{{ route('admin.profil.beranda-profil') }}" class="btn-profil push-right" aria-label="Buka Profil">
+        <a href="{{ route('profil.index') }}" class="btn-profil push-right" aria-label="Buka Profil">
           <img src="{{ asset('icons/arrow-profil.png') }}" alt="">
         </a>
       </div>
@@ -74,11 +73,11 @@
           <a href="#" class="submenu-row">Buku Besar</a>
           <a href="#" class="submenu-row">Neraca Saldo</a>
           <a href="#" class="submenu-row">Neraca</a>
-          <a href="#" class="submenu-row">Kas Pinjaman</a>
-          <a href="#" class="submenu-row">Kas Simpanan</a>
+          <a href="{{ route('laporan.kas-pinjaman') }}" class="submenu-row">Kas Pinjaman</a>
+          <a href="{{ route('laporan.kas-simpanan') }}" class="submenu-row">Kas Simpanan</a>
           <a href="{{ route('laporan.saldo-kas') }}" class="submenu-row">Saldo Kas</a>
           <a href="{{ route('laporan.laba-rugi') }}" class="submenu-row">Laba Rugi</a>
-          <a href="#" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
+          <a href="{{ route('laporan.shu') }}" class="submenu-row">Sisa Hasil Usaha (SHU)</a>
         </x-menu.section>
       @endif
 

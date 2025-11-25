@@ -116,7 +116,7 @@
 
         <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>
-            <a href="#" class="btn btn-batal">Batal</a>
+            <a href="javascript:history.back()" class="btn btn-batal">Batal</a>
         </div>
     </form>
     </div>
@@ -169,7 +169,6 @@ input:focus, select:focus {
     box-shadow: 0 0 2px rgba(25, 118, 210, 0.5);
 }
 
-/* === Revisi Khusus Nama Anggota === */
 .anggota-input-wrapper {
     position: relative;
     display: flex;
@@ -211,6 +210,7 @@ input:focus, select:focus {
     color: #fff;
     box-shadow: 0 3px 4px rgba(0, 0, 0, 0.2);
     text-align: center;
+    text-decoration: none;
 }
 
 .btn-simpan {

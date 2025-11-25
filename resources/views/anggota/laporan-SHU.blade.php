@@ -3,14 +3,14 @@
 @section('title', 'Laporan Sisa Hasil Usaha')  
 @section('title-1', 'Laporan')  
 @section('title-content', 'Laporan SHU Anggota')  
-@section('period', 'Periode 1 Jan 2025 - 31 Des 2025')  
+@section('period')
+    {{ $periodeText }}
+@endsection  
 @section('sub-title', 'Laporan Sisa Hasil Usaha (SHU)')  
 
 @section('content')
 
-{{-- contoh di mana saja --}}
 <x-menu.date-filter/>
-
 
 <div class="shu-table-wrap">
   <table class="shu-table">
@@ -27,30 +27,30 @@
     <tbody>
       <tr>
         <td class="label">Laba Anggota</td>
-        <td class="value">875.000 {{-- -{{ number_format($shu->laba_anggota ?? 0, 0, ',', '.') }} --}}</td>
+        <td class="value">{{ number_format($anggota->bunga_anggota, 0, ',', '.') }}</td>
         <td class="label">Simpanan Anggota</td>
-        <td class="value">5.210.000 {{-- -{{ number_format($shu->saldo_simpanan ?? 0, 0, ',', '.') }} --}}</td>
+        <td class="value">{{ number_format($anggota->simpanan_anggota, 0, ',', '.') }}</td>
       </tr>
 
       <tr>
         <td class="label">Total Laba</td>
-        <td class="value">59.547.035{{-- -{{ number_format($shu->total_laba ?? 0, 0, ',', '.') }} --}}</td>
+        <td class="value">{{ number_format($anggota->total_bunga, 0, ',', '.') }}</td>
         <td class="label">Total Simpanan</td>
-        <td class="value">985.197.260{{-- -{{ number_format($shu->total_simpanan ?? 0, 0, ',', '.') }} --}}</td>
+        <td class="value">{{ number_format($anggota->total_simpanan, 0, ',', '.') }}</td>
       </tr>
 
       <tr>
         <td class="label">Jasa Usaha</td>
-        <td class="value negative">-2.706.954{{-- {{ number_format($shu->jasa_usaha ?? 0, 0, ',', '.') }} --}}</td>
+        <td class="value negative">{{ number_format($total_shu_jasa_usaha, 0, ',', '.') }}</td>
         <td class="label">Jasa Simpanan</td>
-        <td class="value negative">-1.160.123 {{-- -{{ number_format($shu->jasa_simpanan ?? 0, 0, ',', '.') }} --}}</td>
+        <td class="value negative">{{ number_format($total_shu_jasa_modal, 2, ',', '.') }}</td>
       </tr>
 
       <tr>
         <td class="label">SHU Jasa Usaha</td>
-        <td class="value negative">-39.777 {{-- -{{ number_format($shu->shu_jasa_usaha ?? 0, 0, ',', '.') }} --}}</td>
+        <td class="value negative">{{ number_format($anggota->shu_jasa_usaha, 0, ',', '.') }}</td>
         <td class="label">SHU Jasa Modal</td>
-        <td class="value negative">-6.135 {{-- -{{ number_format($shu->shu_jasa_modal ?? 0, 0, ',', '.') }} --}}</td>
+        <td class="value negative">{{ number_format($anggota->shu_jasa_modal, 0, ',', '.') }}</td>
       </tr>
     </tbody>
   </table>
@@ -59,7 +59,6 @@
 @endsection
 
 <style>
-  /* ====== SHU Table ====== */
 :root{
   --outer-border: #838383;      
   --head-dark:   #4a4a4a;       
