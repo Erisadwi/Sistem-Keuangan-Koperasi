@@ -41,16 +41,19 @@ class DashboardControllerAnggota extends Controller
 
         $pinjaman = DB::table('pinjaman')
             ->where('id_anggota', $userId)
+            ->where('status_lunas', 'BELUM LUNAS')
             ->sum('jumlah_pinjaman');
 
         $totalTransaksi = DB::table('bayar_angsuran')
             ->join('pinjaman', 'bayar_angsuran.id_pinjaman', '=', 'pinjaman.id_pinjaman')
             ->where('pinjaman.id_anggota', $userId)
             ->count();
-
-        $totalTagihan = DB::table('pinjaman')
-            ->where('id_anggota', $userId)
-            ->count();
+            
+        $totalTagihan = DB::table('view_data_angsuran')
+            ->where('username_anggota', $user->username_anggota)
+            ->where('status_lunas', 'Belum Lunas')
+            ->selectRaw('SUM(jumlah_pinjaman + bunga_angsuran + biaya_admin) AS total')
+            ->value('total') ?? 0;
 
         $totalDana = $simpanan + $pinjaman;
 
@@ -59,6 +62,63 @@ class DashboardControllerAnggota extends Controller
             $persenPinjaman = round(($pinjaman / $totalDana) * 100, 2);
         } else {
             $persenSimpanan = $persenPinjaman = 0;
+        }
+
+        $lastMonth = now()->subMonth()->format('m');
+        $lastYear  = now()->subMonth()->format('Y');
+
+        $simpananBulanLalu = DB::table('simpanan')
+            ->where('id_anggota', (string) $userId)
+            ->whereMonth('tanggal_transaksi', $lastMonth)
+            ->whereYear('tanggal_transaksi', $lastYear)
+            ->selectRaw("
+                SUM(
+                    CASE 
+                        WHEN type_simpanan = 'TRD' THEN jumlah_simpanan
+                        WHEN type_simpanan = 'TRK' THEN -jumlah_simpanan
+                        ELSE 0
+                    END
+                ) AS total
+            ")
+            ->value('total') ?? 0;
+
+        $pinjamanBulanLalu = DB::table('pinjaman')
+            ->where('id_anggota', $userId)
+            ->whereMonth('tanggal_pinjaman', $lastMonth)
+            ->whereYear('tanggal_pinjaman', $lastYear)
+            ->sum('jumlah_pinjaman') ?? 0;
+        
+                $currentMonth = now()->format('m');
+        $currentYear  = now()->format('Y');
+
+        $simpananBulanIni = DB::table('simpanan')
+            ->where('id_anggota', (string) $userId)
+            ->whereMonth('tanggal_transaksi', $currentMonth)
+            ->whereYear('tanggal_transaksi', $currentYear)
+            ->selectRaw("
+                SUM(
+                    CASE 
+                        WHEN type_simpanan = 'TRD' THEN jumlah_simpanan
+                        WHEN type_simpanan = 'TRK' THEN -jumlah_simpanan
+                        ELSE 0
+                    END
+                ) AS total
+            ")
+            ->value('total') ?? 0;
+
+        $pinjamanBulanIni = DB::table('pinjaman')
+            ->where('id_anggota', $userId)
+            ->whereMonth('tanggal_pinjaman', $currentMonth)
+            ->whereYear('tanggal_pinjaman', $currentYear)
+            ->sum('jumlah_pinjaman') ?? 0;
+
+        $totalDanaBulanIni  = $simpananBulanIni  + $pinjamanBulanIni;
+        $totalDanaBulanLalu = $simpananBulanLalu + $pinjamanBulanLalu;
+
+        if ($totalDanaBulanIni > $totalDanaBulanLalu) {
+            $statIcon = 'icons/statistic-up.png';
+        } else {
+            $statIcon = 'icons/statistic-down.png';
         }
 
         return view('anggota.beranda', compact(
@@ -70,7 +130,10 @@ class DashboardControllerAnggota extends Controller
             'totalTagihan',
             'totalDana',
             'persenSimpanan',
-            'persenPinjaman'
+            'persenPinjaman',
+            'statIcon',
+            'totalDanaBulanIni',
+            'totalDanaBulanLalu'
         ));
     }
 }

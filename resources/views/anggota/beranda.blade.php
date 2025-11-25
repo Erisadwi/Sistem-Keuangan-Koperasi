@@ -75,7 +75,7 @@
           </div>
           <div class="card-text">
             <div class="card-amount">
-                Rp{{ number_format($simpanan, 0, ',', '.') }}
+                Rp {{ number_format($simpanan, 0, ',', '.') }}
             </div>
             <div class="card-label">Simpananmu</div>
           </div>
@@ -87,7 +87,7 @@
           </div>
           <div class="card-text">
             <div class="card-amount">
-              Rp{{ number_format($pinjaman, 0, ',', '.') }}
+              Rp {{ number_format($pinjaman, 0, ',', '.') }}
             </div>
             <div class="card-label">Pinjamanmu</div>
           </div>
@@ -105,14 +105,13 @@
           </div>
         </a>
 
-        <a href="#" class="card pastel-green linklike">
+        <a href="{{ route('anggota.laporan.pinjaman') }}" class="card pastel-green linklike">
           <div class="card-icon">
             <img src="{{ asset('icons/icon-tagihan.png') }}" alt="Tagihan" class="icon-28">
           </div>
           <div class="card-text">
-            <div class="card-amount">
-              {{-- {{ $totalTagihan }} --}}
-              1</div>
+            <div class="card-amount">Rp
+              {{ $totalTagihan }}</div>
             <div class="card-label">Tagihanmu</div>
           </div>
         </a>
@@ -123,7 +122,7 @@
         <div class="stat-left">
           <div class="mini-card">
             <div class="mini-card-header">
-              <img src="{{ asset('icons/statistic.png') }}" alt="" class="icon-70">
+              <img src="{{ asset($statIcon) }}" alt="" class="icon-70">
               <button id="refreshPage" class="refresh-vert img-btn" type="button">
                 <img src="{{ asset('icons/refresh.png') }}" alt="">
               </button>
