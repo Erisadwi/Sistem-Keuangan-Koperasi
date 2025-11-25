@@ -24,7 +24,6 @@
 
 <div class="laporan-neraca-wrap">
   <div class="table-scroll-wrapper">
-
     <table class="laporan-neraca-table">
       <thead>
         <tr class="head-group">
@@ -44,23 +43,29 @@
               </td>
           </tr>
 
-          @foreach ($items as $item)
+         @foreach ($items as $item)
               <tr>
                   <td style="text-align:left;">
                       {{ $item->kode_aktiva }}. {{ $item->nama_akun }}
                   </td>
 
-                  <td style="text-align:center;">
-                      {{ $item->total_debit > 0 
-                          ? number_format($item->total_debit, 0, ',', '.') 
-                          : '-' }}
-                  </td>
+                <td style="text-align:center;">
+                  @if ($item->kode_aktiva == 'I02.01')
+                      {{-- kalau rugi tampil di debit --}}
+                      {{ $laba_bersih < 0 ? number_format(abs($laba_bersih), 0, ',', '.') : '-' }}
+                  @else
+                      {{ $item->total_debit > 0 ? number_format($item->total_debit, 0, ',', '.') : '-' }}
+                  @endif
+              </td>
 
-                  <td style="text-align:center;">
-                      {{ $item->total_kredit > 0 
-                          ? number_format($item->total_kredit, 0, ',', '.') 
-                          : '-' }}
-                  </td>
+              <td style="text-align:center;">
+                  @if ($item->kode_aktiva == 'I02.01')
+                      {{-- kalau laba tampil di kredit --}}
+                      {{ $laba_bersih > 0 ? number_format($laba_bersih, 0, ',', '.') : '-' }}
+                  @else
+                      {{ $item->total_kredit > 0 ? number_format($item->total_kredit, 0, ',', '.') : '-' }}
+                  @endif
+              </td>
               </tr>
           @endforeach
 

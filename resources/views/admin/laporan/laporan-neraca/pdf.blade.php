@@ -109,51 +109,59 @@
             </tr>
         </thead>
 
-        <tbody>
+       <tbody>
 
-            @forelse ($neracaGrouped as $groupName => $items)
+      @forelse ($neracaGrouped as $groupName => $items)
 
-                <tr class="group-header">
-                    <td colspan="3" style="text-align:left;">
-                        <b>{{ strtoupper($groupName) }}</b>
-                    </td>
-                </tr>
+          <tr class="group-header">
+              <td colspan="3" style="text-align:left;">
+                  <b>{{ strtoupper($groupName) }}</b>
+              </td>
+          </tr>
 
-                @foreach ($items as $item)
-                <tr>
-                    <td style="text-align:left;">
-                        {{ $item->kode_aktiva }}. {{ $item->nama_akun }}
-                    </td>
+         @foreach ($items as $item)
+              <tr>
+                  <td style="text-align:left;">
+                      {{ $item->kode_aktiva }}. {{ $item->nama_akun }}
+                  </td>
 
-                    <td style="text-align:center;">
-                        {{ $item->total_debit > 0 ? number_format($item->total_debit, 0, ',', '.') : '-' }}
-                    </td>
-
-                    <td style="text-align:center;">
-                        {{ $item->total_kredit > 0 ? number_format($item->total_kredit, 0, ',', '.') : '-' }}
-                    </td>
-                </tr>
-                @endforeach
-
-            @empty
-                <tr>
-                    <td colspan="3" style="text-align:center; padding:10px;">
-                        Belum ada data neraca.
-                    </td>
-                </tr>
-            @endforelse
-
-            <tr class="group-header">
-                <td><b>JUMLAH</b></td>
                 <td style="text-align:center;">
-                    <b>{{ number_format($totalDebit, 0, ',', '.') }}</b>
-                </td>
-                <td style="text-align:center;">
-                    <b>{{ number_format($totalKredit, 0, ',', '.') }}</b>
-                </td>
-            </tr>
+                  @if ($item->kode_aktiva == 'I02.01')
+                      {{-- kalau rugi tampil di debit --}}
+                      {{ $laba_bersih < 0 ? number_format(abs($laba_bersih), 0, ',', '.') : '-' }}
+                  @else
+                      {{ $item->total_debit > 0 ? number_format($item->total_debit, 0, ',', '.') : '-' }}
+                  @endif
+              </td>
 
-        </tbody>
+              <td style="text-align:center;">
+                  @if ($item->kode_aktiva == 'I02.01')
+                      {{-- kalau laba tampil di kredit --}}
+                      {{ $laba_bersih > 0 ? number_format($laba_bersih, 0, ',', '.') : '-' }}
+                  @else
+                      {{ $item->total_kredit > 0 ? number_format($item->total_kredit, 0, ',', '.') : '-' }}
+                  @endif
+              </td>
+              </tr>
+          @endforeach
+
+      @empty
+          <tr>
+              <td colspan="3" class="empty-cell">Belum ada data neraca.</td>
+          </tr>
+      @endforelse
+      
+      <tr class="final-total">
+          <td class="nama-akun-item text-end text-primary"><b>JUMLAH</b></td>
+          <td class="debet text-primary">
+              <b>{{ number_format($totalDebit, 0, ',', '.') }}</b>
+          </td>
+          <td class="kredit text-primary">
+              <b>{{ number_format($totalKredit, 0, ',', '.') }}</b>
+          </td>
+      </tr>
+
+      </tbody>
     </table>
 
 </body>

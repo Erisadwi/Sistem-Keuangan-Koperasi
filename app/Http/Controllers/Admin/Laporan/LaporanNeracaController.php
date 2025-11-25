@@ -27,6 +27,19 @@ class LaporanNeracaController extends Controller
             ->orderBy('kode_aktiva')
             ->get();
 
+        $laba_bersih = DB::table('view_laba_rugi_extended')
+                ->whereMonth('tanggal', $bulan)
+                ->whereYear('tanggal', $tahun)
+                ->sum('laba_bersih');
+
+        $neraca = $neraca->map(function ($item) use ($laba_bersih) {
+            if ($item->kode_aktiva === 'I02.01') {
+                $item->total_debit = $laba_bersih < 0 ? abs($laba_bersih) : 0;
+                $item->total_kredit = $laba_bersih > 0 ? $laba_bersih : 0;
+            }
+            return $item;
+        });
+
         $neracaGrouped = $neraca->groupBy('kelompok_neraca');
 
         $totalDebit  = $neraca->sum('total_debit');
@@ -66,6 +79,18 @@ class LaporanNeracaController extends Controller
         ->orderBy('kode_aktiva')
         ->get();
 
+        $laba_bersih = DB::table('view_laba_rugi_extended')
+            ->whereMonth('tanggal', $bulan)
+            ->whereYear('tanggal', $tahun)
+            ->sum('laba_bersih');
+
+        $neraca = $neraca->map(function ($item) use ($laba_bersih) {
+            if ($item->kode_aktiva === 'I02.01') {
+                    $item->total_debit = $laba_bersih < 0 ? abs($laba_bersih) : 0;
+                    $item->total_kredit = $laba_bersih > 0 ? $laba_bersih : 0;
+                }
+                return $item;
+            });
 
         $neracaGrouped = $neraca->groupBy('kelompok_neraca');
 
