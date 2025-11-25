@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin\Laporan;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\JenisAkunTransaksi;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class LaporanNeracaSaldoController extends Controller
 {
@@ -71,9 +73,81 @@ class LaporanNeracaSaldoController extends Controller
             ];
         }
 
-        return view('admin.laporan.laporan-neraca-saldo', [
+        return view('admin.laporan.neraca-saldo.laporan-neraca-saldo', [
             'neracaKelompok' => $neracaKelompok,
             'periode'        => $periode
         ]);
     }
+
+    public function exportPdf(Request $request)
+    {
+    $tahun = $request->tahun ?? date('Y');
+
+    $bulan = $request->bulan ?? date('m');
+    $periode = "$tahun-$bulan";
+
+    $subJudulMap = [
+        'A'   => 'A. Aktiva Lancar',
+        'B'   => 'B. Aktiva Tidak Lancar',
+        'C'   => 'C. Aktiva Tetap Berwujud',
+        'F'   => 'F. Utang',
+        'H'   => 'H. Utang Jangka Panjang',
+        'I'   => 'I. Modal',
+        'J'   => 'J. Pendapatan',
+        'K'   => 'K. Beban',
+        'TRF' => 'K. Beban',
+    ];
+
+    $akun = JenisAkunTransaksi::with([
+        'bukuBesarTotal' => function ($q) use ($periode) {
+            $q->whereHas('transaksi', function ($t) use ($periode) {
+                $t->whereRaw("DATE_FORMAT(tanggal_transaksi, '%Y-%m') = ?", [$periode]);
+            });
+        }
+    ])
+        ->orderBy('kode_aktiva')
+        ->get();
+
+    $neracaKelompok = [];
+
+    foreach ($akun as $a) {
+        $prefix = $a->kode_aktiva;
+        if (!isset($subJudulMap[$prefix])) {
+            $prefix = substr($prefix, 0, 1);
+        }
+        $kategori = $subJudulMap[$prefix] ?? 'Lainnya';
+
+        $totalDebit  = $a->bukuBesarTotal->sum('debit');
+        $totalKredit = $a->bukuBesarTotal->sum('kredit');
+
+        if ($a->type_akun === "ACTIVA") {
+            $saldo  = $totalDebit - $totalKredit;
+            $debet  = $saldo;
+            $kredit = 0;
+        } else {
+            $saldo  = $totalKredit - $totalDebit;
+            $debet  = 0;
+            $kredit = $saldo;
+        }
+
+        $neracaKelompok[$kategori][] = [
+            'kode'   => $a->kode_aktiva,
+            'nama'   => $a->nama_AkunTransaksi,
+            'debet'  => $debet,
+            'kredit' => $kredit
+        ];
+    }
+
+    $pdf = Pdf::loadView('admin.laporan.neraca-saldo.pdf', [
+        'neracaKelompok' => $neracaKelompok,
+        'tahun' => $tahun,
+        'bulan' => $bulan,
+    ])
+    ->setPaper('A4', 'portrait');
+
+    $namaFile = "Laporan-Neraca-Saldo-$tahun.pdf";
+
+    return $pdf->download($namaFile);
+}
+
 }

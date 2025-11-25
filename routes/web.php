@@ -265,10 +265,13 @@ Route::middleware(['auth:user'])->group(function () {
 
     Route::get('/laporan/buku-besar', [LaporanBukuBesarController::class, 'index'])->name('laporan.buku-besar');
     Route::get('/laporan/buku-besar/export-pdf', [LaporanBukuBesarController::class, 'exportPdf'])->name('laporan-buku-besar.exportPdf');
+
+    Route::get('laporan-neraca-saldo', [LaporanNeracaSaldoController::class, 'index'])->name('laporan.neraca-saldo');
+    Route::get('/laporan-neraca-saldo/export-pdf', [LaporanNeracaSaldoController::class, 'exportPdf'])->name('laporan-neraca-saldo.export-pdf');
   
 });
 
-Route::get('/admin/laporan/laporan-neraca-saldo', [LaporanNeracaSaldoController::class, 'index'])->name('admin.laporan.laporan-neraca-saldo');
+
 
 
 //Route::get('/', function () {

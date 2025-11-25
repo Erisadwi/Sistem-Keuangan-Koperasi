@@ -7,11 +7,7 @@
 @section('title', 'Laporan Buku Besar')
 @section('title-1', 'Buku Besar')
 @section('title-content', 'Laporan Buku Besar')
-
-@section('period')
-    Periode {{ date('F Y', strtotime($periode . '-01')) }}
-@endsection
-
+@section('period', 'Periode ' . date('d M Y', strtotime($periode . '-01')))
 @section('sub-title', 'Laporan Buku Besar')
 
 @section('filter-area')
@@ -22,7 +18,6 @@
     :url="route('laporan-buku-besar.exportPdf', ['bulan' => $bulan, 'tahun' => $tahun])" 
     text="Unduh Laporan" 
 />
-
     </div>
 </div>
 @endsection
