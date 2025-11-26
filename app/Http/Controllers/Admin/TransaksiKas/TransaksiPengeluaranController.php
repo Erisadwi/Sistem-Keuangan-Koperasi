@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use App\Models\JenisAkunTransaksi;
+use App\Models\AkunRelasiTransaksi;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class TransaksiPengeluaranController extends Controller
@@ -220,14 +221,22 @@ class TransaksiPengeluaranController extends Controller
     public function destroy($id)
     {
         return DB::transaction(function () use ($id) {
+
             $t = Transaksi::findOrFail($id);
-            $t->details()->delete();
+
+            DetailTransaksi::where('id_transaksi', $id)->delete();
+
+            if (class_exists(\App\Models\AkunRelasiTransaksi::class)) {
+                \App\Models\AkunRelasiTransaksi::where('id_transaksi', $id)->delete();
+            }
+
             $t->delete();
 
             return redirect()->route('pengeluaran.index')
                 ->with('success', 'Data berhasil dihapus');
         });
     }
+
 
     public function exportPdf(Request $request)
     {

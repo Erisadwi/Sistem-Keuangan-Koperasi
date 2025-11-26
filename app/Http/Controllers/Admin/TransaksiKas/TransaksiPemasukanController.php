@@ -9,6 +9,8 @@ use App\Models\JenisAkunTransaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule;
+use App\Models\AkunRelasiTransaksi;
+use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class TransaksiPemasukanController extends Controller
@@ -183,14 +185,26 @@ class TransaksiPemasukanController extends Controller
 
         return redirect()->route('transaksi-pemasukan.index')->with('success', 'Transaksi berhasil diperbarui.');
     }
+    
     public function destroy($id)
     {
-        $transaksi = Transaksi::findOrFail($id);
-        $transaksi->details()->delete();
-        $transaksi->delete();
+        return DB::transaction(function () use ($id) {
 
-        return redirect()->route('transaksi-pemasukan.index')->with('success', 'Transaksi berhasil dihapus.');
+            $t = Transaksi::findOrFail($id);
+
+            DetailTransaksi::where('id_transaksi', $id)->delete();
+
+            if (class_exists(\App\Models\AkunRelasiTransaksi::class)) {
+                \App\Models\AkunRelasiTransaksi::where('id_transaksi', $id)->delete();
+            }
+
+            $t->delete();
+
+            return redirect()->route('transaksi-pemasukan.index')
+                ->with('success', 'Data berhasil dihapus');
+        });
     }
+
 
 public function exportPdf(Request $request)
 {

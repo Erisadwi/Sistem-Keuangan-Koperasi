@@ -35,7 +35,7 @@
         <div>{{ number_format($simpanan_penarikan, 0, ',', '.') }} <span>Penarikan Tunai</span></div>
         <div>{{ number_format($simpanan_jumlah, 0, ',', '.') }} <span>Jumlah Simpanan</span></div>
       </div>
-      <a href="#" class="card-footer">More info ➜</a>
+      <a href="{{ route('laporan.kas-simpanan') }}" class="card-footer">More info ➜</a>
     </div>
 
 
