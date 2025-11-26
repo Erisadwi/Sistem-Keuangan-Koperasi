@@ -72,9 +72,9 @@
       @if($user && in_array($user->id_role, ['R04', 'R05', 'R06', 'R07']))
         <x-menu.section title="Laporan" :open="false" :has-sub="true">
           <a href="{{ route('laporan.jatuh-tempo') }}" class="submenu-row">Jatuh Tempo</a>
-          <a href="#" class="submenu-row">Buku Besar</a>
-          <a href="#" class="submenu-row">Neraca Saldo</a>
-          <a href="#" class="submenu-row">Neraca</a>
+          <a href="{{ route('laporan.buku-besar') }}" class="submenu-row">Buku Besar</a>
+          <a href="{{ route('laporan.neraca-saldo') }}" class="submenu-row">Neraca Saldo</a>
+          <a href="{{ route('laporan.neraca') }}" class="submenu-row">Neraca</a>
           <a href="{{ route('laporan.kas-pinjaman') }}" class="submenu-row">Kas Pinjaman</a>
           <a href="{{ route('laporan.kas-simpanan') }}" class="submenu-row">Kas Simpanan</a>
           <a href="{{ route('laporan.saldo-kas') }}" class="submenu-row">Saldo Kas</a>
@@ -86,7 +86,7 @@
       @if($user && in_array($user->id_role, ['R07']))
         <x-menu.section title="Master Data" :open="false" :has-sub="true">
           <a href="#" class="submenu-row">Saldo Awal Kas</a>
-          <a href="#" class="submenu-row">Saldo Awal Non Kas</a>
+          <a href="{{ route('saldo-awal-non-kas.index') }}" class="submenu-row">Saldo Awal Non Kas</a>
           <a href="#" class="submenu-row">Jenis Simpanan</a>
           <a href="#" class="submenu-row">Jenis Akun Transaksi</a>
           <a href="#" class="submenu-row">Lama Angsuran</a>
@@ -108,7 +108,12 @@
     </div>
 
 <main class="main">
+  <div class="header-container">
   <div class="title-1">@yield('title-1', 'Default Title')</div>
+    <a href="{{ route('dashboard') }}" class="icon-right">
+        <img src="{{ asset('icons/home.png') }}" alt="Home Icon" class="home-image">
+    </a>
+  </div>
   <div class="container">
     <div class="content-container">
       @yield('content')

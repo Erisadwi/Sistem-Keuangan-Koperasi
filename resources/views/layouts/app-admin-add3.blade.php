@@ -94,7 +94,7 @@
       <a href="# {{-- {{ url()->previous() }} --}}" class="text-blue-500">@yield('back-title', 'Default >')</a>
     </div>
     <div class="title-1">@yield('title-1', 'Default Title')</div>
-    <a href="# {{-- {{ url('') }} --}}">
+    <a href="{{ route('dashboard') }}">
       <img src="{{ asset('icons/home.png') }}" alt="Home Icon" class="home-image"/>
     </a>
   </div>

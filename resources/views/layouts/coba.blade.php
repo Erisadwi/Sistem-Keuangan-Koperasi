@@ -67,9 +67,9 @@
         @if($user && in_array($user->id_role, ['R04', 'R05', 'R06', 'R07']))
         <x-menu.section title="Laporan" :open="false" :has-sub="true">
           <a href="{{ route('laporan.jatuh-tempo') }}" class="submenu-row">Jatuh Tempo</a>
-          <a href="#" class="submenu-row">Buku Besar</a>
-          <a href="#" class="submenu-row">Neraca Saldo</a>
-          <a href="#" class="submenu-row">Neraca</a>
+          <a href="{{ route('laporan.buku-besar') }}" class="submenu-row">Buku Besar</a>
+          <a href="{{ route('laporan.neraca-saldo') }}" class="submenu-row">Neraca Saldo</a>
+          <a href="{{ route('laporan.neraca') }}" class="submenu-row">Neraca</a>
           <a href="{{ route('laporan.kas-pinjaman') }}" class="submenu-row">Kas Pinjaman</a>
           <a href="{{ route('laporan.kas-simpanan') }}" class="submenu-row">Kas Simpanan</a>
           <a href="{{ route('laporan.saldo-kas') }}" class="submenu-row">Saldo Kas</a>

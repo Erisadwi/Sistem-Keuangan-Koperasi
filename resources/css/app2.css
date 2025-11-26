@@ -79,6 +79,7 @@ a.btn-profil:focus-visible, btn-profil:focus-visible{ outline: 2px solid #1d4ed8
 .push-right{ margin-left: auto; }
 
 
+
 .title-1 {
   color: #000000;
   text-align: left;
@@ -94,6 +95,8 @@ a.btn-profil:focus-visible, btn-profil:focus-visible{ outline: 2px solid #1d4ed8
   margin-left: 300px;
   margin-top: 80px;
 }
+
+
 
 .container,
 .container * {
@@ -154,5 +157,24 @@ a.btn-profil:focus-visible, btn-profil:focus-visible{ outline: 2px solid #1d4ed8
 
 }
 
+.icon-right {
+    position: absolute;
+    left: 100%;      
+    top: 10%;
+    margin-left: -70px; 
+}
 
+.home-image {
+    width: 28px;
+}
+
+.home-icon a {
+    text-decoration: none;
+    display: inline-block;
+}
+
+.home-image {
+    width: 30px;
+    height: auto;
+}
 

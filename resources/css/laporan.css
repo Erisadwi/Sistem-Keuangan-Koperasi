@@ -116,6 +116,27 @@ a.btn-profil:focus-visible, btn-profil:focus-visible{ outline: 2px solid #1d4ed8
   top: 0px;
 }
 
+.icon-right {
+    position: absolute;
+    left: 100%;      
+    top: 10%;
+    margin-left: -70px; 
+}
+
+.home-image {
+    width: 28px;
+}
+
+.home-icon a {
+    text-decoration: none;
+    display: inline-block;
+}
+
+.home-image {
+    width: 30px;
+    height: auto;
+}
+
 .sub-title {
   color: #ffffff;
   text-align: left;
