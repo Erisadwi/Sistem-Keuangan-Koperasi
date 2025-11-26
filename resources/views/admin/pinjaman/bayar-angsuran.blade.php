@@ -110,6 +110,14 @@
             {{-- TOOLBAR --}}
             <div class="toolbar">
                 <div class="left-buttons">
+                    <a id="validasiBtn" href="{{ route('angsuran.createPelunasan', ['id_pinjaman' => $pinjaman->id_pinjaman]) }}" class="filter-button inline-flex items-center" style="text-decoration: none; color: black; font-weight: 480;">
+                        <span class="df-ic" aria-hidden="true">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <path d="M15.232 5.232l3.536 3.536M4 20h4l10.293-10.293a1 1 0 000-1.414l-2.586-2.586a1 1 0 00-1.414 0L4 16v4z" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </span>
+                        Validasi Pelunasan
+                    </a>
                     <a href="{{ route('angsuran.create', ['id_pinjaman' => $pinjaman->id_pinjaman]) }}" class="filter-button inline-flex items-center"  style="text-decoration: none; color: black; font-weight: 480;">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                             <path d="M12 5v14M5 12h14" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>

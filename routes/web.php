@@ -225,6 +225,11 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/export/pdf', [AngsuranController::class, 'exportPdf'])->name('angsuran.export.pdf');
     Route::get('/cetak/{id_bayar_angsuran}', [AngsuranController::class, 'cetak'])->name('angsuran.cetak');
     Route::get('/admin/angsuran/{id_pinjaman}', [AngsuranController::class, 'show'])->name('angsuran.show');
+    Route::get('/angsuran/pelunasan/{id_pinjaman}', [AngsuranController::class, 'createPelunasan'])
+        ->name('angsuran.createPelunasan');
+
+    Route::post('/angsuran/pelunasan/{id_pinjaman}', [AngsuranController::class, 'storePelunasan'])
+        ->name('angsuran.storePelunasan');
 });
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
