@@ -33,12 +33,27 @@ class LaporanKasSimpananController extends Controller
             ' - ' .
             Carbon::parse($end_date)->translatedFormat('d M Y');
 
-        $data = ViewRekapSimpanan::whereBetween('tanggal_transaksi', [
+        $jenisTetap = ['Simpanan Sukarela', 'Simpanan Pokok', 'Simpanan Wajib'];
+
+        $transaksi = ViewRekapSimpanan::whereBetween('tanggal_transaksi', [
             $start_date . ' 00:00:00',
             $end_date . ' 23:59:59'
-        ])
-        ->orderBy('id_jenis_simpanan')
-        ->get();
+        ])->get();
+
+        $data = collect($jenisTetap)->map(function ($jenis) use ($transaksi) {
+            $filtered = $transaksi->where('jenis_akun', $jenis);
+
+            $simpanan = $filtered->sum('simpanan');
+            $penarikan = $filtered->sum('penarikan');
+            $jumlah = $simpanan - $penarikan;
+
+            return (object)[
+                'jenis_akun' => $jenis,
+                'simpanan' => $simpanan,
+                'penarikan' => $penarikan,
+                'jumlah' => $jumlah,
+            ];
+        });
 
         $totalSimpanan  = $data->sum('simpanan');
         $totalPenarikan = $data->sum('penarikan');
@@ -77,12 +92,27 @@ class LaporanKasSimpananController extends Controller
             ' - ' .
             Carbon::parse($end_date)->translatedFormat('d M Y');
 
-        $data = ViewRekapSimpanan::whereBetween('tanggal_transaksi', [
+        $jenisTetap = ['Simpanan Sukarela', 'Simpanan Pokok', 'Simpanan Wajib'];
+
+        $transaksi = ViewRekapSimpanan::whereBetween('tanggal_transaksi', [
             $start_date . ' 00:00:00',
             $end_date . ' 23:59:59'
-        ])
-        ->orderBy('id_jenis_simpanan')
-        ->get();
+        ])->get();
+
+        $data = collect($jenisTetap)->map(function ($jenis) use ($transaksi) {
+            $filtered = $transaksi->where('jenis_akun', $jenis);
+
+            $simpanan = $filtered->sum('simpanan');
+            $penarikan = $filtered->sum('penarikan');
+            $jumlah = $simpanan - $penarikan;
+
+            return (object)[
+                'jenis_akun' => $jenis,
+                'simpanan' => $simpanan,
+                'penarikan' => $penarikan,
+                'jumlah' => $jumlah,
+            ];
+        });
 
         $totalSimpanan  = $data->sum('simpanan');
         $totalPenarikan = $data->sum('penarikan');

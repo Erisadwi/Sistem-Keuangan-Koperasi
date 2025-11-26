@@ -34,32 +34,14 @@
       </thead>
 
       <tbody>
-
-        @php
-          $total_simpanan = 0;
-          $total_penarikan = 0;
-          $total_jumlah = 0;
-        @endphp
-
         @forelse ($data as $item)
-        @php
-            $simpanan   = $item->simpanan ?? 0;
-            $penarikan  = $item->penarikan ?? 0;
-            $jumlah     = $item->jumlah ?? ($simpanan - $penarikan);
-
-            $total_simpanan += $simpanan;
-            $total_penarikan += $penarikan;
-            $total_jumlah += $jumlah;
-        @endphp
-
         <tr>
           <td>{{ $loop->iteration }}</td>
           <td>{{ $item->jenis_akun }}</td>
-          <td>{{ number_format($simpanan, 0, ',', '.') }}</td>
-          <td>{{ number_format($penarikan, 0, ',', '.') }}</td>
-          <td>{{ number_format($jumlah, 0, ',', '.') }}</td>
+          <td>{{ number_format($item->simpanan, 0, ',', '.') }}</td>
+          <td>{{ number_format($item->penarikan, 0, ',', '.') }}</td>
+          <td>{{ number_format($item->jumlah, 0, ',', '.') }}</td>
         </tr>
-
         @empty
         <tr>
           <td colspan="5">Tidak ada data</td>
@@ -68,11 +50,10 @@
 
         <tr class="total-row">
           <td colspan="2"><strong>Jumlah Total</strong></td>
-          <td><strong>{{ number_format($total_simpanan, 0, ',', '.') }}</strong></td>
-          <td><strong>{{ number_format($total_penarikan, 0, ',', '.') }}</strong></td>
-          <td><strong>{{ number_format($total_jumlah, 0, ',', '.') }}</strong></td>
+          <td><strong>{{ number_format($totalSimpanan, 0, ',', '.') }}</strong></td>
+          <td><strong>{{ number_format($totalPenarikan, 0, ',', '.') }}</strong></td>
+          <td><strong>{{ number_format($totalJumlah, 0, ',', '.') }}</strong></td>
         </tr>
-
       </tbody>
     </table>
   </div>

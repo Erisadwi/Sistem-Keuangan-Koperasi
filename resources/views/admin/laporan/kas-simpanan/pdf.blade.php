@@ -83,6 +83,13 @@
             text-align: center;
             margin-top: 5px;
         }
+
+        .total-row td {
+        background-color: none;
+        color: #000;
+        font-weight: bold;
+        text-align: center;   
+        }
     </style>
 </head>
 <body>
@@ -117,35 +124,27 @@
     </thead>
 
     <tbody>
-
-        @php
-            $no = 1;
-        @endphp
-
-        @foreach ($data as $item)
-            @php
-                $simpanan  = $item->simpanan ?? 0;
-                $penarikan = $item->penarikan ?? 0;
-                $jumlah    = $item->jumlah ?? ($simpanan - $penarikan);
-            @endphp
-
-            <tr>
-                <td style="text-align:center;">{{ $no++ }}</td>
-                <td>{{ $item->jenis_akun }}</td>
-                <td style="text-align:center;">{{ number_format($simpanan, 0, ',', '.') }}</td>
-                <td style="text-align:center;">{{ number_format($penarikan, 0, ',', '.') }}</td>
-                <td style="text-align:center;">{{ number_format($jumlah, 0, ',', '.') }}</td>
-            </tr>
-        @endforeach
-
-        <tr class="header-row">
-            <td colspan="2" style="text-align:center;"><strong>Jumlah Total</strong></td>
-            <td style="text-align:center;"><strong>{{ number_format($totalSimpanan, 0, ',', '.') }}</strong></td>
-            <td style="text-align:center;"><strong>{{ number_format($totalPenarikan, 0, ',', '.') }}</strong></td>
-            <td style="text-align:center;"><strong>{{ number_format($totalJumlah, 0, ',', '.') }}</strong></td>
+        @forelse ($data as $item)
+        <tr>
+          <td>{{ $loop->iteration }}</td>
+          <td>{{ $item->jenis_akun }}</td>
+          <td>{{ number_format($item->simpanan, 0, ',', '.') }}</td>
+          <td>{{ number_format($item->penarikan, 0, ',', '.') }}</td>
+          <td>{{ number_format($item->jumlah, 0, ',', '.') }}</td>
         </tr>
+        @empty
+        <tr>
+          <td colspan="5">Tidak ada data</td>
+        </tr>
+        @endforelse
 
-    </tbody>
+        <tr class="total-row">
+          <td colspan="2"><strong>Jumlah Total</strong></td>
+          <td><strong>{{ number_format($totalSimpanan, 0, ',', '.') }}</strong></td>
+          <td><strong>{{ number_format($totalPenarikan, 0, ',', '.') }}</strong></td>
+          <td><strong>{{ number_format($totalJumlah, 0, ',', '.') }}</strong></td>
+        </tr>
+      </tbody>
 </table>
 
 </body>
