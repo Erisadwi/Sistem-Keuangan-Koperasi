@@ -106,6 +106,7 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('lama-angsuran/{id}/edit', [LamaAngsuranController::class, 'edit'])->name('lama-angsuran.edit');
     Route::put('lama-angsuran/{id}', [LamaAngsuranController::class, 'update'])->name('lama-angsuran.update');
     Route::delete('lama-angsuran/{id}', [LamaAngsuranController::class, 'destroy'])->name('lama-angsuran.destroy');
+    Route::get('lama-angsuran/export', [LamaAngsuranController::class, 'export'])->name('lama-angsuran.export');
 
     Route::get('anggota', [AnggotaController::class, 'index'])->name('anggota.index');
     Route::get('anggota/create', [AnggotaController::class, 'create'])->name('anggota.create');

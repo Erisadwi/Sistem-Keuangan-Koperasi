@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Admin\MasterData;
 use App\Http\Controllers\Controller;
 use App\Models\LamaAngsuran;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\LamaAngsuranExport;
 
 class LamaAngsuranController extends Controller
 {
@@ -56,5 +58,10 @@ class LamaAngsuranController extends Controller
         $lama_angsuran = LamaAngsuran::findOrFail($id);
         $lama_angsuran->delete();
         return redirect()->route('lama-angsuran.index')->with('success', 'Data berhasil dihapus');
+    }
+
+    public function export()
+    {
+    return Excel::download(new LamaAngsuranExport, 'lama-angsuran.xlsx');
     }
 }

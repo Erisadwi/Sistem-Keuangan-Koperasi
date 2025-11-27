@@ -89,10 +89,10 @@
           <a href="{{ route('saldo-awal-non-kas.index') }}" class="submenu-row">Saldo Awal Non Kas</a>
           <a href="#" class="submenu-row">Jenis Simpanan</a>
           <a href="#" class="submenu-row">Jenis Akun Transaksi</a>
-          <a href="#" class="submenu-row">Lama Angsuran</a>
+          <a href="{{ route('lama-angsuran.index') }}" class="submenu-row">Lama Angsuran</a>
           <a href="#" class="submenu-row">Data Barang</a>
           <a href="#" class="submenu-row">Data Anggota</a>
-          <a href="#" class="submenu-row">Data Pengguna</a>
+          <a href="{{ route('data-user.index') }}" class="submenu-row">Data Pengguna</a>
         </x-menu.section>
       @endif
 

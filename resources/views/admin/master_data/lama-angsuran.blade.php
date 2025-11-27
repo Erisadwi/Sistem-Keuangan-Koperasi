@@ -8,7 +8,7 @@
 
 <x-menu.tambah-unduh 
     addUrl="{{ route('lama-angsuran.create') }}" 
-    downloadFile="lama_angsuran.pdf" />
+    downloadFile="{{ route('lama-angsuran.export') }}" />
 
 <div class="lama-angsuran-table-wrap">
   <table class="lama-angsuran-table">
