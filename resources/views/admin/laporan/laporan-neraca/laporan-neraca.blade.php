@@ -1,4 +1,4 @@
-@extends('layouts.laporan-admin2')
+@extends('layouts.laporan-admin3')
 
 @push('styles')
   @vite('resources/css/style-laporanNeraca.css')
@@ -14,13 +14,17 @@
 
 @section('sub-title', 'Laporan Neraca')
 
-@section('content')
-
+@section('filter-area')
+<div class="header-flex">
+    <div class="left-tools">
 <x-menu.month-filter/>
 <x-menu.unduh 
     :url="route('laporan-neraca.exportPdf', ['bulan' => $bulan, 'tahun' => $tahun])" 
     text="Unduh PDF" 
 />
+@endsection
+
+@section('content')
 
 <div class="laporan-neraca-wrap">
   <div class="table-scroll-wrapper">
@@ -37,21 +41,20 @@
 
       @forelse ($neracaGrouped as $groupName => $items)
 
-          <tr class="group-header">
+          <tr class="akun-header">
               <td colspan="3" style="text-align:left;">
                   <b>{{ strtoupper($groupName) }}</b>
               </td>
           </tr>
 
          @foreach ($items as $item)
-              <tr>
-                  <td style="text-align:left;">
+              <tr class="akun-item">
+                    <td class="nama-akun-item">
                       {{ $item->kode_aktiva }}. {{ $item->nama_akun }}
                   </td>
 
                 <td style="text-align:center;">
                   @if ($item->kode_aktiva == 'I02.01')
-                      {{-- kalau rugi tampil di debit --}}
                       {{ $laba_bersih < 0 ? number_format(abs($laba_bersih), 0, ',', '.') : '-' }}
                   @else
                       {{ $item->total_debit > 0 ? number_format($item->total_debit, 0, ',', '.') : '-' }}
@@ -75,8 +78,11 @@
           </tr>
       @endforelse
       
-      <tr class="final-total">
-          <td class="nama-akun-item text-end text-primary"><b>JUMLAH</b></td>
+      <tr class="total-row final-total">
+          <td class="nama-akun-item text-primary"
+        style="text-align:center !important; padding-left:0 !important;">
+        <b>JUMLAH</b>
+        </td>
           <td class="debet text-primary">
               <b>{{ number_format($totalDebit, 0, ',', '.') }}</b>
           </td>
