@@ -110,6 +110,38 @@ class TransaksiPemasukanController extends Controller
             'kredit' => 0,
         ]);
 
+        // ========== INSERT KE TABEL akun_relasi_transaksi ==========
+        $idTransaksi = $transaksi->id_transaksi;
+        $kode = $transaksi->kode_transaksi;
+        $tanggal = $transaksi->tanggal_transaksi;
+
+        // Akun tujuan (KAS) → DEBIT, 1 baris untuk setiap sumber
+        foreach ($request->sumber as $s) {
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $idTransaksi,
+                'id_akun' => $request->id_akun_tujuan,
+                'id_akun_berkaitan' => $s['id_jenisAkunTransaksi'],
+                'debit' => $s['jumlah'],
+                'kredit' => 0,
+                'kode_transaksi' => $kode,
+                'tanggal_transaksi' => $tanggal
+            ]);
+        }
+
+        foreach ($request->sumber as $s) {
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $idTransaksi,
+                'id_akun' => $s['id_jenisAkunTransaksi'],
+                'id_akun_berkaitan' => $request->id_akun_tujuan,
+                'debit' => 0,
+                'kredit' => $s['jumlah'],
+                'kode_transaksi' => $kode,
+                'tanggal_transaksi' => $tanggal
+            ]);
+        }
+
+
+
         return redirect()->route('transaksi-pemasukan.index')->with('success', 'Transaksi berhasil ditambahkan.');
     }
 
@@ -166,6 +198,9 @@ class TransaksiPemasukanController extends Controller
         ]);
 
         $transaksi->details()->delete();
+        // Hapus relasi lama
+        AkunRelasiTransaksi::where('id_transaksi', $transaksi->id_transaksi)->delete();
+
 
         foreach ($request->sumber as $s) {
             DetailTransaksi::create([
@@ -182,6 +217,38 @@ class TransaksiPemasukanController extends Controller
             'debit' => $total,
             'kredit' => 0,
         ]);
+
+        // ========== INSERT KE TABEL akun_relasi_transaksi ==========
+        $idTransaksi = $transaksi->id_transaksi;
+        $kode = $transaksi->kode_transaksi;
+        $tanggal = $transaksi->tanggal_transaksi;
+
+        // Akun tujuan (KAS) → DEBIT, 1 baris untuk setiap sumber
+        foreach ($request->sumber as $s) {
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $idTransaksi,
+                'id_akun' => $request->id_akun_tujuan,
+                'id_akun_berkaitan' => $s['id_jenisAkunTransaksi'],
+                'debit' => $s['jumlah'],
+                'kredit' => 0,
+                'kode_transaksi' => $kode,
+                'tanggal_transaksi' => $tanggal
+            ]);
+        }
+
+
+        foreach ($request->sumber as $s) {
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $idTransaksi,
+                'id_akun' => $s['id_jenisAkunTransaksi'],
+                'id_akun_berkaitan' => $request->id_akun_tujuan,
+                'debit' => 0,
+                'kredit' => $s['jumlah'],
+                'kode_transaksi' => $kode,
+                'tanggal_transaksi' => $tanggal
+            ]);
+        }
+
 
         return redirect()->route('transaksi-pemasukan.index')->with('success', 'Transaksi berhasil diperbarui.');
     }

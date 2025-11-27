@@ -117,6 +117,32 @@ class TransaksiPengeluaranController extends Controller
                 'kredit' => 0,
             ]);
 
+            // INSERT RELASI AKUNTANSI (DOUBLE ENTRY)
+
+            // 1. Akun tujuan (Biaya/Beban) → DEBIT
+            AkunRelasiTransaksi::create([
+                'id_transaksi'      => $t->id_transaksi,
+                'id_akun'           => $request->id_akun_tujuan,
+                'id_akun_berkaitan'  => $request->sumber[0]['id_jenisAkunTransaksi'],
+                'debit'             => $total,
+                'kredit'            => 0,
+                'kode_transaksi'    => $t->kode_transaksi,
+                'tanggal_transaksi' => $t->tanggal_transaksi
+            ]);
+
+            // 2. Banyak akun kas → KREDIT
+            foreach ($request->sumber as $s) {
+                AkunRelasiTransaksi::create([
+                    'id_transaksi'      => $t->id_transaksi,
+                    'id_akun'           => $s['id_jenisAkunTransaksi'],
+                    'id_akun_berkaitan' => $request->id_akun_tujuan,
+                    'debit'             => 0,
+                    'kredit'            => $s['jumlah'],
+                    'kode_transaksi'    => $t->kode_transaksi,
+                    'tanggal_transaksi' => $t->tanggal_transaksi
+                ]);
+            }
+
             return redirect()->route('pengeluaran.index')
                 ->with('success', 'Transaksi Pengeluaran berhasil ditambahkan');
         });
@@ -196,6 +222,7 @@ class TransaksiPengeluaranController extends Controller
             ]);
 
             $t->details()->delete();
+            AkunRelasiTransaksi::where('id_transaksi', $t->id_transaksi)->delete();
 
             foreach ($request->sumber as $s) {
                 DetailTransaksi::create([
@@ -212,6 +239,32 @@ class TransaksiPengeluaranController extends Controller
                 'debit' => $total,
                 'kredit' => 0,
             ]);
+
+            // INSERT RELASI AKUNTANSI (DOUBLE ENTRY)
+
+            // 1. Akun tujuan (Biaya/Beban) → DEBIT
+            AkunRelasiTransaksi::create([
+                'id_transaksi'      => $t->id_transaksi,
+                'id_akun'           => $request->id_akun_tujuan,
+                'id_akun_berkaitan'  => $request->sumber[0]['id_jenisAkunTransaksi'],
+                'debit'             => $total,
+                'kredit'            => 0,
+                'kode_transaksi'    => $t->kode_transaksi,
+                'tanggal_transaksi' => $t->tanggal_transaksi
+            ]);
+
+            // 2. Banyak akun kas → KREDIT
+            foreach ($request->sumber as $s) {
+                AkunRelasiTransaksi::create([
+                    'id_transaksi'      => $t->id_transaksi,
+                    'id_akun'           => $s['id_jenisAkunTransaksi'],
+                    'id_akun_berkaitan' => $request->id_akun_tujuan,
+                    'debit'             => 0,
+                    'kredit'            => $s['jumlah'],
+                    'kode_transaksi'    => $t->kode_transaksi,
+                    'tanggal_transaksi' => $t->tanggal_transaksi
+                ]);
+            }
 
             return redirect()->route('pengeluaran.index')
                 ->with('success', 'Data berhasil diperbarui');
