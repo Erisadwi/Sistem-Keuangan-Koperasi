@@ -40,8 +40,8 @@
             @if($user && in_array($user->id_role, ['R06', 'R07']))
             <x-menu.section title="Transaksi Kas" :open="false" :has-sub="true">
                 <a href="{{ route('transaksi-pemasukan.index') }}" class="submenu-row">Pemasukan</a>
-                <a href="#" class="submenu-row">Pengeluaran</a>
-                <a href="#" class="submenu-row">Transfer</a>
+                <a href="{{ route('pengeluaran.index') }}" class="submenu-row">Pengeluaran</a>
+                <a href="{{ route('transaksi-transfer.index') }}"  class="submenu-row">Transfer</a>
             </x-menu.section>
             @endif
       
@@ -56,7 +56,7 @@
             @if($user && in_array($user->id_role, ['R04', 'R07']))
             <x-menu.section title="Simpanan" :open="false" :has-sub="true">
                 <a href="{{ route('setoran-tunai.index') }}" class="submenu-row">Setoran Tunai</a>
-                <a href="#" class="submenu-row">Penarikan Tunai</a>
+                <a href="{{ route('penarikan-tunai.index') }}" class="submenu-row">Penarikan Tunai</a>
             </x-menu.section>
             @endif
 
@@ -85,14 +85,14 @@
       
             @if($user && in_array($user->id_role, ['R07']))
             <x-menu.section title="Master Data" :open="false" :has-sub="true">
-                <a href="#" class="submenu-row">Saldo Awal Kas</a>
+                <a href="{{ route('saldo-awal-kas.index') }}" class="submenu-row">Saldo Awal Kas</a>
                 <a href="{{ route('saldo-awal-non-kas.index') }}" class="submenu-row">Saldo Awal Non Kas</a>
                 <a href="#" class="submenu-row">Jenis Simpanan</a>
-                <a href="#" class="submenu-row">Jenis Akun Transaksi</a>
-                <a href="#" class="submenu-row">Lama Angsuran</a>
+                <a href="{{ route('jenis-akun-transaksi.index') }}" class="submenu-row">Jenis Akun Transaksi</a>
+                <a href="{{ route('lama-angsuran.index') }}" class="submenu-row">Lama Angsuran</a>
                 <a href="#" class="submenu-row">Data Barang</a>
-                <a href="#" class="submenu-row">Data Anggota</a>
-                <a href="#" class="submenu-row">Data Pengguna</a>
+                <a href="{{ route('anggota.index') }}" class="submenu-row">Data Anggota</a>
+                <a href="{{ route('data-user.index') }}" class="submenu-row">Data Pengguna</a>
                 </x-menu.section>
             @endif
 
