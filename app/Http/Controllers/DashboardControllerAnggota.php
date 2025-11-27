@@ -49,11 +49,21 @@ class DashboardControllerAnggota extends Controller
             ->where('pinjaman.id_anggota', $userId)
             ->count();
             
-        $totalTagihan = DB::table('view_data_angsuran')
-            ->where('username_anggota', $user->username_anggota)
-            ->where('status_lunas', 'Belum Lunas')
-            ->selectRaw('SUM(jumlah_pinjaman + bunga_angsuran + biaya_admin) AS total')
-            ->value('total') ?? 0;
+        $totalTagihan = DB::table('pinjaman as p')
+            ->leftJoin('bayar_angsuran as b', 'b.id_pinjaman', '=', 'p.id_pinjaman')
+            ->where('p.id_anggota', $userId)
+            ->where('p.status_lunas', 'BELUM LUNAS')
+            ->selectRaw("
+                SUM(
+                    (p.jumlah_pinjaman + p.bunga_pinjaman + p.biaya_admin)
+                    - COALESCE((SELECT SUM(angsuran_per_bulan) 
+                                FROM bayar_angsuran 
+                                WHERE id_pinjaman = p.id_pinjaman), 0)
+                ) AS sisa_tagihan
+            ")
+            ->value('sisa_tagihan') ?? 0;
+
+
 
         $totalDana = $simpanan + $pinjaman;
 

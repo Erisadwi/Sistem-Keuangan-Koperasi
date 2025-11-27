@@ -17,7 +17,8 @@
           <th>Bunga</th>
           <th>Administrasi</th>
           <th>Angsuran Per Bulan</th>
-          <th>Tagihan</th>
+          <th>Total Tagihan</th>
+          <th>Sisa Tagihan</th>
           <th>Tempo</th>
           <th>Lunas</th>
           <th>Keterangan</th>
@@ -34,6 +35,7 @@
               <td>Rp {{ number_format($row->administrasi, 0, ',', '.') }}</td>
               <td>Rp {{ number_format($row->angsuran_per_bulan, 0, ',', '.') }}</td>
               <td>Rp {{ number_format($row->tagihan, 0, ',', '.') }}</td>
+              <td>Rp {{ number_format($row->sisa_tagihan, 0, ',', '.') }}</td>
               <td>{{ \Carbon\Carbon::parse($row->tempo)->format('d-m-Y') }}</td>
               <td>{{ $row->lunas }}</td>
               <td>{{ $row->keterangan ?? '-' }}</td>
