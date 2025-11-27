@@ -14,48 +14,50 @@
   background: var(--bg);
   width: 98%;          
   margin-left: 10px;     
-  margin-top: 65px;     
+  margin-top: 40px;       
   padding: 0;             
   box-shadow: none;       
-  overflow: visible !important;   
-}
-
-.table-scroll-wrapper {
-  overflow: visible !important;   
-  max-height: none !important;    
-  width: 100%;
-  padding: 30px 16px 10px 16px; 
-  box-sizing: border-box;
-}
-
-.table-scroll-wrapper::-webkit-scrollbar {
-  display: none !important;
+  overflow-x: visible; 
 }
 
 .laporan-neraca-table {
   width: 100%;
+  min-width: 0;
   border-collapse: collapse;
   background: white;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
   font-size: 14px;
-  table-layout: auto !important;   
+  table-layout: fixed;
 }
-
-.laporan-neraca-table thead {
-  background: var(--header-bg);
-  color: var(--header-text);
-  position: sticky;
-  top: 0;
-  z-index: 1;
-}
-
-.laporan-neraca-table th,
-.laporan-neraca-table td {
+.laporan-neraca-table th {
   text-align: center;
   padding: 10px 14px;
   border: 1px solid var(--border);
   white-space: nowrap;
+}
+
+.laporan-neraca-table td {
+  text-align: center;
+  padding: 10px 14px;
+  border: 1px solid var(--border);
+  white-space: normal !important;
+  word-wrap: break-word;
+  word-break: break-word;
   vertical-align: middle;
+}
+
+.laporan-neraca-table tr.akun-header td {
+  text-align: left !important;
+  padding-left: 14px;
+  font-weight: 600;
+  white-space: normal !important; 
+}
+
+.laporan-neraca-table td.nama-akun-item,
+.laporan-neraca-table td.nama-akun {
+  text-align: left !important;
+  padding-left: 14px;
+  white-space: normal !important;
 }
 
 .laporan-neraca-table tbody tr:nth-child(even) {
@@ -67,7 +69,7 @@
 }
 
 .laporan-neraca-table .empty-cell {
-  width: 200px;          
+  width: 200px;
   text-align: center;
   padding: 10px;
   color: #6b7280;
@@ -76,4 +78,8 @@
   border-radius: 6px;
 }
 
-
+.laporan-neraca-table thead th {
+  background: var(--header-bg) !important;
+  color: var(--header-text) !important;
+  font-weight: 600;
+}

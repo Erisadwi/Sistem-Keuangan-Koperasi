@@ -15,6 +15,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Angsuran;
 use Carbon\Carbon;
 use App\Models\Pinjaman;
+use Illuminate\Support\Facades\DB;
 
 class AngsuranController extends Controller
 {
@@ -262,6 +263,114 @@ class AngsuranController extends Controller
         ->with('success', 'Angsuran berhasil ditambahkan.');
 
     }
+
+public function createPelunasan($id_pinjaman)
+{
+    $pinjaman = Pinjaman::with(['anggota', 'lamaAngsuran'])->findOrFail($id_pinjaman);
+    $payments = Angsuran::where('id_pinjaman', $id_pinjaman)->get();
+
+    $totalBayar = $payments->sum(function ($pay) {
+        return ($pay->angsuran_pokok ?? 0) + ($pay->bunga_angsuran ?? 0) + ($pay->denda ?? 0);
+    });
+
+    $totalPeriode = $pinjaman->lamaAngsuran->lama_angsuran;
+    $jumlahAngsuranDibayar = $payments->count();
+    $sisaAngsuran = max(0, $totalPeriode - $jumlahAngsuranDibayar);
+
+    $angsuranPokokPerBulan = $pinjaman->jumlah_pinjaman / $totalPeriode;
+    $bungaPerBulan = $pinjaman->bunga_pinjaman / $totalPeriode;
+
+    $angsuranPokok = $angsuranPokokPerBulan * $sisaAngsuran;
+    $bungaAngsuran = $bungaPerBulan * $sisaAngsuran;
+
+    $sisaTagihan = max(0, $angsuranPokok + $bungaAngsuran);
+
+    if ($sisaTagihan <= 0) {
+        return redirect()->route('bayar.angsuran', $id_pinjaman)
+            ->with('error', 'Pinjaman ini sudah lunas.');
+    }
+
+    $jumlahBayar = $sisaTagihan;
+
+    $idBayar = Angsuran::generateId();
+    $denda = 0;
+
+    $akunSumber = JenisAkunTransaksi::where('angsuran','Y')
+            ->where('is_kas', 0)
+            ->orderBy('nama_AkunTransaksi')->get();
+
+    $akunTujuan = JenisAkunTransaksi::where('angsuran','Y')
+            ->where('is_kas', 1)
+            ->orderBy('nama_AkunTransaksi')->get();
+    
+    $keteranganDefault = "Pelunasan";
+
+    return view('admin.pinjaman.tambah-pelunasan-pinjaman', [
+        'pinjaman' => $pinjaman,
+        'angsuranPokok' => $angsuranPokok,
+        'bungaAngsuran' => $bungaAngsuran,
+        'jumlahBayar' => $jumlahBayar,
+        'sisaTagihan' => $sisaTagihan,
+        'idBayar' => $idBayar,
+        'akunSumber' => $akunSumber,
+        'akunTujuan' => $akunTujuan,
+        'denda' => $denda,
+        'keteranganDefault' => $keteranganDefault,
+    ]);
+}
+
+
+public function storePelunasan(Request $request, $id_pinjaman)
+{
+    $pinjaman = Pinjaman::with('lamaAngsuran')->findOrFail($id_pinjaman);
+
+    $totalPeriode = $pinjaman->lamaAngsuran->lama_angsuran;
+    $payments = Angsuran::where('id_pinjaman', $id_pinjaman)->get();
+    $jumlahAngsuranDibayar = $payments->count();
+
+    $sisaAngsuran = max(0, $totalPeriode - $jumlahAngsuranDibayar);
+
+    $angsuranPokokPerBulan = $pinjaman->jumlah_pinjaman / $totalPeriode;
+    $bungaPerBulan = $pinjaman->bunga_pinjaman / $totalPeriode;
+
+    $angsuranPokok = $angsuranPokokPerBulan * $sisaAngsuran;
+    $bungaAngsuran = $bungaPerBulan * $sisaAngsuran;
+
+    $jumlahBayar = $angsuranPokok + $bungaAngsuran;
+
+    $angsuran = Angsuran::create([
+        'id_bayar_angsuran' => Angsuran::generateId(),
+        'id_pinjaman' => $id_pinjaman,
+        'tanggal_bayar' => $request->tanggal_bayar,
+        'angsuran_pokok' => $angsuranPokok,
+        'bunga_angsuran' => $bungaAngsuran,
+        'denda' => 0,
+        'angsuran_per_bulan' => $jumlahBayar,
+        'sisa_tagihan' => 0,
+        'keterangan' => "Pelunasan Pinjaman",
+        'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
+        'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
+        'id_user' => Auth::user()->id_user
+    ]);
+
+    $pinjaman->status_lunas = "Lunas";
+    $pinjaman->save();
+
+    $kode_transaksi_view = DB::table('view_data_angsuran')
+        ->where('id_bayar_angsuran', $angsuran->id_bayar_angsuran)
+        ->value('kode_transaksi');
+
+    if (!$kode_transaksi_view) {
+        return redirect()->back()->with('error', 'Kode transaksi tidak ditemukan di VIEW.');
+    }
+
+    return redirect()->route('detail.pelunasan', $kode_transaksi_view)
+        ->with('success', 'Pelunasan pinjaman berhasil dilakukan.');
+}
+
+
+
+
 
      public function edit($id_bayar_angsuran)
     {

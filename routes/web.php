@@ -106,6 +106,7 @@ Route::prefix('admin/master_data')->group(function () {
     Route::get('lama-angsuran/{id}/edit', [LamaAngsuranController::class, 'edit'])->name('lama-angsuran.edit');
     Route::put('lama-angsuran/{id}', [LamaAngsuranController::class, 'update'])->name('lama-angsuran.update');
     Route::delete('lama-angsuran/{id}', [LamaAngsuranController::class, 'destroy'])->name('lama-angsuran.destroy');
+    Route::get('lama-angsuran/export', [LamaAngsuranController::class, 'export'])->name('lama-angsuran.export');
 
     Route::get('anggota', [AnggotaController::class, 'index'])->name('anggota.index');
     Route::get('anggota/create', [AnggotaController::class, 'create'])->name('anggota.create');
@@ -225,6 +226,11 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/export/pdf', [AngsuranController::class, 'exportPdf'])->name('angsuran.export.pdf');
     Route::get('/cetak/{id_bayar_angsuran}', [AngsuranController::class, 'cetak'])->name('angsuran.cetak');
     Route::get('/admin/angsuran/{id_pinjaman}', [AngsuranController::class, 'show'])->name('angsuran.show');
+    Route::get('/angsuran/pelunasan/{id_pinjaman}', [AngsuranController::class, 'createPelunasan'])
+        ->name('angsuran.createPelunasan');
+
+    Route::post('/angsuran/pelunasan/{id_pinjaman}', [AngsuranController::class, 'storePelunasan'])
+        ->name('angsuran.storePelunasan');
 });
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
