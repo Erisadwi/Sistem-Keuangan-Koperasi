@@ -41,7 +41,7 @@ class SaldoAwalKasController extends Controller
 
         DB::transaction(function () use ($request) {
             $transaksi = Transaksi::create([
-              //  'id_user' => Auth::check() ? Auth::user()->id_user : null,//
+                'id_user' => Auth::user()->id_user,
                 'type_transaksi' => 'SAK',
                 'kode_transaksi' => '',
                 'ket_transaksi' => $request->ket_transaksi,
