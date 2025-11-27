@@ -357,7 +357,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
     $pinjaman->save();
 
     $kode_transaksi_view = DB::table('view_data_angsuran')
-        ->where('id_bayar_angsuran', $angsuran->id_bayar_angsuran)
+        ->where('id_pinjaman', $angsuran->id_pinjaman)
         ->value('kode_transaksi');
 
     if (!$kode_transaksi_view) {

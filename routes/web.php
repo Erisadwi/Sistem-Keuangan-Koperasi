@@ -292,27 +292,4 @@ Route::get('/', function () {
 });
 
 
-Route::get('/anggota/test', function () {
-    return view('anggota.test');
-})->name('anggota.test');
-
-Route::get('/admin/pinjaman/data-pengajuan', function () {
-    return view('admin.pinjaman.data-pengajuan');
-})->name('admin.pinjaman.data-pengajuan');
-
-Route::get('/anggota/notifikasi', function () {
-    return view('anggota.notifikasi');
-})->name('anggota.notifikasi');
-
-Route::get('/admin/pinjaman/edit-bayar-angsuran', function () {
-    return view('admin.pinjaman.edit-bayar-angsuran');
-})->name('admin.pinjaman.edit-bayar-angsuran');
-
-Route::get('/admin/pinjaman/detail-peminjaman', function () {
-    return view('admin.pinjaman.detail-peminjaman');
-})->name('admin.pinjaman.detail-peminjaman');
-
-Route::get('/anggota/data-pengajuan-coba', function () {
-    return view('anggota.data-pengajuan-coba');
-})->name('anggota.data-pengajuan-coba');
 
