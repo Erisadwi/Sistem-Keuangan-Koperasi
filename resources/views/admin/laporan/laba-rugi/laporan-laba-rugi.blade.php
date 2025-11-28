@@ -1,4 +1,4 @@
-@extends('layouts.laporan-admin')
+@extends('layouts.laporan-admin3')
 
 @section('title', 'Laporan Laba Rugi')  
 @section('title-1', 'Laba Rugi')  
@@ -8,18 +8,22 @@
 @endsection
 @section('sub-title', 'Laporan Laba Rugi')  
 
+@section('filter-area')
+<div class="header-flex">
+    <div class="left-tools">
+    <x-menu.date-filter/>
+    <x-menu.unduh 
+        :url="route('laba-rugi.exportPdf', [
+            'start_date' => request('start_date'),
+            'end_date'   => request('end_date'),
+            'preset'     => request('preset')
+        ])" 
+        text="Unduh Laporan"
+    />
+    </div>
+</div>
+@endsection
 @section('content')
-
-<x-menu.date-filter/>
-<x-menu.unduh 
-    :url="route('laba-rugi.exportPdf', [
-        'start_date' => request('start_date'),
-        'end_date'   => request('end_date'),
-        'preset'     => request('preset')
-    ])" 
-    text="Unduh Laporan"
-/>
-
 
 
 <div class="laporan-laba-rugi-wrap">
@@ -78,7 +82,8 @@
   background: var(--bg);
   width: 98%;          
   margin-left: 10px;     
-  margin-top: 65px;     
+  margin-top: 30px; 
+  padding-bottom: 20px;    
   padding: 0;             
   box-shadow: none;       
   overflow-x: visible; 
