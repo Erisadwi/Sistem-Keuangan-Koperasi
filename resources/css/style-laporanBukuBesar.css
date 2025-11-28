@@ -8,7 +8,6 @@
   --text: #222;
 }
 
-/* Judul Section */
 .judul-section {
   font-weight: 600;
   font-size: 16px;
@@ -18,8 +17,7 @@
 }
 
 .tabel-buku-besar {
-  width: 95%;         
-  max-width: 900px;        
+  width: 98%;         
   border-collapse: collapse;
   background: #ffffff;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
@@ -66,8 +64,7 @@
 }
 
 .saldo-box {
-  width: 95% !important;
-  max-width: 900px !important;
+  width: 98% !important;
   margin-left: 10px !important;
   margin-bottom: 5px !important;
   margin: 5px auto !important;     

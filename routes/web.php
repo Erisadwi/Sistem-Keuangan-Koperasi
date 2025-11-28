@@ -75,50 +75,9 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::put('/profil/update/{id}', [ProfilController::class, 'update'])->name('profil.update');
 });
 
-Route::prefix('admin/master_data')->group(function () {
-    Route::get('jenis-simpanan', [JenisSimpananController::class, 'index'])->name('jenis-simpanan.index');
-    Route::get('jenis-simpanan/create', [JenisSimpananController::class, 'create'])->name('jenis-simpanan.create');
-    Route::post('jenis-simpanan', [JenisSimpananController::class, 'store'])->name('jenis-simpanan.store');
-    Route::get('jenis-simpanan/{id}/edit', [JenisSimpananController::class, 'edit'])->name('jenis-simpanan.edit');
-    Route::put('jenis-simpanan/{id}', [JenisSimpananController::class, 'update'])->name('jenis-simpanan.update');
-    Route::delete('jenis-simpanan/{id}', [JenisSimpananController::class, 'destroy'])->name('jenis-simpanan.destroy');
-    Route::get('jenis-simpanan/export', [JenisSimpananController::class, 'export'])->name('jenis-simpanan.export');
-
-    Route::get('jenis-barang', [JenisBarangController::class, 'index'])->name('jenis-barang.index');
-    Route::get('jenis-barang/create', [JenisBarangController::class, 'create'])->name('jenis-barang.create');
-    Route::post('jenis-barang', [JenisBarangController::class, 'store'])->name('jenis-barang.store');
-    Route::get('jenis-barang/{id}/edit', [JenisBarangController::class, 'edit'])->name('jenis-barang.edit');
-    Route::put('jenis-barang/{id}', [JenisBarangController::class, 'update'])->name('jenis-barang.update');
-    Route::delete('jenis-barang/{id}', [JenisBarangController::class, 'destroy'])->name('jenis-barang.destroy');
-    Route::get('jenis-barang/export', [JenisBarangController::class, 'export'])->name('jenis-barang-inventaris.export');
-
-    Route::get('lama-angsuran', [LamaAngsuranController::class, 'index'])->name('lama-angsuran.index');
-    Route::get('lama-angsuran/create', [LamaAngsuranController::class, 'create'])->name('lama-angsuran.create');
-    Route::post('lama-angsuran', [LamaAngsuranController::class, 'store'])->name('lama-angsuran.store');
-    Route::get('lama-angsuran/{id}/edit', [LamaAngsuranController::class, 'edit'])->name('lama-angsuran.edit');
-    Route::put('lama-angsuran/{id}', [LamaAngsuranController::class, 'update'])->name('lama-angsuran.update');
-    Route::delete('lama-angsuran/{id}', [LamaAngsuranController::class, 'destroy'])->name('lama-angsuran.destroy');
-    Route::get('lama-angsuran/export', [LamaAngsuranController::class, 'export'])->name('lama-angsuran.export');
-
-    Route::get('users', [UserController::class, 'index'])->name('data-user.index');
-    Route::get('users/create', [UserController::class, 'create'])->name('data-user.create');
-    Route::post('users', [UserController::class, 'store'])->name('data-user.store');
-    Route::get('users/{id}/edit', [UserController::class, 'edit'])->name('data-user.edit');
-    Route::put('users/{id}', [UserController::class, 'update'])->name('data-user.update');
-    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('data-user.destroy');
-    Route::get('users/export', [UserController::class, 'export'])->name('data-user.export');
-
-    
-});
-
-
 Route::get('/test-logo', [App\Http\Controllers\Admin\setting\identitasKoperasiController::class, 'testBlob']);
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
-
-    Route::get('transaksi-non-kas/export-pdf', [TransaksiNonKasController::class, 'exportPdf'])->name('transaksi-non-kas.export-pdf');
-    Route::resource('transaksi-non-kas', TransaksiNonKasController::class)->except(['show']);
-
     Route::get('identitas-koperasi/edit', [identitasKoperasiController::class, 'edit'])->name('identitas-koperasi.editSingle');
     Route::put('identitas-koperasi/', [identitasKoperasiController::class, 'update'])->name('identitas-koperasi.updateSingle');
     
@@ -138,9 +97,7 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::delete('/setoran-tunai/{id}', [SetoranTunaiController::class, 'destroy'])->name('setoran-tunai.destroy');
     Route::get('/setoran-tunai/export-pdf', [SetoranTunaiController::class, 'exportPdf'])->name('setoran-tunai.exportPdf');
     Route::get('/setoran-tunai/{id}/cetak', [SetoranTunaiController::class, 'cetak'])->name('setoran-tunai.cetak');
-});
 
-Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/penarikan-tunai', [PenarikanTunaiController::class, 'index'])->name('penarikan-tunai.index');
     Route::get('/penarikan-tunai/create', [PenarikanTunaiController::class, 'create'])->name('penarikan-tunai.create');
     Route::post('penarikan-tunai', [PenarikanTunaiController::class, 'store'])->name('penarikan-tunai.store');
@@ -152,6 +109,11 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
 });
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
+    Route::get('pengajuan-pinjaman', [PengajuanPinjamanController::class, 'index'])->name('pengajuan-pinjaman.index');
+    Route::get('pengajuan-pinjaman/{id}/disetujui', [PengajuanPinjamanController::class, 'disetujui'])->name('pengajuan-pinjaman.disetujui');
+    Route::patch('pengajuan-pinjaman/{id}/tolak', [PengajuanPinjamanController::class, 'tolak'])->name('pengajuan-pinjaman.tolak');
+    Route::get('pengajuan-pinjaman/exportPdf', [PengajuanPinjamanController::class, 'exportPdf'])->name('pengajuan-pinjaman.exportPdf');
+
     Route::get('/pinjaman', [DataPinjamanController::class, 'index'])->name('pinjaman.index');
     Route::get('/pinjaman/create', [DataPinjamanController::class, 'create'])->name('pinjaman.create');
     Route::get('pinjaman/cetak-nota/{id}', [DataPinjamanController::class, 'cetakNota'])->name('pinjaman.cetak-nota');
@@ -161,13 +123,6 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/pinjaman/{id}', [DataPinjamanController::class, 'show'])->name('pinjaman.show');
     Route::put('/pinjaman/{id}', [DataPinjamanController::class, 'update'])->name('pinjaman.update');
     Route::delete('/pinjaman/{id}', [DataPinjamanController::class, 'destroy'])->name('pinjaman.destroy');
-});
-
-Route::middleware(['auth:user'])->prefix('admin')->group(function () {
-    Route::get('pengajuan-pinjaman', [PengajuanPinjamanController::class, 'index'])->name('pengajuan-pinjaman.index');
-    Route::get('pengajuan-pinjaman/{id}/disetujui', [PengajuanPinjamanController::class, 'disetujui'])->name('pengajuan-pinjaman.disetujui');
-    Route::patch('pengajuan-pinjaman/{id}/tolak', [PengajuanPinjamanController::class, 'tolak'])->name('pengajuan-pinjaman.tolak');
-    Route::get('pengajuan-pinjaman/exportPdf', [PengajuanPinjamanController::class, 'exportPdf'])->name('pengajuan-pinjaman.exportPdf');
 });
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
@@ -199,8 +154,39 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
     Route::get('/jenis-akun-transaksi/export', [JenisAkunTransaksiController::class, 'export'])->name('jenis-akun-transaksi.export');
     Route::get('/jenis-akun-transaksi/{id}/edit', [JenisAkunTransaksiController::class, 'edit'])->name('jenis-akun-transaksi.edit');
     Route::put('/jenis-akun-transaksi/{id}', [JenisAkunTransaksiController::class, 'update'])->name('jenis-akun-transaksi.update');
-    
 
+    Route::get('jenis-simpanan', [JenisSimpananController::class, 'index'])->name('jenis-simpanan.index');
+    Route::get('jenis-simpanan/create', [JenisSimpananController::class, 'create'])->name('jenis-simpanan.create');
+    Route::post('jenis-simpanan', [JenisSimpananController::class, 'store'])->name('jenis-simpanan.store');
+    Route::get('jenis-simpanan/{id}/edit', [JenisSimpananController::class, 'edit'])->name('jenis-simpanan.edit');
+    Route::put('jenis-simpanan/{id}', [JenisSimpananController::class, 'update'])->name('jenis-simpanan.update');
+    Route::delete('jenis-simpanan/{id}', [JenisSimpananController::class, 'destroy'])->name('jenis-simpanan.destroy');
+    Route::get('jenis-simpanan/export', [JenisSimpananController::class, 'export'])->name('jenis-simpanan.export');
+
+    Route::get('jenis-barang', [JenisBarangController::class, 'index'])->name('jenis-barang.index');
+    Route::get('jenis-barang/create', [JenisBarangController::class, 'create'])->name('jenis-barang.create');
+    Route::post('jenis-barang', [JenisBarangController::class, 'store'])->name('jenis-barang.store');
+    Route::get('jenis-barang/{id}/edit', [JenisBarangController::class, 'edit'])->name('jenis-barang.edit');
+    Route::put('jenis-barang/{id}', [JenisBarangController::class, 'update'])->name('jenis-barang.update');
+    Route::delete('jenis-barang/{id}', [JenisBarangController::class, 'destroy'])->name('jenis-barang.destroy');
+    Route::get('jenis-barang/export', [JenisBarangController::class, 'export'])->name('jenis-barang-inventaris.export');
+
+    Route::get('lama-angsuran', [LamaAngsuranController::class, 'index'])->name('lama-angsuran.index');
+    Route::get('lama-angsuran/create', [LamaAngsuranController::class, 'create'])->name('lama-angsuran.create');
+    Route::post('lama-angsuran', [LamaAngsuranController::class, 'store'])->name('lama-angsuran.store');
+    Route::get('lama-angsuran/{id}/edit', [LamaAngsuranController::class, 'edit'])->name('lama-angsuran.edit');
+    Route::put('lama-angsuran/{id}', [LamaAngsuranController::class, 'update'])->name('lama-angsuran.update');
+    Route::delete('lama-angsuran/{id}', [LamaAngsuranController::class, 'destroy'])->name('lama-angsuran.destroy');
+    Route::get('lama-angsuran/export', [LamaAngsuranController::class, 'export'])->name('lama-angsuran.export');
+
+    Route::get('users', [UserController::class, 'index'])->name('data-user.index');
+    Route::get('users/create', [UserController::class, 'create'])->name('data-user.create');
+    Route::post('users', [UserController::class, 'store'])->name('data-user.store');
+    Route::get('users/{id}/edit', [UserController::class, 'edit'])->name('data-user.edit');
+    Route::put('users/{id}', [UserController::class, 'update'])->name('data-user.update');
+    Route::delete('users/{id}', [UserController::class, 'destroy'])->name('data-user.destroy');
+    Route::get('users/export', [UserController::class, 'export'])->name('data-user.export');
+    
 });
 
 
@@ -214,6 +200,9 @@ Route::middleware(['auth:user'])->prefix('admin')->group(function () {
 
     Route::get('transaksi_kas/transfer/export-pdf', [TransaksiTransferController::class,  'exportPdf'])->name('transaksi-transfer.export-pdf');
     Route::resource('transaksi-transfer', TransaksiTransferController::class)->except(['show']);
+
+    Route::get('transaksi-non-kas/export-pdf', [TransaksiNonKasController::class, 'exportPdf'])->name('transaksi-non-kas.export-pdf');
+    Route::resource('transaksi-non-kas', TransaksiNonKasController::class)->except(['show']);
 });
 
 Route::middleware(['auth:user'])->prefix('admin')->group(function () {
@@ -290,6 +279,4 @@ Route::middleware(['auth:user'])->group(function () {
 Route::get('/', function () {
     return view('auth.login');
 });
-
-
 

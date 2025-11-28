@@ -113,7 +113,7 @@
 
 .laporan-kas-pinjaman-table {
   width: 100%;
-  min-width: 1000px;
+  min-width: 860px;
   border-collapse: collapse;
   background: #ffffff;
   font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;

@@ -89,15 +89,14 @@
 }
 
 .table-scroll-wrapper {
-  overflow-x: auto;
-  overflow-y: auto;
-  max-height: 400px;
-  width: 100%;
-  background: transparent; 
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  max-height: none !important;
+   width: 100%;
+  background: transparent;
   border-radius: 4px;
-  padding-bottom: 8px;       
+  padding-bottom: 8px;
 }
-
 .table-scroll-wrapper table {
   margin-bottom: 0;
   background: white;
