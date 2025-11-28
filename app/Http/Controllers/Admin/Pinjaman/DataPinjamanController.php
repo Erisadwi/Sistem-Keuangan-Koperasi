@@ -51,24 +51,20 @@ class DataPinjamanController extends Controller
     if ($request->filled('sort')) {
     switch ($request->sort) {
 
-        // tanggal baru → lama
         case 'baru':
             $query->orderBy('tanggal_pinjaman', 'desc');
             break;
 
-        // tanggal lama → baru
         case 'lama':
             $query->orderBy('tanggal_pinjaman', 'asc');
             break;
 
-        // nama A → Z
         case 'nama_asc':
             $query->join('anggota', 'pinjaman.id_anggota', '=', 'anggota.id_anggota')
                   ->orderBy('anggota.nama_anggota', 'asc')
                   ->select('pinjaman.*');
             break;
 
-        // nama Z → A
         case 'nama_desc':
             $query->join('anggota', 'pinjaman.id_anggota', '=', 'anggota.id_anggota')
                   ->orderBy('anggota.nama_anggota', 'desc')
@@ -91,7 +87,8 @@ class DataPinjamanController extends Controller
             $item->lama_angsuran_text = $lama > 0 ? $lama . ' Bulan' : '-';
 
             $bunga = $item->bunga_pinjaman ?? 0;
-            $item->jumlah_angsuran_otomatis = $item->pokok_angsuran + $bunga;
+            $bunga_angsuran = $bunga / $lama;
+            $item->jumlah_angsuran_otomatis = $item->pokok_angsuran + $bunga_angsuran;
 
             $totalBayar = Angsuran::where('id_pinjaman', $item->id_pinjaman)
                 ->sum(\DB::raw('(angsuran_pokok + bunga_angsuran + denda)'));
@@ -157,7 +154,7 @@ class DataPinjamanController extends Controller
             : 0;
 
         $biaya_admin = round(($rateAdmin / 100) * $jumlah, 2);
-        $totalTagihan = $jumlah + ($bunga_pinjaman * $lama);
+        $totalTagihan = $jumlah + $bunga_pinjaman;
 
         $idPinjaman = Pinjaman::generateId();
 
@@ -190,10 +187,11 @@ public function show($id)
     $lama = $pinjaman->lamaAngsuran->lama_angsuran ?? 0;
     $pokok = $pinjaman->jumlah_pinjaman ?? 0;
     $bunga = $pinjaman->bunga_pinjaman ?? 0;
+    $bunga_angsuran = $bunga / $lama;
     $biaya_admin = $pinjaman->biaya_admin ?? 0;
 
     $pokokPerBulan = $lama > 0 ? round($pokok / $lama, 0) : 0;
-    $angsuranPerBulan = $pokokPerBulan + $bunga + $biaya_admin;
+    $angsuranPerBulan = $pokokPerBulan + $bunga_angsuran + $biaya_admin;
 
     $tanggalTempo = null;
 
@@ -222,7 +220,7 @@ public function show($id)
         $payments->push((object)[
             'bulan_ke'        => $i,
             'angsuran_pokok'  => $pokokPerBulan,
-            'angsuran_bunga'  => $bunga,
+            'angsuran_bunga'  => $bunga_angsuran,
             'biaya_admin'     => $biaya_admin,
             'jumlah_angsuran' => $angsuranPerBulan,
             'tanggalTempo'    => $tempo->format('Y-m-d'),
@@ -402,7 +400,6 @@ public function edit($id)
         $bunga = $item->bunga_pinjaman ?? 0;
         $item->jumlah_angsuran_otomatis = $item->pokok_angsuran + $bunga;
 
-        // Total bayar
         $totalBayar = \App\Models\Angsuran::where('id_pinjaman', $item->id_pinjaman)
             ->sum(\DB::raw('(angsuran_pokok + bunga_angsuran + denda)'));
 

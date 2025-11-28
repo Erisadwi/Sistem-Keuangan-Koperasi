@@ -30,6 +30,7 @@
             <label for="id_jenisAkunTransaksi_sumber">Dari Akun</label>
             <select name="id_jenisAkunTransaksi_sumber" id="id_jenisAkunTransaksi_sumber" required>
                 @foreach ($akunSumber as $a)
+                <option value="">-- Pilih Akun Kas --</option>
                 <option value="{{ $a->id_jenisAkunTransaksi }}"
                     {{ old('id_jenisAkunTransaksi_sumber') == $a->id_jenisAkunTransaksi ? 'selected' : '' }}>
                     {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}

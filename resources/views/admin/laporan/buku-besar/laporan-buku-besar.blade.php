@@ -49,8 +49,6 @@
         </tr>
     </table>
 
-
-
     {{-- ============ TABEL TRANSAKSI ============ --}}
     <table class="tabel-buku-besar">
         <thead>
