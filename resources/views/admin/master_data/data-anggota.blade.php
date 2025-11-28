@@ -92,15 +92,6 @@
   margin-top: 25px;
 }
 
-.table-scroll-wrapper {
-  overflow-x: auto;
-  overflow-y: auto;
-  max-height: 400px;
-  width: 100%;
-  background: transparent;
-  border-radius: 4px;
-  padding-bottom: 8px;
-}
 
 .table-scroll-wrapper table {
   margin-bottom: 0;
@@ -116,6 +107,16 @@
 }
 .table-scroll-wrapper::-webkit-scrollbar-track {
   background: #f0f0f0;
+}
+
+.table-scroll-wrapper {
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  max-height: none !important;
+   width: 100%;
+  background: transparent;
+  border-radius: 4px;
+  padding-bottom: 8px;
 }
 
 .data-anggota-table {
