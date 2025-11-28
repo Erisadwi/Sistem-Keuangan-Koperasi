@@ -70,8 +70,11 @@ class AngsuranController extends Controller
             $query->where('id_bayar_angsuran', 'like', '%' . $request->kode . '%');
         }
 
-        if ($request->filled('tanggalMulai') && $request->filled('tanggalAkhir')) {
-            $query->whereBetween('tanggal_bayar', [$request->tanggalMulai, $request->tanggalAkhir]);
+        $tanggalMulai = $request->tanggal_mulai;
+        $tanggalAkhir = $request->tanggal_akhir;
+
+        if ($tanggalMulai && $tanggalAkhir) {
+            $query->whereBetween('tanggal_bayar', [$tanggalMulai, $tanggalAkhir]);
         }
 
         $payments = $query->orderBy('tanggal_bayar', 'asc')->get();
@@ -143,6 +146,9 @@ class AngsuranController extends Controller
             'denda' => $denda,
             'tanggalTempo' => $tanggalTempo,
             'keterlambatan' => $keterlambatan,
+            'kode' => $request->kode,
+            'tanggalMulai' => $tanggalMulai,
+            'tanggalAkhir' => $tanggalAkhir,
         ]);
     }
 

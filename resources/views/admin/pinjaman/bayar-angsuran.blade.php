@@ -113,7 +113,7 @@
                     <a id="validasiBtn" href="{{ route('angsuran.createPelunasan', ['id_pinjaman' => $pinjaman->id_pinjaman]) }}" class="filter-button inline-flex items-center" style="text-decoration: none; color: black; font-weight: 480;">
                         <span class="df-ic" aria-hidden="true">
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                                <path d="M15.232 5.232l3.536 3.536M4 20h4l10.293-10.293a1 1 0 000-1.414l-2.586-2.586a1 1 0 00-1.414 0L4 16v4z" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <path d="M21.06 7.06a1.5 1.5 0 010 2.12l-10 10a1.5 1.5 0 01-2.12 0l-5-5a1.5 1.5 0 012.12-2.12L10 15.88l8.94-8.94a1.5 1.5 0 012.12 0z" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
                         </span>
                         Validasi Pelunasan
@@ -148,7 +148,11 @@
                                 <path d="M8 7V3M16 7V3M4 11h16M5 5h14a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"
                                   stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
-                            Tanggal
+                                @if(request('tanggalMulai') && request('tanggalAkhir'))
+                                    {{ request('tanggalMulai') }} s/d {{ request('tanggalAkhir') }}
+                                @else
+                                    Tanggal
+                                @endif
                         </button>
 
                         <!-- Pop-up filter tanggal -->
@@ -156,9 +160,11 @@
                             <h4>Pilih Tanggal</h4>
                             <div class="tanggal-inputs">
                                 <label>Dari:</label>
-                                <input type="date" id="tanggalMulai">
+                                <input type="date" id="tanggalMulai" 
+                                value="{{ request('tanggalMulai') }}" />
                                 <label>Sampai:</label>
-                                <input type="date" id="tanggalAkhir">
+                                <input type="date" id="tanggalAkhir" 
+                                value="{{ request('tanggalAkhir') }}" />
                             </div>
                             <div class="popup-actions">
                                 <button class="btn-simpan" onclick="simpanTanggal()">Simpan</button>
@@ -170,10 +176,12 @@
 
                 <div class="filter">
                     <label for="kode">Cari:</label>
-                    <input type="text" id="kode" placeholder="Kode Transaksi">
+                    <input type="text" id="kode" placeholder="Kode Transaksi"        
+                    name="kode" 
+                    value="{{ request('kode') }}" />
                     <button class="filter-button" onclick="hapusFilter()">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                            <path d="M6 6l12 12M6 18L18 6" stroke="#2563eb" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M6 6l12 12M6 18L18 6" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                         Hapus Filter
                     </button>
@@ -409,7 +417,6 @@
   font-size: 12px;
 }
 
-/* ====== KHUSUS BUTTON HAPUS ====== */
 .filter-button.hapus svg path {
   stroke: #ef4444;
 }
@@ -424,11 +431,14 @@
   padding: 7px 10px;
   font-size: 12px;
   cursor: pointer;
+  line-height: 0;  
   box-shadow: 0 2px 4px rgba(0,0,0,0.1);
   transition: all 0.2s ease;
 }
 .filter-button:hover, .filter-button:focus {
-  border: 1px solid #1e3a8a;
+    border: 1px solid #d1d5db;
+    background: #f0f9ff;
+  border-color: #0ea5e9;
   box-shadow: 0 2px 6px rgba(30,58,138,0.2);
 }
 
