@@ -42,121 +42,137 @@ class LaporanBukuBesarController extends Controller
     }
 
 
-    // ==========================================================
-    // GET DATA BUKU BESAR PER AKUN
-    // ==========================================================
     private function getBukuBesarData($bulan, $tahun)
+{
+    $akunTransaksi = JenisAkunTransaksi::orderBy('id_jenisAkunTransaksi')->get();
+
+    foreach ($akunTransaksi as $akun)
     {
-        $akunTransaksi = JenisAkunTransaksi::orderBy('id_jenisAkunTransaksi')->get();
+        $bukuBesar = [];
+        $totalDebit = 0;
+        $totalKredit = 0;
 
-        foreach ($akunTransaksi as $akun)
-        {
-            $debitAwal = $kreditAwal = 0;
-            $debitBulanIni = $kreditBulanIni = 0;
+        // ======================================================
+        // SALDO AWAL
+        // ======================================================
+        $saldoAwal = $akun->saldoAwal()
+            ->whereHas('transaksi', fn($q) => $q->whereIn('type_transaksi', ['SAK','SANK']))
+            ->get();
 
-            // ======================================================
-            // SALDO AWAL (SAK & SANK)
-            // ======================================================
-            $saldoAwalTransaksi = $akun->saldoAwal()
-                ->whereHas('transaksi', fn($q) => $q->whereIn('type_transaksi', ['SAK','SANK']))
-                ->get();
-
-            foreach ($saldoAwalTransaksi as $sa) {
-                $debitAwal  += $sa->debit;
-                $kreditAwal += $sa->kredit;
-            }
-            $saldoAwal = $debitAwal - $kreditAwal;  // saldo posisi akhir periode sebelumnya
+        $akun->saldo_awal = $saldoAwal->sum('debit') - $saldoAwal->sum('kredit');
 
 
-            // ======================================================
-            // TRANSAKSI RELASI (Akun Relasi Buku Besar)
-            // ======================================================
-            $kasNonKas = AkunRelasiTransaksi::where('id_akun', $akun->id_jenisAkunTransaksi)
-                ->whereYear('tanggal_transaksi', $tahun)
-                ->whereMonth('tanggal_transaksi', $bulan)
-                ->leftJoin('jenis_akun_transaksi AS akunLawan', 'akunLawan.id_jenisAkunTransaksi', '=', 'akun_relasi_transaksi.id_akun_berkaitan')
-                ->select(
-                    'akun_relasi_transaksi.*',
-                    'akunLawan.nama_akunTransaksi as akun_lawan'
-                )
-                ->get();
 
-            $akun->relasi_transaksi = $kasNonKas;
+        // ======================================================
+        // 1. TRANSAKSI KAS & NON KAS
+        // ======================================================
+        $kas = AkunRelasiTransaksi::where('id_akun', $akun->id_jenisAkunTransaksi)
+            ->whereYear('tanggal_transaksi', $tahun)
+            ->whereMonth('tanggal_transaksi', $bulan)
+            ->get();
 
-            foreach ($kasNonKas as $tr) {
-                $debitBulanIni  += $tr->debit;
-                $kreditBulanIni += $tr->kredit;
-            }
+        foreach ($kas as $tr) {
+            $bukuBesar[] = [
+                'tanggal' => $tr->tanggal_transaksi,
+                'akun_lawan' => $tr->akunLawan->nama_AkunTransaksi ?? '-',
+                'debit' => $tr->debit,
+                'kredit' => $tr->kredit
+            ];
 
-
-            // ======================================================
-            // SIMPANAN
-            // ======================================================
-            $simpanan = Simpanan::where(function($q) use ($akun) {
-                    $q->where('id_jenisAkunTransaksi_tujuan', $akun->id_jenisAkunTransaksi)
-                      ->orWhere('id_jenisAkunTransaksi_sumber', $akun->id_jenisAkunTransaksi);
-                })
-                ->whereYear('tanggal_transaksi', $tahun)
-                ->whereMonth('tanggal_transaksi', $bulan)
-                ->get();
-
-            foreach ($simpanan as $s) {
-                if ($s->id_jenisAkunTransaksi_tujuan == $akun->id_jenisAkunTransaksi)
-                    $debitBulanIni  += $s->jumlah_simpanan;
-
-                if ($s->id_jenisAkunTransaksi_sumber == $akun->id_jenisAkunTransaksi)
-                    $kreditBulanIni += $s->jumlah_simpanan;
-            }
-
-
-            // ======================================================
-            // PINJAMAN
-            // ======================================================
-            $pinjaman = Pinjaman::where(function($q) use ($akun) {
-                    $q->where('id_jenisAkunTransaksi_tujuan', $akun->id_jenisAkunTransaksi)
-                      ->orWhere('id_jenisAkunTransaksi_sumber', $akun->id_jenisAkunTransaksi);
-                })
-                ->whereYear('tanggal_pinjaman', $tahun)
-                ->whereMonth('tanggal_pinjaman', $bulan)
-                ->get();
-
-            foreach ($pinjaman as $p) {
-                if ($p->id_jenisAkunTransaksi_tujuan == $akun->id_jenisAkunTransaksi)
-                    $debitBulanIni += $p->jumlah_pinjaman;
-
-                if ($p->id_jenisAkunTransaksi_sumber == $akun->id_jenisAkunTransaksi)
-                    $kreditBulanIni += $p->jumlah_pinjaman;
-            }
-
-
-            // ======================================================
-            // ANGSURAN PINJAMAN
-            // ======================================================
-            $angsuran = Angsuran::where(function($q) use ($akun) {
-                    $q->where('id_jenisAkunTransaksi_tujuan', $akun->id_jenisAkunTransaksi)
-                      ->orWhere('id_jenisAkunTransaksi_sumber', $akun->id_jenisAkunTransaksi);
-                })
-                ->whereYear('tanggal_bayar', $tahun)
-                ->whereMonth('tanggal_bayar', $bulan)
-                ->get();
-
-            foreach ($angsuran as $a) {
-                if ($a->id_jenisAkunTransaksi_tujuan == $akun->id_jenisAkunTransaksi)
-                    $debitBulanIni += $a->angsuran_per_bulan;
-
-                if ($a->id_jenisAkunTransaksi_sumber == $akun->id_jenisAkunTransaksi)
-                    $kreditBulanIni += $a->angsuran_per_bulan;
-            }
-
-
-            // ======================================================
-            // HITUNG SALDO KUMULATIF AKHIR
-            // ======================================================
-            $akun->saldo_awal = $saldoAwal;
-            $akun->transaksi_bulan_ini = ['debit' => $debitBulanIni, 'kredit' => $kreditBulanIni];
-            $akun->saldo_kumulatif = $saldoAwal + ($debitBulanIni - $kreditBulanIni);
+            $totalDebit += $tr->debit;
+            $totalKredit += $tr->kredit;
         }
 
-        return $akunTransaksi;
+
+        // ======================================================
+        // 2. SIMPANAN
+        // ======================================================
+        $simpanan = Simpanan::where(function($q) use ($akun) {
+                $q->where('id_jenisAkunTransaksi_tujuan', $akun->id_jenisAkunTransaksi)
+                  ->orWhere('id_jenisAkunTransaksi_sumber', $akun->id_jenisAkunTransaksi);
+            })
+            ->whereYear('tanggal_transaksi', $tahun)
+            ->whereMonth('tanggal_transaksi', $bulan)
+            ->get();
+
+       foreach ($simpanan as $s) {
+            $bukuBesar[] = [
+                'tanggal' => $s->tanggal_transaksi,
+                'akun_lawan' =>
+                    ($s->akunTujuan->nama_AkunTransaksi ?? null)
+                    ?: ($s->akunSumber->nama_AkunTransaksi ?? '-'),
+
+                'debit' => $s->id_jenisAkunTransaksi_tujuan == $akun->id_jenisAkunTransaksi ? $s->jumlah_simpanan : 0,
+                'kredit' => $s->id_jenisAkunTransaksi_sumber == $akun->id_jenisAkunTransaksi ? $s->jumlah_simpanan : 0,
+            ];
+
+            $totalDebit  += end($bukuBesar)['debit'];
+            $totalKredit += end($bukuBesar)['kredit'];
+        }
+
+
+        // ======================================================
+        // 3. PINJAMAN
+        // ======================================================
+        $pinjaman = Pinjaman::where(function($q) use ($akun) {
+                $q->where('id_jenisAkunTransaksi_tujuan', $akun->id_jenisAkunTransaksi)
+                  ->orWhere('id_jenisAkunTransaksi_sumber', $akun->id_jenisAkunTransaksi);
+            })
+            ->whereYear('tanggal_pinjaman', $tahun)
+            ->whereMonth('tanggal_pinjaman', $bulan)
+            ->get();
+
+       foreach ($pinjaman as $p) {
+            $bukuBesar[] = [
+                'tanggal' => $p->tanggal_pinjaman,
+                'akun_lawan' =>
+                    ($p->akunTujuan->nama_AkunTransaksi ?? null)
+                    ?: ($p->akunSumber->nama_AkunTransaksi ?? '-'),
+
+                'debit' => $p->id_jenisAkunTransaksi_tujuan == $akun->id_jenisAkunTransaksi ? $p->jumlah_pinjaman : 0,
+                'kredit' => $p->id_jenisAkunTransaksi_sumber == $akun->id_jenisAkunTransaksi ? $p->jumlah_pinjaman : 0,
+            ];
+
+            $totalDebit  += end($bukuBesar)['debit'];
+            $totalKredit += end($bukuBesar)['kredit'];
+        }
+
+
+        // ======================================================
+        // 4. ANGSURAN PINJAMAN
+        // ======================================================
+        $angsuran = Angsuran::where(function($q) use ($akun) {
+                $q->where('id_jenisAkunTransaksi_tujuan', $akun->id_jenisAkunTransaksi)
+                  ->orWhere('id_jenisAkunTransaksi_sumber', $akun->id_jenisAkunTransaksi);
+            })
+            ->whereYear('tanggal_bayar', $tahun)
+            ->whereMonth('tanggal_bayar', $bulan)
+            ->get();
+
+       foreach ($angsuran as $a) {
+            $bukuBesar[] = [
+                'tanggal' => $a->tanggal_bayar,
+                'akun_lawan' =>
+                    ($a->akunTujuan->nama_AkunTransaksi ?? null)
+                    ?: ($a->akunSumber->nama_AkunTransaksi ?? '-'),
+
+                'debit' => $a->id_jenisAkunTransaksi_tujuan == $akun->id_jenisAkunTransaksi ? $a->angsuran_per_bulan : 0,
+                'kredit' => $a->id_jenisAkunTransaksi_sumber == $akun->id_jenisAkunTransaksi ? $a->angsuran_per_bulan : 0,
+            ];
+
+            $totalDebit  += end($bukuBesar)['debit'];
+            $totalKredit += end($bukuBesar)['kredit'];
+        }
+
+        // ======================================================
+        // HITUNG SALDO KUMULATIF
+        // ======================================================
+        $akun->buku_besar = collect($bukuBesar)->sortBy('tanggal')->values();
+        $akun->buku_besar_total = ['debit' => $totalDebit, 'kredit' => $totalKredit];
+        $akun->saldo_kumulatif = $akun->saldo_awal + ($totalDebit - $totalKredit);
     }
+
+    return $akunTransaksi;
+}
+
 }
