@@ -95,20 +95,23 @@ class LaporanBukuBesarController extends Controller
             ->whereMonth('tanggal_transaksi', $bulan)
             ->get();
 
-       foreach ($simpanan as $s) {
+        foreach ($simpanan as $s) {
             $bukuBesar[] = [
                 'tanggal' => $s->tanggal_transaksi,
+
                 'akun_lawan' =>
                     ($s->akunTujuan->nama_AkunTransaksi ?? null)
                     ?: ($s->akunSumber->nama_AkunTransaksi ?? '-'),
 
-                'debit' => $s->id_jenisAkunTransaksi_tujuan == $akun->id_jenisAkunTransaksi ? $s->jumlah_simpanan : 0,
-                'kredit' => $s->id_jenisAkunTransaksi_sumber == $akun->id_jenisAkunTransaksi ? $s->jumlah_simpanan : 0,
+                'debit'  => $s->type_simpanan === 'TRD' ? $s->jumlah_simpanan : 0,
+
+                'kredit' => $s->type_simpanan === 'TRK' ? $s->jumlah_simpanan : 0,
             ];
 
             $totalDebit  += end($bukuBesar)['debit'];
             $totalKredit += end($bukuBesar)['kredit'];
         }
+
 
 
         // ======================================================
