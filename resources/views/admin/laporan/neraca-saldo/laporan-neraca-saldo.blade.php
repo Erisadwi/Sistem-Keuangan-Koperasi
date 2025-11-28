@@ -80,13 +80,22 @@
         </tr>
         @endif
 
-      {{--  SESUAIKAN CONTROLLER DAN JUMLAH DEBET KREDIT HARUS BALANCE
-       <tr class="total-row final-total">
-          <td class="nama-akun-item text-end text-primary"><b>JUMLAH</b></td>
-          <td class="debet text-primary"><b>{{ number_format($totalActiva, 0, ',', '.') }}</b></td>
-          <td class="kredit text-primary"><b>{{ number_format($totalPasiva, 0, ',', '.') }}</b></td>
+      {{-- =========================== --}}
+      {{--     TOTAL DEBET & KREDIT    --}}
+      {{-- =========================== --}}
+      @isset($totalDebet, $totalKredit)
+      <tr class="total-row final-total" style="background:#f2faff; font-weight:700;">
+          <td class="text-end text-primary" style="padding-right:20px;">
+              JUMLAH
+          </td>
+          <td class="debet text-primary">
+              {{ number_format($totalDebet, 0, ',', '.') }}
+          </td>
+          <td class="kredit text-primary">
+              {{ number_format($totalKredit, 0, ',', '.') }}
+          </td>
       </tr>
-             --}}
+      @endisset
 
       </tbody>
     </table>

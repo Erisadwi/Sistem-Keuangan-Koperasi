@@ -64,17 +64,15 @@
         </thead>
 
         <tbody>
-            @forelse ($akun->bukuBesar as $index => $bb)
+            @forelse ($akun->buku_besar as $index => $bb)
             <tr>
                 <td>{{ $index + 1 }}</td>
 
-                <td>{{ date('d M Y', strtotime($bb->tanggal_transaksi)) }}</td>
+              <td>{{ date('d M Y', strtotime($bb['tanggal'])) }}</td>
+              <td>{{ $bb['akun_lawan'] }}</td>
+              <td>{{ number_format($bb['debit'], 0, ',', '.') }}</td>
+              <td>{{ number_format($bb['kredit'], 0, ',', '.') }}</td>
 
-                {{-- Nama Akun Berkaitan --}}
-                <td>{{ $bb->akunBerkaitan->nama_AkunTransaksi ?? '-' }}</td>
-
-                <td>{{ number_format($bb->debit, 0, ',', '.') }}</td>
-                <td>{{ number_format($bb->kredit, 0, ',', '.') }}</td>
             </tr>
             @empty
             <tr>
@@ -86,20 +84,23 @@
 
     {{-- ============ SALDO TOTAL ============ --}}
     @php
-    $totalDebit = $akun->bukuBesarTotal->sum('debit');
-    $totalKredit = $akun->bukuBesarTotal->sum('kredit');
+    $totalDebit = collect($akun->buku_besar)->sum('debit');
+    $totalKredit = collect($akun->buku_besar)->sum('kredit');
     @endphp
+
 
     <table class="tabel-buku-besar saldo-box">
         <tr style="font-weight: 600; background: #f3f3f3;">
-        <td style="text-align: left;">Saldo Total Debet</td>
-        <td style="text-align: right;">{{ number_format($totalDebit, 0, ',', '.') }}</td>
+            <td style="text-align: left;">Saldo Total Debet</td>
+            <td style="text-align: right;">{{ number_format($totalDebit, 0, ',', '.') }}</td>
         </tr>
+
         <tr style="font-weight: 600; background: #f3f3f3;">
             <td style="text-align: left;">Saldo Total Kredit</td>
             <td style="text-align: right;">{{ number_format($totalKredit, 0, ',', '.') }}</td>
         </tr>
     </table>
+
 
     {{-- SALDO KUMULATIF --}}
     <table class="tabel-buku-besar saldo-box">
