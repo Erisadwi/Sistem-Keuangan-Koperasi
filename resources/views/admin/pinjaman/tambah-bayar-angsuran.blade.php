@@ -37,7 +37,7 @@
 
         <label for="id_jenisAkunPendapatan">Akun Pendapatan*</label>
             <select name="id_jenisAkunPendapatan" id="id_jenisAkunPendapatan">
-            <option value="" disabled {{ old('id_jenisAkunTransaksi_sumber') ? '' : 'selected' }}>Pilih Akun Pendapatan</option>
+            <option value="" disabled {{ old('id_jenisAkunPendapatan') ? '' : 'selected' }}>Pilih Akun Pendapatan</option>
             @foreach ($akunPendapatan as $a)
                 <option value="{{ $a->id_jenisAkunTransaksi }}"
                 {{ (string)old('id_jenisAkunPendapatan', $Angsuran->id_jenisAkunPendapatan ?? '') === (string)$a->id_jenisAkunTransaksi ? 'selected' : '' }}>
@@ -159,6 +159,13 @@ document.getElementById('formbayar-angsuran').addEventListener('submit', functio
     }
 
     alert('✅ Data pembayaran berhasil disimpan!');
+});
+
+document.getElementById('btnBatal').addEventListener('click', function() {
+    const yakin = confirm('Batalkan pengisian formulir dan kembali?');
+    if (yakin) {
+        window.history.back();
+    }
 });
 </script>
 

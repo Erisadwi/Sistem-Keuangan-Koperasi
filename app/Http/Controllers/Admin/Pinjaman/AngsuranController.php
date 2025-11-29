@@ -360,7 +360,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
         'keterangan' => "Pelunasan Pinjaman",
         'id_jenisAkunTransaksi_sumber' => $akunPendapatan,
         'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
-        'id_jenisAkunPendapatan' => $request->id_jenisAkunTransaksi_sumber,
+        'id_jenisAkunPendapatan' => $request->id_jenisAkunPendapatan,
         'id_user' => Auth::user()->id_user
     ]);
 
@@ -379,20 +379,39 @@ public function storePelunasan(Request $request, $id_pinjaman)
         ->with('success', 'Pelunasan pinjaman berhasil dilakukan.');
 }
 
-
-
-
-
      public function edit($id_bayar_angsuran)
-    {
-        $angsuran = Angsuran::where('id_bayar_angsuran', $id_bayar_angsuran)->firstOrFail();
-        $pinjaman = $angsuran->pinjaman; 
-        
-        $akunPendapatan = JenisAkunTransaksi::where('angsuran', 'Y')->where('is_kas', 0)->get();
-        $akunTujuan = JenisAkunTransaksi::where('angsuran', 'Y')->where('is_kas', 1)->get();
+{
+    $angsuran = Angsuran::where('id_bayar_angsuran', $id_bayar_angsuran)->firstOrFail();
 
-        return view('admin.pinjaman.edit-bayar-angsuran', compact('angsuran', 'pinjaman', 'akunPendapatan', 'akunTujuan'));
-    }
+    $pinjaman = Pinjaman::with(['anggota', 'lamaAngsuran'])
+                ->where('id_pinjaman', $angsuran->id_pinjaman)
+                ->firstOrFail();
+
+    $payments = Angsuran::where('id_pinjaman', $pinjaman->id_pinjaman)->get();
+
+    $totalBayar = $payments->sum(function ($pay) {
+        return ($pay->angsuran_pokok ?? 0) + ($pay->bunga_angsuran ?? 0) + ($pay->denda ?? 0);
+    });
+
+    $totalPeriode = $pinjaman->lamaAngsuran->lama_angsuran ?? 0;
+    $jumlahAngsuranDibayar = $payments->count();
+
+    $sisaAngsuran = max(0, $totalPeriode - $jumlahAngsuranDibayar);
+    $sisaTagihan = max(0, $pinjaman->total_tagihan - $totalBayar);
+
+    $akunPendapatan = JenisAkunTransaksi::where('angsuran','Y')->where('is_kas', 0)->get();
+    $akunTujuan = JenisAkunTransaksi::where('angsuran','Y')->where('is_kas', 1)->get();
+
+    return view('admin.pinjaman.edit-bayar-angsuran', compact(
+        'angsuran',
+        'pinjaman',
+        'akunPendapatan',
+        'akunTujuan',
+        'sisaAngsuran',
+        'sisaTagihan'
+    ));
+}
+
 
     public function update(Request $request, $id_bayar_angsuran)
     {
@@ -415,19 +434,19 @@ public function storePelunasan(Request $request, $id_pinjaman)
 
         $tanggalPinjaman = Carbon::parse($pinjaman->tanggal_pinjaman);
         $tanggalJatuhTempo = $tanggalPinjaman->copy()->addMonthsNoOverflow($angsuran->angsuran_ke)->day(30);
-        
+        $akunPendapatan = $pinjaman->id_jenisAkunTransaksi_tujuan;
 
         $angsuran->update([
             'tanggal_bayar' => $request->tanggal_bayar,
             'tanggal_jatuh_tempo' => $tanggalJatuhTempo,
             'angsuran_ke' => $request->angsuran_ke,
             'angsuran_per_bulan' => $request->angsuran_per_bulan,
-            'angsuran_pokok' => $request->angsuran_pokok,
             'bunga_angsuran' => $request->bunga_angsuran,
             'sisa_tagihan' => $request->sisa_tagihan,
             'denda' => $request->denda ?? 0,
-            'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
+            'id_jenisAkunTransaksi_sumber' => $akunPendapatan,
             'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
+            'id_jenisAkunPendapatan' => $request->id_jenisAkunPendapatan,
             'keterangan' => $request->keterangan,
             'id_user' => Auth::user()->id_user,
         ]);

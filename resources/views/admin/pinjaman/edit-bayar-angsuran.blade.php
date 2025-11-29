@@ -39,12 +39,12 @@
         <label for="bunga_angsuran">Pendapatan*</label>
         <input type="number" id="bunga_angsuran" name="bunga_angsuran" value="{{ old('bunga_angsuran', number_format($angsuran->bunga_angsuran, 0, '.', '')) }}" readonly>
 
-        <label for="id_jenisAkunTransaksi_sumber">Akun Pendapatan*</label>
-            <select name="id_jenisAkunTransaksi_sumber" id="id_jenisAkunTransaksi_sumber">
-            <option value="" disabled {{ old('id_jenisAkunTransaksi_sumber') ? '' : 'selected' }}>Pilih Akun Pendapatan</option>
-            @foreach ($akunSumber as $a)
+        <label for="id_jenisAkunPendapatan">Akun Pendapatan*</label>
+            <select name="id_jenisAkunPendapatan" id="id_jenisAkunPendapatan">
+            <option value="" disabled {{ old('id_jenisAkunPendapatan') ? '' : 'selected' }}>Pilih Akun Pendapatan</option>
+            @foreach ($akunPendapatan as $a)
                 <option value="{{ $a->id_jenisAkunTransaksi }}"
-                    {{ (string)old('id_jenisAkunTransaksi_sumber', $angsuran->id_jenisAkunTransaksi_sumber ?? '') === (string)$a->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                    {{ (string)old('id_jenisAkunPendapatan', $angsuran->id_jenisAkunPendapatan ?? '') === (string)$a->id_jenisAkunTransaksi ? 'selected' : '' }}>
                     {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
                 </option>
             @endforeach
@@ -141,7 +141,7 @@ input[type="file"] {
 document.getElementById('formBayarAngsuran').addEventListener('submit', function(e) {
     const wajib = [
         'tanggal_bayar','id_pinjaman','angsuran_ke','sisa_angsuran','angsuran_per_bulan',
-        'pokok_angsuran','bunga_angsuran','id_jenisAkunTransaksi_sumber','sisaTagihan','id_jenisAkunTransaksi_tujuan'
+        'pokok_angsuran','bunga_angsuran','id_jenisAkunPendapatan','sisaTagihan','id_jenisAkunTransaksi_tujuan'
     ];
 
     for (let id of wajib) {
