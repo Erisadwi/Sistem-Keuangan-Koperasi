@@ -111,9 +111,9 @@ class DataPinjamanController extends Controller
 
     public function create()
     {
+        $anggota = Anggota::where('status_anggota', 'Aktif')->get();
         $ajuanPinjaman = AjuanPinjaman::all();
         $users = User::all();
-        $anggota = Anggota::all();
         $lamaAngsuran = LamaAngsuran::all();
         $akunSumber = JenisAkunTransaksi::where('pinjaman','Y')
             ->where('is_kas', 1)
@@ -274,10 +274,10 @@ public function show($id)
 
 public function edit($id)
 {
+    $anggota = Anggota::where('status_anggota', 'Aktif')->get();
     $pinjaman = Pinjaman::where('id_pinjaman', $id)->firstOrFail();
     $ajuanPinjaman = AjuanPinjaman::all();
     $users = User::all();
-    $anggota = Anggota::all();
     $lamaAngsuran = LamaAngsuran::all();
 
     $akunSumber = JenisAkunTransaksi::where('pinjaman', 'Y')
