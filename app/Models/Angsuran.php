@@ -28,6 +28,7 @@ class Angsuran extends Model
         'id_pinjaman',
         'id_jenisAkunTransaksi_sumber',
         'id_jenisAkunTransaksi_tujuan',
+        'id_jenisAkunPendapatan',
         'keterangan'
     ];
 

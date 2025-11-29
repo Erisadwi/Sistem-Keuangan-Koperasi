@@ -33,7 +33,7 @@ class LaporanLabaRugiController extends Controller
             . ' - '
             . Carbon::parse($end_date)->translatedFormat('j M Y');
 
-        $view = DB::table('view_laba_rugi')
+        $view = DB::table('view_laba_rugi_akuntansi')
             ->whereBetween('tanggal', [$start_date, $end_date])
             ->get();
 
@@ -140,7 +140,7 @@ class LaporanLabaRugiController extends Controller
         . Carbon::parse($end_date)->translatedFormat('j M Y');
 
 
-    $view = DB::table('view_laba_rugi')
+    $view = DB::table('view_laba_rugi_akuntansi')
         ->whereBetween('tanggal', [$start_date, $end_date])
         ->get();
 

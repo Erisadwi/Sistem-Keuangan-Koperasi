@@ -35,12 +35,12 @@
         <label for="pendapatan">Pendapatan*</label>
         <input type="number" id="pendapatan" name="bunga_angsuran" value="{{ $bungaAngsuran ?? 0 }}"readonly>
 
-        <label for="id_jenisAkunTransaksi_sumber">Akun Pendpatan*</label>
-            <select name="id_jenisAkunTransaksi_sumber" id="id_jenisAkunTransaksi_sumber">
+        <label for="id_jenisAkunPendapatan">Akun Pendapatan*</label>
+            <select name="id_jenisAkunPendapatan" id="id_jenisAkunPendapatan">
             <option value="" disabled {{ old('id_jenisAkunTransaksi_sumber') ? '' : 'selected' }}>Pilih Akun Pendapatan</option>
-            @foreach ($akunSumber as $a)
+            @foreach ($akunPendapatan as $a)
                 <option value="{{ $a->id_jenisAkunTransaksi }}"
-                {{ (string)old('id_jenisAkunTransaksi_sumber', $Angsuran->id_jenisAkunTransaksi_sumber ?? '') === (string)$a->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                {{ (string)old('id_jenisAkunPendapatan', $Angsuran->id_jenisAkunPendapatan ?? '') === (string)$a->id_jenisAkunTransaksi ? 'selected' : '' }}>
                 {{ $a->kode_AkunTransaksi }} - {{ $a->nama_AkunTransaksi }}
                 </option>
             @endforeach
@@ -139,7 +139,7 @@ input[type="file"] {
 
 <script>
 document.getElementById('formbayar-angsuran').addEventListener('submit', function(e) {
-    const wajib = ['tanggal_bayar', 'id_jenisAkunTransaksi_tujuan', 'id_jenisAkunTransaksi_sumber'];
+    const wajib = ['tanggal_bayar', 'id_jenisAkunTransaksi_tujuan', 'id_jenisAkunPendapatan'];
 
     for (let id of wajib) {
         const el = document.getElementById(id);

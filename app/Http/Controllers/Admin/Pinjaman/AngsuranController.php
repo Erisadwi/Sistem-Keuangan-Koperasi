@@ -185,7 +185,7 @@ class AngsuranController extends Controller
 
         $idBayar = Angsuran::generateId();
 
-        $akunSumber = JenisAkunTransaksi::where('angsuran','Y')
+        $akunPendapatan = JenisAkunTransaksi::where('angsuran','Y')
             ->where('is_kas', 0)
             ->orderBy('nama_AkunTransaksi')->get();
 
@@ -197,7 +197,7 @@ class AngsuranController extends Controller
 
         return view('admin.pinjaman.tambah-bayar-angsuran', compact(
             'pinjaman', 'payments', 'sisaTagihan', 'sisaAngsuran', 'angsuranKe', 
-            'angsuranPerBulan', 'angsuranPokok', 'bungaAngsuran', 'denda', 'idBayar', 'akunSumber', 'akunTujuan', 'keteranganDefault'
+            'angsuranPerBulan', 'angsuranPokok', 'bungaAngsuran', 'denda', 'idBayar', 'akunPendapatan', 'akunTujuan', 'keteranganDefault'
         ));
     }
 
@@ -207,7 +207,7 @@ class AngsuranController extends Controller
 
         $request->validate([
             'tanggal_bayar' => 'required|date',
-            'id_jenisAkunTransaksi_sumber' => [
+            'id_jenisAkunPendapatan' => [
             'required',
             Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
                 ->where(function ($q) {
@@ -232,6 +232,8 @@ class AngsuranController extends Controller
         $tanggalPinjaman = Carbon::parse($pinjaman->tanggal_pinjaman);
         $tanggalJatuhTempo = $tanggalPinjaman->copy()->addMonthsNoOverflow($angsuranKe)->day(30);
 
+        $akunPendapatan = $pinjaman->id_jenisAkunTransaksi_tujuan;
+
         Log::info('Sebelum create');
         Angsuran::create([
             'id_bayar_angsuran' => Angsuran::generateId(),
@@ -244,8 +246,9 @@ class AngsuranController extends Controller
             'bunga_angsuran' => $request->bunga_angsuran,
             'sisa_tagihan' => $request->sisa_tagihan,
             'denda' => $request->denda ?? 0,
-            'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
+            'id_jenisAkunTransaksi_sumber' => $akunPendapatan,
             'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
+            'id_jenisAkunPendapatan' => $request->id_jenisAkunPendapatan,
             'keterangan' => $request->keterangan,
             'id_user' => Auth::user()->id_user,
         ]);
@@ -301,7 +304,7 @@ public function createPelunasan($id_pinjaman)
     $idBayar = Angsuran::generateId();
     $denda = 0;
 
-    $akunSumber = JenisAkunTransaksi::where('angsuran','Y')
+    $akunPendapatan = JenisAkunTransaksi::where('angsuran','Y')
             ->where('is_kas', 0)
             ->orderBy('nama_AkunTransaksi')->get();
 
@@ -318,7 +321,7 @@ public function createPelunasan($id_pinjaman)
         'jumlahBayar' => $jumlahBayar,
         'sisaTagihan' => $sisaTagihan,
         'idBayar' => $idBayar,
-        'akunSumber' => $akunSumber,
+        'akunPendapatan' => $akunPendapatan,
         'akunTujuan' => $akunTujuan,
         'denda' => $denda,
         'keteranganDefault' => $keteranganDefault,
@@ -343,6 +346,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
     $bungaAngsuran = $bungaPerBulan * $sisaAngsuran;
 
     $jumlahBayar = $angsuranPokok + $bungaAngsuran;
+    $akunPendapatan = $pinjaman->id_jenisAkunTransaksi_tujuan;
 
     $angsuran = Angsuran::create([
         'id_bayar_angsuran' => Angsuran::generateId(),
@@ -354,8 +358,9 @@ public function storePelunasan(Request $request, $id_pinjaman)
         'angsuran_per_bulan' => $jumlahBayar,
         'sisa_tagihan' => 0,
         'keterangan' => "Pelunasan Pinjaman",
-        'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
+        'id_jenisAkunTransaksi_sumber' => $akunPendapatan,
         'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
+        'id_jenisAkunPendapatan' => $request->id_jenisAkunTransaksi_sumber,
         'id_user' => Auth::user()->id_user
     ]);
 
@@ -383,17 +388,17 @@ public function storePelunasan(Request $request, $id_pinjaman)
         $angsuran = Angsuran::where('id_bayar_angsuran', $id_bayar_angsuran)->firstOrFail();
         $pinjaman = $angsuran->pinjaman; 
         
-        $akunSumber = JenisAkunTransaksi::where('angsuran', 'Y')->where('is_kas', 0)->get();
+        $akunPendapatan = JenisAkunTransaksi::where('angsuran', 'Y')->where('is_kas', 0)->get();
         $akunTujuan = JenisAkunTransaksi::where('angsuran', 'Y')->where('is_kas', 1)->get();
 
-        return view('admin.pinjaman.edit-bayar-angsuran', compact('angsuran', 'pinjaman', 'akunSumber', 'akunTujuan'));
+        return view('admin.pinjaman.edit-bayar-angsuran', compact('angsuran', 'pinjaman', 'akunPendapatan', 'akunTujuan'));
     }
 
     public function update(Request $request, $id_bayar_angsuran)
     {
         $request->validate([
             'tanggal_bayar' => 'required|date',
-            'id_jenisAkunTransaksi_sumber' => [
+            'id_jenisAkunPendapatan' => [
                 'required',
                 Rule::exists('jenis_akun_transaksi', 'id_jenisAkunTransaksi')
                     ->where(fn($q) => $q->where('angsuran', 'Y')->where('is_kas', 0)),
