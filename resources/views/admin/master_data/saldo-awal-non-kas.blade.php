@@ -37,7 +37,7 @@
           <td>{{ $akunNama }}</td>
           <td>{{ $row->ket_transaksi ?? '-' }}</td>
           <td>{{ number_format($jumlahSaldo, 0, ',', '.') }}</td>
-          <td>-</td> <!-- ini untuk kolom Update Data -->
+          <td>-</td> 
           <td>{{ $row->data_user->username ?? '-' }}</td>
           <td class="actions">
             <a href="{{ route('saldo-awal-non-kas.edit', $row->id_transaksi) }}" class="edit">✏️ Edit</a>
