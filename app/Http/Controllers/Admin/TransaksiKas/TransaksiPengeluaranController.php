@@ -117,18 +117,18 @@ class TransaksiPengeluaranController extends Controller
                 'kredit' => 0,
             ]);
 
-            // INSERT RELASI AKUNTANSI (DOUBLE ENTRY)
-
             // 1. Akun tujuan (Biaya/Beban) → DEBIT
-            AkunRelasiTransaksi::create([
-                'id_transaksi'      => $t->id_transaksi,
-                'id_akun'           => $request->id_akun_tujuan,
-                'id_akun_berkaitan'  => $request->sumber[0]['id_jenisAkunTransaksi'],
-                'debit'             => $total,
-                'kredit'            => 0,
-                'kode_transaksi'    => $t->kode_transaksi,
-                'tanggal_transaksi' => $t->tanggal_transaksi
-            ]);
+            foreach ($request->sumber as $s) {
+                AkunRelasiTransaksi::create([
+                    'id_transaksi'      => $t->id_transaksi,
+                    'id_akun'           => $request->id_akun_tujuan,
+                    'id_akun_berkaitan' => $s['id_jenisAkunTransaksi'],
+                    'debit'             => $s['jumlah'],
+                    'kredit'            => 0,
+                    'kode_transaksi'    => $t->kode_transaksi,
+                    'tanggal_transaksi' => $t->tanggal_transaksi
+                ]);
+}
 
             // 2. Banyak akun kas → KREDIT
             foreach ($request->sumber as $s) {
@@ -240,18 +240,18 @@ class TransaksiPengeluaranController extends Controller
                 'kredit' => 0,
             ]);
 
-            // INSERT RELASI AKUNTANSI (DOUBLE ENTRY)
-
             // 1. Akun tujuan (Biaya/Beban) → DEBIT
+            foreach ($request->sumber as $s) {
             AkunRelasiTransaksi::create([
                 'id_transaksi'      => $t->id_transaksi,
                 'id_akun'           => $request->id_akun_tujuan,
-                'id_akun_berkaitan'  => $request->sumber[0]['id_jenisAkunTransaksi'],
-                'debit'             => $total,
+                'id_akun_berkaitan' => $s['id_jenisAkunTransaksi'],
+                'debit'             => $s['jumlah'],
                 'kredit'            => 0,
                 'kode_transaksi'    => $t->kode_transaksi,
                 'tanggal_transaksi' => $t->tanggal_transaksi
             ]);
+}
 
             // 2. Banyak akun kas → KREDIT
             foreach ($request->sumber as $s) {
