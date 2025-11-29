@@ -21,7 +21,7 @@
 
   <div class="form-group">
     <label for="jenis">Jenis Pinjaman*</label>
-    <select id="jenis" name="jenis_ajuan" class="form-input" required>
+    <select id="jenis_ajuan" name="jenis_ajuan" class="form-input" required>
       <option value="">Pilih Jenis Pinjaman</option>
       <option value="PINJAMAN BIASA">Pinjaman Biasa</option>
       <option value="PINJAMAN DARURAT">Pinjaman Darurat</option>
@@ -130,6 +130,25 @@
 
 @push('scripts')
 <script>
+document.addEventListener("DOMContentLoaded", function () {
+
+    const jenisSelect = document.getElementById("jenis_ajuan"); 
+    const lamaSelect  = document.getElementById("id_lamaAngsuran");
+
+    const LAMA_1_BULAN_ID = "LMA0003";
+
+    jenisSelect.addEventListener("change", function () {
+
+        if (jenisSelect.value === "PINJAMAN DARURAT") {
+            lamaSelect.value = LAMA_1_BULAN_ID;
+            lamaSelect.setAttribute("disabled", true);
+        } else {
+            lamaSelect.removeAttribute("disabled");
+            lamaSelect.value = "";
+        }
+    });
+});;
+
 document.addEventListener('DOMContentLoaded', function () {
   const nominal = document.getElementById('nominal');
   const lama = document.getElementById('id_lamaAngsuran');

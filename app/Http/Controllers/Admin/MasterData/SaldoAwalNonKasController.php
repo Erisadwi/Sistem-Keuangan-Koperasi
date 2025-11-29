@@ -52,7 +52,7 @@ class SaldoAwalNonKasController extends Controller
 ]);
 
         $transaksi = Transaksi::create([
-            // 'id_user' => Auth::check() ? Auth::user()->id_user : null,//
+            'id_user' => Auth::user()->id_user,
             'type_transaksi' => 'SANK',
             'kode_transaksi' => '',
             'ket_transaksi' => $request->ket_transaksi,

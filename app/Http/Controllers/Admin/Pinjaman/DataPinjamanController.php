@@ -16,6 +16,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class DataPinjamanController extends Controller
 {
@@ -87,8 +88,7 @@ class DataPinjamanController extends Controller
             $item->lama_angsuran_text = $lama > 0 ? $lama . ' Bulan' : '-';
 
             $bunga = $item->bunga_pinjaman ?? 0;
-            $bunga_angsuran = $bunga / $lama;
-            $item->jumlah_angsuran_otomatis = $item->pokok_angsuran + $bunga_angsuran;
+            $item->jumlah_angsuran_otomatis = $item->pokok_angsuran + $bunga;
 
             $totalBayar = Angsuran::where('id_pinjaman', $item->id_pinjaman)
                 ->sum(\DB::raw('(angsuran_pokok + bunga_angsuran + denda)'));
@@ -123,8 +123,14 @@ class DataPinjamanController extends Controller
             ->where('is_kas', 0)
             ->orderBy('nama_AkunTransaksi')->get();
 
-        return view('admin.pinjaman.data-pinjaman.tambah-data-pinjaman', compact(
-    'ajuanPinjaman', 'users', 'anggota', 'lamaAngsuran', 'akunSumber', 'akunTujuan'
+        $sukuBunga = SukuBunga::first();
+    $ratePinjaman = $sukuBunga->suku_bunga_pinjaman / 100;
+    $rateAdmin = $sukuBunga->biaya_administrasi;
+
+    return view('admin.pinjaman.data-pinjaman.tambah-data-pinjaman', compact(
+        'ajuanPinjaman', 'users', 'anggota', 'lamaAngsuran',
+        'akunSumber', 'akunTujuan',
+        'ratePinjaman', 'rateAdmin'
 ));
     }
 
@@ -142,19 +148,20 @@ class DataPinjamanController extends Controller
 
         $jumlah = $request->jumlah_pinjaman;
 
-        $sukuBunga = SukuBunga::firstOrFail();
-        $ratePinjaman = (float) $sukuBunga->suku_bunga_pinjaman;
-        $rateAdmin = (float) $sukuBunga->biaya_administrasi;
-
         $lamaAngsuran = LamaAngsuran::findOrFail($request->id_lamaAngsuran);
         $lama = (int) $lamaAngsuran->lama_angsuran;
 
-        $bunga_pinjaman = $lama > 0
-            ? round((($ratePinjaman / 100) * $jumlah) / $lama, 2)
-            : 0;
+        $sukuBunga = SukuBunga::firstOrFail();
+        $ratePinjaman = $sukuBunga->suku_bunga_pinjaman/100;
+        $bungaPersen = $ratePinjaman * ($lama / 12);
+        $rateAdmin = (float) $sukuBunga->biaya_administrasi;
+
+        $angsuranPokok = $jumlah / $lama;
+
+        $bunga_pinjaman = round(($angsuranPokok * $bungaPersen) / 100) * 100;
 
         $biaya_admin = round(($rateAdmin / 100) * $jumlah, 2);
-        $totalTagihan = $jumlah + $bunga_pinjaman;
+        $totalTagihan = $jumlah + ($bunga_pinjaman * $lama) ;
 
         $idPinjaman = Pinjaman::generateId();
 
@@ -187,11 +194,10 @@ public function show($id)
     $lama = $pinjaman->lamaAngsuran->lama_angsuran ?? 0;
     $pokok = $pinjaman->jumlah_pinjaman ?? 0;
     $bunga = $pinjaman->bunga_pinjaman ?? 0;
-    $bunga_angsuran = $bunga / $lama;
     $biaya_admin = $pinjaman->biaya_admin ?? 0;
 
     $pokokPerBulan = $lama > 0 ? round($pokok / $lama, 0) : 0;
-    $angsuranPerBulan = $pokokPerBulan + $bunga_angsuran + $biaya_admin;
+    $angsuranPerBulan = $pokokPerBulan + $bunga + $biaya_admin;
 
     $tanggalTempo = null;
 
@@ -220,7 +226,7 @@ public function show($id)
         $payments->push((object)[
             'bulan_ke'        => $i,
             'angsuran_pokok'  => $pokokPerBulan,
-            'angsuran_bunga'  => $bunga_angsuran,
+            'angsuran_bunga'  => $bunga,
             'biaya_admin'     => $biaya_admin,
             'jumlah_angsuran' => $angsuranPerBulan,
             'tanggalTempo'    => $tempo->format('Y-m-d'),
@@ -305,16 +311,17 @@ public function edit($id)
 
     $jumlah = $request->jumlah_pinjaman;
 
-    $sukuBunga = SukuBunga::firstOrFail();
-    $ratePinjaman = (float) $sukuBunga->suku_bunga_pinjaman;
-    $rateAdmin = (float) $sukuBunga->biaya_administrasi;
-
     $lamaAngsuran = LamaAngsuran::findOrFail($request->id_lamaAngsuran);
     $lama = (int) $lamaAngsuran->lama_angsuran;
 
-    $bunga_pinjaman = $lama > 0
-        ? round((($ratePinjaman / 100) * $jumlah) / $lama, 2)
-        : 0;
+    $sukuBunga = SukuBunga::firstOrFail();
+    $ratePinjaman = $sukuBunga->suku_bunga_pinjaman/100;
+    $bungaPersen = $ratePinjaman * ($lama / 12);
+    $rateAdmin = (float) $sukuBunga->biaya_administrasi;
+
+    $angsuranPokok = $jumlah / $lama;
+
+    $bunga_pinjaman = round(($angsuranPokok * $bungaPersen) / 100) * 100;
 
     $biaya_admin = round(($rateAdmin / 100) * $jumlah, 2);
     $totalTagihan = $jumlah + ($bunga_pinjaman * $lama);

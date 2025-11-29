@@ -174,7 +174,7 @@ class AngsuranController extends Controller
 
         $angsuranKe = $payments->count() + 1;
         $angsuranPokok = $pinjaman->jumlah_pinjaman / $pinjaman->lamaAngsuran->lama_angsuran;
-        $bungaAngsuran = $pinjaman->bunga_pinjaman / $pinjaman->lamaAngsuran->lama_angsuran;
+        $bungaAngsuran = $pinjaman->bunga_pinjaman;
         $angsuranPerBulan = $angsuranPokok + $bungaAngsuran;
 
         $tanggalPinjaman = Carbon::parse($pinjaman->tanggal_pinjaman);
@@ -284,7 +284,7 @@ public function createPelunasan($id_pinjaman)
     $sisaAngsuran = max(0, $totalPeriode - $jumlahAngsuranDibayar);
 
     $angsuranPokokPerBulan = $pinjaman->jumlah_pinjaman / $totalPeriode;
-    $bungaPerBulan = $pinjaman->bunga_pinjaman / $totalPeriode;
+    $bungaPerBulan = $pinjaman->bunga_pinjaman;
 
     $angsuranPokok = $angsuranPokokPerBulan * $sisaAngsuran;
     $bungaAngsuran = $bungaPerBulan * $sisaAngsuran;
@@ -337,7 +337,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
     $sisaAngsuran = max(0, $totalPeriode - $jumlahAngsuranDibayar);
 
     $angsuranPokokPerBulan = $pinjaman->jumlah_pinjaman / $totalPeriode;
-    $bungaPerBulan = $pinjaman->bunga_pinjaman / $totalPeriode;
+    $bungaPerBulan = $pinjaman->bunga_pinjaman;
 
     $angsuranPokok = $angsuranPokokPerBulan * $sisaAngsuran;
     $bungaAngsuran = $bungaPerBulan * $sisaAngsuran;
@@ -383,8 +383,8 @@ public function storePelunasan(Request $request, $id_pinjaman)
         $angsuran = Angsuran::where('id_bayar_angsuran', $id_bayar_angsuran)->firstOrFail();
         $pinjaman = $angsuran->pinjaman; 
         
-        $akunSumber = \App\Models\JenisAkunTransaksi::where('angsuran', 'Y')->where('is_kas', 0)->get();
-        $akunTujuan = \App\Models\JenisAkunTransaksi::where('angsuran', 'Y')->where('is_kas', 1)->get();
+        $akunSumber = JenisAkunTransaksi::where('angsuran', 'Y')->where('is_kas', 0)->get();
+        $akunTujuan = JenisAkunTransaksi::where('angsuran', 'Y')->where('is_kas', 1)->get();
 
         return view('admin.pinjaman.edit-bayar-angsuran', compact('angsuran', 'pinjaman', 'akunSumber', 'akunTujuan'));
     }

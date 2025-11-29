@@ -54,8 +54,8 @@
         </div>
 
         <div class="form-group">
-            <label for="suku_bunga_pinjaman">Bunga (Rp)*</label>
-            <input type="text" id="suku_bunga_pinjaman" name="suku_bunga_pinjaman" readonly>
+            <label for="bunga_pinjaman">Bunga (Rp)*</label>
+            <input type="text" id="bunga_pinjaman" name="bunga_pinjaman" readonly>
         </div>
 
         <div class="form-group">
@@ -215,24 +215,34 @@ input:focus, select:focus {
 document.addEventListener('DOMContentLoaded', function() {
     const jumlahInput = document.getElementById('jumlah_pinjaman');
     const lamaSelect = document.getElementById('id_lamaAngsuran');
-    const bungaInput = document.getElementById('suku_bunga_pinjaman');
+    const bungaInput = document.getElementById('bunga_pinjaman');
     const adminInput = document.getElementById('biaya_administrasi');
     const pokokInput = document.getElementById('pokok_angsuran');
 
-    const bungaRate = parseFloat(@json(\App\Models\SukuBunga::first()->suku_bunga_pinjaman ?? 0));
-    const adminRate = parseFloat(@json(\App\Models\SukuBunga::first()->biaya_administrasi ?? 0));
+    const bungaRate = parseFloat(@json($ratePinjaman));  
+    const adminRate = parseFloat(@json($rateAdmin));  
 
     function hitungOtomatis() {
-        const jumlah = parseFloat(jumlahInput.value) || 0;
-        const lamaValue = parseFloat(lamaSelect.options[lamaSelect.selectedIndex]?.text.replace('bulan', '').trim()) || 0;
+        let jumlah = parseFloat(jumlahInput.value) || 0;
 
-        if (jumlah > 0 && lamaValue > 0) {
-            const pokok = jumlah / lamaValue;
-            const bunga = ((bungaRate / 100) * jumlah) / lamaValue; 
+        // Ambil lama angsuran dari text option
+        let lama = 0;
+        if (lamaSelect.value) {
+            lama = parseInt(
+                lamaSelect.options[lamaSelect.selectedIndex].text.replace('bulan', '').trim()
+            );
+        }
+
+        if (jumlah > 0 && lama > 0) {
+            const pokok = jumlah / lama;
+
+            const bungaPersen = bungaRate * (lama / 12);
+            const bunga = Math.round((pokok * bungaPersen) / 100) * 100;
+
             const admin = (adminRate / 100) * jumlah;
 
             pokokInput.value = pokok.toFixed(2);
-            bungaInput.value = bunga.toFixed(2);
+            bungaInput.value = bunga;
             adminInput.value = admin.toFixed(2);
         } else {
             pokokInput.value = '';
@@ -244,7 +254,6 @@ document.addEventListener('DOMContentLoaded', function() {
     jumlahInput.addEventListener('input', hitungOtomatis);
     lamaSelect.addEventListener('change', hitungOtomatis);
 
-    // === Script untuk otomatis set ID anggota ===
     const namaInput = document.getElementById('nama_anggota');
     const idHidden = document.getElementById('id_anggota');
     const dataList = document.getElementById('daftar_anggota').options;

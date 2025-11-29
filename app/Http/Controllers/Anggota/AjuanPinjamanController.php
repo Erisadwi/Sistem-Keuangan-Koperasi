@@ -28,9 +28,15 @@ public function index(Request $request)
 }
 
 
-    public function create()
+    public function create(Request $request)
     {
-        $lamaAngsuran = LamaAngsuran::all();
+        $jenis = $request->input('jenis_ajuan');
+
+        if ($jenis === 'PINJAMAN DARURAT') {
+            $lamaAngsuran = LamaAngsuran::where('lama_angsuran', 1)->get();
+        } else {
+            $lamaAngsuran = LamaAngsuran::all();
+        }
         $biayaAdministrasi = sukuBunga::first();
 
         return view('anggota.tambah-data-pengajuan', [
@@ -58,7 +64,15 @@ public function index(Request $request)
             'id_biayaAdministrasi' => 'required|exists:biaya_administrasi,id_biayaAdministrasi',
         ]);
 
+        if ($validated['jenis_ajuan'] === 'PINJAMAN DARURAT') {
+        $lama = LamaAngsuran::find($validated['id_lamaAngsuran']);
 
+        if (!$lama || $lama->lama_angsuran != 1) {
+            return back()->withErrors([
+                'id_lamaAngsuran' => 'Pinjaman darurat hanya bisa memakai lama angsuran 1 bulan.'
+            ])->withInput();
+        }
+    }
         
         $anggota = Auth::user();
 
@@ -85,21 +99,20 @@ public function simulasi(Request $request)
     }
 
     $lamaBulan = $lamaAngsuran->lama_angsuran;
-    $bungaPersen = $biaya->suku_bunga_pinjaman / 100;
+    $bungaDasar = $biaya->suku_bunga_pinjaman / 100;
+    $bungaPersen = $bungaDasar * ($lamaBulan / 12);
     $biayaAdmin = (float) $biaya->biaya_administrasi;
 
     $angsuranPokok = $jumlah / $lamaBulan;
 
-
-    $totalBunga = $jumlah * $bungaPersen;
-    $angsuranBungaPerBulan = $totalBunga / $lamaBulan;
+    $totalBunga = round(($angsuranPokok * $bungaPersen) / 100) * 100;
 
     $tanggalPengajuan = now();
     $simulasi = [];
     $sisa = $jumlah;
 
     for ($i = 1; $i <= $lamaBulan; $i++) {
-        $totalAngsuran = $angsuranPokok + $angsuranBungaPerBulan + $biayaAdmin;
+        $totalAngsuran = $angsuranPokok + $totalBunga + $biayaAdmin;
         $sisa -= $angsuranPokok;
 
         $jatuhTempo = $tanggalPengajuan->copy()->addMonth($i)->day(30)->toDateString();
@@ -107,7 +120,7 @@ public function simulasi(Request $request)
             'bulan_ke' => $i,
             'jatuh_tempo' => $jatuhTempo,
             'angsuran_pokok' => number_format($angsuranPokok, 0, ',', '.'),
-            'angsuran_bunga' => number_format($angsuranBungaPerBulan, 0, ',', '.'),
+            'angsuran_bunga' => number_format($totalBunga, 0, ',', '.'),
             'biaya_admin' => number_format($biayaAdmin, 0, ',', '.'),
             'total_angsuran' => number_format($totalAngsuran, 0, ',', '.'),
             'sisa_pinjaman' => number_format(max($sisa, 0), 0, ',', '.'),
