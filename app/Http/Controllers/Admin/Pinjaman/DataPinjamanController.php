@@ -14,9 +14,10 @@ use App\Models\Angsuran;
 use App\Models\identitasKoperasi;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use App\Models\AkunRelasiTransaksi;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class DataPinjamanController extends Controller
 {
@@ -91,7 +92,7 @@ class DataPinjamanController extends Controller
             $item->jumlah_angsuran_otomatis = $item->pokok_angsuran + $bunga;
 
             $totalBayar = Angsuran::where('id_pinjaman', $item->id_pinjaman)
-                ->sum(\DB::raw('(angsuran_pokok + bunga_angsuran + denda)'));
+                ->sum(DB::raw('(angsuran_pokok + bunga_angsuran + denda)'));
 
             $totalAngsuranDibayar = Angsuran::where('id_pinjaman', $item->id_pinjaman)->count();
 
@@ -111,9 +112,9 @@ class DataPinjamanController extends Controller
 
     public function create()
     {
+        $anggota = Anggota::where('status_anggota', 'Aktif')->get();
         $ajuanPinjaman = AjuanPinjaman::all();
         $users = User::all();
-        $anggota = Anggota::all();
         $lamaAngsuran = LamaAngsuran::all();
         $akunSumber = JenisAkunTransaksi::where('pinjaman','Y')
             ->where('is_kas', 1)
@@ -134,37 +135,33 @@ class DataPinjamanController extends Controller
 ));
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'id_anggota' => 'required|exists:anggota,id_anggota',
-            'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
-            'id_jenisAkunTransaksi_sumber' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
-            'id_lamaAngsuran' => 'required|exists:lama_angsuran,id_lamaAngsuran',
-            'tanggal_pinjaman' => 'required|date',
-            'jumlah_pinjaman' => 'required|numeric|min:0',
-            'keterangan' => 'nullable|string|max:255',
-        ]);
 
-        $jumlah = $request->jumlah_pinjaman;
+   public function store(Request $request)
+{
+    $request->validate([
+        'id_anggota' => 'required|exists:anggota,id_anggota',
+        'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
+        'id_jenisAkunTransaksi_sumber' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
+        'id_lamaAngsuran' => 'required|exists:lama_angsuran,id_lamaAngsuran',
+        'tanggal_pinjaman' => 'required|date',
+        'jumlah_pinjaman' => 'required|numeric|min:0',
+        'keterangan' => 'nullable|string|max:255',
+    ]);
 
-        $lamaAngsuran = LamaAngsuran::findOrFail($request->id_lamaAngsuran);
-        $lama = (int) $lamaAngsuran->lama_angsuran;
-
-        $sukuBunga = SukuBunga::firstOrFail();
-        $ratePinjaman = $sukuBunga->suku_bunga_pinjaman/100;
-        $bungaPersen = $ratePinjaman * ($lama / 12);
-        $rateAdmin = (float) $sukuBunga->biaya_administrasi;
-
-        $angsuranPokok = $jumlah / $lama;
-
-        $bunga_pinjaman = round(($angsuranPokok * $bungaPersen) / 100) * 100;
-
-        $biaya_admin = round(($rateAdmin / 100) * $jumlah, 2);
-        $totalTagihan = $jumlah + ($bunga_pinjaman * $lama) ;
-
+    DB::beginTransaction();
+    try {
         $idPinjaman = Pinjaman::generateId();
 
+        // ambil suku bunga
+        $suku = SukuBunga::first();
+        $persenBunga = ($suku->suku_bunga_pinjaman ?? 0) / 100;
+        $biayaAdmin  = $suku->biaya_administrasi ?? 0;
+
+        $bungaPerBulan = $request->jumlah_pinjaman * $persenBunga;
+        $lama = LamaAngsuran::where('id_lamaAngsuran', $request->id_lamaAngsuran)->first()->lama_angsuran;
+        $totalTagihan = ($bungaPerBulan + ($request->jumlah_pinjaman / $lama)) * $lama;
+
+        // simpan pinjaman
         Pinjaman::create([
             'id_pinjaman' => $idPinjaman,
             'id_user' => Auth::user()->id_user,
@@ -173,16 +170,49 @@ class DataPinjamanController extends Controller
             'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
             'id_lamaAngsuran' => $request->id_lamaAngsuran,
             'tanggal_pinjaman' => $request->tanggal_pinjaman,
-            'bunga_pinjaman' => $bunga_pinjaman,
             'jumlah_pinjaman' => $request->jumlah_pinjaman,
+            'bunga_pinjaman' => $bungaPerBulan,
+            'biaya_admin' => $biayaAdmin,
             'total_tagihan' => $totalTagihan,
-            'biaya_admin' => $biaya_admin,
             'status_lunas' => 'BELUM LUNAS',
-            'keterangan' => $request->keterangan,
+            'keterangan' => $request->keterangan
         ]);
 
+        // =============================
+        //  INSERT JURNAL DOUBLE ENTRY
+        // =============================
+
+        // 1️⃣ → DEBIT (akun tujuan)
+        AkunRelasiTransaksi::create([
+            'id_transaksi'     => $idPinjaman,
+            'kode_transaksi' => $idPinjaman,
+            'id_akun'          => $request->id_jenisAkunTransaksi_tujuan,
+            'id_akun_berkaitan'=> $request->id_jenisAkunTransaksi_sumber,
+            'debit'            => $request->jumlah_pinjaman,
+            'kredit'           => 0,
+            'tanggal_transaksi'=> $request->tanggal_pinjaman,
+            'keterangan'       => $request->keterangan,
+        ]);
+
+        // 2️⃣ → KREDIT (akun sumber)
+        AkunRelasiTransaksi::create([
+            'id_transaksi'     => $idPinjaman,
+            'kode_transaksi' => $idPinjaman,
+            'id_akun'          => $request->id_jenisAkunTransaksi_sumber,
+            'id_akun_berkaitan'=> $request->id_jenisAkunTransaksi_tujuan,
+            'debit'            => 0,
+            'kredit'           => $request->jumlah_pinjaman,
+            'tanggal_transaksi'=> $request->tanggal_pinjaman,
+            'keterangan'       => $request->keterangan,
+        ]);
+
+        DB::commit();
         return redirect()->route('pinjaman.index')->with('success', 'Data pinjaman berhasil disimpan!');
+    } catch (\Throwable $e) {
+        DB::rollBack();
+        dd($e->getMessage());
     }
+}
 
 public function show($id)
 {
@@ -274,10 +304,10 @@ public function show($id)
 
 public function edit($id)
 {
+    $anggota = Anggota::where('status_anggota', 'Aktif')->get();
     $pinjaman = Pinjaman::where('id_pinjaman', $id)->firstOrFail();
     $ajuanPinjaman = AjuanPinjaman::all();
     $users = User::all();
-    $anggota = Anggota::all();
     $lamaAngsuran = LamaAngsuran::all();
 
     $akunSumber = JenisAkunTransaksi::where('pinjaman', 'Y')
@@ -295,7 +325,7 @@ public function edit($id)
     ));
 }
 
-    public function update(Request $request, $id)
+public function update(Request $request, $id)
 {
     $request->validate([
         'id_anggota' => 'required|exists:anggota,id_anggota',
@@ -307,49 +337,76 @@ public function edit($id)
         'keterangan' => 'nullable|string|max:255',
     ]);
 
-    $pinjaman = Pinjaman::where('id_pinjaman', $id)->firstOrFail();
+    DB::beginTransaction();
+    try {
+        $pinjaman = Pinjaman::where('id_pinjaman', $id)->firstOrFail();
 
-    $jumlah = $request->jumlah_pinjaman;
+        // hitung ulang bunga & total tagihan
+        $suku = SukuBunga::first();
+        $persenBunga = ($suku->suku_bunga_pinjaman ?? 0) / 100;
+        $biayaAdmin  = $suku->biaya_administrasi ?? 0;
+        $bungaPerBulan = $request->jumlah_pinjaman * $persenBunga;
+        $lama = LamaAngsuran::where('id_lamaAngsuran', $request->id_lamaAngsuran)->first()->lama_angsuran;
+        $totalTagihan = ($bungaPerBulan + ($request->jumlah_pinjaman / $lama)) * $lama;
 
-    $lamaAngsuran = LamaAngsuran::findOrFail($request->id_lamaAngsuran);
-    $lama = (int) $lamaAngsuran->lama_angsuran;
+        // update pinjaman
+        $pinjaman->update([
+            'id_anggota' => $request->id_anggota,
+            'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
+            'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
+            'id_lamaAngsuran' => $request->id_lamaAngsuran,
+            'tanggal_pinjaman' => $request->tanggal_pinjaman,
+            'jumlah_pinjaman' => $request->jumlah_pinjaman,
+            'bunga_pinjaman' => $bungaPerBulan,
+            'biaya_admin' => $biayaAdmin,
+            'total_tagihan' => $totalTagihan,
+            'keterangan' => $request->keterangan,
+        ]);
 
-    $sukuBunga = SukuBunga::firstOrFail();
-    $ratePinjaman = $sukuBunga->suku_bunga_pinjaman/100;
-    $bungaPersen = $ratePinjaman * ($lama / 12);
-    $rateAdmin = (float) $sukuBunga->biaya_administrasi;
+        // hapus jurnal lama dulu
+        AkunRelasiTransaksi::where('id_transaksi', $id)->delete();
 
-    $angsuranPokok = $jumlah / $lama;
+        // insert jurnal baru (double entry)
+        AkunRelasiTransaksi::create([
+            'id_transaksi'     => $id,
+            'kode_transaksi' => $id,
+            'id_akun'          => $request->id_jenisAkunTransaksi_tujuan,
+            'id_akun_berkaitan'=> $request->id_jenisAkunTransaksi_sumber,
+            'debit'            => $request->jumlah_pinjaman,
+            'kredit'           => 0,
+            'tanggal_transaksi'=> $request->tanggal_pinjaman,
+            'keterangan'       => $request->keterangan,
+        ]);
 
-    $bunga_pinjaman = round(($angsuranPokok * $bungaPersen) / 100) * 100;
+        AkunRelasiTransaksi::create([
+            'id_transaksi'     => $id,
+            'kode_transaksi' => $id,
+            'id_akun'          => $request->id_jenisAkunTransaksi_sumber,
+            'id_akun_berkaitan'=> $request->id_jenisAkunTransaksi_tujuan,
+            'debit'            => 0,
+            'kredit'           => $request->jumlah_pinjaman,
+            'tanggal_transaksi'=> $request->tanggal_pinjaman,
+            'keterangan'       => $request->keterangan,
+        ]);
 
-    $biaya_admin = round(($rateAdmin / 100) * $jumlah, 2);
-    $totalTagihan = $jumlah + ($bunga_pinjaman * $lama);
-
-    $pinjaman->update([
-        'id_user' => Auth::user()->id_user,
-        'id_anggota' => $request->id_anggota,
-        'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
-        'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
-        'id_lamaAngsuran' => $request->id_lamaAngsuran,
-        'tanggal_pinjaman' => $request->tanggal_pinjaman,
-        'bunga_pinjaman' => $bunga_pinjaman,
-        'jumlah_pinjaman' => $request->jumlah_pinjaman,
-        'total_tagihan' => $totalTagihan,
-        'biaya_admin' => $biaya_admin,
-        'keterangan' => $request->keterangan,
-    ]);
-
-    return redirect()->route('pinjaman.index')->with('success', 'Data pinjaman berhasil diperbarui!');
+        DB::commit();
+        return redirect()->route('pinjaman.index')->with('success', 'Data pinjaman berhasil diperbarui!');
+    } catch (\Throwable $e) {
+        DB::rollBack();
+        dd($e->getMessage());
+    }
 }
 
     public function destroy($id)
     {
-        $pinjaman = Pinjaman::where('id_pinjaman', $id)->firstOrFail();
-        $pinjaman->delete();
+        DB::transaction(function () use ($id) {
+            AkunRelasiTransaksi::where('id_transaksi', $id)->delete();
+            Pinjaman::where('id_pinjaman', $id)->delete();
+        });
 
         return redirect()->route('pinjaman.index')->with('success', 'Data pinjaman berhasil dihapus!');
     }
+
 
     public function cetakNota($id)
     {
@@ -408,7 +465,8 @@ public function edit($id)
         $item->jumlah_angsuran_otomatis = $item->pokok_angsuran + $bunga;
 
         $totalBayar = \App\Models\Angsuran::where('id_pinjaman', $item->id_pinjaman)
-            ->sum(\DB::raw('(angsuran_pokok + bunga_angsuran + denda)'));
+            ->sum(DB::raw('(angsuran_pokok + bunga_angsuran + denda)'));
+
 
         $totalAngsuranDibayar = \App\Models\Angsuran::where('id_pinjaman', $item->id_pinjaman)->count();
 

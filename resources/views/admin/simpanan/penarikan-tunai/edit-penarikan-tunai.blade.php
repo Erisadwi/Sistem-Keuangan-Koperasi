@@ -63,7 +63,7 @@
             <option value="">-- Pilih Kas --</option>
             @foreach ($akunTransaksi as $akun)
                 <option value="{{ $akun->id_jenisAkunTransaksi }}"
-                    {{ $penarikanTunai->id_jenisAkunTransaksi_sumber == $akun->id_jenisAkunTransaksi ? 'selected' : '' }}>
+                    {{ $penarikanTunai->id_jenisAkunTransaksi_tujuan == $akun->id_jenisAkunTransaksi ? 'selected' : '' }}>
                     {{ $akun->nama_AkunTransaksi }}
                 </option>
             @endforeach
@@ -168,59 +168,71 @@ textarea:focus {
 </style>
 
 <script>
-// Autofill anggota tanpa dropdown browser
-(function(){
-    const anggota = @json($anggota); 
-    const input = document.getElementById('nama_anggota');
-    const hidden = document.getElementById('id_anggota');
+    (function() {
+        const optEls = document.querySelectorAll('#daftar_anggota option');
+        const list = Array.from(optEls).map(o => ({
+            name: o.value,
+            id: o.dataset.id
+        }));
+        const input = document.getElementById('nama_anggota');
+        const hidden = document.getElementById('id_anggota');
 
-    input.addEventListener('input', function(){
-        const found = anggota.find(a => a.nama_anggota.toLowerCase() === this.value.trim().toLowerCase());
-        hidden.value = found ? found.id_anggota : '';
-    });
-})();
-
-// Auto isi jumlah simpanan
-document.addEventListener('DOMContentLoaded', function() {
-    const jenisSelect = document.getElementById('id_jenis_simpanan');
-    const jumlahInput = document.getElementById('jumlah_simpanan');
-    if (jenisSelect && jumlahInput) {
-        const setJumlah = () => {
-            const selectedOption = jenisSelect.options[jenisSelect.selectedIndex];
-            const jumlah = selectedOption.getAttribute('data-jumlah');
-            if (jumlah && parseInt(jumlah) > 0) {
-                jumlahInput.value = jumlah;
-                jumlahInput.readOnly = true;
-            } else {
-                jumlahInput.readOnly = false;
-            }
-        };
-        jenisSelect.addEventListener('change', setJumlah);
-        setJumlah();
-    }
-});
-
-// Validasi form
-document.getElementById('formEditPenarikanTunai').addEventListener('submit', function(e) {
-    const wajib = ['id_anggota','id_jenis_simpanan','jumlah_simpanan','id_jenisAkunTransaksi_tujuan'];
-    for (let id of wajib) {
-        const el = document.getElementById(id);
-        if (!el || !el.value.trim()) {
-            alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
-            e.preventDefault(); return;
+        function updateHidden() {
+            const found = list.find(x => x.name === input.value.trim());
+            hidden.value = found ? found.id : '';
+            console.log('✅ ID Anggota:', hidden.value);
         }
-    }
-    if(!confirm('Apakah data sudah benar dan ingin disimpan?')){
-        e.preventDefault(); alert('❌ Pengisian data dibatalkan.');
-        return;
-    }
-    alert('✅ Data barang berhasil disimpan!');
-});
 
-// Tombol batal
-document.getElementById('btnBatal').addEventListener('click', function(){
-    window.location.href = "{{ route('penarikan-tunai.index') }}";
-});
+        input.addEventListener('input', updateHidden);
+        input.addEventListener('change', updateHidden);
+    })();
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const jenisSelect = document.getElementById('id_jenis_simpanan');
+        const jumlahInput = document.getElementById('jumlah_simpanan');
+
+        if (jenisSelect && jumlahInput) {
+            jenisSelect.addEventListener('change', function() {
+                // Ambil jumlah dari atribut data-jumlah pada option yang dipilih
+                const selectedOption = jenisSelect.options[jenisSelect.selectedIndex];
+                const jumlah = selectedOption.getAttribute('data-jumlah');
+
+                if (jenis.includes('wajib') || jenis.includes('pokok')) {
+                    jumlahInput.value = 0;     
+                    jumlahInput.readOnly = false; 
+                return; 
+        }
+
+                if (jumlah && parseInt(jumlah) > 0) {
+                    jumlahInput.value = jumlah;
+                    jumlahInput.readOnly = true;
+                } else {
+                    jumlahInput.value = 0;
+                    jumlahInput.readOnly = false;
+                }
+            });
+        }
+    });
+
+    document.getElementById('formPenarikanTunai').addEventListener('submit', function(e) {
+        const wajib = ['id_anggota', 'id_jenis_simpanan', 'jumlah_simpanan', 'id_jenisAkunTransaksi_tujuan'];
+        for (let id of wajib) {
+            const el = document.getElementById(id);
+            if (!el || !el.value.trim()) {
+                alert('⚠️ Mohon isi semua kolom wajib sebelum menyimpan.');
+                e.preventDefault();
+                return;
+            }
+        }
+
+        if (!confirm('Apakah data sudah benar dan ingin disimpan?')) {
+            e.preventDefault();
+            alert('❌ Pengisian data dibatalkan.');
+            return;
+        }
+
+        alert('✅ Data barang berhasil disimpan!');
+    });
 </script>
 
 @endsection

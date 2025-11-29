@@ -8,6 +8,9 @@ use App\Models\Anggota;
 use App\Models\JenisAkunTransaksi;
 use App\Models\JenisSimpanan;
 use Illuminate\Http\Request;
+use App\Models\AkunRelasiTransaksi;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\Auth;
 
@@ -79,9 +82,8 @@ class SetoranTunaiController extends Controller
         ));
     }
 
-
-    public function store(Request $request)
-    {
+   public function store(Request $request)
+   {
         $request->validate([
             'id_anggota' => 'required|exists:anggota,id_anggota',
             'id_jenis_simpanan' => 'required|exists:jenis_simpanan,id_jenis_simpanan',
@@ -91,40 +93,62 @@ class SetoranTunaiController extends Controller
             'bukti_setoran' => 'nullable|file|max:2048',
         ]);
 
-        $buktiPath = null;
-        if ($request->hasFile('bukti_setoran')) {
-            $buktiPath = $request->file('bukti_setoran')->store('bukti_setoran', 'public');
+        DB::beginTransaction();
+        try {
+            $buktiPath = $request->hasFile('bukti_setoran')
+                ? $request->file('bukti_setoran')->store('bukti_setoran', 'public')
+                : null;
+
+            $jenisSimpanan = JenisSimpanan::findOrFail($request->id_jenis_simpanan);
+            $akunSumber = $jenisSimpanan->id_jenisAkunTransaksi;
+            $akunTujuan = $request->id_jenisAkunTransaksi_tujuan;
+
+            // Kode TRD anti duplikat
+            $nextCode = 'TRD' . str_pad(Simpanan::where('type_simpanan', 'TRD')->count() + 1, 5, '0', STR_PAD_LEFT);
+
+            $simpanan = Simpanan::create([
+                'id_user' => Auth::user()->id_user,
+                'id_anggota' => $request->id_anggota,
+                'id_jenis_simpanan' => $request->id_jenis_simpanan,
+                'id_jenisAkunTransaksi_sumber' => $akunSumber,
+                'id_jenisAkunTransaksi_tujuan' => $akunTujuan,
+                'jumlah_simpanan' => $request->jumlah_simpanan,
+                'type_simpanan' => 'TRD',
+                'kode_simpanan' => $nextCode,
+                'tanggal_transaksi' => $request->tanggal_transaksi,
+                'keterangan' => $request->keterangan,
+                'bukti_setoran' => $buktiPath
+            ]);
+
+            // jurnal debit
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $simpanan->id_simpanan,
+                'id_akun' => $akunTujuan,
+                'id_akun_berkaitan' => $akunSumber,
+                'debit' => $request->jumlah_simpanan,
+                'kredit' => 0,
+                'kode_transaksi' => $nextCode,
+                'tanggal_transaksi' => $request->tanggal_transaksi
+            ]);
+
+            // jurnal kredit
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $simpanan->id_simpanan,
+                'id_akun' => $akunSumber,
+                'id_akun_berkaitan' => $akunTujuan,
+                'debit' => 0,
+                'kredit' => $request->jumlah_simpanan,
+                'kode_transaksi' => $nextCode,
+                'tanggal_transaksi' => $request->tanggal_transaksi
+            ]);
+
+            DB::commit();
+            return redirect()->route('setoran-tunai.index')->with('success', 'Data setoran tunai berhasil disimpan.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            dd($e->getMessage());
         }
-
-        $jenisSimpanan = JenisSimpanan::findOrFail($request->id_jenis_simpanan);
-
-        $akunSumber = $jenisSimpanan->id_jenisAkunTransaksi;
-
-        $akunTujuan = $request->id_jenisAkunTransaksi_tujuan;
-
-        $last = Simpanan::where('type_simpanan', 'TRD')->orderBy('id_simpanan', 'desc')->first();
-        $nextCode = 'TRD' . str_pad(($last->id_simpanan ?? 0) + 1, 5, '0', STR_PAD_LEFT);
-
-        Simpanan::create([
-            'id_user' => Auth::user()->id_user,
-            'id_anggota' => $request->id_anggota,
-            'id_jenis_simpanan' => $request->id_jenis_simpanan,
-
-            'id_jenisAkunTransaksi_sumber' => $akunSumber,
-            'id_jenisAkunTransaksi_tujuan' => $akunTujuan,
-
-            'jumlah_simpanan' => $request->jumlah_simpanan,
-            'type_simpanan' => 'TRD',
-            'kode_simpanan' => $nextCode,
-            'tanggal_transaksi' => $request->tanggal_transaksi,
-            'keterangan' => $request->keterangan,
-            'bukti_setoran' => $buktiPath
-        ]);
-
-        return redirect()->route('setoran-tunai.index')
-            ->with('success', 'Data setoran tunai berhasil disimpan.');
     }
-
 
     public function edit($id)
     {
@@ -148,47 +172,87 @@ class SetoranTunaiController extends Controller
 
     public function update(Request $request, $id)
     {
-        $setoranTunai = Simpanan::findOrFail($id);
+        $setoran = Simpanan::findOrFail($id);
 
         $request->validate([
             'id_jenis_simpanan' => 'required|exists:jenis_simpanan,id_jenis_simpanan',
             'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
-            'jumlah_simpanan' => 'required|numeric|min:0',
+            'jumlah_simpanan' => 'required|numeric|min:1',
             'tanggal_transaksi' => 'required|date',
-            'keterangan' => 'nullable|string|max:255',
+            'keterangan' => 'nullable|string',
             'bukti_setoran' => 'nullable|file|mimes:jpg,jpeg,png,pdf|max:2048',
         ]);
 
-        $data = $request->only([
-            'id_jenis_simpanan',
-            'id_jenisAkunTransaksi_tujuan',
-            'jumlah_simpanan',
-            'tanggal_transaksi',
-            'keterangan'
-        ]);
+        DB::beginTransaction();
+        try {
+            $jenisSimpanan = JenisSimpanan::findOrFail($request->id_jenis_simpanan);
+            $akunSumber = $jenisSimpanan->id_jenisAkunTransaksi;
+            $akunTujuan = $request->id_jenisAkunTransaksi_tujuan;
 
-        if ($request->hasFile('bukti_setoran')) {
-            $file = $request->file('bukti_setoran');
-            $filename = time() . '_' . $file->getClientOriginalName();
-            $data['bukti_setoran'] = $file->storeAs('bukti_setoran', $filename, 'public');
+            $data = $request->only(['id_jenis_simpanan', 'jumlah_simpanan', 'tanggal_transaksi', 'keterangan']);
+            $data['id_jenisAkunTransaksi_sumber'] = $akunSumber;
+            $data['id_jenisAkunTransaksi_tujuan'] = $akunTujuan;
+
+            if ($request->hasFile('bukti_setoran')) {
+                $data['bukti_setoran'] = $request->file('bukti_setoran')
+                    ->store('bukti_setoran', 'public');
+            }
+
+            $setoran->update($data);
+
+            // Hapus jurnal lama
+            AkunRelasiTransaksi::where('id_transaksi', $id)->delete();
+
+            // Buat jurnal baru
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $id,
+                'id_akun' => $akunTujuan,
+                'id_akun_berkaitan' => $akunSumber,
+                'debit' => $request->jumlah_simpanan,
+                'kredit' => 0,
+                'kode_transaksi' => $setoran->kode_simpanan,
+                'tanggal_transaksi' => $request->tanggal_transaksi
+            ]);
+
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $id,
+                'id_akun' => $akunSumber,
+                'id_akun_berkaitan' => $akunTujuan,
+                'debit' => 0,
+                'kredit' => $request->jumlah_simpanan,
+                'kode_transaksi' => $setoran->kode_simpanan,
+                'tanggal_transaksi' => $request->tanggal_transaksi
+            ]);
+
+            DB::commit();
+            return redirect()->route('setoran-tunai.index')->with('success', 'Data setoran tunai berhasil diperbarui.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            dd($e->getMessage());
         }
-
-        $setoranTunai->update($data);
-
-        return redirect()->route('setoran-tunai.index')
-            ->with('success', '✅ Data setoran tunai berhasil diperbarui.');
     }
-
 
     public function destroy($id)
     {
-        $setoranTunai = Simpanan::findOrFail($id);
-        $setoranTunai->delete();
+        DB::beginTransaction();
+        try {
+            $setoran = Simpanan::findOrFail($id);
 
-        return redirect()->route('setoran-tunai.index')
-            ->with('success', '🗑️ Data setoran tunai berhasil dihapus.');
+            AkunRelasiTransaksi::where('id_transaksi', $id)->delete();
+
+            if ($setoran->bukti_setoran) {
+                Storage::disk('public')->delete($setoran->bukti_setoran);
+            }
+
+            $setoran->delete();
+
+            DB::commit();
+            return redirect()->route('setoran-tunai.index')->with('success', 'Data setoran tunai berhasil dihapus.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+            dd($e->getMessage());
+        }
     }
-
 
     public function exportPdf()
     {
