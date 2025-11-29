@@ -54,7 +54,14 @@
         </select>
 
         <label for="jumlah_simpanan">Jumlah Penarikan</label>
-        <input type="number" name="jumlah_simpanan" id="jumlah_simpanan" value="0" placeholder="Masukkan jumlah simpanan" required>
+        <input 
+                type="number" 
+                name="jumlah_simpanan" 
+                id="jumlah_simpanan" 
+                value="{{ old('jumlah_simpanan', $data->jumlah_simpanan ?? 0) }}" 
+                placeholder="Masukkan jumlah simpanan" 
+                required
+            >
 
         <label for="keterangan">Keterangan</label>
         <input type="text" id="keterangan" name="keterangan" value="{{ old('keterangan') }}" placeholder="Opsional...">
@@ -69,15 +76,7 @@
             @endforeach
         </select>
 
-
         <label for="bukti_setoran">Bukti Penarikan
-
-
-
-
-
-
-        </label>
         <input type="file" id="bukti_setoran" name="bukti_setoran" accept="image/*,application/pdf">
 
         <div class="form-buttons">
@@ -174,9 +173,6 @@
     }
 </style>
 
-{{-- =======================
-     SCRIPT
-======================= --}}
 <script>
     (function() {
         const optEls = document.querySelectorAll('#daftar_anggota option');
