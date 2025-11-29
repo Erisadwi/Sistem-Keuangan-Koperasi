@@ -40,84 +40,56 @@ class LaporanLabaRugiController extends Controller
         $pinjaman = collect([
             [
                 'keterangan' => 'Jumlah Pinjaman',
-                'jumlah'     => $view->where('kategori', 'PINJAMAN')->sum('debit')
+                'jumlah'     => $view->where('kategori', 'PINJAMAN')->sum('kredit')
             ],
             [
                 'keterangan' => 'Jumlah Angsuran',
-                'jumlah'     => $view->where('kategori', 'ANGSURAN')->sum('kredit')
+                'jumlah'     => $view->where('kategori', 'ANGSURAN')->sum('debit')
             ],
         ]);
 
-        $pendapatan = DB::table('jenis_akun_transaksi AS j')
-            ->leftJoin('detail_transaksi AS d', 'j.id_jenisAkunTransaksi', '=', 'd.id_jenisAkunTransaksi')
-            ->leftJoin('transaksi AS t', 'd.id_transaksi', '=', 't.id_transaksi')
-            ->select(
-                'j.nama_AkunTransaksi AS keterangan',
-                DB::raw('COALESCE(SUM(d.kredit - d.debit), 0) AS jumlah')
-            )
-            ->where('j.labarugi', 'PENDAPATAN')
-            ->where(function ($q) use ($start_date, $end_date) {
-                $q->whereBetween('t.tanggal_transaksi', [$start_date, $end_date])
-                  ->orWhereNull('t.tanggal_transaksi');
-            })
-            ->where(function ($q) {
-                $q->whereIn('t.type_transaksi', ['TKD', 'TKK', 'TNK'])
-                  ->orWhereNull('t.type_transaksi');
-            })
-            ->groupBy('j.nama_AkunTransaksi')
-            ->orderBy('j.nama_AkunTransaksi')
-            ->get();
+    $pendapatan = DB::table('view_laba_rugi')
+        ->select('akun AS keterangan', DB::raw('COALESCE(SUM(debit), 0) AS jumlah'))
+        ->where('kategori', 'PENDAPATAN')
+        ->whereBetween('tanggal', [$start_date, $end_date])
+        ->groupBy('akun')
+        ->orderBy('akun')
+        ->get();
 
+    $pendapatanKosong = DB::table('jenis_akun_transaksi')
+        ->where('labarugi', 'PENDAPATAN')
+        ->get()
+        ->filter(fn($akun) => !$pendapatan->contains('keterangan', $akun->nama_AkunTransaksi))
+        ->map(fn($akun) => (object)[
+            'keterangan' => $akun->nama_AkunTransaksi,
+            'jumlah' => 0
+        ]);
+    $pendapatan = $pendapatan->merge($pendapatanKosong)->sortBy('keterangan');
 
-        $pendapatanKosong = DB::table('jenis_akun_transaksi')
-            ->where('labarugi', 'PENDAPATAN')
-            ->get()
-            ->filter(fn($akun) => !$pendapatan->contains('keterangan', $akun->nama_AkunTransaksi))
-            ->map(fn($akun) => (object)[
-                'keterangan' => $akun->nama_AkunTransaksi,
-                'jumlah' => 0
-            ]);
+    $biaya = DB::table('view_laba_rugi')
+        ->select('akun AS keterangan', DB::raw('COALESCE(SUM(kredit), 0) AS jumlah'))
+        ->where('kategori', 'BIAYA')
+        ->whereBetween('tanggal', [$start_date, $end_date])
+        ->groupBy('akun')
+        ->orderBy('akun')
+        ->get();
 
-        $pendapatan = $pendapatan->merge($pendapatanKosong)->sortBy('keterangan');
+    $biayaKosong = DB::table('jenis_akun_transaksi')
+        ->where('labarugi', 'BIAYA')
+        ->get()
+        ->filter(fn($akun) => !$biaya->contains('keterangan', $akun->nama_AkunTransaksi))
+        ->map(fn($akun) => (object)[
+            'keterangan' => $akun->nama_AkunTransaksi,
+            'jumlah' => 0
+        ]);
+    $biaya = $biaya->merge($biayaKosong)->sortBy('keterangan');
 
-        $biaya = DB::table('jenis_akun_transaksi AS j')
-            ->leftJoin('detail_transaksi AS d', 'j.id_jenisAkunTransaksi', '=', 'd.id_jenisAkunTransaksi')
-            ->leftJoin('transaksi AS t', 'd.id_transaksi', '=', 't.id_transaksi')
-            ->select(
-                'j.nama_AkunTransaksi AS keterangan',
-                DB::raw('COALESCE(SUM(d.debit - d.kredit), 0) AS jumlah')
-            )
-            ->where('j.labarugi', 'BIAYA')
-            ->where(function ($q) use ($start_date, $end_date) {
-                $q->whereBetween('t.tanggal_transaksi', [$start_date, $end_date])
-                  ->orWhereNull('t.tanggal_transaksi');
-            })
-            ->where(function ($q) {
-                $q->whereIn('t.type_transaksi', ['TKD', 'TKK', 'TNK'])
-                  ->orWhereNull('t.type_transaksi');
-            })
-            ->groupBy('j.nama_AkunTransaksi')
-            ->orderBy('j.nama_AkunTransaksi')
-            ->get();
+            return view('admin.laporan.laba-rugi.laporan-laba-rugi', compact(
+                'pinjaman', 'pendapatan', 'biaya', 'periodeText'
+            ));
+        }
 
-
-        $biayaKosong = DB::table('jenis_akun_transaksi')
-            ->where('labarugi', 'BIAYA')
-            ->get()
-            ->filter(fn($akun) => !$biaya->contains('keterangan', $akun->nama_AkunTransaksi))
-            ->map(fn($akun) => (object)[
-                'keterangan' => $akun->nama_AkunTransaksi,
-                'jumlah' => 0
-            ]);
-
-        $biaya = $biaya->merge($biayaKosong)->sortBy('keterangan');
-
-        return view('admin.laporan.laba-rugi.laporan-laba-rugi', compact(
-            'pinjaman', 'pendapatan', 'biaya', 'periodeText'
-        ));
-    }
-
-   public function exportPdf(Request $request)
+  public function exportPdf(Request $request)
 {
     $preset     = $request->preset;
     $start_date = $request->start_date;
@@ -139,38 +111,22 @@ class LaporanLabaRugiController extends Controller
         . ' - '
         . Carbon::parse($end_date)->translatedFormat('j M Y');
 
-
     $view = DB::table('view_laba_rugi_akuntansi')
         ->whereBetween('tanggal', [$start_date, $end_date])
         ->get();
 
-
     $pinjaman = (object)[
-        'pinjaman_jumlah'     => $view->where('kategori', 'PINJAMAN')->sum('debit'),
-        'pinjaman_angsuran'   => $view->where('kategori', 'ANGSURAN')->sum('kredit'),
+        'pinjaman_jumlah'   => $view->where('kategori', 'PINJAMAN')->sum('kredit'),
+        'pinjaman_angsuran' => $view->where('kategori', 'ANGSURAN')->sum('debit'),
     ];
 
-
-    $pendapatan = DB::table('jenis_akun_transaksi AS j')
-        ->leftJoin('detail_transaksi AS d', 'j.id_jenisAkunTransaksi', '=', 'd.id_jenisAkunTransaksi')
-        ->leftJoin('transaksi AS t', 'd.id_transaksi', '=', 't.id_transaksi')
-        ->select(
-            'j.nama_AkunTransaksi AS keterangan',
-            DB::raw('COALESCE(SUM(d.kredit - d.debit), 0) AS jumlah')
-        )
-        ->where('j.labarugi', 'PENDAPATAN')
-        ->where(function ($q) use ($start_date, $end_date) {
-            $q->whereBetween('t.tanggal_transaksi', [$start_date, $end_date])
-              ->orWhereNull('t.tanggal_transaksi');
-        })
-        ->where(function ($q) {
-            $q->whereIn('t.type_transaksi', ['TKD', 'TKK', 'TNK'])
-              ->orWhereNull('t.type_transaksi');
-        })
-        ->groupBy('j.nama_AkunTransaksi')
-        ->orderBy('j.nama_AkunTransaksi')
+    $pendapatan = DB::table('view_laba_rugi')
+        ->select('akun AS keterangan', DB::raw('COALESCE(SUM(debit),0) AS jumlah'))
+        ->where('kategori', 'PENDAPATAN')
+        ->whereBetween('tanggal', [$start_date, $end_date])
+        ->groupBy('akun')
+        ->orderBy('akun')
         ->get();
-
 
     $pendapatanKosong = DB::table('jenis_akun_transaksi')
         ->where('labarugi', 'PENDAPATAN')
@@ -180,28 +136,14 @@ class LaporanLabaRugiController extends Controller
             'keterangan' => $akun->nama_AkunTransaksi,
             'jumlah' => 0
         ]);
-
     $pendapatan = $pendapatan->merge($pendapatanKosong)->sortBy('keterangan');
 
-
-    $biaya = DB::table('jenis_akun_transaksi AS j')
-        ->leftJoin('detail_transaksi AS d', 'j.id_jenisAkunTransaksi', '=', 'd.id_jenisAkunTransaksi')
-        ->leftJoin('transaksi AS t', 'd.id_transaksi', '=', 't.id_transaksi')
-        ->select(
-            'j.nama_AkunTransaksi AS keterangan',
-            DB::raw('COALESCE(SUM(d.debit - d.kredit), 0) AS jumlah')
-        )
-        ->where('j.labarugi', 'BIAYA')
-        ->where(function ($q) use ($start_date, $end_date) {
-            $q->whereBetween('t.tanggal_transaksi', [$start_date, $end_date])
-              ->orWhereNull('t.tanggal_transaksi');
-        })
-        ->where(function ($q) {
-            $q->whereIn('t.type_transaksi', ['TKD', 'TKK', 'TNK'])
-              ->orWhereNull('t.type_transaksi');
-        })
-        ->groupBy('j.nama_AkunTransaksi')
-        ->orderBy('j.nama_AkunTransaksi')
+    $biaya = DB::table('view_laba_rugi')
+        ->select('akun AS keterangan', DB::raw('COALESCE(SUM(kredit),0) AS jumlah'))
+        ->where('kategori', 'BIAYA')
+        ->whereBetween('tanggal', [$start_date, $end_date])
+        ->groupBy('akun')
+        ->orderBy('akun')
         ->get();
 
     $biayaKosong = DB::table('jenis_akun_transaksi')
@@ -212,14 +154,11 @@ class LaporanLabaRugiController extends Controller
             'keterangan' => $akun->nama_AkunTransaksi,
             'jumlah' => 0
         ]);
-
     $biaya = $biaya->merge($biayaKosong)->sortBy('keterangan');
-
 
     $totalPendapatan = $pendapatan->sum('jumlah');
     $totalBiaya      = $biaya->sum('jumlah');
     $labaBersih      = $totalPendapatan - $totalBiaya;
-
 
     $pdf = Pdf::loadView('admin.laporan.laba-rugi.pdf', compact(
         'start_date', 'end_date', 'periodeText',
