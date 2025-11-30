@@ -28,4 +28,5 @@ class AkunRelasiTransaksi extends Model
     {
         return $this->belongsTo(\App\Models\Transaksi::class, 'id_transaksi', 'id_transaksi');
     }
+    
 }

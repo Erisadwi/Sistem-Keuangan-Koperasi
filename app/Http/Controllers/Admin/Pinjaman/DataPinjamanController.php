@@ -388,6 +388,7 @@ public function update(Request $request, $id)
             'tanggal_transaksi'=> $request->tanggal_pinjaman,
             'keterangan'       => $request->keterangan,
         ]);
+        
 
         DB::commit();
         return redirect()->route('pinjaman.index')->with('success', 'Data pinjaman berhasil diperbarui!');
