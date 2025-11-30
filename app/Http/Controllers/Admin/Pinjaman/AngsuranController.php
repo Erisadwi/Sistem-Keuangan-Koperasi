@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\Rule; 
 use App\Models\Anggota;
 use App\Models\JenisAkunTransaksi;
+use App\Models\AkunRelasiTransaksi;
 use Illuminate\Support\Facades\Log;
 use Barryvdh\DomPDF\Facade\Pdf;
 use App\Models\Angsuran;
@@ -232,7 +233,7 @@ class AngsuranController extends Controller
         $tanggalPinjaman = Carbon::parse($pinjaman->tanggal_pinjaman);
         $tanggalJatuhTempo = $tanggalPinjaman->copy()->addMonthsNoOverflow($angsuranKe)->day(30);
 
-        $akunPendapatan = $pinjaman->id_jenisAkunTransaksi_tujuan;
+        $akunPiutang = $pinjaman->id_jenisAkunTransaksi_tujuan;
 
         Log::info('Sebelum create');
         Angsuran::create([
@@ -246,12 +247,56 @@ class AngsuranController extends Controller
             'bunga_angsuran' => $request->bunga_angsuran,
             'sisa_tagihan' => $request->sisa_tagihan,
             'denda' => $request->denda ?? 0,
-            'id_jenisAkunTransaksi_sumber' => $akunPendapatan,
+            'id_jenisAkunTransaksi_sumber' => $akunPiutang,
             'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
             'id_jenisAkunPendapatan' => $request->id_jenisAkunPendapatan,
             'keterangan' => $request->keterangan,
             'id_user' => Auth::user()->id_user,
         ]);
+
+        $transaksi = Angsuran::latest('id_bayar_angsuran')->first();
+
+        $idTransaksi = $transaksi->id_bayar_angsuran;
+        $tanggal = $transaksi->tanggal_bayar;
+
+        // 1. Akun tujuan (KAS) → DEBIT
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $idTransaksi,
+                'id_akun' => $request->id_jenisAkunTransaksi_tujuan,
+                'id_akun_berkaitan' => $akunPiutang,
+                'debit' => $request->angsuran_pokok,
+                'kredit' => 0,
+                'tanggal_transaksi' => $tanggal
+            ]);
+
+        // 1. Akun laba (PENDAPATAN) → DEBIT
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $idTransaksi,
+                'id_akun' => $request->id_jenisAkunTransaksi_tujuan,
+                'id_akun_berkaitan' => $request->id_jenisAkunPendapatan,
+                'debit' => $request->bunga_angsuran,
+                'kredit' => 0,
+                'tanggal_transaksi' => $tanggal
+            ]);
+
+        // 2. Akun sumber → KREDIT
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $idTransaksi,
+                'id_akun' => $akunPiutang,
+                'id_akun_berkaitan' => $request->id_jenisAkunTransaksi_tujuan,
+                'debit' => 0,
+                'kredit' => $request->angsuran_pokok,
+                'tanggal_transaksi' => $tanggal
+            ]);
+
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $idTransaksi,
+                'id_akun' => $request->id_jenisAkunPendapatan,
+                'id_akun_berkaitan' => $request->id_jenisAkunTransaksi_tujuan,
+                'debit' => 0,
+                'kredit' => $request->bunga_angsuran,
+                'tanggal_transaksi' => $tanggal
+            ]);
 
         $pinjaman = Pinjaman::with(['anggota', 'lamaAngsuran'])->findOrFail($id_pinjaman);
         $payments = Angsuran::where('id_pinjaman', $id_pinjaman)->get();
@@ -346,7 +391,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
     $bungaAngsuran = $bungaPerBulan * $sisaAngsuran;
 
     $jumlahBayar = $angsuranPokok + $bungaAngsuran;
-    $akunPendapatan = $pinjaman->id_jenisAkunTransaksi_tujuan;
+    $akunPiutang = $pinjaman->id_jenisAkunTransaksi_tujuan;
 
     $angsuran = Angsuran::create([
         'id_bayar_angsuran' => Angsuran::generateId(),
@@ -358,11 +403,55 @@ public function storePelunasan(Request $request, $id_pinjaman)
         'angsuran_per_bulan' => $jumlahBayar,
         'sisa_tagihan' => 0,
         'keterangan' => "Pelunasan Pinjaman",
-        'id_jenisAkunTransaksi_sumber' => $akunPendapatan,
+        'id_jenisAkunTransaksi_sumber' => $akunPiutang,
         'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
         'id_jenisAkunPendapatan' => $request->id_jenisAkunPendapatan,
         'id_user' => Auth::user()->id_user
     ]);
+
+        $transaksi = Angsuran::latest('id_bayar_angsuran')->first();
+
+        $idTransaksi = $transaksi->id_bayar_angsuran;
+        $tanggal = $transaksi->tanggal_bayar;
+
+        // 1. Akun tujuan (KAS) → DEBIT
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $idTransaksi,
+                'id_akun' => $request->id_jenisAkunTransaksi_tujuan,
+                'id_akun_berkaitan' => $akunPiutang,
+                'debit' => $request->angsuran_pokok,
+                'kredit' => 0,
+                'tanggal_transaksi' => $tanggal
+            ]);
+
+        // 1. Akun laba (PENDAPATAN) → DEBIT
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $idTransaksi,
+                'id_akun' => $request->id_jenisAkunTransaksi_tujuan,
+                'id_akun_berkaitan' => $request->id_jenisAkunPendapatan,
+                'debit' => $request->bunga_angsuran,
+                'kredit' => 0,
+                'tanggal_transaksi' => $tanggal
+            ]);
+
+        // 2. Akun sumber → KREDIT
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $idTransaksi,
+                'id_akun' => $akunPiutang,
+                'id_akun_berkaitan' => $request->id_jenisAkunTransaksi_tujuan,
+                'debit' => 0,
+                'kredit' => $request->angsuran_pokok,
+                'tanggal_transaksi' => $tanggal
+            ]);
+
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $idTransaksi,
+                'id_akun' => $request->id_jenisAkunPendapatan,
+                'id_akun_berkaitan' => $request->id_jenisAkunTransaksi_tujuan,
+                'debit' => 0,
+                'kredit' => $request->bunga_angsuran,
+                'tanggal_transaksi' => $tanggal
+            ]);
 
     $pinjaman->status_lunas = "Lunas";
     $pinjaman->save();
@@ -434,7 +523,7 @@ public function storePelunasan(Request $request, $id_pinjaman)
 
         $tanggalPinjaman = Carbon::parse($pinjaman->tanggal_pinjaman);
         $tanggalJatuhTempo = $tanggalPinjaman->copy()->addMonthsNoOverflow($angsuran->angsuran_ke)->day(30);
-        $akunPendapatan = $pinjaman->id_jenisAkunTransaksi_tujuan;
+        $akunPiutang = $pinjaman->id_jenisAkunTransaksi_tujuan;
 
         $angsuran->update([
             'tanggal_bayar' => $request->tanggal_bayar,
@@ -444,12 +533,58 @@ public function storePelunasan(Request $request, $id_pinjaman)
             'bunga_angsuran' => $request->bunga_angsuran,
             'sisa_tagihan' => $request->sisa_tagihan,
             'denda' => $request->denda ?? 0,
-            'id_jenisAkunTransaksi_sumber' => $akunPendapatan,
+            'id_jenisAkunTransaksi_sumber' => $akunPiutang,
             'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
             'id_jenisAkunPendapatan' => $request->id_jenisAkunPendapatan,
             'keterangan' => $request->keterangan,
             'id_user' => Auth::user()->id_user,
         ]);
+
+        AkunRelasiTransaksi::where('id_bayar_angsuran', $angsuran->id_bayar_angsuran)->delete();
+
+                $transaksi = Angsuran::latest('id_bayar_angsuran')->first();
+
+        $idTransaksi = $transaksi->id_bayar_angsuran;
+        $tanggal = $transaksi->tanggal_bayar;
+
+        // 1. Akun tujuan (KAS) → DEBIT
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $idTransaksi,
+                'id_akun' => $request->id_jenisAkunTransaksi_tujuan,
+                'id_akun_berkaitan' => $akunPiutang,
+                'debit' => $request->angsuran_pokok,
+                'kredit' => 0,
+                'tanggal_transaksi' => $tanggal
+            ]);
+
+        // 1. Akun laba (PENDAPATAN) → DEBIT
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $idTransaksi,
+                'id_akun' => $request->id_jenisAkunTransaksi_tujuan,
+                'id_akun_berkaitan' => $request->id_jenisAkunPendapatan,
+                'debit' => $request->bunga_angsuran,
+                'kredit' => 0,
+                'tanggal_transaksi' => $tanggal
+            ]);
+
+        // 2. Akun sumber → KREDIT
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $idTransaksi,
+                'id_akun' => $akunPiutang,
+                'id_akun_berkaitan' => $request->id_jenisAkunTransaksi_tujuan,
+                'debit' => 0,
+                'kredit' => $request->angsuran_pokok,
+                'tanggal_transaksi' => $tanggal
+            ]);
+
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $idTransaksi,
+                'id_akun' => $request->id_jenisAkunPendapatan,
+                'id_akun_berkaitan' => $request->id_jenisAkunTransaksi_tujuan,
+                'debit' => 0,
+                'kredit' => $request->bunga_angsuran,
+                'tanggal_transaksi' => $tanggal
+            ]);
 
         return redirect()->route('bayar.angsuran', ['id_pinjaman' => $angsuran->id_pinjaman])
             ->with('success', 'Data angsuran berhasil diperbarui.');
