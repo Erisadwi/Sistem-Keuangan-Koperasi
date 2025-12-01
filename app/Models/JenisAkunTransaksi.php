@@ -42,27 +42,53 @@ class JenisAkunTransaksi extends Model
 
     public function bukuBesar()
     {
-        return $this->hasMany(\App\Models\AkunRelasiTransaksi::class, 'id_akun', 'id_jenisAkunTransaksi')
-            ->with('transaksi');
+        return $this->hasMany(AkunRelasiTransaksi::class, 'id_akun', 'id_jenisAkunTransaksi')
+            ->with('transaksi')
+            ->orderBy('tanggal_transaksi', 'asc');
     }
+
     public function bukuBesarTotal()
     {
-        return $this->hasMany(\App\Models\AkunRelasiTransaksi::class, 'id_akun', 'id_jenisAkunTransaksi')
+        return $this->hasMany(AkunRelasiTransaksi::class, 'id_akun', 'id_jenisAkunTransaksi')
+            ->with('transaksi')
+            ->orderBy('tanggal_transaksi', 'asc');
+    }
+   
+    // SALDO AWAL dari SAK & SANK
+    public function saldoAwal()
+    {
+        return $this->hasMany(AkunRelasiTransaksi::class, 'id_akun', 'id_jenisAkunTransaksi')
+            ->whereHas('transaksi', function ($q) {
+                $q->whereIn('kode_transaksi', ['SAK', 'SANK']);
+            })
             ->with('transaksi');
     }
 
-    public function saldoAwalFiltered()
+    // SALDO AWAL sebelum bulan yang dipilih
+    public function saldoAwalFiltered($bulan, $tahun)
     {
-        return $this->hasMany(DetailTransaksi::class, 'id_jenisAkunTransaksi', 'id_jenisAkunTransaksi')
-            ->whereHas('transaksi'); // filter dilakukan di controller
+        $tanggalAwal = "$tahun-" . str_pad($bulan, 2, '0', STR_PAD_LEFT) . "-01";
+
+        return $this->hasMany(AkunRelasiTransaksi::class, 'id_akun', 'id_jenisAkunTransaksi')
+            ->whereHas('transaksi', function ($q) use ($tanggalAwal) {
+                $q->whereIn('kode_transaksi', ['SAK', 'SANK'])
+                ->whereDate('tanggal_transaksi', '<', $tanggalAwal);
+            })
+            ->with('transaksi');
     }
 
-    // JenisAkunTransaksi.php
-    public function saldoAwal()
+    // TRANSAKSI SEBELUM BULAN YANG DIPILIH (untuk akumulasi)
+    public function bukuBesarSebelumnya($bulan, $tahun)
     {
-        return $this->hasMany(DetailTransaksi::class, 'id_jenisAkunTransaksi')
-            ->whereHas('transaksi', function ($q) {
-                $q->whereIn('type_transaksi', ['SAK', 'SANK']); // Kas + Non Kas
-            });
+        $tanggalAwal = "$tahun-" . str_pad($bulan, 2, '0', STR_PAD_LEFT) . "-01";
+
+        return $this->hasMany(AkunRelasiTransaksi::class, 'id_akun', 'id_jenisAkunTransaksi')
+            ->whereHas('transaksi', function ($q) use ($tanggalAwal) {
+                $q->whereDate('tanggal_transaksi', '<', $tanggalAwal)
+                ->whereNotIn('kode_transaksi', ['SAK', 'SANK']);
+            })
+            ->with('transaksi');
     }
+
+
 }

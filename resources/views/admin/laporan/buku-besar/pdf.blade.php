@@ -83,67 +83,75 @@
 <p class="section-title">{{ $i + 1 }}. {{ $akun->nama_AkunTransaksi }}</p>
 
 {{-- SALDO AWAL --}}
-@php
-$saldoAwal = $akun->saldoAwal->sum('debit') - $akun->saldoAwal->sum('kredit');
-@endphp
+ @php
+    $saldoAwal = $akun->saldo_awal_tampil;
+    @endphp
 
-<table>
-    <tr>
-        <th style="text-align:left;">Saldo Awal</th>
-        <td class="right">{{ number_format($saldoAwal, 0, ',', '.') }}</td>
-    </tr>
-</table>
+    <table class="tabel-buku-besar saldo-box">
+        <tr style="font-weight: 600; background: #f3f3f3;">
+        <td style="text-align: left;">Saldo Awal</td>
+            <td style="text-align: right;">
+               {{ number_format($akun->saldo_awal_tampil, 0, ',', '.') }}
+            </td>
+        </tr>
+    </table>
 
 {{-- TABEL TRANSAKSI --}}
-<table>
-    <thead>
-        <tr>
-            <th>No</th>
-            <th>Tanggal</th>
-            <th>Jenis Transaksi</th>
-            <th>Debet</th>
-            <th>Kredit</th>
-        </tr>
-    </thead>
-    <tbody>
-        @forelse ($akun->bukuBesar as $index => $bb)
-        <tr>
-            <td>{{ $index + 1 }}</td>
-            <td>{{ date('d M Y', strtotime($bb->tanggal_transaksi)) }}</td>
-            <td>{{ $bb->akunBerkaitan->nama_AkunTransaksi ?? '-' }}</td>
-            <td class="right">{{ number_format($bb->debit, 0, ',', '.') }}</td>
-            <td class="right">{{ number_format($bb->kredit, 0, ',', '.') }}</td>
-        </tr>
-        @empty
-        <tr>
-            <td colspan="5">Tidak ada transaksi</td>
-        </tr>
-        @endforelse
-    </tbody>
-</table>
+ <table class="tabel-buku-besar">
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Tanggal</th>
+                <th>Jenis Transaksi</th>
+                <th>Debet</th>
+                <th>Kredit</th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @forelse ($akun->bukuBesar as $index => $bb)
+            <tr>
+                <td>{{ $index + 1 }}</td>
+
+                <td>{{ date('d M Y', strtotime($bb->tanggal_transaksi)) }}</td>
+
+                <td>{{ $bb->akunBerkaitan->nama_AkunTransaksi ?? '-' }}</td>
+
+                <td>{{ number_format($bb->debit, 0, ',', '.') }}</td>
+                <td>{{ number_format($bb->kredit, 0, ',', '.') }}</td>
+            </tr>
+            @empty
+            <tr>
+                <td colspan="5" class="text-center text-muted">Tidak ada transaksi pada periode ini</td>
+            </tr>
+            @endforelse
+        </tbody>
+    </table>
 
 {{-- SALDO TOTAL --}}
-@php
-$totalDebit = $akun->bukuBesarTotal->sum('debit');
-$totalKredit = $akun->bukuBesarTotal->sum('kredit');
-@endphp
-
-<table>
-    <tr>
-        <th style="text-align:left;">Total Debet</th>
-        <td class="right">{{ number_format($totalDebit, 0, ',', '.') }}</td>
-    </tr>
-    <tr>
-        <th style="text-align:left;">Total Kredit</th>
-        <td class="right">{{ number_format($totalKredit, 0, ',', '.') }}</td>
-    </tr>
-</table>
+    @php
+    $totalDebit = $akun->total_debet_bulan ?? $akun->bukuBesar->sum('debit');
+    $totalKredit = $akun->total_kredit_bulan ?? $akun->bukuBesar->sum('kredit');
+    @endphp
+    
+    <table class="tabel-buku-besar saldo-box">
+        <tr style="font-weight: 600; background: #f3f3f3;">
+        <td style="text-align: left;">Saldo Total Debet</td>
+        <td style="text-align: right;">{{ number_format($totalDebit, 0, ',', '.') }}</td>
+        </tr>
+        <tr style="font-weight: 600; background: #f3f3f3;">
+            <td style="text-align: left;">Saldo Total Kredit</td>
+            <td style="text-align: right;">{{ number_format($totalKredit, 0, ',', '.') }}</td>
+        </tr>
+    </table>
 
 {{-- SALDO KUMULATIF --}}
-<table>
-    <tr>
-        <th style="text-align:left;">Saldo Kumulatif</th>
-        <td class="right">{{ number_format($akun->saldo_kumulatif, 0, ',', '.') }}</td>
+ <table class="tabel-buku-besar saldo-box">
+    <tr style="font-weight: 600; background: #f3f3f3;">
+         <td>Saldo Kumulatif</td>
+        <td style="text-align: right;">
+            {{ number_format($akun->saldo_kumulatif, 0, ',', '.') }}
+        </td>
     </tr>
 </table>
 

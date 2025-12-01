@@ -5,30 +5,25 @@ namespace App\Http\Controllers\Admin\Laporan;
 use Illuminate\Http\Request;
 use App\Models\JenisAkunTransaksi;
 use App\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 
 class LaporanBukuBesarController extends Controller
 {
     public function index(Request $request)
     {
-        $bulan = $request->input('bulan', date('m'));
-        $tahun = $request->input('tahun', date('Y'));
-        $periode = "$tahun-$bulan";
+        $bulan = (int)$request->input('bulan', date('m'));
+        $tahun = (int)$request->input('tahun', date('Y'));
+        $periode = "$tahun-" . str_pad($bulan, 2, '0', STR_PAD_LEFT);
 
+        // 👉 Ambil seluruh akun + transaksi
         $akunTransaksi = JenisAkunTransaksi::with([
-            // Ambil hanya transaksi saldo awal
-            'saldoAwal' => function ($q) {
-                $q->whereHas('transaksi', function ($t) {
-                    $t->whereIn('type_transaksi', ['SAK', 'SANK']);
-                });
-            },
-            // Ambil buku besar, tapi sembunyikan SAK & SANK dari tampilan tabel
+            'saldoAwal',
             'bukuBesar' => function ($q) use ($bulan, $tahun) {
                 $q->whereMonth('tanggal_transaksi', $bulan)
                   ->whereYear('tanggal_transaksi', $tahun)
                   ->whereDoesntHave('transaksi', function ($t) {
-                      $t->whereIn('type_transaksi', ['SAK', 'SANK']);
+                      $t->whereIn('kode_transaksi', ['SAK', 'SANK']);
                   })
                   ->orderBy('tanggal_transaksi', 'asc');
             },
@@ -37,18 +32,38 @@ class LaporanBukuBesarController extends Controller
         ->orderBy('id_jenisAkunTransaksi')
         ->get();
 
+        // 👉 Ambil dana cadangan 50% SHU tahun lalu
+        $danaCadangan = DB::table('view_shu')
+            ->where('tahun', $tahun - 1)
+            ->value('total_dana_cadangan') ?? 0;
+
         foreach ($akunTransaksi as $akun) {
 
-            if ($akun->is_kas == 1) {
-                $saldoAwal = $akun->saldoAwal->sum('debit');
+            // ----------------------------------------------------
+            // 1️⃣ SALDO AWAL (SAK / SANK)
+            // ----------------------------------------------------
+            if ($akun->id_jenisAkunTransaksi == 97) {
+                // Khusus Laba Ditahan (97)
+                $saldoAwalSAK = $akun->saldoAwal->sum('debit')
+                                - $akun->saldoAwal->sum('kredit');
+            } elseif ($akun->is_kas == 1) {
+                // Akun kas → saldo awal = total debit
+                $saldoAwalSAK = $akun->saldoAwal->sum('debit');
             } else {
-                $saldoAwal = $akun->saldoAwal->sum('kredit');
+                // Akun non-kas → saldo awal = total kredit
+                $saldoAwalSAK = $akun->saldoAwal->sum('kredit');
             }
 
-            $saldoBulanIni = $akun->bukuBesar->sum(function ($t) {
-                return $t->debit - $t->kredit;
-            });
+            // Cari bulan pertama saldo awal muncul
+            $bulanSaldoAwal = $akun->saldoAwal
+                ->sortBy('tanggal_transaksi')
+                ->first()
+                ? (int)substr($akun->saldoAwal->first()->tanggal_transaksi, 5, 2)
+                : null;
 
+            // ----------------------------------------------------
+            // 2️⃣ AKUMULASI SEBELUM BULAN INI
+            // ----------------------------------------------------
             $saldoSebelumnya = $akun->bukuBesarTotal
                 ->filter(function ($trans) use ($periode) {
                     return isset($trans->tanggal_transaksi)
@@ -58,7 +73,45 @@ class LaporanBukuBesarController extends Controller
                     return $t->debit - $t->kredit;
                 });
 
-            $akun->saldo_kumulatif = $saldoAwal + $saldoSebelumnya + $saldoBulanIni;
+            // ----------------------------------------------------
+            // 3️⃣ SALDO AWAL UNTUK TAMPILAN
+            // ----------------------------------------------------
+            if ($akun->id_jenisAkunTransaksi == 97) {
+
+                // Laba Ditahan = SAK + akumulasi + dana cadangan SHU
+                $akun->saldo_awal_tampil = 
+                    $saldoAwalSAK 
+                    + $saldoSebelumnya 
+                    + $danaCadangan;
+
+            } else {
+
+                if ($bulan == $bulanSaldoAwal) {
+                    // Bulan yang sama saat SAK pertama dibuat
+                    $akun->saldo_awal_tampil = $saldoAwalSAK;
+                } else {
+                    // Bulan > bulan pertama → pakai akumulatif
+                    $akun->saldo_awal_tampil = $saldoAwalSAK + $saldoSebelumnya;
+                }
+            }
+
+            // ----------------------------------------------------
+            // 4️⃣ SALDO BULAN INI
+            // ----------------------------------------------------
+            $saldoBulanIni = $akun->bukuBesar->sum(function ($t) {
+                return $t->debit - $t->kredit;
+            });
+
+            // ----------------------------------------------------
+            // 5️⃣ SALDO KUMULATIF
+            // ----------------------------------------------------
+            $akun->saldo_kumulatif = 
+                $akun->saldo_awal_tampil 
+                + $saldoBulanIni;
+
+            // Data untuk blade
+            $akun->total_debet_bulan = $akun->bukuBesar->sum('debit');
+            $akun->total_kredit_bulan = $akun->bukuBesar->sum('kredit');
         }
 
         return view('admin.laporan.buku-besar.laporan-buku-besar', compact(
@@ -66,55 +119,28 @@ class LaporanBukuBesarController extends Controller
         ));
     }
 
+
+
+    // =====================================================================
+    // ========================== EXPORT PDF ================================
+    // =====================================================================
     public function exportPdf(Request $request)
     {
-        $bulan = $request->input('bulan', date('m'));
-        $tahun = $request->input('tahun', date('Y'));
-        $periode = "$tahun-$bulan";
+        $bulan = (int)$request->input('bulan', date('m'));
+        $tahun = (int)$request->input('tahun', date('Y'));
+        $periode = "$tahun-" . str_pad($bulan, 2, '0', STR_PAD_LEFT);
 
-        $akunTransaksi = JenisAkunTransaksi::with([
-            'saldoAwal' => function ($q) {
-                $q->whereHas('transaksi', function ($t) {
-                    $t->whereIn('type_transaksi', ['SAK', 'SANK']);
-                });
-            },
-            'bukuBesar' => function ($q) use ($bulan, $tahun) {
-                $q->whereMonth('tanggal_transaksi', $bulan)
-                  ->whereYear('tanggal_transaksi', $tahun)
-                  ->whereDoesntHave('transaksi', function ($t) {
-                      $t->whereIn('type_transaksi', ['SAK', 'SANK']);
-                  })
-                  ->orderBy('tanggal_transaksi', 'asc');
-            },
-            'bukuBesarTotal'
-        ])
-        ->orderBy('id_jenisAkunTransaksi')
-        ->get();
+        // Gunakan fungsi index() agar tidak duplikasi logika
+        $request->merge(['bulan' => $bulan, 'tahun' => $tahun]);
+        $data = $this->index($request);
 
-        foreach ($akunTransaksi as $akun) {
+        $pdf = Pdf::loadView('admin.laporan.buku-besar.laporan-buku-besar-pdf', [
+            'akunTransaksi' => $data->getData()['akunTransaksi'],
+            'periode' => $periode,
+            'bulan' => $bulan,
+            'tahun' => $tahun,
+        ])->setPaper('A4', 'portrait');
 
-            $saldoAwal = $akun->saldoAwal->sum('debit') - $akun->saldoAwal->sum('kredit');
-
-            $saldoBulanIni = $akun->bukuBesar->sum(function ($t) {
-                return $t->debit - $t->kredit;
-            });
-
-            $saldoSebelumnya = $akun->bukuBesarTotal
-                ->filter(function ($trans) use ($periode) {
-                    return isset($trans->tanggal_transaksi)
-                        && substr($trans->tanggal_transaksi, 0, 7) < $periode;
-                })
-                ->sum(function ($t) {
-                    return $t->debit - $t->kredit;
-                });
-
-            $akun->saldo_kumulatif = $saldoAwal + $saldoSebelumnya + $saldoBulanIni;
-        }
-
-        $pdf = Pdf::loadView('admin.laporan.buku-besar.pdf', compact(
-            'akunTransaksi', 'periode', 'bulan', 'tahun'
-        ))->setPaper('a4', 'portrait');
-
-        return $pdf->download('laporan-buku-besar-'.$periode.'.pdf');
+        return $pdf->stream('laporan-buku-besar.pdf');
     }
 }
