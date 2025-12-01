@@ -102,7 +102,7 @@
 
         <div class="form-buttons">
             <button type="submit" class="btn btn-simpan">Simpan</button>
-            <a href="#" class="btn btn-batal">Batal</a>
+            <a href="javascript:history.back()" class="btn btn-batal">Batal</a>
         </div>
     </form>
     </div>
@@ -155,7 +155,6 @@ input:focus, select:focus {
     box-shadow: 0 0 2px rgba(25, 118, 210, 0.5);
 }
 
-/* === Revisi Khusus Nama Anggota === */
 .anggota-input-wrapper {
     position: relative;
     display: flex;
@@ -209,6 +208,7 @@ input:focus, select:focus {
 
 .btn-batal {
     background-color: #EA2828;
+    text-decoration: none;
 }
 
 .btn-batal:hover {
@@ -221,7 +221,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const jumlahInput = document.getElementById('jumlah_pinjaman');
     const lamaSelect  = document.getElementById('id_lamaAngsuran');
-    const bungaInput  = document.getElementById('bunga_pinjaman');
     const adminInput  = document.getElementById('biaya_administrasi');
     const pokokInput  = document.getElementById('pokok_angsuran');
 
@@ -256,12 +255,10 @@ document.addEventListener('DOMContentLoaded', function() {
             const admin = (adminRate / 100) * jumlah;
 
             pokokInput.value = pokok.toFixed(2);
-            bungaInput.value = bunga;
             adminInput.value = admin.toFixed(2);
             
         } else {
             pokokInput.value = '';
-            bungaInput.value = '';
             adminInput.value = '';
             rateBungaTampil.value = '';     
         }

@@ -174,7 +174,7 @@ class DataPinjamanController extends Controller
 
         $bungaPerBulan = $request->jumlah_pinjaman * $persenBunga;
         $lama = LamaAngsuran::where('id_lamaAngsuran', $request->id_lamaAngsuran)->first()->lama_angsuran;
-        $totalTagihan = ($bungaPerBulan + ($request->jumlah_pinjaman / $lama)) * $lama;
+        $totalTagihan = ($bunga_pinjaman + ($request->jumlah_pinjaman / $lama)) * $lama;
 
         Pinjaman::create([
             'id_pinjaman' => $idPinjaman,
