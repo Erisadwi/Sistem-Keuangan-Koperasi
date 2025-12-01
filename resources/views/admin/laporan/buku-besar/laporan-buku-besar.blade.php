@@ -36,8 +36,14 @@
     {{-- ============================= --}}
     {{-- TABEL SALDO AWAL --}}
     {{-- ============================= --}}
-    @php
-    $saldoAwal = $akun->saldoAwal->sum('debit') - $akun->saldoAwal->sum('kredit');
+   @php
+    if ($akun->is_kas == 1) {
+        // Saldo awal untuk akun kas → total debit transaksi SAK
+        $saldoAwal = $akun->saldoAwal->sum('debit');
+    } else {
+        // Saldo awal untuk akun non kas → total kredit transaksi SANK
+        $saldoAwal = $akun->saldoAwal->sum('kredit');
+    }
     @endphp
 
     <table class="tabel-buku-besar saldo-box">
@@ -48,8 +54,6 @@
             </td>
         </tr>
     </table>
-
-
 
     {{-- ============ TABEL TRANSAKSI ============ --}}
     <table class="tabel-buku-besar">
@@ -70,7 +74,6 @@
 
                 <td>{{ date('d M Y', strtotime($bb->tanggal_transaksi)) }}</td>
 
-                {{-- Nama Akun Berkaitan --}}
                 <td>{{ $bb->akunBerkaitan->nama_AkunTransaksi ?? '-' }}</td>
 
                 <td>{{ number_format($bb->debit, 0, ',', '.') }}</td>

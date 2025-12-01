@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\MasterData;
 use App\Http\Controllers\Controller;
 use App\Models\Transaksi;
 use App\Models\DetailTransaksi;
+use App\Models\AkunRelasiTransaksi;
 use App\Models\JenisAkunTransaksi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -51,11 +52,24 @@ class SaldoAwalKasController extends Controller
             $transaksi->kode_transaksi = 'SAK' . str_pad($transaksi->id_transaksi, 5, '0', STR_PAD_LEFT);
             $transaksi->save();
 
+            // Detail transaksi (lama)
             $transaksi->details()->create([
                 'id_jenisAkunTransaksi' => $request->id_jenisAkunTransaksi_tujuan,
                 'debit' => $request->jumlah_transaksi,
                 'kredit' => 0,
             ]);
+
+            // Insert ke akun relasi transaksi (baru)
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $transaksi->id_transaksi,
+                'id_akun' => $request->id_jenisAkunTransaksi_tujuan,
+                'id_akun_berkaitan' => $request->id_jenisAkunTransaksi_tujuan,
+                'debit' => $request->jumlah_transaksi,
+                'kredit' => 0,
+                'kode_transaksi' => $transaksi->kode_transaksi,
+                'tanggal_transaksi' => $request->tanggal_transaksi,
+            ]);
+
         });
 
         return redirect()->route('saldo-awal-kas.index')
@@ -88,6 +102,7 @@ class SaldoAwalKasController extends Controller
                 'tanggal_transaksi' => $request->tanggal_transaksi,
             ]);
 
+            // update detail transaksi
             $detail = $transaksi->details()->first();
             if ($detail) {
                 $detail->update([
@@ -95,13 +110,20 @@ class SaldoAwalKasController extends Controller
                     'debit' => $request->jumlah_transaksi,
                     'kredit' => 0,
                 ]);
-            } else {
-                $transaksi->details()->create([
-                    'id_jenisAkunTransaksi' => $request->id_jenisAkunTransaksi_tujuan,
-                    'debit' => $request->jumlah_transaksi,
-                    'kredit' => 0,
-                ]);
             }
+
+            AkunRelasiTransaksi::where('id_transaksi', $transaksi->id_transaksi)->delete();
+            
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $transaksi->id_transaksi,
+                'id_akun' => $request->id_jenisAkunTransaksi_tujuan,
+                'id_akun_berkaitan' => $request->id_jenisAkunTransaksi_tujuan,
+                'debit' => $request->jumlah_transaksi,
+                'kredit' => 0,
+                'kode_transaksi' => $transaksi->kode_transaksi,
+                'tanggal_transaksi' => $request->tanggal_transaksi,
+            ]);
+           
         });
 
         return redirect()->route('saldo-awal-kas.index')
@@ -112,6 +134,9 @@ class SaldoAwalKasController extends Controller
     {
         DB::transaction(function () use ($id) {
             $transaksi = Transaksi::findOrFail($id);
+
+            AkunRelasiTransaksi::where('id_transaksi', $transaksi->kode_transaksi)->delete();
+
             $transaksi->details()->delete();
             $transaksi->delete();
         });
