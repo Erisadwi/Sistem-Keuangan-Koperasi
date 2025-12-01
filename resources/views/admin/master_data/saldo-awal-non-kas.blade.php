@@ -28,9 +28,11 @@
     <tbody>
       @forelse(($saldoAwalNonKas ?? collect()) as $row)
         @php
-            $detailKredit = $row->details->where('kredit', '>', 0)->first();
-            $akunNama = $detailKredit?->akun?->nama_AkunTransaksi ?? '-';
-            $jumlahSaldo = $detailKredit?->kredit ?? 0;
+            $detail = $row->details->first();
+            $akunNama = $detail?->akun?->nama_AkunTransaksi ?? '-';
+            $jumlahSaldo = $detail 
+                ? ($detail->debit > 0 ? $detail->debit : $detail->kredit)
+                : 0;
         @endphp
         <tr>
           <td>{{ \Carbon\Carbon::parse($row->tanggal_transaksi)->format('d/m/Y - H:i') }}</td>

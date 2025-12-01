@@ -55,11 +55,11 @@
                 type="number" 
                 id="jumlah_transaksi" 
                 name="jumlah_transaksi"
-                value="{{ old('jumlah_transaksi', $detail->kredit ?? '') }}"
+                value="{{ old('jumlah_transaksi', $detail ? ($detail->debit > 0 ? $detail->debit : $detail->kredit) : '') }}"
                 step="0.01"
                 required 
                 placeholder="Masukkan nominal saldo awal"
-            >
+            />
         </div> 
 
         <div class="form-buttons">

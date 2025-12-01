@@ -110,7 +110,7 @@ class DataPinjamanController extends Controller
         return view('admin.pinjaman.data-pinjaman.data-pinjaman', compact('pinjaman'));
     }
 
-    public function create()
+    public function create ()
     {
         $anggota = Anggota::where('status_anggota', 'Aktif')->get();
         $ajuanPinjaman = AjuanPinjaman::all();
@@ -118,15 +118,15 @@ class DataPinjamanController extends Controller
         $lamaAngsuran = LamaAngsuran::all();
         $akunSumber = JenisAkunTransaksi::where('pinjaman','Y')
             ->where('is_kas', 1)
-            ->orderBy('nama_AkunTransaksi')->get();
+            ->orderBy('nama_AkunTransaksi')->get() ;
 
         $akunTujuan = JenisAkunTransaksi::where('pinjaman','Y')
             ->where('is_kas', 0)
             ->orderBy('nama_AkunTransaksi')->get();
 
         $sukuBunga = SukuBunga::first();
-    $ratePinjaman = $sukuBunga->suku_bunga_pinjaman / 100;
-    $rateAdmin = $sukuBunga->biaya_administrasi;
+        $ratePinjaman = $sukuBunga->suku_bunga_pinjaman / 100;
+        $rateAdmin = $sukuBunga->biaya_administrasi;
 
     return view('admin.pinjaman.data-pinjaman.tambah-data-pinjaman', compact(
         'ajuanPinjaman', 'users', 'anggota', 'lamaAngsuran',
@@ -168,16 +168,14 @@ class DataPinjamanController extends Controller
     try {
         $idPinjaman = Pinjaman::generateId();   
 
-        // ambil suku bunga
         $suku = SukuBunga::first();
         $persenBunga = ($suku->suku_bunga_pinjaman ?? 0) / 100;
         $biayaAdmin  = $suku->biaya_administrasi ?? 0;
 
         $bungaPerBulan = $request->jumlah_pinjaman * $persenBunga;
         $lama = LamaAngsuran::where('id_lamaAngsuran', $request->id_lamaAngsuran)->first()->lama_angsuran;
-        $totalTagihan = ($bungaPerBulan + ($request->jumlah_pinjaman / $lama)) * $lama;
+        $totalTagihan = ($bunga_pinjaman + ($request->jumlah_pinjaman / $lama)) * $lama;
 
-        // simpan pinjaman
         Pinjaman::create([
             'id_pinjaman' => $idPinjaman,
             'id_user' => Auth::user()->id_user,
@@ -194,11 +192,6 @@ class DataPinjamanController extends Controller
             'keterangan' => $request->keterangan
         ]);
 
-        // =============================
-        //  INSERT JURNAL DOUBLE ENTRY
-        // =============================
-
-        // DEBIT (akun tujuan)
         AkunRelasiTransaksi::create([
             'id_transaksi'     => $idPinjaman,
             'kode_transaksi' => $idPinjaman,
@@ -210,7 +203,6 @@ class DataPinjamanController extends Controller
             'keterangan'       => $request->keterangan,
         ]);
 
-        // KREDIT (akun sumber)
         AkunRelasiTransaksi::create([
             'id_transaksi'     => $idPinjaman,
             'kode_transaksi' => $idPinjaman,
@@ -248,9 +240,9 @@ public function show($id)
     $tanggalTempo = null;
 
     if (!empty($pinjaman->tanggal_pinjaman) && $pinjaman->lamaAngsuran) {
-        $tanggalPinjaman = $pinjaman->tanggal_pinjaman instanceof \Carbon\Carbon
+        $tanggalPinjaman = $pinjaman->tanggal_pinjaman instanceof Carbon
             ? $pinjaman->tanggal_pinjaman
-            : \Carbon\Carbon::parse($pinjaman->tanggal_pinjaman);
+            : Carbon::parse($pinjaman->tanggal_pinjaman);
 
         $lamaAngsuran = max(1, (int) $pinjaman->lamaAngsuran->lama_angsuran);
         $tanggalTempoObj = $tanggalPinjaman->copy()->addMonthsNoOverflow($lamaAngsuran);
@@ -261,9 +253,9 @@ public function show($id)
     $payments = collect();
 
     if ($lama > 0 && !empty($pinjaman->tanggal_pinjaman)) {
-    $tanggalPinjaman = $pinjaman->tanggal_pinjaman instanceof \Carbon\Carbon
+    $tanggalPinjaman = $pinjaman->tanggal_pinjaman instanceof Carbon
         ? $pinjaman->tanggal_pinjaman
-        : \Carbon\Carbon::parse($pinjaman->tanggal_pinjaman);
+        : Carbon::parse($pinjaman->tanggal_pinjaman);
 
     for ($i = 1; $i <= $lama; $i++) {
         $tempo = $tanggalPinjaman->copy()->addMonthsNoOverflow($i);
@@ -280,7 +272,7 @@ public function show($id)
     }
 }
 
-    $bayar_angsuran = \App\Models\Angsuran::where('id_pinjaman', $id)
+    $bayar_angsuran = Angsuran::where('id_pinjaman', $id)
         ->orderBy('tanggal_bayar', 'asc')
         ->get();
 
@@ -357,6 +349,14 @@ public function update(Request $request, $id)
     try {
         $pinjaman = Pinjaman::where('id_pinjaman', $id)->firstOrFail();
 
+
+        $suku = SukuBunga::first();
+        $persenBunga = ($suku->suku_bunga_pinjaman ?? 0) / 100;
+        $biayaAdmin  = $suku->biaya_administrasi ?? 0;
+        $bungaPerBulan = $request->jumlah_pinjaman * $persenBunga;
+        $lama = LamaAngsuran::where('id_lamaAngsuran', $request->id_lamaAngsuran)->first()->lama_angsuran;
+        $totalTagihan = ($bungaPerBulan + ($request->jumlah_pinjaman / $lama)) * $lama;
+
         $jumlah = $request->jumlah_pinjaman;
 
         $lamaAngsuran = LamaAngsuran::findOrFail($request->id_lamaAngsuran);
@@ -388,10 +388,8 @@ public function update(Request $request, $id)
             'keterangan' => $request->keterangan,
         ]);
 
-        // hapus jurnal lama dulu
         AkunRelasiTransaksi::where('id_transaksi', $id)->delete();
 
-        // insert jurnal baru (double entry)
         AkunRelasiTransaksi::create([
             'id_transaksi'     => $id,
             'kode_transaksi' => $id,
@@ -490,11 +488,11 @@ public function update(Request $request, $id)
         $bunga = $item->bunga_pinjaman ?? 0;
         $item->jumlah_angsuran_otomatis = $item->pokok_angsuran + $bunga;
 
-        $totalBayar = \App\Models\Angsuran::where('id_pinjaman', $item->id_pinjaman)
+        $totalBayar = Angsuran::where('id_pinjaman', $item->id_pinjaman)
             ->sum(DB::raw('(angsuran_pokok + bunga_angsuran + denda)'));
 
 
-        $totalAngsuranDibayar = \App\Models\Angsuran::where('id_pinjaman', $item->id_pinjaman)->count();
+        $totalAngsuranDibayar = Angsuran::where('id_pinjaman', $item->id_pinjaman)->count();
 
         $item->sudah_dibayar  = $totalBayar;
         $item->sisa_tagihan   = max(($item->total_tagihan ?? 0) - $totalBayar, 0);
