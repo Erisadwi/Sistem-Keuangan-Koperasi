@@ -110,7 +110,7 @@ class DataPinjamanController extends Controller
         return view('admin.pinjaman.data-pinjaman.data-pinjaman', compact('pinjaman'));
     }
 
-    public function create()
+    public function create ()
     {
         $anggota = Anggota::where('status_anggota', 'Aktif')->get();
         $ajuanPinjaman = AjuanPinjaman::all();
@@ -118,15 +118,15 @@ class DataPinjamanController extends Controller
         $lamaAngsuran = LamaAngsuran::all();
         $akunSumber = JenisAkunTransaksi::where('pinjaman','Y')
             ->where('is_kas', 1)
-            ->orderBy('nama_AkunTransaksi')->get();
+            ->orderBy('nama_AkunTransaksi')->get() ;
 
         $akunTujuan = JenisAkunTransaksi::where('pinjaman','Y')
             ->where('is_kas', 0)
             ->orderBy('nama_AkunTransaksi')->get();
 
         $sukuBunga = SukuBunga::first();
-    $ratePinjaman = $sukuBunga->suku_bunga_pinjaman / 100;
-    $rateAdmin = $sukuBunga->biaya_administrasi;
+        $ratePinjaman = $sukuBunga->suku_bunga_pinjaman / 100;
+        $rateAdmin = $sukuBunga->biaya_administrasi;
 
     return view('admin.pinjaman.data-pinjaman.tambah-data-pinjaman', compact(
         'ajuanPinjaman', 'users', 'anggota', 'lamaAngsuran',
@@ -356,7 +356,7 @@ public function update(Request $request, $id)
         $bungaPerBulan = $request->jumlah_pinjaman * $persenBunga;
         $lama = LamaAngsuran::where('id_lamaAngsuran', $request->id_lamaAngsuran)->first()->lama_angsuran;
         $totalTagihan = ($bungaPerBulan + ($request->jumlah_pinjaman / $lama)) * $lama;
-        
+
         $jumlah = $request->jumlah_pinjaman;
 
         $lamaAngsuran = LamaAngsuran::findOrFail($request->id_lamaAngsuran);

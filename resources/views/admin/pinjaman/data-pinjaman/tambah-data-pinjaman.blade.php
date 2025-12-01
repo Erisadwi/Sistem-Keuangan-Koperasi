@@ -49,13 +49,18 @@
         </div>
 
         <div class="form-group">
-            <label for="pokok_angsuran">Pokok Angsuran (Rp)</label>
-            <input type="text" id="pokok_angsuran" name="pokok_angsuran" readonly>
+            <label for="rate_bunga_tampil">Rate Bunga (%)</label>
+            <input 
+                type="text" 
+                id="rate_bunga_tampil" 
+                class="form-control"
+                readonly
+            >
         </div>
 
         <div class="form-group">
-            <label for="bunga_pinjaman">Bunga (Rp)*</label>
-            <input type="text" id="bunga_pinjaman" name="bunga_pinjaman" readonly>
+            <label for="pokok_angsuran">Pokok Angsuran (Rp)</label>
+            <input type="text" id="pokok_angsuran" name="pokok_angsuran" readonly>
         </div>
 
         <div class="form-group">
@@ -213,27 +218,36 @@ input:focus, select:focus {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const jumlahInput = document.getElementById('jumlah_pinjaman');
-    const lamaSelect = document.getElementById('id_lamaAngsuran');
-    const bungaInput = document.getElementById('bunga_pinjaman');
-    const adminInput = document.getElementById('biaya_administrasi');
-    const pokokInput = document.getElementById('pokok_angsuran');
 
-    const bungaRate = parseFloat(@json($ratePinjaman));  
-    const adminRate = parseFloat(@json($rateAdmin));  
+    const jumlahInput = document.getElementById('jumlah_pinjaman');
+    const lamaSelect  = document.getElementById('id_lamaAngsuran');
+    const bungaInput  = document.getElementById('bunga_pinjaman');
+    const adminInput  = document.getElementById('biaya_administrasi');
+    const pokokInput  = document.getElementById('pokok_angsuran');
+
+    const rateBungaTampil = document.getElementById('rate_bunga_tampil');
+
+
+    const bungaRate = Number(@json($ratePinjaman ?? 0));
+    const adminRate = Number(@json($rateAdmin ?? 0));      
 
     function hitungOtomatis() {
-        let jumlah = parseFloat(jumlahInput.value) || 0;
+        const jumlah = Number(jumlahInput.value) || 0;
 
-        // Ambil lama angsuran dari text option
         let lama = 0;
         if (lamaSelect.value) {
-            lama = parseInt(
-                lamaSelect.options[lamaSelect.selectedIndex].text.replace('bulan', '').trim()
+
+            lama = Number(
+                lamaSelect.options[lamaSelect.selectedIndex]
+                    .text.replace('bulan', '').trim()
             );
         }
 
         if (jumlah > 0 && lama > 0) {
+
+            const bungaPersenTampil = bungaRate * (lama / 12) * 100; 
+            rateBungaTampil.value = bungaPersenTampil.toFixed(2) + "%";
+
             const pokok = jumlah / lama;
 
             const bungaPersen = bungaRate * (lama / 12);
@@ -244,10 +258,12 @@ document.addEventListener('DOMContentLoaded', function() {
             pokokInput.value = pokok.toFixed(2);
             bungaInput.value = bunga;
             adminInput.value = admin.toFixed(2);
+            
         } else {
             pokokInput.value = '';
             bungaInput.value = '';
             adminInput.value = '';
+            rateBungaTampil.value = '';     
         }
     }
 
@@ -255,12 +271,13 @@ document.addEventListener('DOMContentLoaded', function() {
     lamaSelect.addEventListener('change', hitungOtomatis);
 
     const namaInput = document.getElementById('nama_anggota');
-    const idHidden = document.getElementById('id_anggota');
-    const dataList = document.getElementById('daftar_anggota').options;
+    const idHidden  = document.getElementById('id_anggota');
+    const dataList  = document.getElementById('daftar_anggota').options;
 
     namaInput.addEventListener('input', function() {
         const val = this.value;
         idHidden.value = '';
+        
         for (let i = 0; i < dataList.length; i++) {
             if (dataList[i].value === val) {
                 idHidden.value = dataList[i].dataset.id;
@@ -268,7 +285,9 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         }
     });
+
 });
 </script>
+
 
 @endsection
