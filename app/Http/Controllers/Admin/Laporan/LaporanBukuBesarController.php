@@ -16,7 +16,6 @@ class LaporanBukuBesarController extends Controller
         $tahun = (int)$request->input('tahun', date('Y'));
         $periode = "$tahun-" . str_pad($bulan, 2, '0', STR_PAD_LEFT);
 
-        // 👉 Ambil seluruh akun + transaksi
         $akunTransaksi = JenisAkunTransaksi::with([
             'saldoAwal',
             'bukuBesar' => function ($q) use ($bulan, $tahun) {
@@ -25,14 +24,14 @@ class LaporanBukuBesarController extends Controller
                   ->whereDoesntHave('transaksi', function ($t) {
                       $t->whereIn('kode_transaksi', ['SAK', 'SANK']);
                   })
-                  ->orderBy('tanggal_transaksi', 'asc');
+                  ->orderBy('tanggal_transaksi', 'asc')
+                  ->orderBy('id_relasi', 'asc'); 
             },
             'bukuBesarTotal'
         ])
         ->orderBy('id_jenisAkunTransaksi')
         ->get();
 
-        // 👉 Ambil dana cadangan 50% SHU tahun lalu
         $danaCadangan = DB::table('view_shu')
             ->where('tahun', $tahun - 1)
             ->value('total_dana_cadangan') ?? 0;
@@ -119,8 +118,6 @@ class LaporanBukuBesarController extends Controller
         ));
     }
 
-
-
     // =====================================================================
     // ========================== EXPORT PDF ================================
     // =====================================================================
@@ -134,7 +131,7 @@ class LaporanBukuBesarController extends Controller
         $request->merge(['bulan' => $bulan, 'tahun' => $tahun]);
         $data = $this->index($request);
 
-        $pdf = Pdf::loadView('admin.laporan.buku-besar.laporan-buku-besar-pdf', [
+        $pdf = Pdf::loadView('admin.laporan.buku-besar.pdf', [
             'akunTransaksi' => $data->getData()['akunTransaksi'],
             'periode' => $periode,
             'bulan' => $bulan,

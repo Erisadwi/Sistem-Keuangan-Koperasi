@@ -44,14 +44,16 @@ class JenisAkunTransaksi extends Model
     {
         return $this->hasMany(AkunRelasiTransaksi::class, 'id_akun', 'id_jenisAkunTransaksi')
             ->with('transaksi')
-            ->orderBy('tanggal_transaksi', 'asc');
+            ->orderBy('tanggal_transaksi', 'asc')
+            ->orderBy('id_relasi', 'asc');
     }
 
     public function bukuBesarTotal()
     {
         return $this->hasMany(AkunRelasiTransaksi::class, 'id_akun', 'id_jenisAkunTransaksi')
             ->with('transaksi')
-            ->orderBy('tanggal_transaksi', 'asc');
+            ->orderBy('tanggal_transaksi', 'asc')
+            ->orderBy('id_relasi', 'asc');
     }
    
     // SALDO AWAL dari SAK & SANK
