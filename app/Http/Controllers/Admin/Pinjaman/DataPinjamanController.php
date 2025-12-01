@@ -152,7 +152,6 @@ class DataPinjamanController extends Controller
     try {
         $idPinjaman = Pinjaman::generateId();
 
-        // ambil suku bunga
         $suku = SukuBunga::first();
         $persenBunga = ($suku->suku_bunga_pinjaman ?? 0) / 100;
         $biayaAdmin  = $suku->biaya_administrasi ?? 0;
@@ -161,7 +160,6 @@ class DataPinjamanController extends Controller
         $lama = LamaAngsuran::where('id_lamaAngsuran', $request->id_lamaAngsuran)->first()->lama_angsuran;
         $totalTagihan = ($bungaPerBulan + ($request->jumlah_pinjaman / $lama)) * $lama;
 
-        // simpan pinjaman
         Pinjaman::create([
             'id_pinjaman' => $idPinjaman,
             'id_user' => Auth::user()->id_user,
@@ -178,11 +176,6 @@ class DataPinjamanController extends Controller
             'keterangan' => $request->keterangan
         ]);
 
-        // =============================
-        //  INSERT JURNAL DOUBLE ENTRY
-        // =============================
-
-        // 1️⃣ → DEBIT (akun tujuan)
         AkunRelasiTransaksi::create([
             'id_transaksi'     => $idPinjaman,
             'kode_transaksi' => $idPinjaman,
@@ -194,7 +187,6 @@ class DataPinjamanController extends Controller
             'keterangan'       => $request->keterangan,
         ]);
 
-        // 2️⃣ → KREDIT (akun sumber)
         AkunRelasiTransaksi::create([
             'id_transaksi'     => $idPinjaman,
             'kode_transaksi' => $idPinjaman,
@@ -341,7 +333,6 @@ public function update(Request $request, $id)
     try {
         $pinjaman = Pinjaman::where('id_pinjaman', $id)->firstOrFail();
 
-        // hitung ulang bunga & total tagihan
         $suku = SukuBunga::first();
         $persenBunga = ($suku->suku_bunga_pinjaman ?? 0) / 100;
         $biayaAdmin  = $suku->biaya_administrasi ?? 0;
@@ -349,7 +340,6 @@ public function update(Request $request, $id)
         $lama = LamaAngsuran::where('id_lamaAngsuran', $request->id_lamaAngsuran)->first()->lama_angsuran;
         $totalTagihan = ($bungaPerBulan + ($request->jumlah_pinjaman / $lama)) * $lama;
 
-        // update pinjaman
         $pinjaman->update([
             'id_anggota' => $request->id_anggota,
             'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
@@ -363,10 +353,8 @@ public function update(Request $request, $id)
             'keterangan' => $request->keterangan,
         ]);
 
-        // hapus jurnal lama dulu
         AkunRelasiTransaksi::where('id_transaksi', $id)->delete();
 
-        // insert jurnal baru (double entry)
         AkunRelasiTransaksi::create([
             'id_transaksi'     => $id,
             'kode_transaksi' => $id,
