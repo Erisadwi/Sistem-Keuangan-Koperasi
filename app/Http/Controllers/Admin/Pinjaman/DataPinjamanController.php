@@ -248,9 +248,9 @@ public function show($id)
     $tanggalTempo = null;
 
     if (!empty($pinjaman->tanggal_pinjaman) && $pinjaman->lamaAngsuran) {
-        $tanggalPinjaman = $pinjaman->tanggal_pinjaman instanceof \Carbon\Carbon
+        $tanggalPinjaman = $pinjaman->tanggal_pinjaman instanceof Carbon
             ? $pinjaman->tanggal_pinjaman
-            : \Carbon\Carbon::parse($pinjaman->tanggal_pinjaman);
+            : Carbon::parse($pinjaman->tanggal_pinjaman);
 
         $lamaAngsuran = max(1, (int) $pinjaman->lamaAngsuran->lama_angsuran);
         $tanggalTempoObj = $tanggalPinjaman->copy()->addMonthsNoOverflow($lamaAngsuran);
@@ -261,9 +261,9 @@ public function show($id)
     $payments = collect();
 
     if ($lama > 0 && !empty($pinjaman->tanggal_pinjaman)) {
-    $tanggalPinjaman = $pinjaman->tanggal_pinjaman instanceof \Carbon\Carbon
+    $tanggalPinjaman = $pinjaman->tanggal_pinjaman instanceof Carbon
         ? $pinjaman->tanggal_pinjaman
-        : \Carbon\Carbon::parse($pinjaman->tanggal_pinjaman);
+        : Carbon::parse($pinjaman->tanggal_pinjaman);
 
     for ($i = 1; $i <= $lama; $i++) {
         $tempo = $tanggalPinjaman->copy()->addMonthsNoOverflow($i);
@@ -280,7 +280,7 @@ public function show($id)
     }
 }
 
-    $bayar_angsuran = \App\Models\Angsuran::where('id_pinjaman', $id)
+    $bayar_angsuran = Angsuran::where('id_pinjaman', $id)
         ->orderBy('tanggal_bayar', 'asc')
         ->get();
 
@@ -490,11 +490,11 @@ public function update(Request $request, $id)
         $bunga = $item->bunga_pinjaman ?? 0;
         $item->jumlah_angsuran_otomatis = $item->pokok_angsuran + $bunga;
 
-        $totalBayar = \App\Models\Angsuran::where('id_pinjaman', $item->id_pinjaman)
+        $totalBayar = Angsuran::where('id_pinjaman', $item->id_pinjaman)
             ->sum(DB::raw('(angsuran_pokok + bunga_angsuran + denda)'));
 
 
-        $totalAngsuranDibayar = \App\Models\Angsuran::where('id_pinjaman', $item->id_pinjaman)->count();
+        $totalAngsuranDibayar = Angsuran::where('id_pinjaman', $item->id_pinjaman)->count();
 
         $item->sudah_dibayar  = $totalBayar;
         $item->sisa_tagihan   = max(($item->total_tagihan ?? 0) - $totalBayar, 0);
