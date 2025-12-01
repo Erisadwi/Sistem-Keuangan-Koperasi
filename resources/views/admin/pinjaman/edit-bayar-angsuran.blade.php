@@ -34,7 +34,7 @@
         <input type="number" id="angsuran_per_bulan" name="angsuran_per_bulan" value="{{ old('angsuran_per_bulan', number_format($angsuran->angsuran_per_bulan, 0, '.', '')) }}" readonly>
 
         <label for="pokok_angsuran">Angsuran Pokok*</label>
-        <input type="number" id="pokok_angsuran" name="pokok_angsuran" value="{{ old('angsuran_pokok', number_format($angsuran->angsuran_pokok, 0, '.', '')) }}" readonly>
+        <input type="number" id="pokok_angsuran" name="angsuran_pokok" value="{{ old('angsuran_pokok', number_format($angsuran->angsuran_pokok, 0, '.', '')) }}" readonly>
 
         <label for="bunga_angsuran">Pendapatan*</label>
         <input type="number" id="bunga_angsuran" name="bunga_angsuran" value="{{ old('bunga_angsuran', number_format($angsuran->bunga_angsuran, 0, '.', '')) }}" readonly>
