@@ -138,6 +138,6 @@ class LaporanBukuBesarController extends Controller
             'tahun' => $tahun,
         ])->setPaper('A4', 'portrait');
 
-        return $pdf->stream('laporan-buku-besar.pdf');
+        return $pdf->download('laporan-buku-besar.pdf');
     }
 }

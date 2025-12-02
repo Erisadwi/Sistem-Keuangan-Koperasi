@@ -112,12 +112,12 @@ class LaporanNeracaSaldoController extends Controller
     }
 
     public function exportPdf(Request $request)
-    {
-        $data = $this->buildData($request);
+{
+    $data = $this->buildData($request);
 
-        $pdf = Pdf::loadView('admin.laporan.neraca-saldo.pdf', $data)
-            ->setPaper('A4', 'portrait');
+    $pdf = Pdf::loadView('admin.laporan.neraca-saldo.pdf', $data)
+        ->setPaper('A4', 'portrait');
 
-        return $pdf->stream("Neraca-Saldo-{$data['tahun']}.pdf");
-    }
+    return $pdf->download("Neraca-Saldo-{$data['tahun']}.pdf"); 
+}
 }
