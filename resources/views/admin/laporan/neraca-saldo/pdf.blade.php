@@ -97,50 +97,57 @@
 {{-- TABEL --}}
 <table>
     <thead>
-        <tr>
-            <th style="width:60%">Nama Akun</th>
-            <th style="width:20%">Debet</th>
-            <th style="width:20%">Kredit</th>
+        <tr class="head-group">
+          <th class="nama-akun">Nama Akun</th>
+          <th class="debet">Debet</th>
+          <th class="kredit">Kredit</th>
         </tr>
-    </thead>
+      </thead>
 
-    <tbody>
+      <tbody>
+{{-- ===================== --}}
+{{--     Group Akun        --}}
+{{-- ===================== --}}
+@forelse($neracaKelompok as $judul => $list)
 
-        @if(!empty($neracaKelompok))
+  {{-- Sub Judul Kelompok --}}
+  <tr class="akun-header">
+    <td colspan="3" style="font-weight:600; background:#e5e5e5;">
+      {{ $judul }}
+    </td>
+  </tr>
 
-        @foreach($neracaKelompok as $judul => $list)
+  {{-- Daftar Akun --}}
+  @foreach($list as $item)
+  <tr class="akun-item">
+    <td class="nama-akun-item">
+      {{ $item['kode'] }}. {{ $item['nama'] }}
+    </td>
+    <td class="debet">
+      {{ $item['debet'] > 0 ? number_format($item['debet'], 0, ',', '.') : '-' }}
+    </td>
+    <td class="kredit">
+      {{ $item['kredit'] > 0 ? number_format($item['kredit'], 0, ',', '.') : '-' }}
+    </td>
+  </tr>
+  @endforeach
 
-        {{-- Judul Kelompok --}}
-        <tr class="akun-header">
-            <td colspan="3">{{ $judul }}</td>
-        </tr>
+@empty
+  <tr>
+    <td colspan="3" class="empty-cell">Belum ada data neraca saldo.</td>
+  </tr>
+@endforelse
 
-        {{-- Item --}}
-        @foreach($list as $item)
-        <tr>
-            <td class="nama-akun-item">
-                {{ $item['kode'] }}. {{ $item['nama'] }}
-            </td>
+{{-- =========================== --}}
+{{-- TOTAL DEBET & KREDIT       --}}
+{{-- =========================== --}}
+<tr class="total-row final-total" style="background:#f2faff; font-weight:700;">
+  <td class="text-end text-primary" style="padding-right:20px;">JUMLAH</td>
+  <td class="debet text-primary">{{ number_format($totalDebet, 0, ',', '.') }}</td>
+  <td class="kredit text-primary">{{ number_format($totalKredit, 0, ',', '.') }}</td>
+</tr>
 
-            <td class="right">
-                {{ $item['debet'] > 0 ? number_format($item['debet'], 0, ',', '.') : '-' }}
-            </td>
-
-            <td class="right">
-                {{ $item['kredit'] > 0 ? number_format($item['kredit'], 0, ',', '.') : '-' }}
-            </td>
-        </tr>
-        @endforeach
-
-        @endforeach
-
-        @else
-        <tr>
-            <td colspan="3">Belum ada data neraca saldo.</td>
-        </tr>
-        @endif
-
-    </tbody>
+</tbody>
 </table>
 
 </body>
