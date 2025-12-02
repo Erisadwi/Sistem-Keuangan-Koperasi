@@ -2,28 +2,25 @@
 
 namespace App\Http\Controllers\Admin\Laporan;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\JenisAkunTransaksi;
 use Barryvdh\DomPDF\Facade\Pdf;
+
 
 class LaporanNeracaSaldoController extends Controller
 {
-    
-    private function buildData(Request $request)
+    public function index(Request $request)
     {
-       $tahun = $request->start_date
-            ? date('Y', strtotime($request->start_date))
-            : ($request->input('tahun') ?? date('Y'));
+        // PILIH TAHUN SAJA
+        $tahun = $request->tahun ?? date('Y');
 
-       $dataBukuBesar = app(LaporanBukuBesarController::class)->index(new Request([
-            'start_date' => $request->start_date,
-            'end_date'   => $request->end_date,
-            'tahun'      => $tahun,     
-        ]));
+        // RANGE TETAP 01 JAN - 31 DES
+        $start = "$tahun-01-01";
+        $end   = "$tahun-12-31";
 
-        $akunTransaksi = $dataBukuBesar->getData()['akunTransaksi'];
-
-        $subJudulOrder = [
+        // Sub Judul
+        $subJudulMap = [
             'A'   => 'A. Aktiva Lancar',
             'B'   => 'B. Aktiva Tidak Lancar',
             'C'   => 'C. Aktiva Tetap Berwujud',
@@ -35,89 +32,148 @@ class LaporanNeracaSaldoController extends Controller
             'TRF' => 'K. Beban',
         ];
 
+        // Ambil akun + buku besar 1 TAHUN PENUH
+        $akun = JenisAkunTransaksi::with([
+            'bukuBesarTotal' => function ($q) use ($start, $end) {
+                $q->whereHas('transaksi', function ($t) use ($start, $end) {
+                    $t->whereBetween('tanggal_transaksi', [$start, $end]);
+                });
+            }
+        ])
+        ->orderBy('kode_aktiva')
+        ->get();
+
         $neracaKelompok = [];
-        $subTotals = [];
         $totalDebet = 0;
         $totalKredit = 0;
 
-        foreach ($akunTransaksi as $akun) {
+        foreach ($akun as $a) {
 
-            $kode = $akun->kode_aktiva ?? '';
-            $prefix = array_key_exists($kode, $subJudulOrder) ? $kode : substr($kode, 0, 1);
-            $kategori = $subJudulOrder[$prefix] ?? null;
+            // Tentukan kategori
+            $prefix = $a->kode_aktiva;
+            if (!isset($subJudulMap[$prefix])) {
+                $prefix = substr($prefix, 0, 1);
+            }
+            $kategori = $subJudulMap[$prefix] ?? 'Lainnya';
 
-            $net = (float) ($akun->saldo_kumulatif ?? 0);
+            // Hitung total
+            $totalDebit  = $a->bukuBesarTotal->sum('debit');
+            $totalKredit = $a->bukuBesarTotal->sum('kredit');
 
-            if ($net > 0) {
-                $debet = $net;
+            // Saldo normal berdasarkan type_akun
+            if ($a->type_akun === "ACTIVA" || $a->type_akun === "BEBAN") {
+                // Saldo normal DEBIT
+                $saldo  = $totalDebit - $totalKredit;
+                $debet  = $saldo;
                 $kredit = 0;
-            } elseif ($net < 0) {
-                $debet = 0;
-                $kredit = abs($net);
             } else {
-                $debet = 0;
-                $kredit = 0;
+                // Saldo normal KREDIT (PASIVA, MODAL, PENDAPATAN)
+                $saldo  = $totalKredit - $totalDebit;
+                $debet  = 0;
+                $kredit = $saldo;
             }
 
-            if (!isset($neracaKelompok[$kategori])) {
-                $neracaKelompok[$kategori] = [];
-                $subTotals[$kategori] = ['debet' => 0, 'kredit' => 0];
-            }
+            // Tambahkan ke total
+            $totalDebet  += $debet;
+            $totalKredit += $kredit;
 
+            // Masukkan ke kategori masing-masing
             $neracaKelompok[$kategori][] = [
-                'kode' => $kode,
-                'nama' => $akun->nama_AkunTransaksi,
-                'debet' => $debet,
+                'kode'   => $a->kode_aktiva,
+                'nama'   => $a->nama_AkunTransaksi,
+                'debet'  => $debet,
                 'kredit' => $kredit,
             ];
-
-            $subTotals[$kategori]['debet'] += $debet;
-            $subTotals[$kategori]['kredit'] += $kredit;
-
-            $totalDebet += $debet;
-            $totalKredit += $kredit;
-        }
-        
-        $orderedGroups = [];
-        foreach ($subJudulOrder as $key => $label) {
-            if (isset($neracaKelompok[$label])) {
-                $orderedGroups[$label] = $neracaKelompok[$label];
-            }
         }
 
-        foreach ($orderedGroups as $judul => &$items) {
-            usort($items, function ($a, $b) {
-                return $a['kode'] <=> $b['kode'];
-            });
-        }
-        unset($items); 
-
-        return [
-            'tahun' => $tahun,
-            'neracaKelompok' => $orderedGroups,
-            'subTotals' => $subTotals,
-            'totalDebet' => $totalDebet,
-            'totalKredit' => $totalKredit,
-            'imbalance' => round($totalDebet - $totalKredit, 2), 
-        ];
-
-
-    }
-
-    public function index(Request $request)
-    {
-        $data = $this->buildData($request);
-
-        return view('admin.laporan.neraca-saldo.laporan-neraca-saldo', $data);
+        return view('admin.laporan.neraca-saldo.laporan-neraca-saldo', [
+            'neracaKelompok' => $neracaKelompok,
+            'tahun'          => $tahun,
+            'totalDebet'     => $totalDebet,
+            'totalKredit'    => $totalKredit,
+        ]);
     }
 
     public function exportPdf(Request $request)
-    {
-        $data = $this->buildData($request);
+        {
+            // AMBIL TAHUN
+            $tahun = $request->tahun ?? date('Y');
 
-        $pdf = Pdf::loadView('admin.laporan.neraca-saldo.pdf', $data)
-            ->setPaper('A4', 'portrait');
+            // PERIODE TETAP: 1 JAN – 31 DES
+            $start = "$tahun-01-01";
+            $end   = "$tahun-12-31";
 
-        return $pdf->stream("Neraca-Saldo-{$data['tahun']}.pdf");
-    }
+            // Sub Judul
+            $subJudulMap = [
+                'A'   => 'A. Aktiva Lancar',
+                'B'   => 'B. Aktiva Tidak Lancar',
+                'C'   => 'C. Aktiva Tetap Berwujud',
+                'F'   => 'F. Utang',
+                'H'   => 'H. Utang Jangka Panjang',
+                'I'   => 'I. Modal',
+                'J'   => 'J. Pendapatan',
+                'K'   => 'K. Beban',
+                'TRF' => 'K. Beban',
+            ];
+
+            $akun = JenisAkunTransaksi::with([
+                'bukuBesarTotal' => function ($q) use ($start, $end) {
+                    $q->whereHas('transaksi', function ($t) use ($start, $end) {
+                        $t->whereBetween('tanggal_transaksi', [$start, $end]);
+                    });
+                }
+            ])
+            ->orderBy('kode_aktiva')
+            ->get();
+
+            $neracaKelompok = [];
+            $totalDebet = 0;
+            $totalKredit = 0;
+
+            foreach ($akun as $a) {
+
+                // Tentukan kategori group
+                $prefix = $a->kode_aktiva;
+                if (!isset($subJudulMap[$prefix])) {
+                    $prefix = substr($prefix, 0, 1);
+                }
+                $kategori = $subJudulMap[$prefix] ?? 'Lainnya';
+
+                // Hitung saldo
+                $totalDebit  = $a->bukuBesarTotal->sum('debit');
+                $totalKredit = $a->bukuBesarTotal->sum('kredit');
+
+                if ($a->type_akun === "ACTIVA" || $a->type_akun === "BEBAN") {
+                    // Saldo Normal Debit
+                    $saldo  = $totalDebit - $totalKredit;
+                    $debet  = $saldo;
+                    $kredit = 0;
+                } else {
+                    // Saldo Normal Kredit
+                    $saldo  = $totalKredit - $totalDebit;
+                    $debet  = 0;
+                    $kredit = $saldo;
+                }
+
+                $totalDebet  += $debet;
+                $totalKredit += $kredit;
+
+                $neracaKelompok[$kategori][] = [
+                    'kode'   => $a->kode_aktiva,
+                    'nama'   => $a->nama_AkunTransaksi,
+                    'debet'  => $debet,
+                    'kredit' => $kredit
+                ];
+            }
+
+            // Buat PDF
+            $pdf = Pdf::loadView('admin.laporan.neraca-saldo.pdf', [
+                'neracaKelompok' => $neracaKelompok,
+                'tahun'          => $tahun,
+                'totalDebet'     => $totalDebet,
+                'totalKredit'    => $totalKredit,
+            ])->setPaper('A4', 'portrait');
+
+            return $pdf->download("Neraca-Saldo-$tahun.pdf");
+        }
 }
