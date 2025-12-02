@@ -17,11 +17,13 @@
 @section('filter-area')
 <div class="header-flex">
     <div class="left-tools">
-<x-menu.month-filter/>
-<x-menu.unduh 
-    :url="route('laporan-neraca.exportPdf', ['bulan' => $bulan, 'tahun' => $tahun])" 
-    text="Unduh PDF" 
-/>
+        <x-menu.month-filter/>
+        <x-menu.unduh 
+            :url="route('laporan-neraca.exportPdf', ['bulan' => $bulan, 'tahun' => $tahun])" 
+            text="Unduh PDF" 
+        />
+    </div>
+</div>
 @endsection
 
 @section('content')
@@ -47,28 +49,21 @@
               </td>
           </tr>
 
-         @foreach ($items as $item)
+          @foreach ($items as $item)
               <tr class="akun-item">
-                    <td class="nama-akun-item">
-                      {{ $item->kode_aktiva }}. {{ $item->nama_akun }}
+                  
+                  <td class="nama-akun-item">
+                      {{ $item->kode_aktiva }}. {{ $item->nama_AkunTransaksi }}
                   </td>
 
-                <td style="text-align:center;">
-                  @if ($item->kode_aktiva == 'I02.01')
-                      {{ $laba_bersih < 0 ? number_format(abs($laba_bersih), 0, ',', '.') : '-' }}
-                  @else
-                      {{ $item->total_debit > 0 ? number_format($item->total_debit, 0, ',', '.') : '-' }}
-                  @endif
-              </td>
+                  <td style="text-align:center;">
+                      {{ $item->total_debit_display > 0 ? number_format($item->total_debit_display, 0, ',', '.') : '-' }}
+                  </td>
 
-              <td style="text-align:center;">
-                  @if ($item->kode_aktiva == 'I02.01')
-                      {{-- kalau laba tampil di kredit --}}
-                      {{ $laba_bersih > 0 ? number_format($laba_bersih, 0, ',', '.') : '-' }}
-                  @else
-                      {{ $item->total_kredit > 0 ? number_format($item->total_kredit, 0, ',', '.') : '-' }}
-                  @endif
-              </td>
+                  <td style="text-align:center;">
+                      {{ $item->total_kredit_display > 0 ? number_format($item->total_kredit_display, 0, ',', '.') : '-' }}
+                  </td>
+
               </tr>
           @endforeach
 
@@ -80,12 +75,14 @@
       
       <tr class="total-row final-total">
           <td class="nama-akun-item text-primary"
-        style="text-align:center !important; padding-left:0 !important;">
-        <b>JUMLAH</b>
-        </td>
+              style="text-align:center !important; padding-left:0 !important;">
+              <b>JUMLAH</b>
+          </td>
+
           <td class="debet text-primary">
               <b>{{ number_format($totalDebit, 0, ',', '.') }}</b>
           </td>
+
           <td class="kredit text-primary">
               <b>{{ number_format($totalKredit, 0, ',', '.') }}</b>
           </td>
