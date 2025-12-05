@@ -61,6 +61,20 @@ class PenarikanTunaiController extends Controller
         return view('admin.simpanan.penarikan-tunai.penarikan-tunai', compact('penarikanTunai', 'toolbar'));
     }
 
+    public function apiIndex()
+{
+    $data = Simpanan::with(['anggota', 'jenisSimpanan'])
+        ->where('type_simpanan', 'TRK')
+        ->orderBy('tanggal_transaksi', 'desc')
+        ->get();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'List Penarikan Tunai',
+        'data' => $data
+    ]);
+}
+
     public function create()
     {
         $anggota = Anggota::where('status_anggota', 'Aktif')->get();
@@ -117,7 +131,6 @@ class PenarikanTunaiController extends Controller
                 'bukti_setoran' => $buktiPath
             ]);
 
-            // jurnal debit (kas keluar)
             AkunRelasiTransaksi::create([
                 'id_transaksi' => $penarikan->id_simpanan,
                 'id_akun' => $akunTujuan,
@@ -128,7 +141,6 @@ class PenarikanTunaiController extends Controller
                 'tanggal_transaksi' => $request->tanggal_transaksi
             ]);
 
-            // jurnal kredit (simpanan berkurang)
             AkunRelasiTransaksi::create([
                 'id_transaksi' => $penarikan->id_simpanan,
                 'id_akun' => $akunSumber,
@@ -146,6 +158,35 @@ class PenarikanTunaiController extends Controller
             dd($e->getMessage());
         }
     }
+
+    public function apiStore(Request $request)
+{
+    $request->validate([
+        'id_anggota' => 'required',
+        'id_jenis_simpanan' => 'required',
+        'jumlah_simpanan' => 'required|numeric|min:1',
+        'tanggal_transaksi' => 'required|date',
+    ]);
+
+    $nextCode = 'TRK' . str_pad(Simpanan::where('type_simpanan', 'TRK')->count() + 1, 5, '0', STR_PAD_LEFT);
+
+    $data = Simpanan::create([
+        'id_user' => 1,
+        'id_anggota' => $request->id_anggota,
+        'id_jenis_simpanan' => $request->id_jenis_simpanan,
+        'jumlah_simpanan' => $request->jumlah_simpanan,
+        'type_simpanan' => 'TRK',
+        'kode_simpanan' => $nextCode,
+        'tanggal_transaksi' => $request->tanggal_transaksi,
+        'keterangan' => $request->keterangan
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Penarikan tunai berhasil ditambahkan.',
+        'data' => $data
+    ]);
+}
 
     public function edit($id)
     {
@@ -195,10 +236,8 @@ class PenarikanTunaiController extends Controller
 
             $penarikan->update($data);
 
-            // hapus jurnal lama
             AkunRelasiTransaksi::where('id_transaksi', $id)->delete();
 
-            // jurnal debit / kredit baru
             AkunRelasiTransaksi::create([
                 'id_transaksi' => $id,
                 'id_akun' => $akunTujuan,
@@ -227,6 +266,23 @@ class PenarikanTunaiController extends Controller
         }
     }
 
+    public function apiUpdate(Request $request, $id)
+{
+    $data = Simpanan::find($id);
+
+    if (!$data) {
+        return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
+    }
+
+    $data->update($request->all());
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Penarikan tunai berhasil diperbarui.',
+        'data' => $data
+    ]);
+}
+
    public function destroy($id)
     {
         DB::beginTransaction();
@@ -247,6 +303,22 @@ class PenarikanTunaiController extends Controller
             dd($e->getMessage());
         }
     }
+
+    public function apiDestroy($id)
+{
+    $data = Simpanan::find($id);
+
+    if (!$data) {
+        return response()->json(['success' => false, 'message' => 'Data tidak ditemukan'], 404);
+    }
+
+    $data->delete();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Penarikan tunai berhasil dihapus.'
+    ]);
+}
 
     public function exportPdf()
     {
