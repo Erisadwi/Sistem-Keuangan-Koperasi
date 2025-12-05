@@ -40,6 +40,16 @@ class TransaksiTransferController extends Controller
         return view('admin.transaksi_kas.transfer.transfer', compact('TransaksiTransfer'));
     }
 
+    public function apiIndex()
+    {
+        $data = Transaksi::orderBy('tanggal_transaksi', 'desc')->get();
+
+        return response()->json([
+            'status' => true,
+            'data'   => $data
+        ]);
+    }
+
     public function create()
     {
         $akunSumber = JenisAkunTransaksi::where('transfer','Y')
@@ -110,12 +120,10 @@ class TransaksiTransferController extends Controller
             'kredit' => 0,
         ]);
 
-        // ========== INSERT KE TABEL akun_relasi_transaksi ==========
         $idTransaksi = $transaksi->id_transaksi;
         $kode = $transaksi->kode_transaksi;
         $tanggal = $transaksi->tanggal_transaksi;
 
-        // Akun tujuan (KAS) → DEBIT, 1 baris untuk setiap sumber
         foreach ($request->sumber as $s) {
             AkunRelasiTransaksi::create([
                 'id_transaksi' => $idTransaksi,
@@ -142,6 +150,63 @@ class TransaksiTransferController extends Controller
         }
 
         return redirect()->route('transaksi-transfer.index')->with('success', 'Transaksi berhasil ditambahkan.');
+    }
+
+    public function apiStore(Request $request)
+    {
+        $validated = $request->validate([
+            'no_bukti'         => 'required|string',
+            'tgl_transaksi'    => 'required|date',
+            'akun_sumber'      => 'required|exists:jenis_akun_transaksi,id',
+            'akun_tujuan'      => 'required|exists:jenis_akun_transaksi,id',
+            'nominal'          => 'required|numeric|min:1',
+            'keterangan'       => 'nullable|string',
+        ]);
+
+        if ($request->akun_sumber == $request->akun_tujuan) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Akun sumber dan tujuan tidak boleh sama'
+            ], 422);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            $source = JenisAkunTransaksi::find($request->akun_sumber);
+            $target = JenisAkunTransaksi::find($request->akun_tujuan);
+
+            if ($source->saldo < $request->nominal) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Saldo akun sumber tidak mencukupi'
+                ], 422);
+            }
+
+            $source->saldo -= $request->nominal;
+            $source->save();
+
+            $target->saldo += $request->nominal;
+            $target->save();
+
+            $data = TransaksiTransfer::create($validated);
+
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Transaksi transfer berhasil disimpan',
+                'data' => $data
+            ]);
+
+        } catch (\Throwable $e) {
+            DB::rollback();
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     public function edit($id)
@@ -197,7 +262,7 @@ class TransaksiTransferController extends Controller
         ]);
 
         $transaksi->details()->delete();
-         // Hapus relasi lama
+
         AkunRelasiTransaksi::where('id_transaksi', $transaksi->id_transaksi)->delete();
 
         foreach ($request->sumber as $s) {
@@ -216,12 +281,10 @@ class TransaksiTransferController extends Controller
             'kredit' => 0,
         ]);
 
-        // ========== INSERT KE TABEL akun_relasi_transaksi ==========
         $idTransaksi = $transaksi->id_transaksi;
         $kode = $transaksi->kode_transaksi;
         $tanggal = $transaksi->tanggal_transaksi;
 
-        // Akun tujuan (KAS) → DEBIT, 1 baris untuk setiap sumber
         foreach ($request->sumber as $s) {
             AkunRelasiTransaksi::create([
                 'id_transaksi' => $idTransaksi,
@@ -249,6 +312,23 @@ class TransaksiTransferController extends Controller
         return redirect()->route('transaksi-transfer.index')->with('success', 'Transaksi berhasil diperbarui.');
     }
 
+    public function apiUpdate(Request $request, $id)
+    {
+        $data = Transaksi::find($id);
+
+        if (!$data) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data tidak ditemukan'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => false,
+            'message' => 'Transaksi transfer tidak dapat diupdate. Silakan hapus dan buat baru.'
+        ], 405);
+    }
+
     public function destroy($id)
     {
         return DB::transaction(function () use ($id) {
@@ -268,40 +348,82 @@ class TransaksiTransferController extends Controller
         });
     }
 
-public function exportPdf(Request $request)
-{
-    $query = Transaksi::with(['details.akun', 'data_user'])
-        ->where('type_transaksi', 'TRF');
+    public function apiDestroy($id)
+    {
+        $data = Transaksi::find($id);
 
-    if ($request->filled('start_date') && $request->filled('end_date')) {
+        if (!$data) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Transaksi tidak ditemukan'
+            ], 404);
+        }
 
-        $periodStart = $request->start_date . ' 00:00:00';
-        $periodEnd   = $request->end_date . ' 23:59:59';
+        DB::beginTransaction();
 
-        $query->whereBetween('tanggal_transaksi', [$periodStart, $periodEnd]);
+        try {
+            $source = JenisAkunTransaksi::find($data->akun_sumber);
+            $target = JenisAkunTransaksi::find($data->akun_tujuan);
 
-    } else {
+            $source->saldo += $data->nominal;
+            $source->save();
 
-        $tahun = date('Y');
+            $target->saldo -= $data->nominal;
+            $target->save();
 
-        $periodStart = $tahun . '-01-01 00:00:00';
-        $periodEnd   = $tahun . '-12-31 23:59:59';
+            $data->delete();
 
-        $query->whereBetween('tanggal_transaksi', [$periodStart, $periodEnd]);
+            DB::commit();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Transaksi transfer berhasil dihapus & saldo dikembalikan'
+            ]);
+
+        } catch (\Throwable $e) {
+            DB::rollback();
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal menghapus transaksi: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
-    if ($request->filled('search')) {
-        $query->where('kode_transaksi', 'LIKE', "%{$request->search}%");
+    public function exportPdf(Request $request)
+    {
+        $query = Transaksi::with(['details.akun', 'data_user'])
+            ->where('type_transaksi', 'TRF');
+
+        if ($request->filled('start_date') && $request->filled('end_date')) {
+
+            $periodStart = $request->start_date . ' 00:00:00';
+            $periodEnd   = $request->end_date . ' 23:59:59';
+
+            $query->whereBetween('tanggal_transaksi', [$periodStart, $periodEnd]);
+
+        } else {
+
+            $tahun = date('Y');
+
+            $periodStart = $tahun . '-01-01 00:00:00';
+            $periodEnd   = $tahun . '-12-31 23:59:59';
+
+            $query->whereBetween('tanggal_transaksi', [$periodStart, $periodEnd]);
+        }
+
+        if ($request->filled('search')) {
+            $query->where('kode_transaksi', 'LIKE', "%{$request->search}%");
+        }
+
+        $data = $query->orderBy('id_transaksi', 'desc')->get();
+
+        return Pdf::loadView('admin.transaksi_kas.transfer.transfer-export-pdf', [
+            'data'        => $data,
+            'periodStart' => $periodStart,
+            'periodEnd'   => $periodEnd,
+        ])->setPaper('A4', 'landscape')
+        ->download('transaksi_transfer_kas.pdf');
     }
-
-    $data = $query->orderBy('id_transaksi', 'desc')->get();
-
-    return Pdf::loadView('admin.transaksi_kas.transfer.transfer-export-pdf', [
-        'data'        => $data,
-        'periodStart' => $periodStart,
-        'periodEnd'   => $periodEnd,
-    ])->setPaper('A4', 'landscape')
-      ->download('transaksi_transfer_kas.pdf');
-}
 
 }

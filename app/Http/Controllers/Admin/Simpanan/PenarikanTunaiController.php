@@ -117,7 +117,6 @@ class PenarikanTunaiController extends Controller
                 'bukti_setoran' => $buktiPath
             ]);
 
-            // jurnal debit (kas keluar)
             AkunRelasiTransaksi::create([
                 'id_transaksi' => $penarikan->id_simpanan,
                 'id_akun' => $akunTujuan,
@@ -128,7 +127,6 @@ class PenarikanTunaiController extends Controller
                 'tanggal_transaksi' => $request->tanggal_transaksi
             ]);
 
-            // jurnal kredit (simpanan berkurang)
             AkunRelasiTransaksi::create([
                 'id_transaksi' => $penarikan->id_simpanan,
                 'id_akun' => $akunSumber,
@@ -195,10 +193,8 @@ class PenarikanTunaiController extends Controller
 
             $penarikan->update($data);
 
-            // hapus jurnal lama
             AkunRelasiTransaksi::where('id_transaksi', $id)->delete();
 
-            // jurnal debit / kredit baru
             AkunRelasiTransaksi::create([
                 'id_transaksi' => $id,
                 'id_akun' => $akunTujuan,
