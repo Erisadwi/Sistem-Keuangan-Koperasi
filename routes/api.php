@@ -11,6 +11,9 @@ Route::get('/ping', function () {
 // API Anggota
 Route::get('/anggota', [AnggotaController::class, 'apiIndex']);
 Route::post('/anggota/store', [AnggotaController::class, 'apiStore']);
+Route::put('/anggota/update/{id}', [AnggotaController::class, 'apiUpdate']);
+Route::delete('/anggota/delete/{id}', [AnggotaController::class, 'apiDelete']);
+
 
 Route::get('/transfer', [TransaksiTransferController::class, 'apiIndex']);     
 Route::post('/transfer', [TransaksiTransferController::class, 'apiStore']);    
