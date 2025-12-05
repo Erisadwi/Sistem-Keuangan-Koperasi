@@ -34,6 +34,15 @@ class AnggotaController extends Controller
     return view('admin.master_data.data-anggota', compact('anggota', 'search'));
     }
 
+    public function apiIndex()
+    {
+        $anggota = Anggota::orderBy('id_anggota', 'asc')->get();
+        return response()->json([
+            'status' => true,
+            'data' => $anggota
+        ]);
+    }
+
 
     public function create()
     {
@@ -83,6 +92,27 @@ class AnggotaController extends Controller
 
         return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil ditambahkan!');
     }
+
+    public function apiStore(Request $request)
+    {
+        $validated = $request->validate([
+            'username_anggota'   => 'required|string',
+            'password_anggota'   => 'required|string',
+            'nama_anggota'       => 'required|string',
+        ]);
+
+        $validated['id_anggota'] = Anggota::generateId();
+        $validated['password_anggota'] = Hash::make($validated['password_anggota']);
+
+        $anggota = Anggota::create($validated);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Anggota berhasil ditambahkan',
+            'data' => $anggota
+        ]);
+    }
+
 
     public function edit($id)
     {
