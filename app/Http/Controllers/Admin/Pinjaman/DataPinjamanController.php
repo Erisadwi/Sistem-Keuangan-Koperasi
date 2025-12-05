@@ -421,17 +421,6 @@ public function update(Request $request, $id)
     }
 }
 
-    public function destroy($id)
-    {
-        DB::transaction(function () use ($id) {
-            AkunRelasiTransaksi::where('id_transaksi', $id)->delete();
-            Pinjaman::where('id_pinjaman', $id)->delete();
-        });
-
-        return redirect()->route('pinjaman.index')->with('success', 'Data pinjaman berhasil dihapus!');
-    }
-
-
     public function cetakNota($id)
     {
         $pinjaman = Pinjaman::with(['anggota', 'lamaAngsuran'])->findOrFail($id);
