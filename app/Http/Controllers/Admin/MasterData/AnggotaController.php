@@ -12,6 +12,11 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class AnggotaController extends Controller
 {
+    public function __construct()
+    {
+        
+    }
+
     public function index(Request $request)
     {   
     $perPage = (int) $request->query('per_page', 10);
@@ -42,6 +47,7 @@ class AnggotaController extends Controller
             'data' => $anggota
         ]);
     }
+    
 
 
     public function create()
@@ -93,25 +99,46 @@ class AnggotaController extends Controller
         return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil ditambahkan!');
     }
 
-    public function apiStore(Request $request)
-    {
-        $validated = $request->validate([
-            'username_anggota'   => 'required|string',
-            'password_anggota'   => 'required|string',
-            'nama_anggota'       => 'required|string',
-        ]);
+ public function apiStore(Request $request)
+{
+    $validated = $request->validate([
+        'username_anggota'   => 'required|string',
+        'password_anggota'   => 'required|string',
+        'nama_anggota'       => 'required|string',
+        'jenis_kelamin'      => 'required|in:L,P',
+        'alamat_anggota'     => 'required|string',
+        'kota_anggota'       => 'required|string',
+        'tempat_lahir'       => 'required|string',
+        'tanggal_lahir'      => 'required|date_format:Y-m-d',
+        'departemen'         => 'nullable|string',
+        'pekerjaan'          => 'nullable|string',
+        'jabatan'            => 'required|string',
+        'agama'              => 'nullable|string',
+        'status_perkawinan'  => 'nullable|string',
+        'tanggal_registrasi' => 'required|date_format:Y-m-d',
+        'tanggal_keluar'     => 'nullable|date_format:Y-m-d',
+        'no_telepon'         => 'nullable|string|max:20',
+        'status_anggota'     => 'required|in:AKTIF,NON AKTIF',
+        'foto'               => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ]);
 
-        $validated['id_anggota'] = Anggota::generateId();
-        $validated['password_anggota'] = Hash::make($validated['password_anggota']);
-
-        $anggota = Anggota::create($validated);
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Anggota berhasil ditambahkan',
-            'data' => $anggota
-        ]);
+    if ($request->hasFile('foto')) {
+        $validated['foto'] = 'storage/' . $request->file('foto')->store('uploads', 'public');
     }
+
+    $validated['id_anggota'] = Anggota::generateId();
+    $validated['password_anggota'] = Hash::make($validated['password_anggota']);
+
+    $anggota = Anggota::create($validated);
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Anggota berhasil ditambahkan',
+        'data' => $anggota
+    ]);
+}
+
+
 
 
     public function edit($id)

@@ -51,6 +51,13 @@ return [
     'provider' => 'anggotas',
     ],
 
+    'api' => [
+    'driver' => 'token',
+    'provider' => 'users',
+    'hash' => false,
+    ],
+
+
 ],
 
     /*
