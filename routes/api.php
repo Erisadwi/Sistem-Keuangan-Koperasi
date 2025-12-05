@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\MasterData\AnggotaController;
+use App\Http\Controllers\Admin\Simpanan\SetoranTunaiController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiPengeluaranController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiTransferController;
 
@@ -25,6 +26,12 @@ Route::get('/pengeluaran', [TransaksiPengeluaranController::class, 'apiIndex']);
 Route::post('/pengeluaran', [TransaksiPengeluaranController::class, 'apiStore']);
 Route::put('/pengeluaran/{id}', [TransaksiPengeluaranController::class, 'apiUpdate']);
 Route::delete('/pengeluaran/{id}', [TransaksiPengeluaranController::class, 'apiDestroy']);
+
+// API Simpanan-setoran tunai
+Route::get('/setoran', [SetoranTunaiController::class, 'apiIndex']);
+Route::post('/setoran', [SetoranTunaiController::class, 'apiStore']);
+Route::put('/setoran/{id}', [SetoranTunaiController::class, 'apiUpdate']);
+Route::delete('/setoran/{id}', [SetoranTunaiController::class, 'apiDestroy']);
 
 
 
