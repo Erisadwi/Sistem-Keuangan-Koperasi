@@ -12,11 +12,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class AnggotaController extends Controller
 {
-    public function __construct()
-    {
-        
-    }
-
     public function index(Request $request)
     {   
     $perPage = (int) $request->query('per_page', 10);
@@ -39,15 +34,7 @@ class AnggotaController extends Controller
     return view('admin.master_data.data-anggota', compact('anggota', 'search'));
     }
 
-    public function apiIndex()
-    {
-        $anggota = Anggota::orderBy('id_anggota', 'asc')->get();
-        return response()->json([
-            'status' => true,
-            'data' => $anggota
-        ]);
-    }
-    
+   
     public function create()
     {
         return view('admin.master_data.tambah-data-anggota', [
@@ -97,45 +84,7 @@ class AnggotaController extends Controller
         return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil ditambahkan!');
     }
 
- public function apiStore(Request $request)
-    {
-        $validated = $request->validate([
-            'username_anggota'   => 'required|string',
-            'password_anggota'   => 'required|string',
-            'nama_anggota'       => 'required|string',
-            'jenis_kelamin'      => 'required|in:L,P',
-            'alamat_anggota'     => 'required|string',
-            'kota_anggota'       => 'required|string',
-            'tempat_lahir'       => 'required|string',
-            'tanggal_lahir'      => 'required|date_format:Y-m-d',
-            'departemen'         => 'nullable|string',
-            'pekerjaan'          => 'nullable|string',
-            'jabatan'            => 'required|string',
-            'agama'              => 'nullable|string',
-            'status_perkawinan'  => 'nullable|string',
-            'tanggal_registrasi' => 'required|date_format:Y-m-d',
-            'tanggal_keluar'     => 'nullable|date_format:Y-m-d',
-            'no_telepon'         => 'nullable|string|max:20',
-            'status_anggota'     => 'required|in:AKTIF,NON AKTIF',
-            'foto'               => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-        ]);
-
-        if ($request->hasFile('foto')) {
-            $validated['foto'] = 'storage/' . $request->file('foto')->store('uploads', 'public');
-        }
-
-        $validated['id_anggota'] = Anggota::generateId();
-        $validated['password_anggota'] = Hash::make($validated['password_anggota']);
-
-        $anggota = Anggota::create($validated);
-
-        return response()->json([
-            'status' => true,
-            'message' => 'Anggota berhasil ditambahkan',
-            'data' => $anggota
-        ]);
-    }
-
+   
     public function edit($id)
     {
     $anggota = Anggota::findOrFail($id);
@@ -187,57 +136,6 @@ class AnggotaController extends Controller
     return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil diperbarui!');
     }
 
-    public function apiUpdate(Request $request, $id)
-{
-    $anggota = Anggota::find($id);
-
-    if (!$anggota) {
-        return response()->json([
-            'status' => false,
-            'message' => 'Data anggota tidak ditemukan'
-        ], 404);
-    }
-
-    $validated = $request->validate([
-        'username_anggota'   => 'required|string',
-        'nama_anggota'       => 'required|string',
-        'jenis_kelamin'      => 'required|in:L,P',
-        'alamat_anggota'     => 'required|string',
-        'kota_anggota'       => 'required|string',
-        'tempat_lahir'       => 'required|string',
-        'tanggal_lahir'      => 'required|date_format:Y-m-d',
-        'departemen'         => 'nullable|string',
-        'pekerjaan'          => 'nullable|string',
-        'jabatan'            => 'required|string',
-        'agama'              => 'nullable|string',
-        'status_perkawinan'  => 'nullable|string',
-        'tanggal_registrasi' => 'required|date_format:Y-m-d',
-        'tanggal_keluar'     => 'nullable|date_format:Y-m-d',
-        'no_telepon'         => 'nullable|string|max:20',
-        'status_anggota'     => 'required|in:AKTIF,NON AKTIF',
-        'foto'               => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
-    ]);
-
-    // upload foto baru
-    if ($request->hasFile('foto')) {
-        ///hapus foto lama
-        if ($anggota->foto && file_exists(public_path($anggota->foto))) {
-            @unlink(public_path($anggota->foto));
-        }
-
-        $validated['foto'] = 'storage/'.$request->file('foto')->store('uploads', 'public');
-    }
-
-    $anggota->update($validated);
-
-    return response()->json([
-        'status' => true,
-        'message' => 'Data anggota berhasil diperbarui',
-        'data' => $anggota
-    ]);
-}
-
-
     public function destroy($id)
     {
         $anggota = Anggota::findOrFail($id);
@@ -251,27 +149,123 @@ class AnggotaController extends Controller
         return redirect()->route('anggota.index')->with('success', 'Data anggota berhasil dihapus!');
     }
 
-    public function apiDelete($id)
-{
-    $anggota = Anggota::find($id);
-
-    if (!$anggota) {
+     public function apiIndex()
+    {
+        $anggota = Anggota::orderBy('id_anggota', 'asc')->get();
         return response()->json([
-            'status' => false,
-            'message' => 'Data tidak ditemukan'
-        ], 404);
+            'status' => true,
+            'data' => $anggota
+        ]);
+    }
+    
+     public function apiStore(Request $request)
+    {
+        $validated = $request->validate([
+            'username_anggota'   => 'required|string',
+            'password_anggota'   => 'required|string',
+            'nama_anggota'       => 'required|string',
+            'jenis_kelamin'      => 'required|in:L,P',
+            'alamat_anggota'     => 'required|string',
+            'kota_anggota'       => 'required|string',
+            'tempat_lahir'       => 'required|string',
+            'tanggal_lahir'      => 'required|date_format:Y-m-d',
+            'departemen'         => 'nullable|string',
+            'pekerjaan'          => 'nullable|string',
+            'jabatan'            => 'required|string',
+            'agama'              => 'nullable|string',
+            'status_perkawinan'  => 'nullable|string',
+            'tanggal_registrasi' => 'required|date_format:Y-m-d',
+            'tanggal_keluar'     => 'nullable|date_format:Y-m-d',
+            'no_telepon'         => 'nullable|string|max:20',
+            'status_anggota'     => 'required|in:AKTIF,NON AKTIF',
+            'foto'               => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        if ($request->hasFile('foto')) {
+            $validated['foto'] = 'storage/' . $request->file('foto')->store('uploads', 'public');
+        }
+
+        $validated['id_anggota'] = Anggota::generateId();
+        $validated['password_anggota'] = Hash::make($validated['password_anggota']);
+
+        $anggota = Anggota::create($validated);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Anggota berhasil ditambahkan',
+            'data' => $anggota
+        ]);
     }
 
-    if ($anggota->foto && file_exists(public_path($anggota->foto))) {
-        @unlink(public_path($anggota->foto));
+    public function apiUpdate(Request $request, $id)
+    {
+        $anggota = Anggota::find($id);
+
+        if (!$anggota) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data anggota tidak ditemukan'
+            ], 404);
+        }
+
+        $validated = $request->validate([
+            'username_anggota'   => 'required|string',
+            'nama_anggota'       => 'required|string',
+            'jenis_kelamin'      => 'required|in:L,P',
+            'alamat_anggota'     => 'required|string',
+            'kota_anggota'       => 'required|string',
+            'tempat_lahir'       => 'required|string',
+            'tanggal_lahir'      => 'required|date_format:Y-m-d',
+            'departemen'         => 'nullable|string',
+            'pekerjaan'          => 'nullable|string',
+            'jabatan'            => 'required|string',
+            'agama'              => 'nullable|string',
+            'status_perkawinan'  => 'nullable|string',
+            'tanggal_registrasi' => 'required|date_format:Y-m-d',
+            'tanggal_keluar'     => 'nullable|date_format:Y-m-d',
+            'no_telepon'         => 'nullable|string|max:20',
+            'status_anggota'     => 'required|in:AKTIF,NON AKTIF',
+            'foto'               => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+        ]);
+
+        if ($request->hasFile('foto')) {
+            if ($anggota->foto && file_exists(public_path($anggota->foto))) {
+                @unlink(public_path($anggota->foto));
+            }
+
+            $validated['foto'] = 'storage/'.$request->file('foto')->store('uploads', 'public');
+        }
+
+        $anggota->update($validated);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Data anggota berhasil diperbarui',
+            'data' => $anggota
+        ]);
     }
 
-    $anggota->delete();
+    public function apiDestroy($id)
+    {
+        $anggota = Anggota::find($id);
 
-    return response()->json([
-        'status' => true,
-        'message' => 'Data anggota berhasil dihapus'
-    ]);
-}
+        if (!$anggota) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data tidak ditemukan'
+            ], 404);
+        }
+
+        if ($anggota->foto && file_exists(public_path($anggota->foto))) {
+            @unlink(public_path($anggota->foto));
+        }
+
+        $anggota->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Data anggota berhasil dihapus'
+        ]);
+    }
 
 }
