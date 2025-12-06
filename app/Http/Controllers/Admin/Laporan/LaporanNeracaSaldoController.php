@@ -112,12 +112,43 @@ class LaporanNeracaSaldoController extends Controller
     }
 
     public function exportPdf(Request $request)
-{
-    $data = $this->buildData($request);
+    {
+        $data = $this->buildData($request);
 
-    $pdf = Pdf::loadView('admin.laporan.neraca-saldo.pdf', $data)
-        ->setPaper('A4', 'portrait');
+        $pdf = Pdf::loadView('admin.laporan.neraca-saldo.pdf', $data)
+            ->setPaper('A4', 'portrait');
 
-    return $pdf->download("Neraca-Saldo-{$data['tahun']}.pdf"); 
-}
+        return $pdf->download("Neraca-Saldo-{$data['tahun']}.pdf"); 
+    }
+
+    public function apiIndex(Request $request)
+    {
+        try {
+            $data = $this->buildData($request);
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Data neraca saldo berhasil diambil.',
+                'tahun' => $data['tahun'],
+
+                'kelompok' => $data['neracaKelompok'],
+
+                'sub_totals' => $data['subTotals'],
+
+                'total' => [
+                    'debet' => $data['totalDebet'],
+                    'kredit' => $data['totalKredit'],
+                    'imbalance' => $data['imbalance'], 
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Gagal mengambil data neraca saldo.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 }

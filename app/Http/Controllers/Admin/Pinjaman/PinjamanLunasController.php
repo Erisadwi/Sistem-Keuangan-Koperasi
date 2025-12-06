@@ -8,7 +8,6 @@ use App\Models\ViewDataAngsuran;
 use App\Models\Pinjaman;
 use App\Models\Angsuran;
 use Illuminate\Support\Facades\DB;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class PinjamanLunasController extends Controller
 {
@@ -125,6 +124,119 @@ class PinjamanLunasController extends Controller
         return view('admin.pinjaman.nota-detail-pelunasan', compact(
             'payment', 'pinjaman', 'anggota', 'totalBayar', 'totalDenda', 'sisaTagihan', 'statusPelunasan', 'view'
         ));
+    }
+
+    public function apiIndex(Request $request)
+    {
+        try {
+            $query = ViewDataAngsuran::where('status_lunas', 'LUNAS');
+
+            if ($request->start_date && $request->end_date) {
+                $query->whereBetween('tanggal_pinjaman', [
+                    $request->start_date,
+                    $request->end_date
+                ]);
+            }
+
+            if ($request->filled('nama_anggota')) {
+                $query->where('nama_anggota', 'like', '%' . $request->nama_anggota . '%');
+            }
+
+            if ($request->filled('kode_transaksi')) {
+                $query->where('kode_transaksi', 'like', '%' . $request->kode_transaksi . '%');
+            }
+
+            $data = $query->orderBy('tanggal_pinjaman', 'desc')->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data pinjaman lunas berhasil diambil',
+                'data' => $data
+            ], 200);
+
+        } catch (\Exception $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan saat mengambil data',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function apiDetail($kode_transaksi)
+    {
+        try {
+            $view = ViewDataAngsuran::where('kode_transaksi', $kode_transaksi)->first();
+
+            if (!$view) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data pinjaman tidak ditemukan'
+                ], 404);
+            }
+
+            $pinjaman = Pinjaman::with(['anggota', 'lamaAngsuran'])
+                ->where('id_pinjaman', $view->id_pinjaman)
+                ->first();
+
+            $allPayments = Angsuran::where('id_pinjaman', $pinjaman->id_pinjaman)->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Detail pinjaman lunas',
+                'data' => [
+                    'pinjaman' => $pinjaman,
+                    'view'     => $view,
+                    'payments' => $allPayments,
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
+    }
+
+    public function apiNota($id_bayar_angsuran)
+    {
+        try {
+            $payment = Angsuran::with(['pinjaman.anggota'])
+                ->find($id_bayar_angsuran);
+
+            if (!$payment) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data pembayaran tidak ditemukan'
+                ], 404);
+            }
+
+            $pinjaman = $payment->pinjaman;
+            $anggota  = $pinjaman->anggota;
+
+            $allPayments = Angsuran::where('id_pinjaman', $pinjaman->id_pinjaman)->get();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Nota pembayaran angsuran',
+                'data' => [
+                    'payment' => $payment,
+                    'pinjaman' => $pinjaman,
+                    'anggota' => $anggota,
+                    'total_bayar' => $allPayments->sum('total_bayar'),
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan',
+                'error'   => $e->getMessage(),
+            ], 500);
+        }
     }
 
 }

@@ -117,7 +117,6 @@ class TransaksiPengeluaranController extends Controller
                 'kredit' => 0,
             ]);
 
-            // 1. Akun tujuan (Biaya/Beban) → DEBIT
             foreach ($request->sumber as $s) {
                 AkunRelasiTransaksi::create([
                     'id_transaksi'      => $t->id_transaksi,
@@ -128,9 +127,8 @@ class TransaksiPengeluaranController extends Controller
                     'kode_transaksi'    => $t->kode_transaksi,
                     'tanggal_transaksi' => $t->tanggal_transaksi
                 ]);
-}
+            }
 
-            // 2. Banyak akun kas → KREDIT
             foreach ($request->sumber as $s) {
                 AkunRelasiTransaksi::create([
                     'id_transaksi'      => $t->id_transaksi,
@@ -240,20 +238,18 @@ class TransaksiPengeluaranController extends Controller
                 'kredit' => 0,
             ]);
 
-            // 1. Akun tujuan (Biaya/Beban) → DEBIT
             foreach ($request->sumber as $s) {
-            AkunRelasiTransaksi::create([
-                'id_transaksi'      => $t->id_transaksi,
-                'id_akun'           => $request->id_akun_tujuan,
-                'id_akun_berkaitan' => $s['id_jenisAkunTransaksi'],
-                'debit'             => $s['jumlah'],
-                'kredit'            => 0,
-                'kode_transaksi'    => $t->kode_transaksi,
-                'tanggal_transaksi' => $t->tanggal_transaksi
-            ]);
-}
+                AkunRelasiTransaksi::create([
+                    'id_transaksi'      => $t->id_transaksi,
+                    'id_akun'           => $request->id_akun_tujuan,
+                    'id_akun_berkaitan' => $s['id_jenisAkunTransaksi'],
+                    'debit'             => $s['jumlah'],
+                    'kredit'            => 0,
+                    'kode_transaksi'    => $t->kode_transaksi,
+                    'tanggal_transaksi' => $t->tanggal_transaksi
+                ]);         
+            }
 
-            // 2. Banyak akun kas → KREDIT
             foreach ($request->sumber as $s) {
                 AkunRelasiTransaksi::create([
                     'id_transaksi'      => $t->id_transaksi,
@@ -316,4 +312,233 @@ class TransaksiPengeluaranController extends Controller
 
         return $pdf->download("transaksi_pengeluaran_kas.pdf");
     }
+
+    public function apiIndex(Request $request)
+    {
+        $query = Transaksi::with(["details.akun"])
+            ->where("type_transaksi", "TKK")
+            ->orderByDesc("id_transaksi");
+
+        if ($request->filled("start_date") && $request->filled("end_date")) {
+            $query->whereBetween("tanggal_transaksi", [
+                $request->start_date . " 00:00:00",
+                $request->end_date . " 23:59:59"
+            ]);
+        }
+
+        if ($request->filled("search")) {
+            $query->where("kode_transaksi", "LIKE", "%{$request->search}%");
+        }
+
+        return response()->json([
+            "status" => true,
+            "message" => "Data pengeluaran berhasil diambil",
+            "data" => $query->get()
+        ]);
+    }
+
+    public function apiStore(Request $request)
+    {
+        $request->validate([
+            "tanggal_transaksi" => "required|date",
+            "ket_transaksi" => "nullable|string|max:255",
+            "id_akun_tujuan" => "required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi",
+            "sumber" => "required|array|min:1",
+            "sumber.*.id_jenisAkunTransaksi" => "required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi",
+            "sumber.*.jumlah" => "required|numeric|min:1",
+        ]);
+
+        return DB::transaction(function () use ($request) {
+
+            $total = collect($request->sumber)->sum(fn($s) => $s["jumlah"]);
+
+            $apiUser = 'US012';
+
+            $t = Transaksi::create([
+                "id_user" => $apiUser,
+                "type_transaksi" => "TKK",
+                "kode_transaksi" => "",
+                "tanggal_transaksi" => $request->tanggal_transaksi,
+                "ket_transaksi" => $request->ket_transaksi,
+                "total_debit" => $total,
+                "total_kredit" => $total,
+            ]);
+
+            $t->kode_transaksi = "TKK" . str_pad($t->id_transaksi, 5, "0", STR_PAD_LEFT);
+            $t->save();
+
+            foreach ($request->sumber as $s) {
+                DetailTransaksi::create([
+                    "id_transaksi" => $t->id_transaksi,
+                    "id_jenisAkunTransaksi" => $s["id_jenisAkunTransaksi"],
+                    "debit" => 0,
+                    "kredit" => $s["jumlah"],
+                ]);
+            }
+
+            DetailTransaksi::create([
+                "id_transaksi" => $t->id_transaksi,
+                "id_jenisAkunTransaksi" => $request->id_akun_tujuan,
+                "debit" => $total,
+                "kredit" => 0,
+            ]);
+
+            foreach ($request->sumber as $s) {
+                AkunRelasiTransaksi::create([
+                    "id_transaksi"      => $t->id_transaksi,
+                    "id_akun"           => $request->id_akun_tujuan,
+                    "id_akun_berkaitan" => $s["id_jenisAkunTransaksi"],
+                    "debit"             => $s["jumlah"],
+                    "kredit"            => 0,
+                    "kode_transaksi"    => $t->kode_transaksi,
+                    "tanggal_transaksi" => $t->tanggal_transaksi
+                ]);
+
+                AkunRelasiTransaksi::create([
+                    "id_transaksi"      => $t->id_transaksi,
+                    "id_akun"           => $s["id_jenisAkunTransaksi"],
+                    "id_akun_berkaitan" => $request->id_akun_tujuan,
+                    "debit"             => 0,
+                    "kredit"            => $s["jumlah"],
+                    "kode_transaksi"    => $t->kode_transaksi,
+                    "tanggal_transaksi" => $t->tanggal_transaksi
+                ]);
+            }
+
+            return response()->json([
+                "status" => true,
+                "message" => "Transaksi pengeluaran berhasil ditambahkan",
+                "data" => $t
+            ]);
+        });
+    }
+
+   public function apiUpdate(Request $request, $id)
+    {
+        $transaksi = Transaksi::where('id_transaksi', $id)->first();
+
+        if (!$transaksi) {
+            return response()->json([
+                'message' => 'Transaksi tidak ditemukan'
+            ], 404);
+        }
+
+        $validated = $request->validate([
+            'tanggal_transaksi' => 'required|date',
+            'ket_transaksi' => 'nullable|string',
+            'id_akun_tujuan' => 'required|integer',
+            'sumber' => 'required|array|min:1'
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $totalNominal = collect($validated['sumber'])->sum('jumlah');
+
+            $transaksi->update([
+                'tanggal_transaksi' => $validated['tanggal_transaksi'],
+                'ket_transaksi'     => $validated['ket_transaksi'] ?? null,
+            ]);
+
+            DetailTransaksi::where('id_transaksi', $transaksi->id_transaksi)->delete();
+            AkunRelasiTransaksi::where('id_transaksi', $transaksi->id_transaksi)->delete();
+
+            foreach ($validated['sumber'] as $sumberItem) {
+
+                $nominal = $sumberItem['jumlah'];
+                $akunSumber = $sumberItem['id_jenisAkunTransaksi'];
+
+                DetailTransaksi::create([
+                    "id_transaksi"         => $transaksi->id_transaksi,
+                    "id_jenisAkunTransaksi" => $akunSumber,
+                    "debit"                => 0,
+                    "kredit"               => $nominal
+                ]);
+
+                DetailTransaksi::create([
+                    "id_transaksi"         => $transaksi->id_transaksi,
+                    "id_jenisAkunTransaksi" => $validated['id_akun_tujuan'],
+                    "debit"                => $nominal,
+                    "kredit"               => 0
+                ]);
+
+                AkunRelasiTransaksi::create([
+                    'id_transaksi'      => $transaksi->id_transaksi,
+                    'id_akun'           => $validated['id_akun_tujuan'],
+                    'id_akun_berkaitan' => $akunSumber,
+                    'debit'             => $nominal,
+                    'kredit'            => 0,
+                    'kode_transaksi'    => $transaksi->kode_transaksi,
+                    'tanggal_transaksi' => $transaksi->tanggal_transaksi
+                ]);
+
+                AkunRelasiTransaksi::create([
+                    'id_transaksi'      => $transaksi->id_transaksi,
+                    'id_akun'           => $akunSumber,
+                    'id_akun_berkaitan' => $validated['id_akun_tujuan'],
+                    'debit'             => 0,
+                    'kredit'            => $nominal,
+                    'kode_transaksi'    => $transaksi->kode_transaksi,
+                    'tanggal_transaksi' => $transaksi->tanggal_transaksi
+                ]);
+
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'message' => 'Transaksi berhasil diperbarui',
+                'total_nominal' => $totalNominal,
+                'data' => $transaksi
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'message' => 'Gagal update transaksi',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function apiDestroy($id)
+    {
+        $transaksi = Transaksi::where('id_transaksi', $id)->first();
+
+        if (!$transaksi) {
+            return response()->json([
+                'message' => 'Transaksi tidak ditemukan'
+            ], 404);
+        }
+
+        DB::beginTransaction();
+
+        try {
+
+            DetailTransaksi::where('id_transaksi', $transaksi->id_transaksi)->delete();
+
+            AkunRelasiTransaksi::where('id_transaksi', $transaksi->id_transaksi)->delete();
+
+            $transaksi->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'status'  => true,
+                'message' => 'Transaksi berhasil dihapus'
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'status' => false,
+                'message' => 'Gagal menghapus transaksi',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
 }

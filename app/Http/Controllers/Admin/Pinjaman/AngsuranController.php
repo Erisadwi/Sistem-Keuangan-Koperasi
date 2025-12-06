@@ -23,7 +23,8 @@ class AngsuranController extends Controller
     protected $service;
     public function __construct(AngsuranService $service)
     {
-        $this->middleware('auth:user');
+        // pengecualian apiIndex agar tidak login
+        $this->middleware('auth:user')->except(['apiIndex']);
         $this->service = $service;
 
     }
@@ -649,7 +650,6 @@ public function storePelunasan(Request $request, $id_pinjaman)
         return $pdf->download('Laporan_Setoran_Angsuran.pdf');
     }
 
-
     public function cetak($id_bayar_angsuran)
     {
         $angsuran = Angsuran::with([
@@ -679,5 +679,54 @@ public function storePelunasan(Request $request, $id_pinjaman)
 
     }
 
+    // fuction API
+    public function apiIndex(Request $request)
+    {
+        try {
+            $query = ViewDataAngsuran::query();
+
+            if ($request->status_lunas) {
+                $query->where('status_lunas', $request->status_lunas);
+            } else {
+                $query->where('status_lunas', 'BELUM LUNAS');
+            }
+
+            if ($request->start_date && $request->end_date) {
+                $query->whereBetween('tanggal_pinjaman', [
+                    $request->start_date,
+                    $request->end_date
+                ]);
+            }
+
+            if ($request->kode_transaksi) {
+                $query->where('kode_transaksi', 'like', '%' . $request->kode_transaksi . '%');
+            }
+
+            if ($request->nama_anggota) {
+                $query->where('nama_anggota', 'like', '%' . $request->nama_anggota . '%');
+            }
+
+            $perPage = $request->get('per_page', 10);
+
+            $data = $query->orderBy('tanggal_pinjaman', 'desc')->paginate($perPage);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data angsuran berhasil dimuat.',
+                'total' => $data->total(),
+                'per_page' => $data->perPage(),
+                'current_page' => $data->currentPage(),
+                'last_page' => $data->lastPage(),
+                'data' => $data->items(),
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 
 }
