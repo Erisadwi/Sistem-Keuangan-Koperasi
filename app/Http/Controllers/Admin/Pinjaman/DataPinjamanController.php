@@ -276,7 +276,7 @@ public function show($id)
         ->orderBy('tanggal_bayar', 'asc')
         ->get();
 
-    $totalBayar  = $bayar_angsuran->sum('jumlah_bayar');
+    $totalBayar  = $bayar_angsuran->sum('angsuran_per_bulan');
     $totalDenda  = $bayar_angsuran->sum('denda');
     $totalPokok  = $bayar_angsuran->sum('angsuran_pokok');
     $totalBunga  = $bayar_angsuran->sum('pendapatan');
@@ -296,6 +296,8 @@ public function show($id)
     }
 
     $pinjaman->status = $pinjaman->status_lunas ?? ($pinjaman->sisa_angsuran <= 0 ? 'LUNAS' : 'BELUM LUNAS');
+    $totalBayar = $bayar_angsuran->sum('angsuran_per_bulan');
+    $pinjaman->sudah_dibayar = $totalBayar;
 
     return view('admin.pinjaman.data-pinjaman.detail-peminjaman', compact(
         'pinjaman',
@@ -442,7 +444,7 @@ public function update(Request $request, $id)
         $angsuran_bunga = $pinjaman->bunga_pinjaman ?? 0;
         $jumlah_angsuran = $angsuran_pokok + $angsuran_bunga;
 
-        return view('admin.pinjaman.cetak-nota-dataPinjaman', compact(
+        return view('admin.pinjaman.data-pinjaman.cetak-nota-dataPinjaman', compact(
             'pinjaman',
             'pokok_pinjaman',
             'angsuran_pokok',
