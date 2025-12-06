@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\Laporan\LaporanNeracaSaldoController;
 use App\Http\Controllers\Anggota\LaporanPembayaranController;
 use App\Http\Controllers\Anggota\LaporanPinjamanController;
 use App\Http\Controllers\Anggota\LaporanSimpananController;
+use App\Http\Controllers\Admin\Simpanan\PenarikanTunaiController;
 
 Route::get('/ping', function () {
     return response()->json(['message' => 'API is working']);
@@ -69,4 +70,10 @@ Route::get('/laporan-pembayaran', [LaporanPembayaranController::class, 'apiIndex
 Route::get('/laporan-pinjaman', [LaporanPinjamanController::class, 'apiIndex']);
 
 Route::get('/laporan-simpanan', [LaporanSimpananController::class, 'apiIndex']);
+
+Route::get('/penarikan', [PenarikanTunaiController::class, 'apiIndex']);
+Route::post('/penarikan', [PenarikanTunaiController::class, 'apiStore']);
+Route::put('/penarikan/{id}', [PenarikanTunaiController::class, 'apiUpdate']);
+Route::delete('/penarikan/{id}', [PenarikanTunaiController::class, 'apiDestroy']);
+Route::get('/penarikan/{id}/nota', [PenarikanTunaiController::class, 'apiNota']);
 
