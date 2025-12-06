@@ -13,7 +13,7 @@ class LaporanSimpananController extends Controller
         $anggota = Auth::guard('anggota')->user();
 
         $data = Simpanan::where('id_anggota', $anggota->id_anggota)
-            ->orderBy('tanggal_transaksi', 'desc')
+            ->orderBy('tanggal_transaksi', 'asc')
             ->paginate(10);
 
         $data->getCollection()->transform(function ($item) {

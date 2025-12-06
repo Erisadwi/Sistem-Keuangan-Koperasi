@@ -16,7 +16,7 @@ class LaporanPinjamanController extends Controller
 
         $data = DB::table('view_data_angsuran')
             ->where('username_anggota', $user->username_anggota)
-            ->orderBy('tanggal_pinjaman', 'desc')
+            ->orderBy('tanggal_pinjaman', 'asc')
             ->paginate(10);
 
         $data->getCollection()->transform(function ($item) use ($user) {

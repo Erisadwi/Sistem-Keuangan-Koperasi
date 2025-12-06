@@ -10,6 +10,9 @@ use App\Http\Controllers\Admin\Pinjaman\PinjamanLunasController;
 use App\Http\Controllers\Admin\Laporan\LaporanBukuBesarController;
 use App\Http\Controllers\Admin\Laporan\LaporanJatuhTempoController;
 use App\Http\Controllers\Admin\Laporan\LaporanNeracaSaldoController;
+use App\Http\Controllers\Anggota\LaporanPembayaranController;
+use App\Http\Controllers\Anggota\LaporanPinjamanController;
+use App\Http\Controllers\Anggota\LaporanSimpananController;
 
 Route::get('/ping', function () {
     return response()->json(['message' => 'API is working']);
@@ -53,4 +56,11 @@ Route::get('/buku-besar', [LaporanBukuBesarController::class, 'apiIndex']);
 Route::get('/neraca-saldo', [LaporanNeracaSaldoController::class, 'apiIndex']);
 // API laporan-jatuh tempo
 Route::get('/jatuh-tempo', [LaporanJatuhTempoController::class, 'apiIndex']);
+
+// API laporan-pembayaran
+Route::get('/laporan-pembayaran', [LaporanPembayaranController::class, 'apiIndex']);
+// API laporan-pinjaman
+Route::get('/laporan-pinjaman', [LaporanPinjamanController::class, 'apiIndex']);
+// API laporan-simpanan
+Route::get('/laporan-simpanan', [LaporanSimpananController::class, 'apiIndex']);
 
