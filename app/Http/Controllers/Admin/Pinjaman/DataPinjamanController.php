@@ -511,4 +511,164 @@ try {
 
 }
 
+    public function apiIndex(Request $request)
+    {
+        $perPage = $request->get('per_page', 10);
+
+        $query = Pinjaman::with(['anggota', 'lamaAngsuran']);
+
+        if ($request->filled('nama')) {
+            $query->whereHas('anggota', function ($q) use ($request) {
+                $q->where('nama_anggota', 'LIKE', '%' . $request->nama . '%');
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status_lunas', $request->status);
+        }
+
+        $data = $query->paginate($perPage);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data pinjaman berhasil diambil',
+            'data' => $data
+        ]);
+    }
+
+    public function apiShow($id)
+    {
+        $pinjaman = Pinjaman::with(['anggota','lamaAngsuran','angsuran'])
+            ->where('id_pinjaman', $id)
+            ->firstOrFail();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Detail pinjaman',
+            'data' => $pinjaman
+        ]);
+    }
+
+    public function apiStore(Request $request)
+    {
+        $request->validate([
+            'id_anggota' => 'required',
+            'id_jenisAkunTransaksi_tujuan' => 'required',
+            'id_jenisAkunTransaksi_sumber' => 'required',
+            'id_lamaAngsuran' => 'required',
+            'tanggal_pinjaman' => 'required|date',
+            'jumlah_pinjaman' => 'required|numeric|min:0',
+        ]);
+
+        DB::beginTransaction();
+        try {
+
+            $idPinjaman = Pinjaman::generateId();
+
+            $lama = LamaAngsuran::find($request->id_lamaAngsuran)->lama_angsuran;
+            $suku = SukuBunga::first();
+
+            $rate = $suku->suku_bunga_pinjaman/100;
+            $bungaPerBulan = $request->jumlah_pinjaman * $rate;
+
+            $totalTagihan = ($bungaPerBulan + ($request->jumlah_pinjaman / $lama)) * $lama;
+
+            Pinjaman::create([
+                'id_pinjaman' => $idPinjaman,
+                'id_user' => Auth::id(),
+                'id_anggota' => $request->id_anggota,
+                'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
+                'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
+                'id_lamaAngsuran' => $request->id_lamaAngsuran,
+                'tanggal_pinjaman' => $request->tanggal_pinjaman,
+                'jumlah_pinjaman' => $request->jumlah_pinjaman,
+                'bunga_pinjaman' => $bungaPerBulan,
+                'total_tagihan' => $totalTagihan,
+                'status_lunas' => 'BELUM LUNAS',
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Data pinjaman berhasil disimpan',
+                'id_pinjaman' => $idPinjaman
+            ]);
+
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function apiUpdate(Request $request, $id)
+    {
+        $request->validate([
+            'id_anggota' => 'required',
+            'id_jenisAkunTransaksi_tujuan' => 'required',
+            'id_jenisAkunTransaksi_sumber' => 'required',
+            'id_lamaAngsuran' => 'required',
+            'tanggal_pinjaman' => 'required|date',
+            'jumlah_pinjaman' => 'required|numeric|min:0',
+        ]);
+
+        $pinjaman = Pinjaman::findOrFail($id);
+
+        $lama = LamaAngsuran::find($request->id_lamaAngsuran)->lama_angsuran;
+        $suku = SukuBunga::first();
+        $bungaPerBulan = $request->jumlah_pinjaman * ($suku->suku_bunga_pinjaman/100);
+
+        $totalTagihan = ($bungaPerBulan + ($request->jumlah_pinjaman / $lama)) * $lama;
+
+        $pinjaman->update([
+            'id_anggota' => $request->id_anggota,
+            'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
+            'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
+            'id_lamaAngsuran' => $request->id_lamaAngsuran,
+            'tanggal_pinjaman' => $request->tanggal_pinjaman,
+            'jumlah_pinjaman' => $request->jumlah_pinjaman,
+            'bunga_pinjaman' => $bungaPerBulan,
+            'total_tagihan' => $totalTagihan
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data pinjaman berhasil diupdate'
+        ]);
+    }
+
+    public function apiNota($id)
+    {
+        $pinjaman = Pinjaman::with(['anggota','lamaAngsuran'])
+            ->where('id_pinjaman', $id)
+            ->firstOrFail();
+
+        $lama = $pinjaman->lamaAngsuran->lama_angsuran;
+        $pokok = $pinjaman->jumlah_pinjaman;
+        $bunga = $pinjaman->bunga_pinjaman;
+        $biaya_admin = $pinjaman->biaya_admin ?? 0;
+
+        $pokokPerBulan = round($pokok / $lama, 0);
+        $angsuranPerBulan = $pokokPerBulan + $bunga + $biaya_admin;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Nota pinjaman',
+            'nota' => [
+                'id_pinjaman' => $pinjaman->id_pinjaman,
+                'nama_anggota' => $pinjaman->anggota->nama_anggota,
+                'tanggal_pinjaman' => $pinjaman->tanggal_pinjaman,
+                'jumlah_pinjaman' => $pokok,
+                'bunga_per_bulan' => $bunga,
+                'biaya_admin' => $biaya_admin,
+                'angsuran_per_bulan' => $angsuranPerBulan,
+                'lama_angsuran' => $lama . " Bulan",
+                'total_tagihan' => $angsuranPerBulan * $lama,
+            ]
+        ]);
+    }
+
 }
