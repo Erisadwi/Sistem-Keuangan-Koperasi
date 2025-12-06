@@ -3,7 +3,9 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\MasterData\AnggotaController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiPengeluaranController;
+use App\Http\Controllers\Admin\TransaksiKas\TransaksiPemasukanController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiTransferController;
+use App\Http\Controllers\Admin\TransaksiNonKas\TransaksiNonKasController;
 use App\Http\Controllers\Admin\Simpanan\SetoranTunaiController;
 use App\Http\Controllers\Admin\Pinjaman\AngsuranController;
 use App\Http\Controllers\Admin\Pinjaman\PinjamanLunasController;
@@ -29,11 +31,21 @@ Route::post('/transfer', [TransaksiTransferController::class, 'apiStore']);
 Route::put('/transfer/{id}', [TransaksiTransferController::class, 'apiUpdate']); 
 Route::delete('/transfer/{id}', [TransaksiTransferController::class, 'apiDestroy']);
 
+Route::get('/pemasukan', [TransaksiPemasukanController::class, 'apiIndex']);
+Route::post('/pemasukan', [TransaksiPemasukanController::class, 'apiStore']);
+Route::put('/pemasukan/{id}', [TransaksiPemasukanController::class, 'apiUpdate']);
+Route::delete('/pemasukan/{id}', [TransaksiPemasukanController::class, 'apiDestroy']);
+
 // API Transaksi kas-pengeluaran
 Route::get('/pengeluaran', [TransaksiPengeluaranController::class, 'apiIndex']);
 Route::post('/pengeluaran', [TransaksiPengeluaranController::class, 'apiStore']);
 Route::put('/pengeluaran/{id}', [TransaksiPengeluaranController::class, 'apiUpdate']);
 Route::delete('/pengeluaran/{id}', [TransaksiPengeluaranController::class, 'apiDestroy']);
+
+Route::get('/nonKas', [TransaksiNonKasController::class, 'apiIndex']);
+Route::post('/nonKas', [TransaksiNonKasController::class, 'apiStore']);
+Route::put('/nonKas/{id}', [TransaksiNonKasController::class, 'apiUpdate']);
+Route::delete('/nonKas/{id}', [TransaksiNonKasController::class, 'apiDestroy']);
 
 // API Simpanan-setoran tunai
 Route::get('/setoran', [SetoranTunaiController::class, 'apiIndex']);
