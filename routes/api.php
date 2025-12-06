@@ -36,7 +36,6 @@ Route::post('/pemasukan', [TransaksiPemasukanController::class, 'apiStore']);
 Route::put('/pemasukan/{id}', [TransaksiPemasukanController::class, 'apiUpdate']);
 Route::delete('/pemasukan/{id}', [TransaksiPemasukanController::class, 'apiDestroy']);
 
-// API Transaksi kas-pengeluaran
 Route::get('/pengeluaran', [TransaksiPengeluaranController::class, 'apiIndex']);
 Route::post('/pengeluaran', [TransaksiPengeluaranController::class, 'apiStore']);
 Route::put('/pengeluaran/{id}', [TransaksiPengeluaranController::class, 'apiUpdate']);
@@ -47,32 +46,27 @@ Route::post('/nonKas', [TransaksiNonKasController::class, 'apiStore']);
 Route::put('/nonKas/{id}', [TransaksiNonKasController::class, 'apiUpdate']);
 Route::delete('/nonKas/{id}', [TransaksiNonKasController::class, 'apiDestroy']);
 
-// API Simpanan-setoran tunai
 Route::get('/setoran', [SetoranTunaiController::class, 'apiIndex']);
 Route::post('/setoran', [SetoranTunaiController::class, 'apiStore']);
 Route::put('/setoran/{id}', [SetoranTunaiController::class, 'apiUpdate']);
 Route::delete('/setoran/{id}', [SetoranTunaiController::class, 'apiDestroy']);
 Route::get('/setoran/{id}/nota', [SetoranTunaiController::class, 'apiNota']);
 
-// API pinjaman-data angsuran
 Route::get('/angsuran', [AngsuranController::class, 'apiIndex']);
 
-// API pinjaman-data pinjaman lunas
 Route::get('/pinjaman-lunas', [PinjamanLunasController::class, 'apiIndex']);
 Route::get('/pinjaman-lunas/{kode_transaksi}', [PinjamanLunasController::class, 'apiDetail']);
 Route::get('/pinjaman-lunas/{id_bayar_angsuran}/nota', [PinjamanLunasController::class, 'apiNota']);
 
-// API laporan-buku besar
 Route::get('/buku-besar', [LaporanBukuBesarController::class, 'apiIndex']);
-// API laporan-neraca saldo
+
 Route::get('/neraca-saldo', [LaporanNeracaSaldoController::class, 'apiIndex']);
-// API laporan-jatuh tempo
+
 Route::get('/jatuh-tempo', [LaporanJatuhTempoController::class, 'apiIndex']);
 
-// API laporan-pembayaran
 Route::get('/laporan-pembayaran', [LaporanPembayaranController::class, 'apiIndex']);
-// API laporan-pinjaman
+
 Route::get('/laporan-pinjaman', [LaporanPinjamanController::class, 'apiIndex']);
-// API laporan-simpanan
+
 Route::get('/laporan-simpanan', [LaporanSimpananController::class, 'apiIndex']);
 
