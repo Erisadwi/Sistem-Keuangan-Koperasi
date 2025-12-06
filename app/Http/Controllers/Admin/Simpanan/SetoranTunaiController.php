@@ -467,5 +467,42 @@ class SetoranTunaiController extends Controller
         }
     }
 
+    public function apiNota($id)
+    {
+        try {
+            $setoran = Simpanan::with(['anggota', 'jenisSimpanan', 'user'])
+                ->where('type_simpanan', 'TRD')
+                ->find($id);
+
+            if (!$setoran) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data tidak ditemukan'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Nota setoran tunai berhasil diambil.',
+                'data' => [
+                    'kode_nota' => $setoran->kode_simpanan,
+                    'tanggal'   => $setoran->tanggal_transaksi,
+                    'anggota'   => $setoran->anggota,
+                    'jenis_simpanan' => $setoran->jenisSimpanan,
+                    'petugas'   => $setoran->user,
+                    'jumlah'    => $setoran->jumlah_simpanan,
+                    'keterangan'=> $setoran->keterangan,
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 }
 

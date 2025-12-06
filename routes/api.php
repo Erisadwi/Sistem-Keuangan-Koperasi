@@ -2,9 +2,11 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\MasterData\AnggotaController;
-use App\Http\Controllers\Admin\Simpanan\SetoranTunaiController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiPengeluaranController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiTransferController;
+use App\Http\Controllers\Admin\Simpanan\SetoranTunaiController;
+use App\Http\Controllers\Admin\Pinjaman\AngsuranController;
+use App\Http\Controllers\Admin\Pinjaman\PinjamanLunasController;
 
 Route::get('/ping', function () {
     return response()->json(['message' => 'API is working']);
@@ -32,6 +34,15 @@ Route::get('/setoran', [SetoranTunaiController::class, 'apiIndex']);
 Route::post('/setoran', [SetoranTunaiController::class, 'apiStore']);
 Route::put('/setoran/{id}', [SetoranTunaiController::class, 'apiUpdate']);
 Route::delete('/setoran/{id}', [SetoranTunaiController::class, 'apiDestroy']);
+Route::get('/setoran/{id}/nota', [SetoranTunaiController::class, 'apiNota']);
+
+// API pinjaman-data angsuran
+Route::get('/angsuran', [AngsuranController::class, 'apiIndex']);
+
+// API pinjaman-data pinjaman lunas
+Route::get('/pinjaman-lunas', [PinjamanLunasController::class, 'apiIndex']);
+Route::get('/pinjaman-lunas/{kode_transaksi}', [PinjamanLunasController::class, 'apiDetail']);
+Route::get('/pinjaman-lunas/{id_bayar_angsuran}/nota', [PinjamanLunasController::class, 'apiNota']);
 
 
 
