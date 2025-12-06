@@ -19,6 +19,8 @@ use App\Http\Controllers\Admin\Simpanan\PenarikanTunaiController;
 use App\Http\Controllers\Admin\Pinjaman\DataPinjamanController;
 use App\Http\Controllers\Admin\Laporan\LaporanNeracaController;
 use App\Http\Controllers\Admin\Laporan\LaporanKasPinjamanController;
+use App\Http\Controllers\Admin\Laporan\LaporanKasSimpananController;
+use App\Http\Controllers\Anggota\AjuanPinjamanController;
 
 Route::get('/ping', function () {
     return response()->json(['message' => 'API is working']);
@@ -89,5 +91,12 @@ Route::get('/pinjaman/{id}/nota', [DataPinjamanController::class, 'apiNota']);
 Route::get('/neraca', [LaporanNeracaController::class, 'apiIndex']);
 
 Route::get('/laporan-kas-pinjaman', [LaporanKasPinjamanController::class, 'apiIndex']);
+
+Route::get('/laporan-kas-simpanan', [LaporanKasSimpananController::class, 'apiIndex']);
+
+Route::get('/ajuan-pinjaman', [AjuanPinjamanController::class, 'apiIndex']);
+Route::post('/ajuan-pinjaman/store', [AjuanPinjamanController::class, 'apiStore']);
+Route::post('/ajuan-pinjaman/simulasi', [AjuanPinjamanController::class, 'apiSimulasi']);
+
 
 

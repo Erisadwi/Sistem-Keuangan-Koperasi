@@ -130,4 +130,62 @@ class LaporanKasSimpananController extends Controller
 
         return $pdf->download("Laporan_Kas_Simpanan_{$start_date}_sampai_{$end_date}.pdf");
     }
+
+    public function apiIndex(Request $request)
+{
+    $preset     = $request->preset;
+    $start_date = $request->start_date;
+    $end_date   = $request->end_date;
+
+    if ($preset === 'this_year') {
+        $start_date = now()->startOfYear()->toDateString();
+        $end_date   = now()->endOfYear()->toDateString();
+    } elseif ($preset === 'last_year') {
+        $start_date = now()->subYear()->startOfYear()->toDateString();
+        $end_date   = now()->subYear()->endOfYear()->toDateString();
+    } elseif ($preset !== 'custom') {
+        $start_date = now()->startOfYear()->toDateString();
+        $end_date   = now()->endOfYear()->toDateString();
+    }
+
+    $periodeText = 'Periode ' .
+        \Carbon\Carbon::parse($start_date)->translatedFormat('d M Y') .
+        ' - ' .
+        \Carbon\Carbon::parse($end_date)->translatedFormat('d M Y');
+
+    $jenisTetap = ['Simpanan Sukarela', 'Simpanan Pokok', 'Simpanan Wajib'];
+
+    $transaksi = ViewRekapSimpanan::whereBetween('tanggal_transaksi', [
+        $start_date . ' 00:00:00',
+        $end_date . ' 23:59:59'
+    ])->get();
+
+    $data = collect($jenisTetap)->map(function ($jenis) use ($transaksi) {
+        $filtered = $transaksi->where('jenis_akun', $jenis);
+
+        $simpanan  = $filtered->sum('simpanan');
+        $penarikan = $filtered->sum('penarikan');
+        $jumlah    = $simpanan - $penarikan;
+
+        return [
+            'jenis_akun' => $jenis,
+            'simpanan'   => $simpanan,
+            'penarikan'  => $penarikan,
+            'jumlah'     => $jumlah,
+        ];
+    });
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Laporan Kas Simpanan',
+        'periode' => $periodeText,
+        'start_date' => $start_date,
+        'end_date' => $end_date,
+        'data' => $data,
+        'total_simpanan'  => $data->sum('simpanan'),
+        'total_penarikan' => $data->sum('penarikan'),
+        'total_jumlah'    => $data->sum('jumlah'),
+    ]);
+}
+
 }
