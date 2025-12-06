@@ -131,4 +131,62 @@ class LaporanKasPinjamanController extends Controller
 
         return $pdf->download("Laporan_Kas_Pinjaman_{$start_date}_sampai_{$end_date}.pdf");
     }
+
+    public function apiIndex(Request $request)
+{
+    $preset     = $request->preset;
+    $start_date = $request->start_date;
+    $end_date   = $request->end_date;
+
+    if ($preset === 'this_year') {
+        $start_date = now()->startOfYear()->toDateString();
+        $end_date   = now()->endOfYear()->toDateString();
+    } elseif ($preset === 'last_year') {
+        $start_date = now()->subYear()->startOfYear()->toDateString();
+        $end_date   = now()->subYear()->endOfYear()->toDateString();
+    } elseif ($preset !== 'custom') {
+        $start_date = now()->startOfYear()->toDateString();
+        $end_date   = now()->endOfYear()->toDateString();
+    }
+
+    $periodeText = 'Periode ' 
+        . Carbon::parse($start_date)->translatedFormat('j M Y') 
+        . ' - '
+        . Carbon::parse($end_date)->translatedFormat('j M Y');
+
+    $data = ViewJurnalPinjaman::whereBetween('tanggal_pinjaman', [$start_date, $end_date])->get();
+
+    $totalPokokPinjaman = $data->sum('debit');
+    $totalTagihan       = $data->sum('kredit');
+    $totalDenda         = 0;
+
+    $totalSudahDibayar = DB::table('bayar_angsuran')
+        ->whereBetween('tanggal_bayar', [$start_date, $end_date])
+        ->sum('angsuran_per_bulan');
+
+    $sisaTagihan = $totalTagihan - $totalSudahDibayar;
+
+    $pinjamanTable = DB::table('pinjaman')
+        ->whereBetween('tanggal_pinjaman', [$start_date, $end_date])
+        ->get();
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Laporan Kas Pinjaman',
+        'periode'            => $periodeText,
+        'start_date'         => $start_date,
+        'end_date'           => $end_date,
+        'total_pokok'        => $totalPokokPinjaman,
+        'total_tagihan'      => $totalTagihan,
+        'total_denda'        => $totalDenda,
+        'total_sudah_dibayar'=> $totalSudahDibayar,
+        'sisa_tagihan'       => $sisaTagihan,
+        'jumlah_peminjam'    => $pinjamanTable->count(),
+        'jumlah_lunas'       => $pinjamanTable->where('status_lunas', 'LUNAS')->count(),
+        'jumlah_belum_lunas' => $pinjamanTable->where('status_lunas', 'LUNAS')->count() 
+                                ? ($pinjamanTable->count() - $pinjamanTable->where('status_lunas', 'LUNAS')->count()) 
+                                : $pinjamanTable->count(),
+    ]);
+}
+
 }
