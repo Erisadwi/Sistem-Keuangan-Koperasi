@@ -253,8 +253,8 @@ class TransaksiNonKasController extends Controller
 
             DetailTransaksi::where('id_transaksi', $id)->delete();
 
-            if (class_exists(\App\Models\AkunRelasiTransaksi::class)) {
-                \App\Models\AkunRelasiTransaksi::where('id_transaksi', $id)->delete();
+            if (class_exists(AkunRelasiTransaksi::class)) {
+                AkunRelasiTransaksi::where('id_transaksi', $id)->delete();
             }
 
             $t->delete();

@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\MasterData\AnggotaController;
+use App\Http\Controllers\Admin\MasterData\JenisSimpananController;
+use App\Http\Controllers\Admin\MasterData\JenisBarangController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiPengeluaranController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiPemasukanController;
 use App\Http\Controllers\Admin\TransaksiKas\TransaksiTransferController;
@@ -35,6 +37,17 @@ Route::post('/anggota', [AnggotaController::class, 'apiStore']);
 Route::put('/anggota/{id}', [AnggotaController::class, 'apiUpdate']);
 Route::delete('/anggota/{id}', [AnggotaController::class, 'apiDestroy']);
 
+Route::get('/jenis-simpanan', [JenisSimpananController::class, 'apiIndex']);
+Route::post('/jenis-simpanan', [JenisSimpananController::class, 'apiStore']);
+Route::put('/jenis-simpanan/{id}', [JenisSimpananController::class, 'apiUpdate']);
+Route::delete('/jenis-simpanan/{id}', [JenisSimpananController::class, 'apiDelete']);
+
+Route::get('/jenis-barang', [JenisBarangController::class, 'apiIndex']);
+Route::post('/jenis-barang', [JenisBarangController::class, 'apiStore']);
+Route::put('/jenis-barang/{id}', [JenisBarangController::class, 'apiUpdate']);
+Route::delete('/jenis-barang/{id}', [JenisBarangController::class, 'apiDestroy']);
+
+
 Route::get('/transfer', [TransaksiTransferController::class, 'apiIndex']);     
 Route::post('/transfer', [TransaksiTransferController::class, 'apiStore']);    
 Route::put('/transfer/{id}', [TransaksiTransferController::class, 'apiUpdate']); 
@@ -67,13 +80,12 @@ Route::get('/pinjaman-lunas', [PinjamanLunasController::class, 'apiIndex']);
 Route::get('/pinjaman-lunas/{kode_transaksi}', [PinjamanLunasController::class, 'apiDetail']);
 Route::get('/pinjaman-lunas/{id_bayar_angsuran}/nota', [PinjamanLunasController::class, 'apiNota']);
 
-<<<<<<< HEAD
+
 Route::get('/ajuan-pinjaman', [PengajuanPinjamanController::class, 'apiIndex']);     
 Route::post('/ajuan-pinjaman', [PengajuanPinjamanController::class, 'apiStore']); 
 
 // API laporan-buku besar
-=======
->>>>>>> c16ef6174a7c1f880f7417d76af4592c5df78716
+
 Route::get('/buku-besar', [LaporanBukuBesarController::class, 'apiIndex']);
 
 Route::get('/neraca-saldo', [LaporanNeracaSaldoController::class, 'apiIndex']);
@@ -86,11 +98,10 @@ Route::get('/laporan-pinjaman', [LaporanPinjamanController::class, 'apiIndex']);
 
 Route::get('/laporan-simpanan', [LaporanSimpananController::class, 'apiIndex']);
 
-<<<<<<< HEAD
 Route::get('/laporan-saldo-kas', [LaporanSaldoKasController::class, 'apiIndex']);
 Route::get('/laporan-laba-rugi', [LaporanLabaRugiController::class, 'apiIndex']);
 Route::get('/laporan-SHU-Utama', [LaporanSHUUtamaController::class, 'apiIndex']);
-=======
+
 Route::get('/penarikan', [PenarikanTunaiController::class, 'apiIndex']);
 Route::post('/penarikan', [PenarikanTunaiController::class, 'apiStore']);
 Route::put('/penarikan/{id}', [PenarikanTunaiController::class, 'apiUpdate']);
@@ -112,4 +123,3 @@ Route::get('/laporan-kas-simpanan', [LaporanKasSimpananController::class, 'apiIn
 
 
 
->>>>>>> c16ef6174a7c1f880f7417d76af4592c5df78716

@@ -12,7 +12,7 @@ class JenisSimpananController extends Controller
 
         public function index()
     {
-         $jenis_simpanan = \App\Models\JenisSimpanan::all();
+         $jenis_simpanan = JenisSimpanan::all();
          return view('admin.master_data.jenis-simpanan', compact('jenis_simpanan'));
     }
     public function create()
@@ -59,5 +59,72 @@ class JenisSimpananController extends Controller
     public function export()
     {
     return Excel::download(new JenisSimpananExport, 'jenis-simpanan.xlsx');
+    }
+
+    public function apiIndex()
+    {
+        return response()->json([
+            'status' => true,
+            'data'   => JenisSimpanan::all()
+        ]);
+    }
+
+    public function apiStore(Request $request)
+    {
+        $validated = $request->validate([
+            'jenis_simpanan'  => 'required|string|max:20',
+            'jumlah_simpanan' => 'required|numeric|min:0',
+            'tampil_simpanan' => 'required|in:Y,N',
+        ]);
+
+        $save = JenisSimpanan::create($validated);
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Data berhasil dibuat',
+            'data' => $save
+        ]);
+    }
+
+
+    public function apiUpdate(Request $request, $id)
+    {
+        $data = JenisSimpanan::find($id);
+
+        if (!$data) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data tidak ditemukan'
+            ], 404);
+        }
+
+        $data->update($request->only([
+            'jenis_simpanan', 'jumlah_simpanan', 'tampil_simpanan'
+        ]));
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Data berhasil diperbarui',
+            'data' => $data
+        ]);
+    }
+
+    public function apiDelete($id)
+    {
+        $data = JenisSimpanan::find($id);
+
+        if (!$data) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Data tidak ditemukan'
+            ], 404);
+        }
+
+        $data->delete();
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Data berhasil dihapus'
+        ]);
     }
 }

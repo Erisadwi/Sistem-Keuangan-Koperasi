@@ -54,7 +54,7 @@ class PinjamanLunasController extends Controller
 
         $anggota = $pinjaman->anggota;
 
-        $paymentsQuery = \App\Models\Angsuran::where('id_pinjaman', $pinjaman->id_pinjaman);
+        $paymentsQuery = Angsuran::where('id_pinjaman', $pinjaman->id_pinjaman);
 
         $isFiltered = false;
 
@@ -75,7 +75,7 @@ class PinjamanLunasController extends Controller
             $payments = $paymentsQuery->orderByDesc('tanggal_bayar')->limit(1)->get();
         }
 
-        $allPayments = \App\Models\Angsuran::where('id_pinjaman', $pinjaman->id_pinjaman)->get();
+        $allPayments = Angsuran::where('id_pinjaman', $pinjaman->id_pinjaman)->get();
 
         $angsuranTerakhir = $allPayments->sortByDesc('tanggal_bayar')->first();
 
