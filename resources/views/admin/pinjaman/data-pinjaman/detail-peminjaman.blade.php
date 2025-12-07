@@ -164,7 +164,6 @@
           <tbody>
 <tb>
 
-{{-- 1. Jika sudah ada pembayaran --}}
 @if($bayar_angsuran->count() > 0)
 
     @foreach($bayar_angsuran as $i => $trx)
@@ -182,7 +181,6 @@
         </tr>
     @endforeach
 
-    {{-- TOTAL --}}
     <tr style="background-color:#dfe9f3; font-weight:bold;">
         <td colspan="5">Jumlah</td>
         <td>{{ number_format($bayar_angsuran->sum('angsuran_per_bulan'), 0, ',', '.') }}</td>
@@ -192,7 +190,6 @@
         <td>-</td>
     </tr>
 
-{{-- 2. Jika belum ada pembayaran tapi pinjaman sudah LUNAS --}}
 @elseif(($pinjaman->status ?? '') == 'LUNAS')
 
     @foreach($payments as $i => $pay)
@@ -219,7 +216,6 @@
         <td>-</td>
     </tr>
 
-{{-- 3. Jika belum ada pembayaran dan belum lunas --}}
 @else
     <tr>
         <td colspan="10" class="no-data">Belum ada pembayaran angsuran.</td>

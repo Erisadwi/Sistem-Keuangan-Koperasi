@@ -264,4 +264,237 @@ class PenarikanTunaiController extends Controller
 
         return view('admin.simpanan.penarikan-tunai.cetak-nota-penarikan-tunai', compact('penarikan'));
     }
+
+    public function apiIndex()
+    {
+        $data = Simpanan::with(['anggota', 'jenisSimpanan', 'user'])
+            ->where('type_simpanan', 'TRK')
+            ->orderBy('tanggal_transaksi', 'desc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Data penarikan tunai berhasil diambil.',
+            'data' => $data
+        ]);
+    }
+
+    public function apiStore(Request $request)
+    {
+        $request->validate([
+            'id_user' => 'required|exists:users,id_user',
+            'id_anggota' => 'required|exists:anggota,id_anggota',
+            'id_jenis_simpanan' => 'required|exists:jenis_simpanan,id_jenis_simpanan',
+            'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
+            'jumlah_simpanan' => 'required|numeric|min:1',
+            'tanggal_transaksi' => 'required|date',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $jenisSimpanan = JenisSimpanan::findOrFail($request->id_jenis_simpanan);
+            $akunSumber = $jenisSimpanan->id_jenisAkunTransaksi;
+            $akunTujuan = $request->id_jenisAkunTransaksi_tujuan;
+
+            $nextCode = 'TRK' . str_pad(
+                Simpanan::where('type_simpanan', 'TRK')->count() + 1, 
+                5, 
+                '0', 
+                STR_PAD_LEFT
+            );
+
+            $simpanan = Simpanan::create([
+                'id_user' => $request->id_user,
+                'id_anggota' => $request->id_anggota,
+                'id_jenis_simpanan' => $request->id_jenis_simpanan,
+                'id_jenisAkunTransaksi_sumber' => $akunSumber,
+                'id_jenisAkunTransaksi_tujuan' => $akunTujuan,
+                'jumlah_simpanan' => $request->jumlah_simpanan,
+                'type_simpanan' => 'TRK',
+                'kode_simpanan' => $nextCode,
+                'tanggal_transaksi' => $request->tanggal_transaksi,
+                'keterangan' => $request->keterangan
+            ]);
+
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $simpanan->id_simpanan,
+                'id_akun' => $akunTujuan,
+                'id_akun_berkaitan' => $akunSumber,
+                'debit' => $request->jumlah_simpanan,
+                'kredit' => 0,
+                'kode_transaksi' => $nextCode,
+                'tanggal_transaksi' => $request->tanggal_transaksi
+            ]);
+
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $simpanan->id_simpanan,
+                'id_akun' => $akunSumber,
+                'id_akun_berkaitan' => $akunTujuan,
+                'debit' => 0,
+                'kredit' => $request->jumlah_simpanan,
+                'kode_transaksi' => $nextCode,
+                'tanggal_transaksi' => $request->tanggal_transaksi
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Penarikan tunai berhasil disimpan'
+            ]);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function apiUpdate(Request $request, $id)
+    {
+        $request->validate([
+            'id_user' => 'required|exists:users,id_user',
+            'id_anggota' => 'required|exists:anggota,id_anggota',
+            'id_jenis_simpanan' => 'required|exists:jenis_simpanan,id_jenis_simpanan',
+            'id_jenisAkunTransaksi_tujuan' => 'required|exists:jenis_akun_transaksi,id_jenisAkunTransaksi',
+            'jumlah_simpanan' => 'required|numeric|min:1',
+            'tanggal_transaksi' => 'required|date',
+            'keterangan' => 'nullable|string',
+        ]);
+
+        DB::beginTransaction();
+
+        try {
+            $penarikan = Simpanan::findOrFail($id);
+
+            $jenisSimpanan = JenisSimpanan::findOrFail($request->id_jenis_simpanan);
+            $akunSumber = $jenisSimpanan->id_jenisAkunTransaksi;
+            $akunTujuan = $request->id_jenisAkunTransaksi_tujuan;
+
+            $penarikan->update([
+                'id_user' => $request->id_user,
+                'id_anggota' => $request->id_anggota,
+                'id_jenis_simpanan' => $request->id_jenis_simpanan,
+                'id_jenisAkunTransaksi_sumber' => $akunSumber,
+                'id_jenisAkunTransaksi_tujuan' => $akunTujuan,
+                'jumlah_simpanan' => $request->jumlah_simpanan,
+                'tanggal_transaksi' => $request->tanggal_transaksi,
+                'keterangan' => $request->keterangan,
+            ]);
+
+            AkunRelasiTransaksi::where('id_transaksi', $id)->delete();
+
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $id,
+                'id_akun' => $akunTujuan,
+                'id_akun_berkaitan' => $akunSumber,
+                'debit' => $request->jumlah_simpanan,
+                'kredit' => 0,
+                'kode_transaksi' => $penarikan->kode_simpanan,
+                'tanggal_transaksi' => $request->tanggal_transaksi
+            ]);
+
+            AkunRelasiTransaksi::create([
+                'id_transaksi' => $id,
+                'id_akun' => $akunSumber,
+                'id_akun_berkaitan' => $akunTujuan,
+                'debit' => 0,
+                'kredit' => $request->jumlah_simpanan,
+                'kode_transaksi' => $penarikan->kode_simpanan,
+                'tanggal_transaksi' => $request->tanggal_transaksi
+            ]);
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Penarikan tunai berhasil diperbarui'
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal update penarikan',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function apiDestroy($id)
+    {
+        DB::beginTransaction();
+
+        try {
+            $penarikan = Simpanan::find($id);
+
+            if (!$penarikan) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Penarikan tunai tidak ditemukan'
+                ], 404);
+            }
+
+            AkunRelasiTransaksi::where('id_transaksi', $id)->delete();
+
+            $penarikan->delete();
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Penarikan tunai berhasil dihapus'
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Gagal menghapus penarikan',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function apiNota($id)
+    {
+        try {
+            $penarikan = Simpanan::with(['anggota', 'jenisSimpanan', 'user'])
+                ->where('type_simpanan', 'TRK')
+                ->find($id);
+
+            if (!$penarikan) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Data tidak ditemukan'
+                ], 404);
+            }
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Nota penarikan tunai berhasil diambil.',
+                'data' => [
+                    'kode_nota' => $penarikan->kode_simpanan,
+                    'tanggal'   => $penarikan->tanggal_transaksi,
+                    'anggota'   => $penarikan->anggota,
+                    'jenis_simpanan' => $penarikan->jenisSimpanan,
+                    'petugas'   => $penarikan->user,
+                    'jumlah'    => $penarikan->jumlah_simpanan,
+                    'keterangan'=> $penarikan->keterangan,
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Terjadi kesalahan',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
 }

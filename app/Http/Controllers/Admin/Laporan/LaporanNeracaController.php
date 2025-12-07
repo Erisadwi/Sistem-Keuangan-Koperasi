@@ -177,4 +177,115 @@ class LaporanNeracaController extends Controller
 
         return $map[$prefix] ?? 'Z. Lainnya';
     }
+
+    public function apiIndex(Request $request)
+{
+    $bulan = $request->bulan ?? date('m');
+    $tahun = $request->tahun ?? date('Y');
+    $tanggal = Carbon::createFromDate($tahun, $bulan, 1)->endOfMonth();
+
+    $akuns = JenisAkunTransaksi::whereIn('id_jenisAkunTransaksi', $this->akunOrder)
+        ->get()
+        ->keyBy('id_jenisAkunTransaksi');
+
+    $laba_bersih = DB::table('view_laba_rugi_extended')
+        ->whereMonth('tanggal', $bulan)
+        ->whereYear('tanggal', $tahun)
+        ->sum('laba_bersih');
+
+    $rows = [];
+
+    foreach ($this->akunOrder as $idx => $akunId) {
+
+        if (!isset($akuns[$akunId])) {
+            $rows[] = [
+                'id' => $akunId,
+                'kode_aktiva' => null,
+                'nama_AkunTransaksi' => 'N/A',
+                'kelompok' => 'A. Aktiva Lancar',
+                'total_debit' => 0,
+                'total_kredit' => 0,
+                'order' => $idx,
+            ];
+            continue;
+        }
+
+        $akun = $akuns[$akunId];
+
+        if ((int)$akunId === 96) {
+            $rows[] = [
+                'id' => $akunId,
+                'kode_aktiva' => $akun->kode_aktiva,
+                'nama_AkunTransaksi' => $akun->nama_AkunTransaksi,
+                'kelompok' => 'K. Beban',
+                'total_debit' => $laba_bersih < 0 ? abs($laba_bersih) : 0,
+                'total_kredit' => $laba_bersih > 0 ? $laba_bersih : 0,
+                'order' => $idx,
+            ];
+            continue;
+        }
+
+        $saldoAwalDebit  = (float)$akun->saldoAwalFiltered($bulan, $tahun)->sum('debit');
+        $saldoAwalKredit = (float)$akun->saldoAwalFiltered($bulan, $tahun)->sum('kredit');
+
+        $beforeDebit  = (float)$akun->bukuBesarSebelumnya($bulan, $tahun)->sum('debit');
+        $beforeKredit = (float)$akun->bukuBesarSebelumnya($bulan, $tahun)->sum('kredit');
+
+        $periodDebit  = (float)$akun->bukuBesar()->whereDate('tanggal_transaksi', '<=', $tanggal)->sum('debit');
+        $periodKredit = (float)$akun->bukuBesar()->whereDate('tanggal_transaksi', '<=', $tanggal)->sum('kredit');
+
+        $totalDebitRaw  = $saldoAwalDebit + $beforeDebit + $periodDebit;
+        $totalKreditRaw = $saldoAwalKredit + $beforeKredit + $periodKredit;
+
+        $net = $totalDebitRaw - $totalKreditRaw;
+        $type = strtoupper($akun->type_akun ?? '');
+
+        if ($type === 'ACTIVA') {
+            $displayDebit = $net >= 0 ? $net : abs($net);
+            $displayKredit = 0;
+        } elseif ($type === 'PASIVA') {
+            $displayDebit = 0;
+            $displayKredit = $net >= 0 ? $net : abs($net);
+        } else {
+            $displayDebit = $net < 0 ? abs($net) : 0;
+            $displayKredit = $net > 0 ? $net : 0;
+        }
+
+        if ((int)$akunId === 104) {
+            $rows[] = [
+                'id' => $akunId,
+                'kode_aktiva' => $akun->kode_aktiva,
+                'nama_AkunTransaksi' => $akun->nama_AkunTransaksi,
+                'kelompok' => 'K. Beban',
+                'total_debit' => abs($net),
+                'total_kredit' => 0,
+                'order' => $idx,
+            ];
+            continue;
+        }
+
+        $rows[] = [
+            'id' => $akunId,
+            'kode_aktiva' => $akun->kode_aktiva,
+            'nama_AkunTransaksi' => $akun->nama_AkunTransaksi,
+            'kelompok' => $this->kelompokFromKode($akun->kode_aktiva, $akunId),
+            'total_debit' => $displayDebit,
+            'total_kredit' => $displayKredit,
+            'order' => $idx,
+        ];
+    }
+
+    $collection = collect($rows);
+
+    return response()->json([
+        'status' => true,
+        'message' => 'Laporan Neraca',
+        'tanggal' => $tanggal->translatedFormat('d F Y'),
+        'laba_bersih' => $laba_bersih,
+        'total_debit' => $collection->sum('total_debit'),
+        'total_kredit' => $collection->sum('total_kredit'),
+        'data' => $collection->groupBy('kelompok')->values(),
+    ]);
+}
+
 }
