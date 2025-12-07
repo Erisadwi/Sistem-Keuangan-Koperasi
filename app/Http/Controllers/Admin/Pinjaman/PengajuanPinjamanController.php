@@ -155,6 +155,68 @@ try {
 }
 }
 
+public function apiIndex(Request $request)
+{
+    $perPage = (int) $request->query('per_page', 10);
+
+    $query = AjuanPinjaman::with(['anggota', 'lama_angsuran'])
+        ->where('status_ajuan', '!=', 'Ditolak');
+
+    if ($request->filled('startDate') && $request->filled('endDate')) {
+        $query->whereBetween('tanggal_pengajuan', [
+            $request->startDate . ' 00:00:00',
+            $request->endDate . ' 23:59:59'
+        ]);
+    }
+
+    if ($request->filled('jenis')) {
+        $query->where('jenis_ajuan', $request->jenis);
+    }
+
+    if ($request->filled('status')) {
+        $query->where('status_ajuan', $request->status);
+    }
+
+    $data = $query->orderBy('id_ajuanPinjaman', 'desc')->paginate($perPage);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Data pengajuan pinjaman berhasil diambil.',
+        'data'    => $data
+    ]);
+}
+
+
+
+public function apiStore(Request $request)
+{
+    $request->validate([
+        'id_anggota'                    => 'required|integer',
+        'jumlah_ajuan'                  => 'required|numeric',
+        'jenis_ajuan'                   => 'required|string',
+        'id_lamaAngsuran'               => 'required|integer',
+        'id_jenisAkunTransaksi_sumber'  => 'required|integer',
+        'id_jenisAkunTransaksi_tujuan'  => 'required|integer',
+    ]);
+
+    $data = AjuanPinjaman::create([
+        'id_anggota'                   => $request->id_anggota,
+        'jumlah_ajuan'                 => $request->jumlah_ajuan,
+        'jenis_ajuan'                  => $request->jenis_ajuan,
+        'id_lamaAngsuran'              => $request->id_lamaAngsuran,
+        'tanggal_pengajuan'            => now(),
+        'status_ajuan'                 => 'Menunggu Konfirmasi',
+        'keterangan'                   => $request->keterangan ?? '-',
+        'id_jenisAkunTransaksi_sumber' => $request->id_jenisAkunTransaksi_sumber,
+        'id_jenisAkunTransaksi_tujuan' => $request->id_jenisAkunTransaksi_tujuan,
+    ]);
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Pengajuan pinjaman berhasil dibuat.',
+        'data'    => $data
+    ], 201);
+}
 
 
 }

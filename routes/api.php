@@ -9,9 +9,13 @@ use App\Http\Controllers\Admin\TransaksiNonKas\TransaksiNonKasController;
 use App\Http\Controllers\Admin\Simpanan\SetoranTunaiController;
 use App\Http\Controllers\Admin\Pinjaman\AngsuranController;
 use App\Http\Controllers\Admin\Pinjaman\PinjamanLunasController;
+use App\Http\Controllers\Admin\Pinjaman\PengajuanPinjamanController;
 use App\Http\Controllers\Admin\Laporan\LaporanBukuBesarController;
 use App\Http\Controllers\Admin\Laporan\LaporanJatuhTempoController;
 use App\Http\Controllers\Admin\Laporan\LaporanNeracaSaldoController;
+use App\Http\Controllers\Admin\Laporan\LaporanSaldoKasController;
+use App\Http\Controllers\Admin\Laporan\LaporanLabaRugiController;
+use App\Http\Controllers\Admin\Laporan\LaporanSHUUtamaController;
 use App\Http\Controllers\Anggota\LaporanPembayaranController;
 use App\Http\Controllers\Anggota\LaporanPinjamanController;
 use App\Http\Controllers\Anggota\LaporanSimpananController;
@@ -62,6 +66,9 @@ Route::get('/pinjaman-lunas', [PinjamanLunasController::class, 'apiIndex']);
 Route::get('/pinjaman-lunas/{kode_transaksi}', [PinjamanLunasController::class, 'apiDetail']);
 Route::get('/pinjaman-lunas/{id_bayar_angsuran}/nota', [PinjamanLunasController::class, 'apiNota']);
 
+Route::get('/ajuan-pinjaman', [PengajuanPinjamanController::class, 'apiIndex']);     
+Route::post('/ajuan-pinjaman', [PengajuanPinjamanController::class, 'apiStore']); 
+
 // API laporan-buku besar
 Route::get('/buku-besar', [LaporanBukuBesarController::class, 'apiIndex']);
 // API laporan-neraca saldo
@@ -76,3 +83,6 @@ Route::get('/laporan-pinjaman', [LaporanPinjamanController::class, 'apiIndex']);
 // API laporan-simpanan
 Route::get('/laporan-simpanan', [LaporanSimpananController::class, 'apiIndex']);
 
+Route::get('/laporan-saldo-kas', [LaporanSaldoKasController::class, 'apiIndex']);
+Route::get('/laporan-laba-rugi', [LaporanLabaRugiController::class, 'apiIndex']);
+Route::get('/laporan-SHU-Utama', [LaporanSHUUtamaController::class, 'apiIndex']);

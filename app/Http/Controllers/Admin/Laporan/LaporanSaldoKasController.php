@@ -116,5 +116,63 @@ public function exportPdf(Request $request)
     return $pdf->download("Laporan_Saldo_Kas_{$bulan}-{$tahun}.pdf");
 }
 
+public function apiIndex(Request $request)
+{
+    $bulan = $request->input('bulan', date('m'));
+    $tahun = $request->input('tahun', date('Y'));
+
+    $startDate = Carbon::create($tahun, $bulan, 1)->startOfMonth();
+    $endDate   = Carbon::create($tahun, $bulan, 1)->endOfMonth();
+    $prevEnd   = (clone $startDate)->subMonth()->endOfMonth();
+
+    // Ambil semua akun kas
+    $akunKas = DB::table('jenis_akun_transaksi')
+        ->where('is_kas', 1)
+        ->select('id_jenisAkunTransaksi as id_akun', 'nama_AkunTransaksi as nama_kas')
+        ->get();
+
+    // Saldo bulan ini
+    $saldoBulanIni = DB::table('view_total_saldo_kas')
+        ->select('id_akun', DB::raw('SUM(jumlah) AS total_saldo'))
+        ->whereBetween('tanggal', [$startDate, $endDate])
+        ->groupBy('id_akun')
+        ->pluck('total_saldo', 'id_akun');
+
+    // Saldo bulan lalu
+    $saldoBulanLalu = DB::table('view_total_saldo_kas')
+        ->select('id_akun', DB::raw('SUM(jumlah) AS total_saldo_lalu'))
+        ->where('tanggal', '<=', $prevEnd)
+        ->groupBy('id_akun')
+        ->pluck('total_saldo_lalu', 'id_akun');
+
+    // Format data
+    $data = $akunKas->map(function ($item) use ($saldoBulanIni, $saldoBulanLalu) {
+        $item->total_saldo = $saldoBulanIni[$item->id_akun] ?? 0;
+        $item->total_saldo_lalu = $saldoBulanLalu[$item->id_akun] ?? 0;
+        $item->selisih = $item->total_saldo - $item->total_saldo_lalu;
+        return $item;
+    });
+
+    // Total ringkasan
+    $saldo_periode_sebelumnya = $data->sum('total_saldo_lalu');
+    $jumlah_kas = $data->sum('total_saldo');
+
+    // Response JSON
+    return response()->json([
+        'success' => true,
+        'message' => 'Data laporan saldo kas berhasil diambil.',
+        'bulan'   => $bulan,
+        'tahun'   => $tahun,
+        'periode' => [
+            'start' => $startDate->format('Y-m-d'),
+            'end'   => $endDate->format('Y-m-d'),
+        ],
+        'ringkasan' => [
+            'saldo_periode_sebelumnya' => $saldo_periode_sebelumnya,
+            'jumlah_kas'               => $jumlah_kas,
+        ],
+        'data' => $data
+    ]);
+}
 
 }
