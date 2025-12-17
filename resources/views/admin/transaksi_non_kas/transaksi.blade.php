@@ -34,11 +34,8 @@
 <tbody>
     @forelse($TransaksiNonKas as $row)
         @php
-            // akun tujuan = baris dengan debit > 0 (kas masuk)
             $akunTujuan = $row->details->firstWhere('debit', '>', 0)?->akun;
-            // akun sumber = semua baris dengan kredit > 0
             $akunSumberList = $row->details->where('kredit', '>', 0);
-            // total jumlah = ambil total debit (pasti sama dengan total kredit)
             $jumlah = $row->total_debit ?? 0;
         @endphp
 
